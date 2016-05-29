@@ -1,14 +1,8 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-05-09T21:39:38
-#
-#-------------------------------------------------
-
+TARGET = half
 QT       -= core gui
 
-TARGET = GoapLibrary
 TEMPLATE = lib
-CONFIG += staticlib c++11
+CONFIG+= staticlib
 
 CONFIG(debug, debug|release):SUFFIX=d
 else:SUFFIX=
@@ -35,19 +29,16 @@ staticlib {
 LIBDIR=$$LIBDIR/$$SPEC
 DESTDIR=$$DESTDIR/$$SPEC
 
-SOURCES += goaplibrary.cpp \
-    statevalue.cpp \
-    basicmath.cpp \
-    memory.cpp
 
-HEADERS += goaplibrary.h \
-    istatevalue.h \
-    iroot.h \
-    imemory.h \
-    imemoryvalue.h \
-    statevalue.h \
-    basicmath.h \
-    memory.h
+SOURCES +=  half.cpp
+
+HEADERS +=  half.h\
+            halfExport.h \
+            halfFunction.h \
+            halfLimits.h \
+            eLut.h \
+            toFloat.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
