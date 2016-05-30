@@ -15,12 +15,28 @@ float interp1( float x, const float a[], int n )
     return a[j] + (x - j) * (a[j+1] - a[j]);
 }
 
-    // linear interpolate array a[] -> array b[]
+float interp1hf( float x, const half a[], int n )
+{
+    if( x <= 0 )  return a[0];
+    if( x >= n - 1 )  return a[n-1];
+    int j = int(x);
+    return static_cast<float>(a[j]) + (x - j) * static_cast<float>(a[j+1] - a[j]);
+}
+
+// linear interpolate array a[] -> array b[]
 void inter1parray( const float a[], int n, float b[], int m )
 {
     float step = float( n - 1 ) / (m - 1);
     for( int j = 0; j < m; j ++ ){
         b[j] = interp1( j*step, a, n );
+    }
+}
+
+void inter1parrayhf( const half a[], int n, half b[], int m )
+{
+    float step = float( n - 1 ) / (m - 1);
+    for( int j = 0; j < m; j ++ ){
+        b[j] = interp1hf( j*step, a, n );
     }
 }
 
@@ -35,7 +51,7 @@ float parabola( float x, float f_1, float f0, float f1 )
     return (l + r + x * (r - l)) / 2;
 }
 
-    // quadratic interpolate x in an array
+// quadratic interpolate x in an array
 float interp2( float x, const float a[], int n )
 {
     if( x <= .5  ||  x >= n - 1.5 )
@@ -45,7 +61,16 @@ float interp2( float x, const float a[], int n )
     return parabola( t, (a[j-1] + a[j]) / 2, a[j], (a[j] + a[j+1]) / 2 );
 }
 
-    // quadratic interpolate array a[] -> array b[]
+float interp2hf( float x, const half a[], int n )
+{
+    if( x <= .5  ||  x >= n - 1.5 )
+        return interp1hf( x, a, n );
+    int j = int( x + .5 );
+    float t = 2 * (x - j);  // -1 .. 1
+    return parabola( t, static_cast<float>(a[j-1] + a[j]) / 2, a[j], static_cast<float>(a[j] + a[j+1]) / 2 );
+}
+
+// quadratic interpolate array a[] -> array b[]
 void interp2array( const float a[], int n, float b[], int m )
 {
     float step = float( n - 1 ) / (m - 1);
@@ -54,6 +79,14 @@ void interp2array( const float a[], int n, float b[], int m )
     }
 }
 
+
+void interp2arrayhf( const half a[], int n, half b[], int m )
+{
+    float step = float( n - 1 ) / (m - 1);
+    for( int j = 0; j < m; j ++ ){
+        b[j] = interp2hf( j*step, a, n );
+    }
+}
 
 
 // linear interpolate x in an array

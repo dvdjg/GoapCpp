@@ -16,6 +16,21 @@ float interp2( float x, const float a[], int n );
 // quadratic interpolate array a[] -> array b[]
 void interp2array( const float a[], int n, float b[], int m );
 
+
+// linear interpolate x in an array
+// inline
+float interp1hf( float x, const half a[], int n );
+// linear interpolate array a[] -> array b[]
+void inter1parrayhf( const half a[], int n, half b[], int m );
+//..............................................................................
+// quadratic interpolate x in an array
+float interp2hf( float x, const half a[], int n );
+// quadratic interpolate array a[] -> array b[]
+void interp2arrayhf( const half a[], int n, half b[], int m );
+
+
+
+
 // linear interpolate x in an array
 // inline
 half interp1( half x, const half a[], int n );

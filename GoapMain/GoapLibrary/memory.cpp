@@ -6,12 +6,12 @@ Memory::Memory()
 }
 
 
-std::shared_ptr<IStateValue> Memory::at(const std::shared_ptr<IStateValue> &key) const
+ptr_value Memory::at(const ptr_value &key) const
 {
     return data.at(key);
 }
 
-std::shared_ptr<IStateValue> &Memory::setAt(const std::shared_ptr<IStateValue> &key, const std::shared_ptr<IStateValue> &value)
+ptr_value &Memory::setAt(const ptr_value &key, const ptr_value &value)
 {
     return data[key] = value;
 }

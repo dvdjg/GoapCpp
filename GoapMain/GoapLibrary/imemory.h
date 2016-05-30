@@ -8,8 +8,8 @@
 class IMemory : public IRoot
 {
 public:
-    virtual std::shared_ptr<IStateValue> at(const std::shared_ptr<IStateValue> &key) const = 0;
-    virtual std::shared_ptr<IStateValue>& setAt(const std::shared_ptr<IStateValue> &key, const std::shared_ptr<IStateValue> &value) = 0;
+    virtual ptr_value at(const ptr_value &key) const = 0;
+    virtual ptr_value& setAt(const ptr_value &key, const ptr_value &value) = 0;
 };
 
 #endif // IMEMORY_H

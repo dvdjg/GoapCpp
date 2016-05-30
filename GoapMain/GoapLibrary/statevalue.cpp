@@ -11,9 +11,9 @@ std::size_t StateValue::length() const
     return data.size();
 }
 
-half StateValue::at(half idx) const
+float StateValue::at(float idx) const
 {
-    half ret = interp2(idx, &data[0], static_cast<int>(data.size()));
+    float ret = interp2hf(idx, &data[0], static_cast<int>(data.size()));
     return ret;
 }
 
@@ -30,7 +30,7 @@ std::u16string StateValue::toString() const
 }
 
 
-void StateValue::setAt(half idx, half value)
+void StateValue::setAt(float idx, float value)
 {
     size_t i = size_t(idx);
     data[i] = value;
@@ -39,6 +39,6 @@ void StateValue::setAt(half idx, half value)
 
 std::size_t StateValue::hash() const
 {
-    return 0;
+    return ::hash(&data[0], data.size());
 }
 

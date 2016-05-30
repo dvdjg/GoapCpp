@@ -11,29 +11,31 @@ class IStateValue : public IRoot
 public:
     //virtual bool isNumeric() const = 0;
     virtual std::size_t length() const = 0; ///< From 0 to 1000
-    virtual half at(half idx = 0) const = 0;
-    virtual void setAt(half idx, half value) = 0;
+    virtual float at(float idx = 0) const = 0;
+    virtual void setAt(float idx, float value) = 0;
 
     virtual void fromString(const std::u16string & str) = 0;
     virtual std::u16string toString() const = 0;
     virtual std::size_t hash() const;
 };
 
+typedef std::shared_ptr<IStateValue> ptr_value;
+
 namespace std {
 
   template <>
-  struct hash<std::shared_ptr<IStateValue>>
+  struct hash<ptr_value>
   {
-    std::size_t operator()(const std::shared_ptr<IStateValue>& k) const
+    std::size_t operator()(const ptr_value& k) const
     {
       return k->hash();
     }
   };
 
   template<>
-  struct equal_to<std::shared_ptr<IStateValue>>
+  struct equal_to<ptr_value>
   {
-      bool operator() (const std::shared_ptr<IStateValue> & data1, const std::shared_ptr<IStateValue> & data2) const
+      bool operator() (const ptr_value & data1, const ptr_value & data2) const
       {
           bool ret = !data1 && !data2;
           if (!ret) {
@@ -46,6 +48,7 @@ namespace std {
       }
   };
 }
+
 
 #endif // ISTATEVALUE_H
 

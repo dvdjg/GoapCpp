@@ -47,7 +47,8 @@ HEADERS += goaplibrary.h \
     imemoryvalue.h \
     statevalue.h \
     basicmath.h \
-    memory.h
+    memory.h \
+    iintrusiveptr.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

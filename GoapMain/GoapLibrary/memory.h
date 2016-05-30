@@ -7,14 +7,14 @@
 class Memory : public IMemory, public std::enable_shared_from_this<Memory>
 {
 protected:
-    std::unordered_map<std::shared_ptr<IStateValue>, std::shared_ptr<IStateValue>> data;
+    std::unordered_map<ptr_value, ptr_value> data;
 public:
     Memory();
 
     // IMemory interface
 public:
-    std::shared_ptr<IStateValue> at(const std::shared_ptr<IStateValue> & key) const override;
-    std::shared_ptr<IStateValue> &setAt(const std::shared_ptr<IStateValue> &key, const std::shared_ptr<IStateValue> &value) override;
+    ptr_value at(const ptr_value & key) const override;
+    ptr_value &setAt(const ptr_value &key, const ptr_value &value) override;
 };
 
 #endif // MEMORY_H

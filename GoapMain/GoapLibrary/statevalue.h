@@ -15,8 +15,8 @@ public:
     // IStateValue interface
 public:
     std::size_t length() const override;
-    half at(half idx) const override;
-    void setAt(half idx, half value) override;
+    float at(float idx) const override;
+    void setAt(float idx, float value) override;
     void fromString(const std::u16string &str) override;
     std::u16string toString() const override;
     std::size_t hash() const override;
