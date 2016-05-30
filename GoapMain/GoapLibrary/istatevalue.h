@@ -5,6 +5,9 @@
 #include "iroot.h"
 #include "../half/half.h"
 
+class IStateValue;
+typedef std::shared_ptr<IStateValue> ptr_value;
+typedef std::shared_ptr<const IStateValue> cptr_value;
 
 class IStateValue : public IRoot
 {
@@ -21,9 +24,6 @@ public:
     virtual std::u16string toString() const = 0;
     virtual std::size_t hash() const;
 };
-
-typedef std::shared_ptr<IStateValue> ptr_value;
-typedef std::shared_ptr<const IStateValue> cptr_value;
 
 namespace std {
 

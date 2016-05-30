@@ -38,7 +38,8 @@ DESTDIR=$$DESTDIR/$$SPEC
 SOURCES += goaplibrary.cpp \
     statevalue.cpp \
     basicmath.cpp \
-    memory.cpp
+    memory.cpp \
+    state.cpp
 
 HEADERS += goaplibrary.h \
     istatevalue.h \
@@ -48,7 +49,9 @@ HEADERS += goaplibrary.h \
     statevalue.h \
     basicmath.h \
     memory.h \
-    iintrusiveptr.h
+    iintrusiveptr.h \
+    ireadstate.h \
+    state.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
