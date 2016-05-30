@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "basicmath.h"
 
 // linear interpolate x in an array
@@ -147,3 +148,19 @@ std::size_t hash(const half * vec, std::size_t size)
   return seed;
 }
 
+
+float cosine_distance(const half *a, const half *b, size_t n)
+{
+    float temp = 0, fa = 0, fb = 0, va, vb;
+
+    for(size_t i = 0; i < n; ++i)
+    {
+        va = static_cast<float>(a[i]);
+        vb = static_cast<float>(b[i]);
+        temp += va * vb;
+        fa +=  va * va;
+        fb += vb * vb;
+    }
+    float dist = 1 - (temp / (sqrt(fa) * sqrt(fb)));
+    return dist; // 0 means are equal, 2 means are different
+}

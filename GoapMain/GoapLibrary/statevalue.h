@@ -14,10 +14,13 @@ public:
 
     // IStateValue interface
 public:
-    std::size_t length() const override;
+    std::size_t size() const override;
+    void resize(std::size_t len) override;
     float at(float idx) const override;
     void setAt(float idx, float value) override;
     void fromString(const std::u16string &str) override;
+    void interpolateFrom(const IStateValue * other) override;
+    float cosineDistance(const IStateValue * other) const override;
     std::u16string toString() const override;
     std::size_t hash() const override;
 };

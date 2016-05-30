@@ -1,4 +1,4 @@
-#include <algorithm>
+#include <stdexcept>
 #include "statevalue.h"
 #include "basicmath.h"
 
@@ -6,9 +6,14 @@ StateValue::StateValue()
 {
 }
 
-std::size_t StateValue::length() const
+std::size_t StateValue::size() const
 {
     return data.size();
+}
+
+void StateValue::resize(std::size_t len)
+{
+    data.resize(len);
 }
 
 float StateValue::at(float idx) const
@@ -21,6 +26,27 @@ void StateValue::fromString(const std::u16string &str)
 {
     data.resize(0);
     std::copy(str.begin(), str.end(), std::back_inserter(data));
+}
+
+void StateValue::interpolateFrom(const IStateValue * other)
+{
+    auto o = dynamic_cast<const StateValue *>(other);
+    if (!o)
+        throw new std::runtime_error(__func__);
+    resize(o->size());
+    if (size() > 0)
+        interp2arrayhf(&o->data[0], o->size(), &data[0], size());
+}
+
+float StateValue::cosineDistance(const IStateValue *other) const
+{
+    auto o = dynamic_cast<const StateValue *>(other);
+    if (!o)
+        throw new std::runtime_error(__func__);
+    float min = std::min(data.size(), o->data.size());
+
+    float ret = cosine_distance(&data[0], &o->data[0], min);
+    return ret;
 }
 
 std::u16string StateValue::toString() const
