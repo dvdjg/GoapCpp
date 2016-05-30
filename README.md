@@ -1,2 +1,2 @@
 # GoapCpp
-C++ Goap Implementation of an older project of mine done in ActionScript3
+C++ Goap Implementation of an old ActionScript3 project of mine.
