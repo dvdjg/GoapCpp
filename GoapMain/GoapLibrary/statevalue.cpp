@@ -45,8 +45,9 @@ float StateValue::cosineDistance(const IStateValue *other) const
         throw new std::runtime_error(__func__);
     float min = std::min(data.size(), o->data.size());
 
-    float ret = cosine_distance(&data[0], &o->data[0], min);
-    return ret;
+    auto dist = fnCosineDistance<float>(data.cbegin(), o->data.cbegin(), min);
+
+    return dist.distance();
 }
 
 std::u16string StateValue::toString() const

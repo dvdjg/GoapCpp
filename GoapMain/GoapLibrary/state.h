@@ -1,10 +1,12 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <unordered_map>
 #include "ireadstate.h"
 
 class State : public IState
 {
+    std::unordered_map<ptr_value, ptr_value> data;
 public:
     State();
 
