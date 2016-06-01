@@ -1,3 +1,4 @@
+#include <iterator>
 #include "state.h"
 
 State::State()
@@ -33,4 +34,11 @@ float State::cost() const
 
 float &State::setCost(float c) const
 {
+}
+
+
+std::pair<ptr_value, ptr_value> State::at(ssize_t idx) const
+{
+    auto it = std::next(data.begin(), idx);
+    return std::make_pair(it->first, it->second);
 }

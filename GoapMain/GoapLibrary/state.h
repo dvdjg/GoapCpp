@@ -19,6 +19,8 @@ public:
     bool equals(const IState *other) const override;
     float cost() const override;
     float &setCost(float c) const override;
+
+    std::pair<ptr_value, ptr_value> at(ssize_t idx) const override;
 };
 
 #endif // STATE_H
