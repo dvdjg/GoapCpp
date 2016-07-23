@@ -6,6 +6,15 @@ StateValue::StateValue()
 {
 }
 
+StateValue::StateValue(const StateValue &other) : data(other.data)
+{
+}
+
+StateValue::StateValue(const std::u16string &str)
+{
+    fromString(str);
+}
+
 std::size_t StateValue::size() const
 {
     return data.size();
@@ -56,16 +65,18 @@ std::u16string StateValue::toString() const
     return ret;
 }
 
-
 void StateValue::setAt(float idx, float value)
 {
     size_t i = size_t(idx);
     data[i] = value;
 }
 
-
 std::size_t StateValue::hash() const
 {
     return ::hash(&data[0], data.size());
 }
 
+ptr_value StateValue::clone() const
+{
+    return ptr_value(new StateValue(*this));
+}

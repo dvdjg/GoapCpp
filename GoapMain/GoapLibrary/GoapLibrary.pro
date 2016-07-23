@@ -51,7 +51,8 @@ HEADERS += goaplibrary.h \
     memory.h \
     iintrusiveptr.h \
     ireadstate.h \
-    state.h
+    state.h \
+    stdshared.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

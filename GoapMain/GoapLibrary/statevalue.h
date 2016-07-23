@@ -4,16 +4,17 @@
 #include <memory>
 #include "istatevalue.h"
 
-class StateValue : public IStateValue, public std::enable_shared_from_this<StateValue>
+class StateValue : public IStateValue,
+        public std::enable_shared_from_this<StateValue>
 {
 protected:
     std::vector<half> data;
 
 public:
     StateValue();
+    StateValue(const StateValue & other);
+    StateValue(const std::u16string &str);
 
-    // IStateValue interface
-public:
     std::size_t size() const override;
     void resize(std::size_t len) override;
     float at(float idx) const override;
@@ -23,6 +24,8 @@ public:
     float cosineDistance(const IStateValue * other) const override;
     std::u16string toString() const override;
     std::size_t hash() const override;
+
+    ptr_value clone() const override;
 };
 
 #endif // STATEVALUE_H
