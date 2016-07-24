@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT       -= gui
 
 TARGET = GoapLibrary
 TEMPLATE = lib
@@ -52,7 +52,12 @@ HEADERS += goaplibrary.h \
     iintrusiveptr.h \
     ireadstate.h \
     state.h \
-    stdshared.h
+    shared.h \
+    ptr.h \
+    ptr_forward.h \
+    objectpool.h \
+    factory.h \
+    irefcounter.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
