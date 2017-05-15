@@ -2,6 +2,9 @@
 #include "state.h"
 #include "statevalue.h"
 
+namespace goap
+{
+
 State::State()
 {
 }
@@ -61,4 +64,6 @@ void State::setAt(const std::u16string &str, const ptr_value &value)
 ptr_value State::at(const std::u16string &str) const
 {
     return at(ptr_value(new StateValue(str)));
+}
+
 }

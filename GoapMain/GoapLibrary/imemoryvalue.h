@@ -3,6 +3,9 @@
 
 #include "iroot.h"
 
+namespace goap
+{
+
 enum MemoryValueType
 {
     MVAL_NULL,
@@ -20,5 +23,7 @@ public:
     virtual MemoryValueType getType() const = 0;
     virtual float getNumber() const = 0;
 };
+
+}
 
 #endif // IMEMORYVALUE_H

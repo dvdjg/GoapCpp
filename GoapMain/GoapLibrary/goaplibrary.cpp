@@ -1,6 +1,6 @@
 #include "goaplibrary.h"
 
-namespace Goap
+namespace goap
 {
 
 GoapLibrary::GoapLibrary()

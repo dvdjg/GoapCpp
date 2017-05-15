@@ -1,4 +1,6 @@
 #include "memory.h"
+namespace goap
+{
 
 Memory::Memory()
 {
@@ -6,4 +8,4 @@ Memory::Memory()
 }
 
 
-
+}

@@ -8,7 +8,7 @@
 
 namespace goap
 {
-class IFactoryItem;
+class IRoot;
 
 /** @brief The HideFactory<> template class.
 
@@ -34,7 +34,7 @@ class IFactoryItem;
 
     @sa factory.h
 */
-template<typename I, typename V = I, typename B = IFactoryItem> class HideFactory;
+template<typename I, typename V = I, typename B = IRoot> class HideFactory;
 template<class T> class PtrDeleter;
 template <class T, class D = PtrDeleter<T>> class Ptr;
 template <class T, class D = PtrDeleter<T>> class Cow;

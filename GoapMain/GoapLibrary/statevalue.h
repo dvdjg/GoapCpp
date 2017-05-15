@@ -4,6 +4,8 @@
 #include <memory>
 #include "istatevalue.h"
 
+namespace goap
+{
 class StateValue : public IStateValue,
         public std::enable_shared_from_this<StateValue>
 {
@@ -27,5 +29,5 @@ public:
 
     ptr_value clone() const override;
 };
-
+}
 #endif // STATEVALUE_H

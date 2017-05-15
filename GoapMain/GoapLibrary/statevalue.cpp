@@ -2,6 +2,9 @@
 #include "statevalue.h"
 #include "basicmath.h"
 
+namespace goap
+{
+
 StateValue::StateValue()
 {
 }
@@ -79,4 +82,6 @@ std::size_t StateValue::hash() const
 ptr_value StateValue::clone() const
 {
     return ptr_value(new StateValue(*this));
+}
+
 }

@@ -1,6 +1,9 @@
 #ifndef BASICMATH_H
 #define BASICMATH_H
 
+// #define __float128 long double
+#define __STRICT_ANSI__
+
 #include <math.h>
 #include "../half/half.h"
 

@@ -8,11 +8,14 @@
 #ifndef GOAP_FACTORY_H
 #define GOAP_FACTORY_H
 
+//#include <typeinfo>
+#include <typeindex>
+//#include <unordered_map>
 #include <QMap>
 #include <QString>
 #include <QtDebug>
 #include <QReadWriteLock>
-#include <QException>
+
 #include "shared.h"
 #include "objectpool.h"
 
@@ -235,7 +238,7 @@ public:
         name was already registerd with the same name.
     */
     virtual bool setCreationFunction(
-        const QString &interfaceName,
+        const std::type_index &interfaceName,
         const QString &opName,
         const ICreationPolicy<T> *pCreateFunc) = 0;
 
@@ -248,7 +251,7 @@ public:
         with the associated interfaceName for the supplied opName.
     */
     virtual const ICreationPolicy<T> *getCreationPolicy(
-        const QString &interfaceName,
+        const std::type_index &interfaceName,
         const QString &opName = QString()) const = 0;
 
     /**
@@ -258,7 +261,7 @@ public:
         @return
     */
     virtual QStringList getOperationsForInterface(
-        const QString &interfaceName) const = 0;
+        const std::type_index &interfaceName) const = 0;
 };
 
 /**
@@ -277,10 +280,10 @@ public:
         @brief _createFuncs
         Interface Name -> Discriminator Name -> Creation function
     */
-    QMap<QString, QMap<QString, const ICreationPolicy<T>*>> _createFuncs;
+    QMap<std::type_index, QMap<QString, const ICreationPolicy<T>*>> _createFuncs;
     mutable QReadWriteLock _lock;
 
-    bool setCreationFunction(const QString &interfaceName,
+    bool setCreationFunction(const std::type_index &interfaceName,
                              const QString &opName,
                              const ICreationPolicy<T> *pCreateFunc) override
     {
@@ -289,7 +292,7 @@ public:
         if (_createFuncs.contains(interfaceName)
             && _createFuncs[interfaceName].contains(opName))
         {
-            qWarning() << "Factory::registerTypeName Type " << interfaceName
+            qWarning() << "Factory::registerTypeName Type " << interfaceName.name()
                        << " for op " << opName << " already registered.";
         }
         else
@@ -301,7 +304,7 @@ public:
     }
 
     const ICreationPolicy<T> *getCreationPolicy(
-        const QString &interfaceName,
+        const std::type_index &interfaceName,
         const QString &opName) const override
     {
         static const PrivateFactory::PolicyNull<T> policyNull;
@@ -317,25 +320,25 @@ public:
             }
             else if (opName.isEmpty())
             {
-                qWarning() << "Factory::create Type" << interfaceName
+                qWarning() << "Factory::create Type" << interfaceName.name()
                            << "needs a explicit registered operation name.";
             }
             else
             {
-                qWarning() << "Factory::create Type" << interfaceName
+                qWarning() << "Factory::create Type" << interfaceName.name()
                            << "for op" << opName << "not registered.";
             }
         }
         else
         {
-            qWarning() << "Factory::create Type" << interfaceName
+            qWarning() << "Factory::create Type" << interfaceName.name()
                        << "not registered.";
         }
         return ret;
     }
 
     QStringList getOperationsForInterface(
-        const QString &interfaceName) const override
+        const std::type_index &interfaceName) const override
     {
         QStringList ret;
         QReadLocker locker(&_lock);
@@ -369,7 +372,7 @@ protected:
 
 
     template <typename TDerived>
-    bool registerByTypeName(const QString &interfaceName,
+    bool registerByTypeName(const std::type_index &interfaceName,
                             const QString &opName = QString(),
                             FactoryType factoryType = FactoryType::DEFAULT)
     {
@@ -422,7 +425,7 @@ protected:
     }
 
     const ICreationPolicy<T> *policyByInterfaceName(
-        QString interfaceName,
+        std::type_index interfaceName,
         const QString &opName = QString()) const
     {
         return d->getCreationPolicy(interfaceName, opName);
@@ -557,7 +560,7 @@ public:
     bool isRegistered(const QString &opName = QString(),
                       const ICreationPolicy<T> **ppolicy = nullptr) const
     {
-        const QString ifName = getClassName<TInterface>();
+        const std::type_index ifName = getClassTypeIndex<TInterface>();
         const ICreationPolicy<T> *policy = policyByInterfaceName(ifName, opName);
         if (ppolicy)
         {
@@ -585,7 +588,7 @@ protected:
                           const ICreationPolicy<T> **ppolicy = nullptr) const
     {
         TInterface *ret = nullptr;
-        const QString ifName = getClassName<TInterface>();
+        const std::type_index ifName = getClassTypeIndex<TInterface>();
         const ICreationPolicy<T> *policy = policyByInterfaceName(ifName, opName);
         if (ppolicy)
         {
@@ -623,7 +626,7 @@ public:
     QMap<QString, TInterface *> createAll() const
     {
         QMap<QString, TInterface *> ret;
-        QString ifName = getClassName<TInterface>();
+        const std::type_index ifName = getClassTypeIndex<TInterface>();
         QStringList ops = d->getOperationsForInterface(ifName);
         for (auto it = ops.constBegin(); it != ops.constEnd(); ++it)
         {

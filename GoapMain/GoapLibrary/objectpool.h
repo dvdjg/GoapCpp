@@ -10,12 +10,14 @@
 #ifndef OBJECTPOOL_H
 #define OBJECTPOOL_H
 
+#ifndef DefaultSharedPointer
 #if defined(QT_CORE_LIB)
 #include <QSharedPointer>
 #define DefaultSharedPointer QSharedPointer
 #else
 #include <memory>
 #define DefaultSharedPointer std::shared_ptr
+#endif
 #endif
 #include <boost/lockfree/queue.hpp>
 #include "shared.h"

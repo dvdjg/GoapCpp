@@ -9,7 +9,6 @@
 #define GOAPSHAREDDATA_H
 
 #include <typeindex>
-//#include <QAtomicInt>
 #include "ptr.h"
 #include "irefcounter.h"
 
@@ -25,10 +24,16 @@ namespace goap
 template<typename T>
 QString getClassName() noexcept
 {
-    static QString ifName(::std::type_index(typeid(T)).name());
+    static QString ifName(typeid(T).name());
+    //static QString ifName(::std::type_index(typeid(T)).name());
     return ifName;
 }
-
+template<typename T>
+std::type_index getClassTypeIndex() noexcept
+{
+    static std::type_index ifName(::std::type_index(typeid(T)));
+    return ifName;
+}
 
 /**
     @brief The has_goap_ref_counter class

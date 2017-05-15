@@ -5,6 +5,8 @@
 #include "iroot.h"
 #include "../half/half.h"
 
+namespace goap
+{
 class IStateValue;
 typedef std::shared_ptr<IStateValue> ptr_value;
 typedef std::shared_ptr<const IStateValue> cptr_value;
@@ -27,8 +29,10 @@ public:
     inline float operator[](float idx) const { return at(idx); }
     //virtual float & operator[](float idx) = 0;
 };
+}
 
 namespace std {
+using namespace goap;
 
   template <>
   struct hash<ptr_value>

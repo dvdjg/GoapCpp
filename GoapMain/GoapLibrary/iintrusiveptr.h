@@ -3,6 +3,9 @@
 
 #include "iroot.h"
 
+namespace goap
+{
+
 //  Relies on unqualified calls to
 //
 //      void intrusive_ptr_add_ref(T * p);
@@ -16,5 +19,7 @@ class IIntrusivePtr : public IRoot
 {
 public:
 };
+
+}
 
 #endif // IINTRUSIVEPTR_H

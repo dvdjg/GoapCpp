@@ -3,5 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     half \
     GoapLibrary \
-    GoapApp
+    GoapApp \
+    GoapLib \
+    Tests
 

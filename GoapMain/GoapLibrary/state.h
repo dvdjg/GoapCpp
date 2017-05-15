@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include "ireadstate.h"
 
+namespace goap
+{
+
 class State : public IState
 {
 protected:
@@ -26,5 +29,7 @@ public:
 
     std::pair<ptr_value, ptr_value> at(ssize_t idx) const override;
 };
+
+}
 
 #endif // STATE_H

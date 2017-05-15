@@ -1,7 +1,7 @@
 #ifndef GOAPLIBRARY_H
 #define GOAPLIBRARY_H
 
-namespace Goap
+namespace goap
 {
 
 class GoapLibrary

@@ -5,6 +5,9 @@
 #include "iroot.h"
 #include "istatevalue.h"
 
+namespace goap
+{
+
 class IState : public IRoot
 {
 public:
@@ -20,5 +23,7 @@ public:
     virtual float cost() const = 0;
     virtual void setCost(float c) = 0;
 };
+
+}
 
 #endif // IREADSTATE_H
