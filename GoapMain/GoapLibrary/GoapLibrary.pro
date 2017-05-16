@@ -43,7 +43,6 @@ SOURCES += goaplibrary.cpp \
 
 HEADERS += goaplibrary.h \
     istatevalue.h \
-    iroot.h \
     imemory.h \
     imemoryvalue.h \
     statevalue.h \
@@ -56,8 +55,7 @@ HEADERS += goaplibrary.h \
     ptr.h \
     ptr_forward.h \
     objectpool.h \
-    factory.h \
-    irefcounter.h
+    factory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

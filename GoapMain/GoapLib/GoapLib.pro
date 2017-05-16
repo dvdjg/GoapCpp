@@ -23,8 +23,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += goaplib.cpp
 
-HEADERS += goaplib.h
+HEADERS += goaplib.h \
+    iroot.h \
+    irefcounter.h \
+    refcounter.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
+}
+
+win32 {
+    INCLUDEPATH += D:/local/boost_1_64_0
+#    LIBS += -LC:/boost/lib \
+#            -lboost_serialization-mgw46-mt-d-1_54 \
+#            -lboost_filesystem-mgw46-mt-d-1_54 \
+#            -lboost_system-mgw46-mt-d-1_54
 }
