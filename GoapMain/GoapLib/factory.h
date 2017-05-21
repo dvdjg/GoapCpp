@@ -9,13 +9,13 @@
 
 namespace goap {
 
-template<typename Interface, typename Base, typename TYPE>
-void ASSERT_INTERNAL_TYPES()
+template<typename Interface, typename Base, typename PtrType>
+void static_assert_internal()
 {
-    static_assert( std::is_pointer<TYPE>::value, "The return type must be a pointer of type Base*");
-    static_assert( std::is_base_of<Base, typename std::remove_pointer<TYPE>::type>::value,
+    static_assert( std::is_pointer<PtrType>::value, "The return type must be a pointer of type Base*");
+    static_assert( std::is_base_of<Base, typename std::remove_pointer<PtrType>::type>::value,
                    "Callable needs to return Base*");
-    static_assert( std::is_base_of<Interface, Base>::value, "Base must derive from Interface");
+    static_assert( std::is_base_of<Interface, typename std::remove_pointer<PtrType>::type>::value, "Type must derive from Interface");
 }
 
 template<typename T, typename ... Args>
@@ -91,6 +91,7 @@ template<typename Base, typename Key = std::string>
 class Factory
 {
 public:
+    Factory() {}
     typedef std::unique_ptr<Base> return_type;
 
     template<typename Interface = Base, typename ... Args>
@@ -102,26 +103,32 @@ public:
     /// registers lvalue std::functions
     template<typename Interface = Base, typename Return, typename ... Args>
     void Register(
-        Key const& key,
-        std::function<Return (Args ... args)> const& delegate);
+        std::function<Return (Args ... args)> const& delegate,
+        Key const& key = Key());
 
     /// registers rvalue std::functions
     template<typename Interface = Base, typename Return, typename ... Args>
     void Register(
-        Key const& key,
-        std::function<Return (Args ... args)>&& delegate);
+        std::function<Return (Args ... args)>&& delegate,
+        Key const& key = Key());
 
     /// registers function pointer
     template<typename Interface = Base, typename Return, typename ... Args>
     void Register(
-        Key const& key,
-        Return (*delegate) (Args ... args));
+        Return (*delegate) (Args ... args),
+        Key const& key = Key());
 
 //	/// registers zero-argument lambdas like []() { return ...; }
 //	template<typename Lambda>
 //	void Register(
 //		Key const& key,
 //		Lambda const& lambda);
+
+    static Factory<Base, Key>& singleton()
+    {
+        static Factory<Base, Key> factory;
+        return factory;
+    }
 
 protected:
     typedef Key key_type;
@@ -143,14 +150,25 @@ Factory<Base, Key>::Create(
     auto ret = _map.find(index);
     if (ret == _map.end())
         return nullptr;
-    auto ret2 = ret.second.find(key);
-    if (ret2 == ret.second.end())
+    auto ret2 = ret->second.find(key);
+    if (ret2 == ret->second.end())
         return nullptr;
     typedef WrapperClass<Base, Args...> wrapper_t;
     try
     {
-        wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2.second));
-        return std::unique_ptr<Interface>(wrapper(std::forward<Args>(args)...));
+        //auto& pType = ret2->second;
+        //wrapper_t* pwrapper = dynamic_cast<wrapper_t*>(pType);
+        //auto ptr = (*pwrapper)(std::forward<Args>(args)...);
+        //auto const& rType = *pType;
+        //wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2->second));
+        //auto ptr = wrapper(std::forward<Args>(args)...);
+        //auto pint = dynamic_cast<Interface*>(ptr);
+        //auto ret = return_type(ptr);
+        auto p = &*ret2->second;
+        auto* pder = dynamic_cast<wrapper_t const*>(p);
+        auto pint = (*pder)(std::forward<Args>(args)...);
+        auto pret = dynamic_cast<Interface*>(pint);
+        return std::unique_ptr<Interface>(pret);
     }
     catch (std::bad_cast&)
     {
@@ -161,34 +179,34 @@ Factory<Base, Key>::Create(
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
 void Factory<Base, Key>::Register(
-    Key const& key,
-    std::function<Return (Args ... args)> const& delegate)
+    std::function<Return (Args ... args)> const& delegate,
+    Key const& key)
 {
-    ASSERT_INTERNAL_TYPES<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Return>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = return_type(new WrapperClass<Base, Args...>(delegate));
+    _map[index][key] = value_type(new WrapperClass<Base, Args...>(delegate));
 }
 
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
 void Factory<Base, Key>::Register(
-    Key const& key,
-    std::function<Return (Args ... args)>&& delegate)
+    std::function<Return (Args ... args)>&& delegate,
+    Key const& key)
 {
-    ASSERT_INTERNAL_TYPES<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Return>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = return_type(new WrapperClass<Base, Args...>(std::move(delegate)));
+    _map[index][key] = value_type(new WrapperClass<Base, Args...>(std::move(delegate)));
 }
 
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
 void Factory<Base, Key>::Register(
-    Key const& key,
-    Return (*delegate) (Args ... args))
+    Return (*delegate) (Args ... args),
+    Key const& key)
 {
-    ASSERT_INTERNAL_TYPES<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Return>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = return_type(new WrapperClass<Base, Args...> (delegate));
+    _map[index][key] = value_type(new WrapperClass<Base, Args...> (delegate));
 }
 
 //template<typename Key = std::string>

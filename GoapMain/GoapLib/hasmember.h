@@ -1,6 +1,8 @@
 #ifndef HASMEMBER_H
 #define HASMEMBER_H
 
+#include <functional>
+
 namespace goap {
 
 /** @brief HAS_MEMBER(member_type, member_call, templ_postfix)

@@ -12,7 +12,7 @@ namespace goap {
 */
 class IRefCounter : virtual public IRoot
 {
-public:
+private:
     /**
         @brief load
         The returned value is only usefull when there is no other threads
@@ -24,12 +24,12 @@ public:
     /**
         @brief ref Increments internal reference counter.
     */
-    virtual void addRef() const = 0;
+    virtual int addRef() const = 0;
 
     /**
         @brief deref Atomically decrements the value of this counter.
     */
-    virtual void releaseRef() const = 0;
+    virtual int releaseRef() const = 0;
 
     /**
         @brief suicide
@@ -39,18 +39,19 @@ public:
     virtual void suicide() = 0;
 };
 
-template<typename T>
-inline void intrusive_ptr_add_ref(T* expr)
-{
-    expr->addRef();
+
 }
 
 template<typename T>
-inline void intrusive_ptr_release(T* expr)
+inline void intrusive_ptr_add_ref(T* t)
 {
-    expr->releaseRef();
+    t->addRef();
 }
 
+template<typename T>
+inline void intrusive_ptr_release(T* t)
+{
+    if (t->releaseRef() == 0)
+        instanceSuicider(t);
 }
-
 #endif // IREFCOUNTER_H

@@ -12,8 +12,7 @@
 #include "ptr.h"
 #include "irefcounter.h"
 
-namespace goap
-{
+namespace goap {
 
 /**
     @brief getClassName
@@ -74,24 +73,24 @@ public:
 */
 
 #define GOAP_DECLARE_PRIVATE(Class) \
-protected: \
+    protected: \
     inline Class##Private* d_func() { \
-      return reinterpret_cast<Class##Private *>(dGetPtrHelper(d_ptr)); } \
+        return reinterpret_cast<Class##Private *>(dGetPtrHelper(d_ptr)); } \
     inline const Class##Private* d_func() const { \
-      return reinterpret_cast<const Class##Private *>(dGetPtrHelper(d_ptr)); } \
+        return reinterpret_cast<const Class##Private *>(dGetPtrHelper(d_ptr)); } \
     friend class Class##Private;
 
 
 #define GOAP_SHARED_FUNCTIONS(refc) \
-public: \
+    public: \
     virtual void suicide() { ::goap::PrivateFactory::instanceDeleter(this, 0); } \
     inline int load() const { return refc.load(std::memory_order_relaxed); } \
     inline void store(int newValue) { refc.store(newValue, std::memory_order_relaxed); } \
-    inline bool addRef() const { return return ++refc != 0; } \
+    inline bool addRef() const { return ++refc != 0; } \
     inline bool releaseRef() const { return --refc != 0; }
 
 #define GOAP_QSHARED_FUNCTIONS(refc) \
-public: \
+    public: \
     virtual void suicide() { ::goap::PrivateFactory::instanceDeleter(this, 0); } \
     inline int load() const { return this->refc.load(); } \
     inline void store(int count) { this->refc.store(count); } \
@@ -108,7 +107,7 @@ public: \
     the pointer "this" to delete the real objects instead a pointer to a interface.
 */
 #define GOAP_DECLARE_SHARED  \
-public: \
+    public: \
     mutable std::atomic_int stdAtomicInt; \
     GOAP_SHARED_FUNCTIONS(stdAtomicInt)
 
@@ -116,7 +115,7 @@ public: \
     Use this macro to bypass the reference counter calls to a parent implementor
 */
 #define GOAP_DECLARE_SHARED_PARENT(parent)  \
-public: \
+    public: \
     virtual void suicide() { parent::suicide(); } \
     inline int load() const { return parent::load(); } \
     inline void store(int count) { parent::store(count); } \
@@ -126,7 +125,7 @@ public: \
 // This macro is the dummy version of GOAP_DECLARE_SHARED.
 // It disables Ptr deletion possibility (a explicit delete is needed).
 #define GOAP_DECLARE_DUMMY_SHARED \
-public: \
+    public: \
     virtual void suicide() { } \
     inline int load() const { return -1; } \
     inline void store(int) {  } \
@@ -144,11 +143,11 @@ class GoapSharedData : public IRefCounter
 public:
     inline GoapSharedData() { }
     inline virtual ~GoapSharedData() = default;
-    inline GoapSharedData(const GoapSharedData &) { }
+    inline GoapSharedData(const GoapSharedData&) { }
 
 private:
     // using the assignment operator would lead to corruption in the ref-counting
-    GoapSharedData &operator=(const GoapSharedData &);
+    GoapSharedData& operator=(const GoapSharedData&);
 };
 
 /**

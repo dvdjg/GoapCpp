@@ -14,6 +14,10 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
+!include(../../common.pri) {
+    error(Could not find the common.pri file!)
+}
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -28,3 +32,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += tst_factorytesttest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/release/ -lGoapLib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/debug/ -lGoapLib
+else:unix: LIBS += -L$$OUT_PWD/../../GoapLib/ -lGoapLib
+
+INCLUDEPATH += $$PWD/../../GoapLib
+DEPENDPATH += $$PWD/../../GoapLib
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/libGoapLib.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/libGoapLib.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/GoapLib.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/GoapLib.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a
