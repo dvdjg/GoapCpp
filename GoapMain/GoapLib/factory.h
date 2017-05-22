@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace goap {
 
@@ -81,6 +82,12 @@ public:
     {
         return _func(std::forward<Args>(args)...);
     }
+//    template<typename ... CallArgs>
+//    typename function_type::result_type
+//    call(CallArgs&& ... args) const
+//    {
+//        return _func(std::forward<CallArgs>(args)...);
+//    }
 
 protected:
     function_type _func;
@@ -156,22 +163,14 @@ Factory<Base, Key>::Create(
     typedef WrapperClass<Base, Args...> wrapper_t;
     try
     {
-        //auto& pType = ret2->second;
-        //wrapper_t* pwrapper = dynamic_cast<wrapper_t*>(pType);
-        //auto ptr = (*pwrapper)(std::forward<Args>(args)...);
-        //auto const& rType = *pType;
-        //wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2->second));
-        //auto ptr = wrapper(std::forward<Args>(args)...);
-        //auto pint = dynamic_cast<Interface*>(ptr);
-        //auto ret = return_type(ptr);
-        auto p = &*ret2->second;
-        auto* pder = dynamic_cast<wrapper_t const*>(p);
-        auto pint = (*pder)(std::forward<Args>(args)...);
-        auto pret = dynamic_cast<Interface*>(pint);
-        return std::unique_ptr<Interface>(pret);
+        wrapper_t const& wrapper =
+            dynamic_cast<wrapper_t const&>(*(ret2->second));
+        auto pint = dynamic_cast<Interface*>(wrapper(std::forward<Args>(args)...));
+        return std::unique_ptr<Interface>(pint);
     }
-    catch (std::bad_cast&)
+    catch (std::bad_cast& e)
     {
+        std::cerr << "Bad cast " << e.what();
         return nullptr;
     }
 }

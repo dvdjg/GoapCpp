@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include <QDebug>
+#include <functional>
 #include "factory.h"
 #include "refcounter.h"
 #include "irefcounter.h"
@@ -39,7 +40,7 @@ public:
     void setData(const std::string& data) override;
 };
 
-Counted* createCounted() { return new Counted; }
+Counted* createCounted(const std::string& str) { return new Counted(str); }
 
 class FactoryTestTest : public QObject
 {
@@ -70,7 +71,7 @@ private Q_SLOTS:
         {
             Counted::smart_pointer ptrCounted(new Counted("Hello"));
             {
-                auto smartCounted = factory.Create<IStringData>({}, "Hallo");
+                auto smartCounted = factory.Create<IStringData>({}, static_cast<const std::string&>(std::string("Hallo")));
                 if (smartCounted)
                     qInfo() << smartCounted->data();
                 //smartCounted->suicide();
