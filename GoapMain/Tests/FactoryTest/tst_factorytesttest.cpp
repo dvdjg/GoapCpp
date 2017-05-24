@@ -73,7 +73,8 @@ private Q_SLOTS:
         {
             Counted::smart_pointer ptrCounted(new Counted("Hello"));
             {
-                auto smartCounted = factory.create<IStringData>({}, static_cast<const std::string&>(std::string("Hallo")));
+                auto smartCounted = factory.create<IStringData, const std::string&>({}, static_cast<const std::string&>(std::string("Hallo")));
+                auto smartCounted2 = factory.create<IStringData, const std::string&>({}, "Haloha");
                 if (smartCounted)
                     qInfo() << smartCounted->data();
                 //smartCounted->suicide();

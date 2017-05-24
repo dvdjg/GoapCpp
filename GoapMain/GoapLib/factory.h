@@ -100,6 +100,12 @@ public:
     typedef std::unique_ptr<Base> return_type;
 
     template<typename Interface = Base, typename ... Args>
+    Interface *
+    createRaw(
+        Key const& key,
+        Args && ... args);
+
+    template<typename Interface = Base, typename ... Args>
     std::unique_ptr<Interface>
     create(
         Key const& key,
@@ -151,17 +157,16 @@ Factory<Base, Key>::create(
     Args&& ... args)
 {
     std::type_index index = getClassTypeIndex<Interface>();
-    auto ret = _map.find(index);
-    if (ret == _map.end())
+    auto it = _map.find(index);
+    if (it == _map.end())
         return nullptr;
-    auto ret2 = ret->second.find(key);
-    if (ret2 == ret->second.end())
+    auto ret2 = it->second.find(key);
+    if (ret2 == it->second.end())
         return nullptr;
     typedef WrapperClass<Base, Args...> wrapper_t;
     try
     {
-        wrapper_t const& wrapper =
-            dynamic_cast<wrapper_t const&>(*(ret2->second));
+        wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2->second));
         auto pint = dynamic_cast<Interface*>(wrapper(std::forward<Args>(args)...));
         return std::unique_ptr<Interface>(pint);
     }
