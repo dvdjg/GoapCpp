@@ -10,13 +10,11 @@
 
 namespace goap {
 
-template<typename Interface, typename Base, typename PtrType>
+template<typename Interface, typename Base, typename Class>
 void static_assert_internal()
 {
-    static_assert( std::is_pointer<PtrType>::value, "The return type must be a pointer of type Base*");
-    static_assert( std::is_base_of<Base, typename std::remove_pointer<PtrType>::type>::value,
-                   "Callable needs to return Base*");
-    static_assert( std::is_base_of<Interface, typename std::remove_pointer<PtrType>::type>::value, "Type must derive from Interface");
+    static_assert( std::is_base_of<Base, Interface>::value, "The Interface must derive from Base");
+    static_assert( std::is_base_of<Interface, Class>::value, "The Class must derive from Interface");
 }
 
 template<typename T, typename ... Args>
@@ -108,28 +106,28 @@ public:
         Args && ... args);
 
     /// registers lvalue std::functions
-    template<typename Interface = Base, typename Return, typename ... Args>
+    template<typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Return (Args ... args)> const& delegate,
+        std::function<Class* (Args ... args)> const& delegate,
         Key const& key = Key());
 
     /// registers rvalue std::functions
-    template<typename Interface = Base, typename Return, typename ... Args>
+    template<typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Return (Args ... args)>&& delegate,
+        std::function<Class* (Args ... args)>&& delegate,
         Key const& key = Key());
 
     /// registers function pointer
-    template<typename Interface = Base, typename Return, typename ... Args>
+    template<typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        Return (*delegate) (Args ... args),
+        Class * (*delegate) (Args ... args),
         Key const& key = Key());
 
     /// registers class
-    template<typename Interface = Base, typename Return, typename ... Args>
-    void inscribe(
-        Return (*delegate) (Args ... args),
-        Key const& key = Key());
+//    template<typename Interface = Base, typename Class, typename ... Args>
+//    void inscribe(
+//        Class* (*delegate) (Args ... args),
+//        Key const& key = Key());
     static Factory<Base, Key>& singleton()
     {
         static Factory<Base, Key> factory;
@@ -175,34 +173,34 @@ Factory<Base, Key>::create(
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Return, typename ... Args>
+template<typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    std::function<Return (Args ... args)> const& delegate,
+    std::function<Class* (Args ... args)> const& delegate,
     Key const& key)
 {
-    static_assert_internal<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
     _map[index][key] = value_type(new WrapperClass<Base, Args...>(delegate));
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Return, typename ... Args>
+template<typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    std::function<Return (Args ... args)>&& delegate,
+    std::function<Class* (Args ... args)>&& delegate,
     Key const& key)
 {
-    static_assert_internal<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
     _map[index][key] = value_type(new WrapperClass<Base, Args...>(std::move(delegate)));
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Return, typename ... Args>
+template<typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    Return (*delegate) (Args ... args),
+    Class * (*delegate) (Args ... args),
     Key const& key)
 {
-    static_assert_internal<Interface, Base, Return>();
+    static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
     _map[index][key] = value_type(new WrapperClass<Base, Args...> (delegate));
 }
