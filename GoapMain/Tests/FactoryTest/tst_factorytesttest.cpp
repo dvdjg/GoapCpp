@@ -3,8 +3,8 @@
 #include <QDebug>
 #include <functional>
 #include "factory.h"
-#include "refcounter.h"
 #include "irefcounter.h"
+#include "refcounter.h"
 
 QDebug operator<< (QDebug d, const std::string& data)
 {

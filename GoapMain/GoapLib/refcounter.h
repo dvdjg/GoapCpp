@@ -5,18 +5,44 @@
 #include <boost/atomic.hpp>
 #include "hasmember.h"
 
-#define IMPLEMENT_REFCOUNTER() \
+#define IMPLEMENT_REFCOUNTER_FUNCTIONS(_refcount) \
     private: \
-    mutable std::atomic<int> _refcount{0}; \
     virtual void suicide() { instanceDeleter(this); } \
     inline int load() const { return _refcount.load(std::memory_order_relaxed); } \
     inline void store(int newValue) { _refcount.store(newValue, std::memory_order_relaxed); } \
     inline int addRef() const { return ++_refcount; } \
-    inline int releaseRef() const { return --_refcount; } \
+    inline int releaseRef() const { return --_refcount; }
+
+/*
     template<typename T> \
     friend void intrusive_ptr_add_ref(T* t); \
     template<typename T> \
     friend void intrusive_ptr_release(T* t);
+*/
+
+#define IMPLEMENT_REFCOUNTER() \
+    private: \
+    mutable std::atomic<int> _refcount{0}; \
+    IMPLEMENT_REFCOUNTER_FUNCTIONS(_refcount)
+
+/** @brief GOAP_DECLARE_SHARED_PARENT macro
+    Use this macro to bypass the reference counter calls to a parent implementor
+*/
+#define IMPLEMENT_REFCOUNTER_PARENT(parent)  \
+    public: \
+    virtual void suicide() { parent::suicide(); } \
+    inline int load() const { return parent::load(); } \
+    inline void store(int count) { parent::store(count); } \
+    inline int addRef() const { return parent::addRef(); } \
+    inline int releaseRef() const { return parent::releaseRef(); }
+
+#define IMPLEMENT_REFCOUNTER_DUMMY \
+    public: \
+    virtual void suicide() { } \
+    inline int load() const { return -1; } \
+    inline void store(int) {  } \
+    inline int addRef() const { return -1; } \
+    inline int releaseRef() const { return -1; }
 
 namespace goap {
 
@@ -109,6 +135,22 @@ inline typename std::enable_if < !has_member_void__suicide<T>::value, void >::ty
 instanceSuicider(T* t)
 {
     instanceDeleter(t);
+}
+
+
+template<typename T>
+typename std::enable_if < has_ref_counter<T>::value, void>::type
+intrusive_ptr_add_ref(T* t)
+{
+    t->addRef();
+}
+
+template<typename T>
+typename std::enable_if < has_ref_counter<T>::value, void>::type
+intrusive_ptr_release(T* t)
+{
+    if (t->releaseRef() == 0)
+        instanceSuicider(t);
 }
 
 }

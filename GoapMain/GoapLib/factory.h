@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "refcounter.h"
 
 namespace goap {
 
@@ -106,7 +107,8 @@ public:
         Args && ... args);
 
     template<typename Interface = Base, typename ... Args>
-    std::unique_ptr<Interface>
+    //typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
+    typename std::enable_if < has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
     create(
         Key const& key,
         Args && ... args);
@@ -151,8 +153,7 @@ protected:
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-typename std::unique_ptr<Interface>// Factory<Base, Key>::return_type
-Factory<Base, Key>::create(
+Interface* Factory<Base, Key>::createRaw(
     Key const& key,
     Args&& ... args)
 {
@@ -168,13 +169,24 @@ Factory<Base, Key>::create(
     {
         wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2->second));
         auto pint = dynamic_cast<Interface*>(wrapper(std::forward<Args>(args)...));
-        return std::unique_ptr<Interface>(pint);
+        return pint;
     }
     catch (std::bad_cast& e)
     {
         std::cerr << "Bad cast " << e.what();
         return nullptr;
     }
+}
+
+template<typename Base, typename Key>
+template<typename Interface, typename ... Args>
+//typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
+typename std::enable_if < has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
+Factory<Base, Key>::create(
+    Key const& key,
+    Args&& ... args)
+{
+    return createRaw<Interface>(key, std::forward<Args>(args)...);
 }
 
 template<typename Base, typename Key>

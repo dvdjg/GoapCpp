@@ -37,21 +37,24 @@ private:
         The implementation should do something like: "delete this"
     */
     virtual void suicide() = 0;
+public:
+
+    friend void intrusive_ptr_add_ref(IRefCounter* t);
+    friend void intrusive_ptr_release(IRefCounter* t);
 };
 
-
-}
-
-template<typename T>
-inline void intrusive_ptr_add_ref(T* t)
+inline void
+intrusive_ptr_add_ref(IRefCounter* t)
 {
     t->addRef();
 }
 
-template<typename T>
-inline void intrusive_ptr_release(T* t)
+inline void
+intrusive_ptr_release(IRefCounter* t)
 {
     if (t->releaseRef() == 0)
-        instanceSuicider(t);
+        t->suicide();
 }
+}
+
 #endif // IREFCOUNTER_H
