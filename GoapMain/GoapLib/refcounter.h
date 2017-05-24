@@ -137,7 +137,7 @@ instanceSuicider(T* t)
     instanceDeleter(t);
 }
 
-
+/*
 template<typename T>
 typename std::enable_if < has_ref_counter<T>::value, void>::type
 intrusive_ptr_add_ref(T* t)
@@ -152,6 +152,6 @@ intrusive_ptr_release(T* t)
     if (t->releaseRef() == 0)
         instanceSuicider(t);
 }
-
+*/
 }
 #endif // REFCOUNTER_H

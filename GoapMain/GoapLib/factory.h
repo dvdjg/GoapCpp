@@ -131,6 +131,10 @@ public:
         Class * (*delegate) (Args ... args),
         Key const& key = Key());
 
+    template<typename Interface = Base, typename Class = Interface, typename ... Args>
+    void inscribe(
+        Key const& key = Key());
+
     /// registers class
 //    template<typename Interface = Base, typename Class, typename ... Args>
 //    void inscribe(
@@ -222,6 +226,13 @@ void Factory<Base, Key>::inscribe(
     _map[index][key] = value_type(new WrapperClass<Base, Args...> (delegate));
 }
 
+template<typename Base, typename Key>
+template<typename Interface, typename Class, typename ... Args>
+void Factory<Base, Key>::inscribe(
+    Key const& key)
+{
+    inscribe<Interface>(&delegate<Class, Args...>, key);
+}
 }
 
 #endif // FACTORY_H
