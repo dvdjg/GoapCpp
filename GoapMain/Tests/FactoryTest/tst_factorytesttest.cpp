@@ -65,11 +65,13 @@ private Q_SLOTS:
     {
         auto& factory = Factory<IRoot>::singleton();
 
-        std::function<Counted* (const std::string& str)>
-        f = [](const std::string & str) {return new Counted(str);};
+        auto l = []() {return new Counted;};
+        auto lstr = [](const std::string & str) {return new Counted(str);};
+        std::function<Counted* (const std::string& str)> f = lstr;
         //Factory<IRoot>::singleton().Register<IStringData, Counted>([](int i) { return new Counted("Dentro");});
         factory.inscribe<IStringData>(&createCounted);
-        factory.inscribe<IStringData>(f, "Lambda");
+        factory.inscribe<IStringData>(f, "Functor");
+        factory.inscribe<IStringData>(l, "Lambda");
         factory.inscribe<IStringData, Counted, const std::string&>("Delegate");
         Counted counted("Hola");
         {
@@ -77,7 +79,8 @@ private Q_SLOTS:
             {
                 auto smartCounted = factory.create<IStringData, const std::string&>({}, "Hallo");
                 auto smartCounted2 = factory.create<IStringData, const std::string&>("Lambda", "Haloha");
-                auto smartCounted3 = factory.create<IStringData, const std::string&>("Delegate", "Jalo");
+                auto smartCounted3 = factory.create<IStringData, const std::string&>("Functor", "Jalo");
+                auto smartCounted4 = factory.create<IStringData, const std::string&>("Delegate", "Hi");
                 if (smartCounted)
                     qInfo() << smartCounted->data();
                 //smartCounted->suicide();

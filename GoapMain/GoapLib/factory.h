@@ -135,6 +135,11 @@ public:
     void inscribe(
         Key const& key = Key());
 
+    template<typename Interface = Base, typename Lambda>
+    void inscribe(
+        Lambda const& lambda,
+        Key const& key);
+
     /// registers class
 //    template<typename Interface = Base, typename Class, typename ... Args>
 //    void inscribe(
@@ -233,6 +238,37 @@ void Factory<Base, Key>::inscribe(
 {
     inscribe<Interface>(&delegate<Class, Args...>, key);
 }
+
+template<typename Class, typename R, typename... Args>
+R resultType(R (Class::*)(Args...) const)
+{
+    return R();
+}
+
+template<typename Class, typename R, typename... Args>
+R resultType(R (Class::*)(Args...))
+{
+    return R();
+}
+
+//template<typename Functor>
+//auto func(Functor f) -> decltype(resultType(&Functor::operator()))
+//{
+//    return resultType(&Functor::operator());
+//}
+
+template<typename Base, typename Key>
+template<typename Interface, typename Lambda>
+void Factory<Base, Key>::inscribe(
+    Lambda const& lambda,
+    Key const& key)
+{
+    std::function<decltype(resultType(&Lambda::operator())) ()> f = lambda;
+    inscribe<Interface>(f, key);
+}
+
+// https://stackoverflow.com/questions/21245891/deduce-template-argument-when-lambda-passed-in-as-a-parameter
+// https://github.com/ignatz/fab/blob/master/fab/factory.h
 }
 
 #endif // FACTORY_H
