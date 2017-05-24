@@ -65,13 +65,15 @@ private Q_SLOTS:
     {
         auto& factory = Factory<IRoot>::singleton();
 
+        std::function<Counted* ()> f = []() {return new Counted;};
         //Factory<IRoot>::singleton().Register<IStringData, Counted>([](int i) { return new Counted("Dentro");});
-        factory.Register<IStringData>(&createCounted);
+        factory.inscribe<IStringData>(&createCounted);
+        factory.inscribe<IStringData>(f, "Lambda");
         Counted counted("Hola");
         {
             Counted::smart_pointer ptrCounted(new Counted("Hello"));
             {
-                auto smartCounted = factory.Create<IStringData>({}, static_cast<const std::string&>(std::string("Hallo")));
+                auto smartCounted = factory.create<IStringData>({}, static_cast<const std::string&>(std::string("Hallo")));
                 if (smartCounted)
                     qInfo() << smartCounted->data();
                 //smartCounted->suicide();

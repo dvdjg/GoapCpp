@@ -103,34 +103,33 @@ public:
 
     template<typename Interface = Base, typename ... Args>
     std::unique_ptr<Interface>
-    Create(
+    create(
         Key const& key,
         Args && ... args);
 
     /// registers lvalue std::functions
     template<typename Interface = Base, typename Return, typename ... Args>
-    void Register(
+    void inscribe(
         std::function<Return (Args ... args)> const& delegate,
         Key const& key = Key());
 
     /// registers rvalue std::functions
     template<typename Interface = Base, typename Return, typename ... Args>
-    void Register(
+    void inscribe(
         std::function<Return (Args ... args)>&& delegate,
         Key const& key = Key());
 
     /// registers function pointer
     template<typename Interface = Base, typename Return, typename ... Args>
-    void Register(
+    void inscribe(
         Return (*delegate) (Args ... args),
         Key const& key = Key());
 
-//	/// registers zero-argument lambdas like []() { return ...; }
-//	template<typename Lambda>
-//	void Register(
-//		Key const& key,
-//		Lambda const& lambda);
-
+    /// registers class
+    template<typename Interface = Base, typename Return, typename ... Args>
+    void inscribe(
+        Return (*delegate) (Args ... args),
+        Key const& key = Key());
     static Factory<Base, Key>& singleton()
     {
         static Factory<Base, Key> factory;
@@ -149,7 +148,7 @@ protected:
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 typename std::unique_ptr<Interface>// Factory<Base, Key>::return_type
-Factory<Base, Key>::Create(
+Factory<Base, Key>::create(
     Key const& key,
     Args&& ... args)
 {
@@ -177,7 +176,7 @@ Factory<Base, Key>::Create(
 
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
-void Factory<Base, Key>::Register(
+void Factory<Base, Key>::inscribe(
     std::function<Return (Args ... args)> const& delegate,
     Key const& key)
 {
@@ -188,7 +187,7 @@ void Factory<Base, Key>::Register(
 
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
-void Factory<Base, Key>::Register(
+void Factory<Base, Key>::inscribe(
     std::function<Return (Args ... args)>&& delegate,
     Key const& key)
 {
@@ -199,7 +198,7 @@ void Factory<Base, Key>::Register(
 
 template<typename Base, typename Key>
 template<typename Interface, typename Return, typename ... Args>
-void Factory<Base, Key>::Register(
+void Factory<Base, Key>::inscribe(
     Return (*delegate) (Args ... args),
     Key const& key)
 {
@@ -208,18 +207,6 @@ void Factory<Base, Key>::Register(
     _map[index][key] = value_type(new WrapperClass<Base, Args...> (delegate));
 }
 
-//template<typename Key = std::string>
-//class Factory
-//{
-//public:
-//    typedef std::unique_ptr<Base> return_type;
-////    template<typename Interface, typename Class, FactoryType = FactoryType::Default>
-////    bool registerClass()
-////    {
-////    }
-//private:
-//    //std::map<std::type_index, std::map<std::string, >>
-//};
 }
 
 #endif // FACTORY_H
