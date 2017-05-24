@@ -100,6 +100,12 @@ public:
     Factory() {}
     typedef std::unique_ptr<Base> return_type;
 
+    static Factory<Base, Key>& singleton()
+    {
+        static Factory<Base, Key> factory;
+        return factory;
+    }
+
     template<typename Interface = Base, typename ... Args>
     Interface *
     createRaw(
@@ -140,16 +146,18 @@ public:
         Lambda const& lambda,
         Key const& key);
 
-    /// registers class
-//    template<typename Interface = Base, typename Class, typename ... Args>
-//    void inscribe(
-//        Class* (*delegate) (Args ... args),
-//        Key const& key = Key());
-    static Factory<Base, Key>& singleton()
-    {
-        static Factory<Base, Key> factory;
-        return factory;
-    }
+private:
+    template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    void inscribe(
+        R (Class::*)(Args...),
+        Lambda const& lambda,
+        Key const& key);
+
+    template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    void inscribe(
+        R (Class::*)(Args...) const,
+        Lambda const& lambda,
+        Key const& key);
 
 protected:
     typedef Key key_type;
@@ -263,7 +271,30 @@ void Factory<Base, Key>::inscribe(
     Lambda const& lambda,
     Key const& key)
 {
-    std::function<decltype(resultType(&Lambda::operator())) ()> f = lambda;
+    //std::function<decltype(resultType(&Lambda::operator())) ()> f = lambda;
+    //inscribe<Interface>(f, key);
+    inscribe<Interface>(&Lambda::operator(), lambda, key);
+}
+
+template<typename Base, typename Key>
+template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+void Factory<Base, Key>::inscribe(
+    R (Class::*)(Args...),
+    Lambda const& lambda,
+    Key const& key)
+{
+    std::function<R (Args...)> f = lambda;
+    inscribe<Interface>(f, key);
+}
+
+template<typename Base, typename Key>
+template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+void Factory<Base, Key>::inscribe(
+    R (Class::*)(Args...) const,
+    Lambda const& lambda,
+    Key const& key)
+{
+    std::function<R (Args...)> f = lambda;
     inscribe<Interface>(f, key);
 }
 
