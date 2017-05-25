@@ -68,28 +68,12 @@ enum class FactoryType
 template<typename T>
 struct factory_cast
 {
-    template<typename R = T>
-    static typename std::enable_if <has_intrusive_ref_counter<R>::value,  boost::intrusive_ptr<R>>::type
-            cast(R *p, FactoryType factoryType = FactoryType::Default)
+    typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type smart_pointer;
+    static smart_pointer cast(T *p, FactoryType factoryType = FactoryType::Default)
     {
         if (factoryType == FactoryType::Singleton)
         {
-            static boost::intrusive_ptr<R> singleton;
-            return singleton;
-        }
-        else if (factoryType == FactoryType::Default)
-        {
-            return p;
-        }
-        return nullptr;
-    }
-    template<typename R = T>
-    static typename std::enable_if < !has_intrusive_ref_counter<R>::value,  std::shared_ptr<R >>::type
-            cast(R *p, FactoryType factoryType = FactoryType::Default)
-    {
-        if (factoryType == FactoryType::Singleton)
-        {
-            static std::shared_ptr<R> singleton;
+            static smart_pointer singleton(p);
             return singleton;
         }
         else if (factoryType == FactoryType::Default)
@@ -173,10 +157,8 @@ public:
     getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
-    decltype(factory_cast<Interface>::cast(static_cast<Interface *>(nullptr)))
-    create(
-        Key const &key,
-        Args && ... args);
+    typename factory_cast<Interface>::smart_pointer
+    create(Key const &key, Args && ... args);
 
     /// registers lvalue std::functions
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -274,10 +256,8 @@ Interface *Factory<Base, Key>::createRaw(
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-decltype(factory_cast<Interface>::cast(static_cast<Interface *>(nullptr)))
-Factory<Base, Key>::create(
-    Key const &key,
-    Args &&... args)
+typename factory_cast<Interface>::smart_pointer
+Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
     auto pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
