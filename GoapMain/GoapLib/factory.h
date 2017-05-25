@@ -9,17 +9,24 @@
 #include <iostream>
 #include "refcounter.h"
 
-namespace goap {
+namespace goap
+{
 
 template<typename Interface, typename Base, typename Class>
 void static_assert_internal()
 {
-    static_assert( std::is_base_of<Base, Interface>::value, "The Interface must derive from Base");
-    static_assert( std::is_base_of<Interface, Class>::value, "The Class must derive from Interface");
+    static_assert(std::is_base_of<Base, Interface>::value, "The Interface must derive from Base");
+    static_assert(std::is_base_of<Interface, Class>::value, "The Class must derive from Interface");
 }
 
 template<typename T, typename ... Args>
-T* delegate(Args ... args)
+T *defaultDelegate(Args ... args)
+{
+    return new T(std::forward<Args>(args)...);
+}
+
+template<typename T, typename ... Args>
+T *singletonDelegate(Args ... args)
 {
     return new T(std::forward<Args>(args)...);
 }
@@ -31,7 +38,7 @@ T* delegate(Args ... args)
     @return
 */
 template<typename T>
-const std::string& getClassName() noexcept
+const std::string &getClassName() noexcept
 {
     static std::string ifName(typeid(T).name());
     return ifName;
@@ -44,6 +51,7 @@ std::type_index getClassTypeIndex() noexcept
 
 enum class FactoryType
 {
+    Undefined,
     Default,
     Singleton,
     ObjectSmallPool,
@@ -60,8 +68,9 @@ template<typename Base>
 class BaseWrapperClass
 {
 public:
-    typedef Base* return_type;
-    virtual ~BaseWrapperClass() {}
+    typedef Base *return_type;
+    virtual ~BaseWrapperClass() = default;
+    virtual FactoryType getFactoryType() const = 0;
 };
 
 
@@ -69,29 +78,40 @@ template<typename Base, typename ... Args>
 class WrapperClass : public BaseWrapperClass<Base>
 {
 public:
-    typedef std::function <
-    typename BaseWrapperClass<Base>::return_type (Args...)
-    > function_type;
+    typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
 
     template<typename T>
-    WrapperClass(T&& func) : _func(std::forward<T>(func)) {}
+    WrapperClass(T &&func) : _func(std::forward<T>(func)) {}
 
     typename function_type::result_type
-    operator() (Args&& ... args) const
+    operator()(Args &&... args) const
     {
         return _func(std::forward<Args>(args)...);
     }
-//    template<typename ... CallArgs>
-//    typename function_type::result_type
-//    call(CallArgs&& ... args) const
-//    {
-//        return _func(std::forward<CallArgs>(args)...);
-//    }
+    //    template<typename ... CallArgs>
+    //    typename function_type::result_type
+    //    call(CallArgs&& ... args) const
+    //    {
+    //        return _func(std::forward<CallArgs>(args)...);
+    //    }
 
 protected:
     function_type _func;
 };
 
+template<typename Base, FactoryType fType = FactoryType::Default, typename ... Args>
+class WrapperClassTyped : public WrapperClass<Base, Args...>
+{
+public:
+    typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
+
+    template<typename T>
+    WrapperClassTyped(T &&func) : WrapperClass<Base, Args...>(func) {}
+    FactoryType getFactoryType() const override
+    {
+        return fType;
+    }
+};
 
 template<typename Base, typename Key = std::string>
 class Factory
@@ -100,7 +120,7 @@ public:
     Factory() {}
     typedef std::unique_ptr<Base> return_type;
 
-    static Factory<Base, Key>& singleton()
+    static Factory<Base, Key> &singleton()
     {
         static Factory<Base, Key> factory;
         return factory;
@@ -109,55 +129,55 @@ public:
     template<typename Interface = Base, typename ... Args>
     Interface *
     createRaw(
-        Key const& key,
+        Key const &key,
         Args && ... args);
 
     template<typename Interface = Base, typename ... Args>
     //typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-    typename std::enable_if < has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-    create(
-        Key const& key,
-        Args && ... args);
+    typename std::enable_if <has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface>>::type
+            create(
+                Key const &key,
+                Args && ... args);
 
     /// registers lvalue std::functions
-    template<typename Interface = Base, typename Class, typename ... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Class* (Args ... args)> const& delegate,
-        Key const& key = Key());
+        std::function<Class* (Args ... args)> const &delegate,
+        Key const &key = Key());
 
     /// registers rvalue std::functions
-    template<typename Interface = Base, typename Class, typename ... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Class* (Args ... args)>&& delegate,
-        Key const& key = Key());
+        std::function<Class* (Args ... args)> && delegate,
+        Key const &key = Key());
 
     /// registers function pointer
-    template<typename Interface = Base, typename Class, typename ... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        Class * (*delegate) (Args ... args),
-        Key const& key = Key());
+        Class * (*delegate)(Args ... args),
+        Key const &key = Key());
 
-    template<typename Interface = Base, typename Class = Interface, typename ... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class = Interface, typename ... Args>
     void inscribe(
-        Key const& key = Key());
+        Key const &key = Key());
 
-    template<typename Interface = Base, typename Lambda>
+    template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Lambda>
     void inscribe(
-        Lambda const& lambda,
-        Key const& key);
+        Lambda const &lambda,
+        Key const &key);
 
 private:
-    template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
     void inscribe(
-        R (Class::*)(Args...),
-        Lambda const& lambda,
-        Key const& key);
+        R(Class::*)(Args...),
+        Lambda const &lambda,
+        Key const &key);
 
-    template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
     void inscribe(
-        R (Class::*)(Args...) const,
-        Lambda const& lambda,
-        Key const& key);
+        R(Class::*)(Args...) const,
+        Lambda const &lambda,
+        Key const &key);
 
 protected:
     typedef Key key_type;
@@ -170,25 +190,33 @@ protected:
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-Interface* Factory<Base, Key>::createRaw(
-    Key const& key,
-    Args&& ... args)
+Interface *Factory<Base, Key>::createRaw(
+    Key const &key,
+    Args &&... args)
 {
     std::type_index index = getClassTypeIndex<Interface>();
     auto it = _map.find(index);
     if (it == _map.end())
+    {
         return nullptr;
-    auto ret2 = it->second.find(key);
-    if (ret2 == it->second.end())
+    }
+    auto it2 = it->second.find(key);
+    if (it2 == it->second.end())
+    {
         return nullptr;
+    }
     typedef WrapperClass<Base, Args...> wrapper_t;
     try
     {
-        wrapper_t const& wrapper = dynamic_cast<wrapper_t const&>(*(ret2->second));
-        auto pint = dynamic_cast<Interface*>(wrapper(std::forward<Args>(args)...));
+        wrapper_t *wrapper = dynamic_cast<wrapper_t *>(&*it2->second);
+        if (!wrapper)
+        {
+            return nullptr;
+        }
+        auto pint = dynamic_cast<Interface *>((*wrapper)(std::forward<Args>(args)...));
         return pint;
     }
-    catch (std::bad_cast& e)
+    catch (std::bad_cast &e)
     {
         std::cerr << "Bad cast " << e.what();
         return nullptr;
@@ -198,104 +226,84 @@ Interface* Factory<Base, Key>::createRaw(
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 //typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-typename std::enable_if < has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-Factory<Base, Key>::create(
-    Key const& key,
-    Args&& ... args)
+typename std::enable_if <has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface>>::type
+        Factory<Base, Key>::create(
+            Key const &key,
+            Args &&... args)
 {
     return createRaw<Interface>(key, std::forward<Args>(args)...);
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename ... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    std::function<Class* (Args ... args)> const& delegate,
-    Key const& key)
+    std::function<Class* (Args ... args)> const &delegate,
+    Key const &key)
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClass<Base, Args...>(delegate));
+    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...>(delegate));
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename ... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    std::function<Class* (Args ... args)>&& delegate,
-    Key const& key)
+    std::function<Class* (Args ... args)> &&delegate,
+    Key const &key)
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClass<Base, Args...>(std::move(delegate)));
+    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...>(std::move(delegate)));
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename ... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    Class * (*delegate) (Args ... args),
-    Key const& key)
+    Class * (*delegate)(Args ... args),
+    Key const &key)
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClass<Base, Args...> (delegate));
+    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...> (delegate));
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename ... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    Key const& key)
+    Key const &key)
 {
-    inscribe<Interface>(&delegate<Class, Args...>, key);
-}
-
-template<typename Class, typename R, typename... Args>
-R resultType(R (Class::*)(Args...) const)
-{
-    return R();
-}
-
-template<typename Class, typename R, typename... Args>
-R resultType(R (Class::*)(Args...))
-{
-    return R();
-}
-
-//template<typename Functor>
-//auto func(Functor f) -> decltype(resultType(&Functor::operator()))
-//{
-//    return resultType(&Functor::operator());
-//}
-
-template<typename Base, typename Key>
-template<typename Interface, typename Lambda>
-void Factory<Base, Key>::inscribe(
-    Lambda const& lambda,
-    Key const& key)
-{
-    //std::function<decltype(resultType(&Lambda::operator())) ()> f = lambda;
-    //inscribe<Interface>(f, key);
-    inscribe<Interface>(&Lambda::operator(), lambda, key);
+    inscribe<fType, Interface>(&defaultDelegate<Class, Args...>, key);
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+template<FactoryType fType, typename Interface, typename Lambda>
 void Factory<Base, Key>::inscribe(
-    R (Class::*)(Args...),
-    Lambda const& lambda,
-    Key const& key)
+    Lambda const &lambda,
+    Key const &key)
 {
-    std::function<R (Args...)> f = lambda;
-    inscribe<Interface>(f, key);
+    inscribe<fType, Interface>(&Lambda::operator(), lambda, key);
 }
 
 template<typename Base, typename Key>
-template<typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+template<FactoryType fType, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
 void Factory<Base, Key>::inscribe(
-    R (Class::*)(Args...) const,
-    Lambda const& lambda,
-    Key const& key)
+    R(Class::*)(Args...),
+    Lambda const &lambda,
+    Key const &key)
 {
-    std::function<R (Args...)> f = lambda;
-    inscribe<Interface>(f, key);
+    std::function<R(Args...)> f = lambda;
+    inscribe<fType, Interface>(f, key);
+}
+
+template<typename Base, typename Key>
+template<FactoryType fType, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+void Factory<Base, Key>::inscribe(
+    R(Class::*)(Args...) const,
+    Lambda const &lambda,
+    Key const &key)
+{
+    std::function<R(Args...)> f = lambda;
+    inscribe<fType, Interface>(f, key);
 }
 
 // https://stackoverflow.com/questions/21245891/deduce-template-argument-when-lambda-passed-in-as-a-parameter

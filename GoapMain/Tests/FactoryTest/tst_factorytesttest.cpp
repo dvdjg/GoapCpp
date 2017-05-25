@@ -69,10 +69,10 @@ private Q_SLOTS:
         auto lstr = [](const std::string & str) {return new Counted(str);};
         std::function<Counted* (const std::string& str)> f = lstr;
         //Factory<IRoot>::singleton().Register<IStringData, Counted>([](int i) { return new Counted("Dentro");});
-        factory.inscribe<IStringData>(&createCounted);
-        factory.inscribe<IStringData>(f, "Functor");
-        factory.inscribe<IStringData>(lstr, "Lambda");
-        factory.inscribe<IStringData, Counted, const std::string&>("Delegate");
+        factory.inscribe<FactoryType::Default, IStringData>(&createCounted);
+        factory.inscribe<FactoryType::Default, IStringData>(f, "Functor");
+        factory.inscribe<FactoryType::Default, IStringData>(lstr, "Lambda");
+        factory.inscribe<FactoryType::Default, IStringData, Counted, const std::string&>("Delegate");
         Counted counted("Hola");
         {
             Counted::smart_pointer ptrCounted(new Counted("Hello"));
