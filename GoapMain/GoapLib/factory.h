@@ -65,24 +65,38 @@ enum class FactoryType
 };
 
 
-template<FactoryType fType, typename T>
-struct factory_cast {
-    static T* cast(T* p);
-};
-
 template<typename T>
-struct factory_cast<FactoryType::Default, T> {
-    template<typename R=T>
+struct factory_cast
+{
+    template<typename R = T>
     static typename std::enable_if <has_intrusive_ref_counter<R>::value,  boost::intrusive_ptr<R>>::type
-    cast(R* p)
+            cast(R *p, FactoryType factoryType = FactoryType::Default)
     {
-        return p;
+        if (factoryType == FactoryType::Singleton)
+        {
+            static boost::intrusive_ptr<R> singleton;
+            return singleton;
+        }
+        else if (factoryType == FactoryType::Default)
+        {
+            return p;
+        }
+        return nullptr;
     }
-    template<typename R=T>
-    static typename std::enable_if <!has_intrusive_ref_counter<R>::value,  std::shared_ptr<R>>::type
-    cast(R* p)
+    template<typename R = T>
+    static typename std::enable_if < !has_intrusive_ref_counter<R>::value,  std::shared_ptr<R >>::type
+            cast(R *p, FactoryType factoryType = FactoryType::Default)
     {
-        return p;
+        if (factoryType == FactoryType::Singleton)
+        {
+            static std::shared_ptr<R> singleton;
+            return singleton;
+        }
+        else if (factoryType == FactoryType::Default)
+        {
+            return p;
+        }
+        return nullptr;
     }
 };
 
@@ -139,7 +153,8 @@ class Factory
 {
 public:
     Factory() {}
-    typedef std::unique_ptr<Base> return_type;
+
+    //typedef std::unique_ptr<Base> return_type;
 
     static Factory<Base, Key> &singleton()
     {
@@ -158,11 +173,10 @@ public:
     getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
-    //typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-    typename std::enable_if <has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface>>::type
-            create(
-                Key const &key,
-                Args && ... args);
+    decltype(factory_cast<Interface>::cast(static_cast<Interface *>(nullptr)))
+    create(
+        Key const &key,
+        Args && ... args);
 
     /// registers lvalue std::functions
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -260,15 +274,18 @@ Interface *Factory<Base, Key>::createRaw(
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-//typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
-typename std::enable_if <has_intrusive_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface>>::type
-        Factory<Base, Key>::create(
-            Key const &key,
-            Args &&... args)
+decltype(factory_cast<Interface>::cast(static_cast<Interface *>(nullptr)))
+Factory<Base, Key>::create(
+    Key const &key,
+    Args &&... args)
 {
-    auto p = createRaw<Interface>(key, std::forward<Args>(args)...);
-    auto smart = factory_cast<FactoryType::Default, Interface>::cast(p);
-    return smart;
+    auto pWrapper = getWrapperClass<Interface, Args...>(key);
+    if (!pWrapper)
+    {
+        return nullptr;
+    }
+    auto pInterface = dynamic_cast<Interface *>((*pWrapper)(std::forward<Args>(args)...));
+    return factory_cast<Interface>::cast(pInterface, pWrapper->getFactoryType());
 }
 
 template<typename Base, typename Key>
