@@ -210,8 +210,8 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     typedef WrapperClass<Base, Args...> wrapper_t;
     try
     {
-        wrapper_t *wrapper = dynamic_cast<wrapper_t *>(&*it2->second);
-        return wrapper;
+        wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(&*it2->second);
+        return pWrapper;
     }
     catch (std::bad_cast &e)
     {
@@ -226,13 +226,13 @@ Interface *Factory<Base, Key>::createRaw(
     Key const &key,
     Args &&... args)
 {
-    auto wrapper = getWrapperClass<Interface, Args...>(key);
-    if (!wrapper)
+    auto pWrapper = getWrapperClass<Interface, Args...>(key);
+    if (!pWrapper)
     {
         return nullptr;
     }
-    auto pint = dynamic_cast<Interface *>((*wrapper)(std::forward<Args>(args)...));
-    return pint;
+    auto pInterface = dynamic_cast<Interface *>((*pWrapper)(std::forward<Args>(args)...));
+    return pInterface;
 }
 
 template<typename Base, typename Key>
