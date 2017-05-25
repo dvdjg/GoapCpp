@@ -32,6 +32,8 @@ staticlib {
     static:DESTDIR=$$DESTDIR-static
 }
 
+INCLUDEPATH=../GoapLib
+
 LIBDIR=$$LIBDIR/$$SPEC
 DESTDIR=$$DESTDIR/$$SPEC
 

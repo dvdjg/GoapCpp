@@ -26,7 +26,7 @@ void State::setAt(const ptr_value &key, const ptr_value &value)
 
 size_t State::size() const
 {
-    data.size();
+    return data.size();
 }
 
 bool State::equals(const IState *other) const
