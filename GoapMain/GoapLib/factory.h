@@ -103,8 +103,6 @@ template<typename Base, FactoryType fType = FactoryType::Default, typename ... A
 class WrapperClassTyped : public WrapperClass<Base, Args...>
 {
 public:
-    typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
-
     template<typename T>
     WrapperClassTyped(T &&func) : WrapperClass<Base, Args...>(func) {}
     FactoryType getFactoryType() const override
@@ -131,6 +129,10 @@ public:
     createRaw(
         Key const &key,
         Args && ... args);
+
+    template<typename Interface = Base, typename ... Args>
+    WrapperClass<Base, Args...> *
+    getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
     //typename std::enable_if < has_ref_counter<Interface>::value,  boost::intrusive_ptr<Interface> >::type
@@ -187,6 +189,36 @@ protected:
 
 
 // implementation
+template<typename Base, typename Key>
+template<typename Interface, typename ... Args>
+WrapperClass<Base, Args...> *
+Factory<Base, Key>::getWrapperClass(Key const &key)
+{
+    std::type_index index = getClassTypeIndex<Interface>();
+    auto it = _map.find(index);
+    if (it == _map.end())
+    {
+        std::cerr << "Can't find interface \"" << index.name() << "\" in the factory.";
+        return nullptr;
+    }
+    auto it2 = it->second.find(key);
+    if (it2 == it->second.end())
+    {
+        std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory.";
+        return nullptr;
+    }
+    typedef WrapperClass<Base, Args...> wrapper_t;
+    try
+    {
+        wrapper_t *wrapper = dynamic_cast<wrapper_t *>(&*it2->second);
+        return wrapper;
+    }
+    catch (std::bad_cast &e)
+    {
+        std::cerr << "Bad cast " << e.what();
+        return nullptr;
+    }
+}
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
@@ -194,33 +226,13 @@ Interface *Factory<Base, Key>::createRaw(
     Key const &key,
     Args &&... args)
 {
-    std::type_index index = getClassTypeIndex<Interface>();
-    auto it = _map.find(index);
-    if (it == _map.end())
+    auto wrapper = getWrapperClass<Interface, Args...>(key);
+    if (!wrapper)
     {
         return nullptr;
     }
-    auto it2 = it->second.find(key);
-    if (it2 == it->second.end())
-    {
-        return nullptr;
-    }
-    typedef WrapperClass<Base, Args...> wrapper_t;
-    try
-    {
-        wrapper_t *wrapper = dynamic_cast<wrapper_t *>(&*it2->second);
-        if (!wrapper)
-        {
-            return nullptr;
-        }
-        auto pint = dynamic_cast<Interface *>((*wrapper)(std::forward<Args>(args)...));
-        return pint;
-    }
-    catch (std::bad_cast &e)
-    {
-        std::cerr << "Bad cast " << e.what();
-        return nullptr;
-    }
+    auto pint = dynamic_cast<Interface *>((*wrapper)(std::forward<Args>(args)...));
+    return pint;
 }
 
 template<typename Base, typename Key>
