@@ -66,21 +66,21 @@ enum class FactoryType
 
 
 template<FactoryType fType, typename T>
-struct encapsulatePointer {
-    static T* encapsulate(T* p);
+struct factory_cast {
+    static T* cast(T* p);
 };
 
 template<typename T>
-struct encapsulatePointer<FactoryType::Default, T> {
+struct factory_cast<FactoryType::Default, T> {
     template<typename R=T>
     static typename std::enable_if <has_intrusive_ref_counter<R>::value,  boost::intrusive_ptr<R>>::type
-    encapsulate(R* p)
+    cast(R* p)
     {
         return p;
     }
     template<typename R=T>
     static typename std::enable_if <!has_intrusive_ref_counter<R>::value,  std::shared_ptr<R>>::type
-    encapsulate(R* p)
+    cast(R* p)
     {
         return p;
     }
@@ -266,7 +266,9 @@ typename std::enable_if <has_intrusive_ref_counter<Interface>::value,  boost::in
             Key const &key,
             Args &&... args)
 {
-    return createRaw<Interface>(key, std::forward<Args>(args)...);
+    auto p = createRaw<Interface>(key, std::forward<Args>(args)...);
+    auto smart = factory_cast<FactoryType::Default, Interface>::cast(p);
+    return smart;
 }
 
 template<typename Base, typename Key>
