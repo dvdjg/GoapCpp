@@ -64,6 +64,29 @@ enum class FactoryType
     ThreadedLargePool
 };
 
+
+template<FactoryType fType, typename T>
+struct encapsulatePointer {
+    static T* encapsulate(T* p);
+};
+
+template<typename T>
+struct encapsulatePointer<FactoryType::Default, T> {
+    template<typename R=T>
+    static typename std::enable_if <has_intrusive_ref_counter<R>::value,  boost::intrusive_ptr<R>>::type
+    encapsulate(R* p)
+    {
+        return p;
+    }
+    template<typename R=T>
+    static typename std::enable_if <!has_intrusive_ref_counter<R>::value,  std::shared_ptr<R>>::type
+    encapsulate(R* p)
+    {
+        return p;
+    }
+};
+
+
 template<typename Base>
 class BaseWrapperClass
 {
