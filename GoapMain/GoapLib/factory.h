@@ -144,6 +144,10 @@ public:
     {
         return _func(std::forward<CallArgs>(args)...);
     }
+    function_type &getFunc() const
+    {
+        return _func;
+    }
 
 protected:
     function_type _func;
@@ -196,7 +200,7 @@ public:
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Class* (Args ... args)> && delegate,
+        std::function<Class* (Args ... args)> &&delegate,
         Key const &key = Key());
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
