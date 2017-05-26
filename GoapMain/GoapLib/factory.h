@@ -68,7 +68,7 @@ enum class FactoryType
 
 
 template<typename T>
-struct factory_cast
+struct factoryCast
 {
     typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type smart_pointer;
     static smart_pointer cast(T *p, FactoryType factoryType = FactoryType::Default)
@@ -86,6 +86,33 @@ struct factory_cast
     }
 };
 
+template<typename T>
+struct factoryCreate : public factoryCast<T>
+{
+private:
+    std::mutex _mutex;
+public:
+    typedef typename factoryCast<T>::smart_pointer smart_pointer;
+    static smart_pointer singleton;
+    template<typename F, typename ... CallArgs>
+    smart_pointer call(F &func, FactoryType factoryType, CallArgs &&... args) const
+    {
+        if (factoryType == FactoryType::Singleton)
+        {
+            std::lock_guard<std::mutex> lock(_mutex);
+            if (!singleton)
+            {
+                singleton = func(std::forward<CallArgs>(args)...);
+            }
+            return singleton;
+        }
+        else if (factoryType == FactoryType::Default)
+        {
+            return func(std::forward<CallArgs>(args)...);
+        }
+        return nullptr;
+    }
+};
 
 template<typename Base>
 class BaseWrapperClass
@@ -111,12 +138,12 @@ public:
     {
         return _func(std::forward<Args>(args)...);
     }
-    //    template<typename ... CallArgs>
-    //    typename function_type::result_type
-    //    call(CallArgs&& ... args) const
-    //    {
-    //        return _func(std::forward<CallArgs>(args)...);
-    //    }
+    template<typename ... CallArgs>
+    typename function_type::result_type
+    call(CallArgs &&... args) const
+    {
+        return _func(std::forward<CallArgs>(args)...);
+    }
 
 protected:
     function_type _func;
@@ -127,7 +154,7 @@ class WrapperClassTyped : public WrapperClass<Base, Args...>
 {
 public:
     template<typename T>
-    WrapperClassTyped(T &&func) : WrapperClass<Base, Args...>(func) {}
+    WrapperClassTyped(T &&func) : WrapperClass<Base, Args...>(std::forward<T>(func)) {}
     FactoryType getFactoryType() const override
     {
         return fType;
@@ -148,18 +175,18 @@ public:
         return factory;
     }
 
-    template<typename Interface = Base, typename ... Args>
-    Interface *
-    createRaw(
-        Key const &key,
-        Args && ... args);
+    //template<typename Interface = Base, typename ... Args>
+    //Interface *
+    //createRaw(
+    //    Key const &key,
+    //    Args && ... args);
 
     template<typename Interface = Base, typename ... Args>
     WrapperClass<Base, Args...> *
     getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
-    typename factory_cast<Interface>::smart_pointer
+    typename factoryCast<Interface>::smart_pointer
     create(Key const &key, Args && ... args);
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -236,11 +263,31 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     return pWrapper;
 }
 
+//template<typename Base, typename Key>
+//template<typename Interface, typename ... Args>
+//Interface *Factory<Base, Key>::createRaw(
+//    Key const &key,
+//    Args &&... args)
+//{
+//    auto pWrapper = getWrapperClass<Interface, Args...>(key);
+//    if (!pWrapper)
+//    {
+//        return nullptr;
+//    }
+//    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
+//    auto pInterface = dynamic_cast<Interface *>(pObj);
+//    if (!pInterface && pObj)
+//    {
+//        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
+//        instanceSuicider(pObj);
+//    }
+//    return pInterface;
+//}
+
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-Interface *Factory<Base, Key>::createRaw(
-    Key const &key,
-    Args &&... args)
+typename factoryCast<Interface>::smart_pointer
+Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
     auto pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
@@ -254,21 +301,7 @@ Interface *Factory<Base, Key>::createRaw(
         std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
         instanceSuicider(pObj);
     }
-    return pInterface;
-}
-
-template<typename Base, typename Key>
-template<typename Interface, typename ... Args>
-typename factory_cast<Interface>::smart_pointer
-Factory<Base, Key>::create(Key const &key, Args &&... args)
-{
-    auto pWrapper = getWrapperClass<Interface, Args...>(key);
-    if (!pWrapper)
-    {
-        return nullptr;
-    }
-    auto pInterface = dynamic_cast<Interface *>((*pWrapper)(std::forward<Args>(args)...));
-    return factory_cast<Interface>::cast(pInterface, pWrapper->getFactoryType());
+    return factoryCast<Interface>::cast(pInterface, pWrapper->getFactoryType());
 }
 
 template<typename Base, typename Key>
@@ -328,24 +361,24 @@ void Factory<Base, Key>::inscribe(
 }
 
 template<typename Base, typename Key>
-template<FactoryType fType, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
 void Factory<Base, Key>::inscribe(
-    R(Class::*)(Args...),
+    ReturnType(Class::*)(Args...),
     Lambda const &lambda,
     Key const &key)
 {
-    std::function<R(Args...)> f = lambda;
+    std::function<ReturnType(Args...)> f = lambda;
     inscribe<fType, Interface>(f, key);
 }
 
 template<typename Base, typename Key>
-template<FactoryType fType, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+template<FactoryType fType, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
 void Factory<Base, Key>::inscribe(
-    R(Class::*)(Args...) const,
+    ReturnType(Class::*)(Args...) const,
     Lambda const &lambda,
     Key const &key)
 {
-    std::function<R(Args...)> f = lambda;
+    std::function<ReturnType(Args...)> f = lambda;
     inscribe<fType, Interface>(f, key);
 }
 
