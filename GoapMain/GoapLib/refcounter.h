@@ -2,7 +2,7 @@
 #define REFCOUNTER_H
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/atomic.hpp>
+#include <atomic>
 #include "hasmember.h"
 
 #define IMPLEMENT_REFCOUNTER_FUNCTIONS(_refcount) \

@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <mutex>
 #include "refcounter.h"
 
 namespace goap
@@ -43,6 +44,7 @@ const std::string &getClassName() noexcept
     static std::string ifName(typeid(T).name());
     return ifName;
 }
+
 template<typename T>
 std::type_index getClassTypeIndex() noexcept
 {
@@ -133,12 +135,12 @@ public:
 };
 
 template<typename Base, typename Key = std::string>
-class Factory
+class Factory : public Base
 {
+    IMPLEMENT_REFCOUNTER()
+
 public:
     Factory() {}
-
-    //typedef std::unique_ptr<Base> return_type;
 
     static Factory<Base, Key> &singleton()
     {
@@ -160,19 +162,16 @@ public:
     typename factory_cast<Interface>::smart_pointer
     create(Key const &key, Args && ... args);
 
-    /// registers lvalue std::functions
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
         std::function<Class* (Args ... args)> const &delegate,
         Key const &key = Key());
 
-    /// registers rvalue std::functions
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
         std::function<Class* (Args ... args)> && delegate,
         Key const &key = Key());
 
-    /// registers function pointer
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
         Class * (*delegate)(Args ... args),
@@ -188,32 +187,33 @@ public:
         Key const &key);
 
 private:
-    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
     void inscribe(
-        R(Class::*)(Args...),
+        ReturnType(Class::*)(Args...),
         Lambda const &lambda,
         Key const &key);
 
-    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename R, typename Lambda, typename... Args>
+    template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
     void inscribe(
-        R(Class::*)(Args...) const,
+        ReturnType(Class::*)(Args...) const,
         Lambda const &lambda,
         Key const &key);
 
 protected:
     typedef Key key_type;
     typedef std::unique_ptr<BaseWrapperClass<Base>> value_type;
+    std::mutex _mutex;
     std::map<std::type_index, std::map<key_type, value_type>> _map;
 };
 
 
-// implementation
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 WrapperClass<Base, Args...> *
 Factory<Base, Key>::getWrapperClass(Key const &key)
 {
     std::type_index index = getClassTypeIndex<Interface>();
+    std::lock_guard<std::mutex> lock(_mutex);
     auto it = _map.find(index);
     if (it == _map.end())
     {
@@ -226,17 +226,14 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
         std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory.";
         return nullptr;
     }
+    auto pWrapped = &*it2->second;
     typedef WrapperClass<Base, Args...> wrapper_t;
-    try
+    wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(pWrapped);
+    if (!pWrapper)
     {
-        wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(&*it2->second);
-        return pWrapper;
+        std::cerr << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>();
     }
-    catch (std::bad_cast &e)
-    {
-        std::cerr << "Bad cast " << e.what();
-        return nullptr;
-    }
+    return pWrapper;
 }
 
 template<typename Base, typename Key>
@@ -250,7 +247,13 @@ Interface *Factory<Base, Key>::createRaw(
     {
         return nullptr;
     }
-    auto pInterface = dynamic_cast<Interface *>((*pWrapper)(std::forward<Args>(args)...));
+    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
+    auto pInterface = dynamic_cast<Interface *>(pObj);
+    if (!pInterface && pObj)
+    {
+        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
+        instanceSuicider(pObj);
+    }
     return pInterface;
 }
 
@@ -276,7 +279,9 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...>(delegate));
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...>(delegate);
+    std::lock_guard<std::mutex> lock(_mutex);
+    _map[index][key] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
@@ -287,7 +292,9 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...>(std::move(delegate)));
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...>(std::move(delegate));
+    std::lock_guard<std::mutex> lock(_mutex);
+    _map[index][key] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
@@ -298,7 +305,9 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    _map[index][key] = value_type(new WrapperClassTyped<Base, fType, Args...> (delegate));
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...> (delegate);
+    std::lock_guard<std::mutex> lock(_mutex);
+    _map[index][key] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
@@ -340,8 +349,6 @@ void Factory<Base, Key>::inscribe(
     inscribe<fType, Interface>(f, key);
 }
 
-// https://stackoverflow.com/questions/21245891/deduce-template-argument-when-lambda-passed-in-as-a-parameter
-// https://github.com/ignatz/fab/blob/master/fab/factory.h
 }
 
 #endif // FACTORY_H
