@@ -71,19 +71,19 @@ template<typename T>
 struct factoryCast
 {
     typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type smart_pointer;
-    static smart_pointer cast(T *p, FactoryType factoryType = FactoryType::Default)
-    {
-        if (factoryType == FactoryType::Singleton)
-        {
-            static smart_pointer singleton(p);
-            return singleton;
-        }
-        else if (factoryType == FactoryType::Default)
-        {
-            return p;
-        }
-        return nullptr;
-    }
+    //    static smart_pointer cast(T *p, FactoryType factoryType = FactoryType::Default)
+    //    {
+    //        if (factoryType == FactoryType::Singleton)
+    //        {
+    //            static smart_pointer singleton(p);
+    //            return singleton;
+    //        }
+    //        else if (factoryType == FactoryType::Default)
+    //        {
+    //            return p;
+    //        }
+    //        return nullptr;
+    //    }
 };
 
 template<typename Base, typename Class, FactoryType fType>
@@ -96,11 +96,12 @@ template<typename Base, typename Class>
 struct factoryCreate<Base, Class, FactoryType::Default>
 {
     typedef std::shared_ptr<Base> smart_pointer;
+    inline static void dumbDeleter(Base *) {}
     template<typename F, typename ... CallArgs>
     static smart_pointer getInstance(F &func, CallArgs &&... args)
     {
         auto pInstance = func(std::forward<CallArgs>(args)...);
-        return smart_pointer(pInstance);
+        return smart_pointer(pInstance, dumbDeleter);
     }
 };
 
@@ -300,24 +301,54 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
 //    return pInterface;
 //}
 
+template<typename T>
+inline void copySingleton(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
+{
+    left = right;
+}
+
+template<typename T>
+inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
+{
+    T *ptr = right.get();
+    intrusive_ptr_add_ref(ptr);
+    left.reset(ptr);
+}
+
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 typename factoryCast<Interface>::smart_pointer
 Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
+    typename factoryCast<Interface>::smart_pointer ret;
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
-        return nullptr;
+        std::cerr << "Can't finmd a registered class " << getClassName<Interface>() << " using the supplied arguments.";
+        return ret;
     }
-    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
-    auto pInterface = dynamic_cast<Interface *>(pObj);
-    if (!pInterface && pObj)
+    //https://stackoverflow.com/questions/12340810/using-custom-deleter-with-stdshared-ptr
+    auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
+    FactoryType factoryType = pWrapper->getFactoryType();
+    if (factoryType == FactoryType::Default)
     {
-        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
-        instanceSuicider(pObj);
+        auto pInterface = dynamic_cast<Interface *>(smartInstance.get()); // smartInstance must have a dumb deleter
+        ret.reset(pInterface);
     }
-    return factoryCast<Interface>::cast(pInterface, pWrapper->getFactoryType());
+    else if (factoryType == FactoryType::Singleton)
+    {
+        auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
+        copySingleton(ret, ptr);
+    }
+    return ret;
+    //    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
+    //    auto pInterface = dynamic_cast<Interface *>(pObj);
+    //    if (!pInterface && pObj)
+    //    {
+    //        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
+    //        instanceSuicider(pObj);
+    //    }
+    //    return factoryCast<Interface>::cast(pInterface, pWrapper->getFactoryType());
 }
 
 template<typename Base, typename Key>
