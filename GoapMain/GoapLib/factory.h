@@ -86,31 +86,34 @@ struct factoryCast
     }
 };
 
-template<typename T>
-struct factoryCreate : public factoryCast<T>
+template<typename Base, typename Class, FactoryType fType>
+struct factoryCreate
 {
-private:
-    std::mutex _mutex;
-public:
-    typedef typename factoryCast<T>::smart_pointer smart_pointer;
-    static smart_pointer singleton;
+    typedef std::shared_ptr<Base> smart_pointer;
+};
+
+template<typename Base, typename Class>
+struct factoryCreate<Base, Class, FactoryType::Default>
+{
+    typedef std::shared_ptr<Base> smart_pointer;
     template<typename F, typename ... CallArgs>
-    smart_pointer call(F &func, FactoryType factoryType, CallArgs &&... args) const
+    static smart_pointer getInstance(F &func, CallArgs &&... args)
     {
-        if (factoryType == FactoryType::Singleton)
-        {
-            std::lock_guard<std::mutex> lock(_mutex);
-            if (!singleton)
-            {
-                singleton = func(std::forward<CallArgs>(args)...);
-            }
-            return singleton;
-        }
-        else if (factoryType == FactoryType::Default)
-        {
-            return func(std::forward<CallArgs>(args)...);
-        }
-        return nullptr;
+        auto pInstance = func(std::forward<CallArgs>(args)...);
+        return smart_pointer(pInstance);
+    }
+};
+
+template<typename Base, typename Class>
+struct factoryCreate<Base, Class, FactoryType::Singleton>
+{
+    typedef std::shared_ptr<Base> smart_pointer;
+public:
+    template<typename F, typename ... CallArgs>
+    static smart_pointer getInstance(F &func,  CallArgs &&... args)
+    {
+        static smart_pointer singleton(func(std::forward<CallArgs>(args)...));
+        return singleton;
     }
 };
 
@@ -129,6 +132,7 @@ class WrapperClass : public BaseWrapperClass<Base>
 {
 public:
     typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
+    typedef std::shared_ptr<Base> base_smart_pointer;
 
     template<typename T>
     WrapperClass(T &&func) : _func(std::forward<T>(func)) {}
@@ -148,20 +152,28 @@ public:
     {
         return _func;
     }
+    virtual base_smart_pointer getInstance(Args &&... args) = 0;
 
 protected:
     function_type _func;
 };
 
-template<typename Base, FactoryType fType = FactoryType::Default, typename ... Args>
+template<typename Base, typename Class, FactoryType fType = FactoryType::Default, typename ... Args>
 class WrapperClassTyped : public WrapperClass<Base, Args...>
 {
 public:
+    typedef WrapperClass<Base, Args...> parent;
+    typedef typename parent::base_smart_pointer base_smart_pointer;
     template<typename T>
-    WrapperClassTyped(T &&func) : WrapperClass<Base, Args...>(std::forward<T>(func)) {}
+    WrapperClassTyped(T &&func) : parent(std::forward<T>(func)) {}
     FactoryType getFactoryType() const override
     {
         return fType;
+    }
+    base_smart_pointer getInstance(Args &&... args) override
+    {
+        auto instance = factoryCreate<Base, Class, fType>::getInstance(parent::_func, std::forward<Args>(args)...);
+        return instance;
     }
 };
 
@@ -293,7 +305,7 @@ template<typename Interface, typename ... Args>
 typename factoryCast<Interface>::smart_pointer
 Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
-    auto pWrapper = getWrapperClass<Interface, Args...>(key);
+    WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
         return nullptr;
@@ -316,7 +328,7 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...>(delegate);
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(delegate);
     std::lock_guard<std::mutex> lock(_mutex);
     _map[index][key] = value_type(pWrapperClassTyped);
 }
@@ -329,7 +341,7 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...>(std::move(delegate));
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(std::move(delegate));
     std::lock_guard<std::mutex> lock(_mutex);
     _map[index][key] = value_type(pWrapperClassTyped);
 }
@@ -342,7 +354,7 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
-    auto pWrapperClassTyped = new WrapperClassTyped<Base, fType, Args...> (delegate);
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...> (delegate);
     std::lock_guard<std::mutex> lock(_mutex);
     _map[index][key] = value_type(pWrapperClassTyped);
 }
