@@ -3,7 +3,8 @@
 
 #include "iroot.h"
 
-namespace goap {
+namespace goap
+{
 
 /**
     @brief The IRefCounter class
@@ -14,12 +15,12 @@ class IRefCounter : virtual public IRoot
 {
 private:
     /**
-        @brief load
+        @brief loadRef
         The returned value is only usefull when there is no other threads
         using concurrently the object reference counter.
         @return Internal counter value.
     */
-    virtual int load() const = 0;
+    virtual int loadRef() const = 0;
 
     /**
         @brief ref Increments internal reference counter.
@@ -31,29 +32,31 @@ private:
     */
     virtual int releaseRef() const = 0;
 
+public:
     /**
         @brief suicide
         External petition for deletion.
         The implementation should do something like: "delete this"
     */
     virtual void suicide() = 0;
-public:
 
-    friend void intrusive_ptr_add_ref(IRefCounter* t);
-    friend void intrusive_ptr_release(IRefCounter* t);
+    friend void intrusive_ptr_add_ref(IRefCounter *t);
+    friend void intrusive_ptr_release(IRefCounter *t);
 };
 
 inline void
-intrusive_ptr_add_ref(IRefCounter* t)
+intrusive_ptr_add_ref(IRefCounter *t)
 {
     t->addRef();
 }
 
 inline void
-intrusive_ptr_release(IRefCounter* t)
+intrusive_ptr_release(IRefCounter *t)
 {
     if (t->releaseRef() == 0)
+    {
         t->suicide();
+    }
 }
 }
 

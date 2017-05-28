@@ -68,16 +68,23 @@ enum class FactoryType
 namespace fact
 {
 
+/**
+    @brief The SmartPointerChooser<T> struct
+    Choose the most apropriate smartpointer for the type T
+*/
 template<typename T>
 struct SmartPointerChooser
 {
-    typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
+    typedef typename std::conditional<has_intrusive_ptr<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
 };
 
+/**
+    @brief The factoryCreate struct. A helper to create new instances.
+    A base class for partial specialisation.
+*/
 template<typename Base, typename Class, FactoryType fType>
 struct factoryCreate
 {
-    typedef std::shared_ptr<Base> smart_pointer;
 };
 
 template<typename Base, typename Class>
@@ -121,12 +128,12 @@ class WrapperClass : public BaseWrapperClass<Base>
 {
 public:
     typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
-    typedef std::shared_ptr<Base> base_smart_pointer;
+    typedef std::shared_ptr<Base> smart_pointer;
     function_type func;
 
     template<typename T>
     WrapperClass(T &&func) : func(std::forward<T>(func)) {}
-    virtual base_smart_pointer getInstance(Args &&... args) = 0;
+    virtual smart_pointer getInstance(Args &&... args) = 0;
 };
 
 template<typename Base, typename Class, FactoryType fType = FactoryType::Default, typename ... Args>
@@ -134,17 +141,16 @@ class WrapperClassTyped : public WrapperClass<Base, Args...>
 {
 public:
     typedef WrapperClass<Base, Args...> parent;
-    typedef typename parent::base_smart_pointer base_smart_pointer;
+    typedef typename parent::smart_pointer smart_pointer;
     template<typename T>
     WrapperClassTyped(T &&func) : parent(std::forward<T>(func)) {}
     FactoryType getFactoryType() const override
     {
         return fType;
     }
-    base_smart_pointer getInstance(Args &&... args) override
+    smart_pointer getInstance(Args &&... args) override
     {
-        auto instance = factoryCreate<Base, Class, fType>::getInstance(parent::func, std::forward<Args>(args)...);
-        return instance;
+        return factoryCreate<Base, Class, fType>::getInstance(parent::func, std::forward<Args>(args)...);
     }
 };
 
@@ -165,10 +171,6 @@ public:
         static Factory<Base, Key> factory;
         return factory;
     }
-
-    template<typename Interface = Base, typename ... Args>
-    WrapperClass<Base, Args...> *
-    getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
     typename SmartPointerChooser<Interface>::type
@@ -216,6 +218,10 @@ private:
         BaseWrapperClass<Base> *pWrapper,
         Key const &key = Key());
 
+    template<typename Interface = Base, typename ... Args>
+    WrapperClass<Base, Args...> *
+    getWrapperClass(Key const &key);
+
 protected:
     typedef Key key_type;
     typedef std::unique_ptr<BaseWrapperClass<Base>> value_type;
@@ -234,20 +240,20 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     auto it = _map.find(index);
     if (it == _map.end())
     {
-        std::cerr << "Can't find interface \"" << index.name() << "\" in the factory.";
+        std::cerr << "Can't find interface \"" << index.name() << "\" in the factory." << std::endl;
         return nullptr;
     }
     auto it2 = it->second.find(key);
     if (it2 == it->second.end())
     {
-        std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory.";
+        std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory." << std::endl;
         return nullptr;
     }
     std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        std::cerr << "Can't find registered constructor arguments in the factory.";
+        std::cerr << "Can't find registered constructor arguments in the factory." << std::endl;
         return nullptr;
     }
     auto pWrapped = &*it3->second;
@@ -255,11 +261,25 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(pWrapped);
     if (!pWrapper)
     {
-        std::cerr << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>();
+        std::cerr << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>() << std::endl;
     }
     return pWrapper;
 }
 
+template<typename T>
+inline void copyDefault(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
+{
+    T *ptr = right.get();
+    std::shared_ptr<T> ret{ptr, &instanceSuicider<T>};
+    left = ret;
+}
+
+template<typename T>
+inline void copyDefault(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
+{
+    T *ptr = right.get();
+    left.reset(ptr);
+}
 template<typename T>
 inline void copySingleton(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
 {
@@ -279,28 +299,28 @@ template<typename Interface, typename ... Args>
 typename SmartPointerChooser<Interface>::type
 Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
-    typename SmartPointerChooser<Interface>::type ret;
+    typedef typename SmartPointerChooser<Interface>::type return_type;
+    return_type ret;
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
-        std::cerr << "Can't find a registered class " << getClassName<Interface>() << " using the supplied arguments.";
+        std::cerr << "Can't find a registered class " << getClassName<Interface>() << " using the supplied arguments." << std::endl;
         return ret;
     }
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
     FactoryType factoryType = pWrapper->getFactoryType();
+    auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
     if (factoryType == FactoryType::Default)
     {
-        auto pInterface = dynamic_cast<Interface *>(smartInstance.get()); // smartInstance must have a dumb deleter
-        ret.reset(pInterface);
+        copyDefault(ret, ptr);
     }
     else if (factoryType == FactoryType::Singleton)
     {
-        auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
         copySingleton(ret, ptr);
     }
     if (!ret)
     {
-        std::cerr << "Can't cast from " << getClassName<decltype(*smartInstance)>() << " to " << getClassName<Interface>();
+        std::cerr << "Can't cast from " << getClassName<decltype(*smartInstance)>() << " to " << getClassName<Interface>() << std::endl;
     }
     return ret;
 }

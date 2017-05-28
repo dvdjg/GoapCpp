@@ -3,7 +3,8 @@
 
 #include <functional>
 
-namespace goap {
+namespace goap
+{
 
 /** @brief HAS_MEMBER(member_type, member_call, templ_postfix)
     Check for the existence of a member callable with the `member_call` signature
@@ -19,8 +20,7 @@ namespace goap {
         typedef long two; \
         \
         template <typename C> static two test(...); \
-        template <typename C> static one test( \
-                                               typename std::enable_if<std::is_convertible<decltype(static_cast<C*>(nullptr)->member_call), member_type>::value>::type *); \
+        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(static_cast<C*>(nullptr)->member_call), member_type>::value>::type *); \
     public: \
         enum { evalue = sizeof(test<T>(0)) == sizeof(char) }; \
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \
@@ -34,8 +34,7 @@ namespace goap {
         typedef long two; \
         \
         template <typename C> static two test(...); \
-        template <typename C> static one test( \
-                                               typename std::enable_if<std::is_convertible<decltype(member_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
+        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(member_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
     public: \
         enum { evalue = sizeof(test<T>(0)) == sizeof(char) }; \
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \
@@ -44,21 +43,21 @@ namespace goap {
 // Helper testers to determine if a class implements a functionality.
 HAS_MEMBER(int, releaseRef(), int__releaseRef);
 HAS_MEMBER(int, addRef(), int__addRef);
-HAS_MEMBER(int, load(), int__load);
+HAS_MEMBER(int, loadRef(), int__load);
 HAS_MEMBER(void, suicide(), void__suicide);
-HAS_MEMBER(void*, clone(), voidp__clone);
-HAS_MEMBER(void*, get(), voidp__get);
-HAS_MEMBER(void*, data(), voidp__data);
+HAS_MEMBER(void *, clone(), voidp__clone);
+HAS_MEMBER(void *, get(), voidp__get);
+HAS_MEMBER(void *, data(), voidp__data);
 HAS_MEMBER(void, reset(), void__reset);
-HAS_MEMBER(const void*, constData(), voidp__constData);
-//HAS_MEMBER(QAtomicInt, ref, QAtomicInt__ref);
+HAS_MEMBER(const void *, constData(), voidp__constData);
 HAS_MEMBER(void, deleteLater(), void__deleteLater);
+//HAS_MEMBER(QAtomicInt, ref, QAtomicInt__ref);
 
 HAS_GLOBAL(void, intrusive_ptr_add_ref, void__intrusive_ptr_add_ref);
 HAS_GLOBAL(void, intrusive_ptr_release, void__intrusive_ptr_release);
 
 /**
-    @brief The has_goap_ref_counter class
+    @brief The has_ref_counter<T> class
     The internal 'value' will be true if T implements the needed functions
     for a effective reference counting through function members.
 */
@@ -72,15 +71,20 @@ public:
         && has_member_int__load<T>::value;
 };
 
+
+/**
+    @brief The has_intrusive_ptr<T> class
+    Test if the type T can be used with the boost intrusive_ptr_add_ref() and intrusive_ptr_release() functions
+*/
 template <typename T>
-class has_intrusive_ref_counter
+class has_intrusive_ptr
 {
 public:
     static bool const value = has_global_void__intrusive_ptr_add_ref<T>::value && has_global_void__intrusive_ptr_release<T>::value;
 };
 
 /**
-    @brief The has_recyclable_goap_ref_counter class
+    @brief The has_recyclable_ref_counter<T> class
     If the class implements the suicide() member function, and match
     has_goap_ref_counter, then it is fine for the recycling mechanism of object pools.
 */
@@ -90,8 +94,6 @@ class has_recyclable_ref_counter
 public:
     static bool const value = has_member_void__suicide<T>::value && has_ref_counter<T>::value;
 };
-
-
 
 }
 

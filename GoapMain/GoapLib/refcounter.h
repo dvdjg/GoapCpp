@@ -6,19 +6,12 @@
 #include "hasmember.h"
 
 #define IMPLEMENT_REFCOUNTER_FUNCTIONS(_refcount) \
-    private: \
-    virtual void suicide() { instanceDeleter(this); } \
-    inline int load() const { return _refcount.load(std::memory_order_relaxed); } \
-    inline void store(int newValue) { _refcount.store(newValue, std::memory_order_relaxed); } \
+    protected: \
+    inline void suicide() { instanceDeleter(this); } \
+    inline int loadRef() const { return _refcount.load(std::memory_order_relaxed); } \
+    inline void storeRef(int newValue) const { _refcount.store(newValue, std::memory_order_relaxed); } \
     inline int addRef() const { return ++_refcount; } \
     inline int releaseRef() const { return --_refcount; }
-
-/*
-    template<typename T> \
-    friend void intrusive_ptr_add_ref(T* t); \
-    template<typename T> \
-    friend void intrusive_ptr_release(T* t);
-*/
 
 #define IMPLEMENT_REFCOUNTER() \
     private: \
@@ -30,21 +23,22 @@
 */
 #define IMPLEMENT_REFCOUNTER_PARENT(parent)  \
     public: \
-    virtual void suicide() { parent::suicide(); } \
-    inline int load() const { return parent::load(); } \
-    inline void store(int count) { parent::store(count); } \
+    inline void suicide() { parent::suicide(); } \
+    inline int loadRef() const { return parent::loadRef(); } \
+    inline void storeRef(int count) const { parent::storeRef(count); } \
     inline int addRef() const { return parent::addRef(); } \
     inline int releaseRef() const { return parent::releaseRef(); }
 
 #define IMPLEMENT_REFCOUNTER_DUMMY \
     public: \
-    virtual void suicide() { } \
-    inline int load() const { return -1; } \
-    inline void store(int) {  } \
+    inline void suicide() { } \
+    inline int loadRef() const { return -1; } \
+    inline void storeRef(int) const {  } \
     inline int addRef() const { return -1; } \
     inline int releaseRef() const { return -1; }
 
-namespace goap {
+namespace goap
+{
 
 /**
     @brief instanceDeleter
@@ -54,10 +48,12 @@ namespace goap {
 */
 template <typename T>
 inline typename std::enable_if <has_member_void__deleteLater<T>::value, void>::type
-instanceDeleter(T* t)
+instanceDeleter(T *t)
 {
     if (t)
+    {
         t->deleteLater();
+    }
 }
 
 #if defined(QT_CORE_LIB) || defined(Q_SET_OBJECT_NAME)
@@ -68,12 +64,12 @@ instanceDeleter(T* t)
     @param obj The address of the object to delete.
 */
 template <typename T>
-inline typename std::enable_if < !has_member_void__deleteLater<T>::value&& std::is_polymorphic<T>::value, void >::type
-instanceDeleter(T* obj)
+inline typename std::enable_if < !has_member_void__deleteLater<T>::value &&std::is_polymorphic<T>::value, void >::type
+instanceDeleter(T *obj)
 {
     if (obj)
     {
-        QObject* pQObject = dynamic_cast<QObject*>(obj);
+        QObject *pQObject = dynamic_cast<QObject *>(obj);
         if (pQObject)
         {
             instanceDeleter(pQObject);
@@ -90,8 +86,8 @@ instanceDeleter(T* obj)
 */
 template <typename T>
 inline
-typename std::enable_if < !has_member_void__deleteLater<T>::value&& !std::is_polymorphic<T>::value, void >::type
-instanceDeleter(T* obj)
+typename std::enable_if < !has_member_void__deleteLater<T>::value &&!std::is_polymorphic<T>::value, void >::type
+instanceDeleter(T *obj)
 {
     delete obj;
 }
@@ -104,7 +100,7 @@ instanceDeleter(T* obj)
 template <typename T>
 inline
 typename std::enable_if < !has_member_void__deleteLater<T>::value, void >::type
-instanceDeleter(T* obj)
+instanceDeleter(T *obj)
 {
     delete obj;
 }
@@ -118,10 +114,12 @@ instanceDeleter(T* obj)
 */
 template<class T>
 inline typename std::enable_if < has_member_void__suicide<T>::value, void >::type
-instanceSuicider(T* t)
+instanceSuicider(T *t)
 {
     if (t)
+    {
         t->suicide();
+    }
 }
 
 /**
@@ -132,26 +130,26 @@ instanceSuicider(T* t)
 */
 template<class T>
 inline typename std::enable_if < !has_member_void__suicide<T>::value, void >::type
-instanceSuicider(T* t)
+instanceSuicider(T *t)
 {
     instanceDeleter(t);
 }
 
 /*
-template<typename T>
-typename std::enable_if < has_ref_counter<T>::value, void>::type
-intrusive_ptr_add_ref(T* t)
-{
+    template<typename T>
+    typename std::enable_if < has_ref_counter<T>::value, void>::type
+    intrusive_ptr_add_ref(T* t)
+    {
     t->addRef();
-}
+    }
 
-template<typename T>
-typename std::enable_if < has_ref_counter<T>::value, void>::type
-intrusive_ptr_release(T* t)
-{
+    template<typename T>
+    typename std::enable_if < has_ref_counter<T>::value, void>::type
+    intrusive_ptr_release(T* t)
+    {
     if (t->releaseRef() == 0)
         instanceSuicider(t);
-}
+    }
 */
 }
 #endif // REFCOUNTER_H
