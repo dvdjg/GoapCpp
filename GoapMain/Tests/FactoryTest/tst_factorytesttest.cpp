@@ -5,6 +5,7 @@
 #include "factory.h"
 #include "irefcounter.h"
 #include "refcounter.h"
+#include "reuseobjectpool.h"
 
 QDebug operator<< (QDebug d, const std::string &data)
 {
@@ -179,14 +180,44 @@ private Q_SLOTS:
                 qInfo() << smartCounted->data();
             }
         }
+
+        typedef Recyclable<Counted> RecyclableCounted;
+        {
+            auto fromPool1(RecyclableCounted::createFromPool());
+            auto fromPool2(RecyclableCounted::createFromPool());
+            auto fromPool3(RecyclableCounted::createFromPool());
+            fromPool1->setData("Pooled1");
+            fromPool2->setData("Pooled2");
+            fromPool3->setData("Pooled3");
+        }
+        {
+            auto fromPool1(RecyclableCounted::createFromPool());
+            auto fromPool2(RecyclableCounted::createFromPool());
+            auto fromPool3(RecyclableCounted::createFromPool());
+            qInfo() << fromPool1->data();
+            qInfo() << fromPool2->data();
+            qInfo() << fromPool3->data();
+        }
+        typedef Recyclable<CountedFromRoot> RecyclableCountedFromRoot;
+        {
+            auto fromPool1(RecyclableCountedFromRoot::createFromPool());
+            auto fromPool2(RecyclableCountedFromRoot::createFromPool());
+            auto fromPool3(RecyclableCountedFromRoot::createFromPool());
+            fromPool1->setData("PooledFromRoot1");
+            fromPool2->setData("PooledFromRoot2");
+            fromPool3->setData("PooledFromRoot3");
+        }
+        {
+            auto fromPool1(RecyclableCountedFromRoot::createFromPool());
+            auto fromPool2(RecyclableCountedFromRoot::createFromPool());
+            auto fromPool3(RecyclableCountedFromRoot::createFromPool());
+            qInfo() << fromPool1->data();
+            qInfo() << fromPool2->data();
+            qInfo() << fromPool3->data();
+        }
         QVERIFY2(true, "Failure");
     }
 };
-
-
-
-
-
 
 
 QTEST_APPLESS_MAIN(FactoryTestTest)

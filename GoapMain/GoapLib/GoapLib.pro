@@ -32,7 +32,9 @@ HEADERS += goaplib.h \
     irefcounter.h \
     refcounter.h \
     factory.h \
-    hasmember.h
+    hasmember.h \
+    reuseobjectpool.h \
+    instancedeleter.h
 
 unix {
     target.path = /usr/lib

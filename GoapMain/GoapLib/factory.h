@@ -131,8 +131,8 @@ public:
     typedef std::shared_ptr<Base> smart_pointer;
     function_type func;
 
-    template<typename T>
-    WrapperClass(T &&func) : func(std::forward<T>(func)) {}
+    template<typename F>
+    WrapperClass(F &&f) : func(std::forward<F>(f)) {}
     virtual smart_pointer getInstance(Args &&... args) = 0;
 };
 
