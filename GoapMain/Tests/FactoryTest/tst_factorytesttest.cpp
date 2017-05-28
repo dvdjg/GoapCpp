@@ -252,6 +252,7 @@ private Q_SLOTS:
             fromPool2->setData("FactoryPooledFromRoot2");
             fromPool3->setData("FactoryPooledFromRoot3");
         }
+        auto created = factory.createAll<IStringDataFromRoot, const std::string &>("Datos");
         qInfo() << "Cleanup";
         RecyclableCounted::getPool()->clear();
         RecyclableCountedFromRoot::getPool()->clear();

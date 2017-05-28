@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <list>
 #include <iostream>
 #include <mutex>
 #include "refcounter.h"
@@ -192,7 +193,11 @@ public:
 
     template<typename Interface = Base, typename ... Args>
     typename SmartPointerChooser<Interface>::type
-    create(Key const &key, Args && ... args);
+    create(Key const &key, Args && ... args) const;
+
+    template<typename Interface = Base, typename ... Args>
+    std::map<Key, typename SmartPointerChooser<Interface>::type>
+    createAll(Args && ... args) const;
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
@@ -238,12 +243,12 @@ private:
 
     template<typename Interface = Base, typename ... Args>
     WrapperClass<Base, Args...> *
-    getWrapperClass(Key const &key);
+    getWrapperClass(Key const &key) const;
 
 protected:
     typedef Key key_type;
     typedef std::unique_ptr<BaseWrapperClass<Base>> value_type;
-    std::mutex _mutex;
+    mutable std::mutex _mutex;
     std::map<std::type_index, std::map<key_type, std::map<std::type_index, value_type>>> _map;
 };
 
@@ -251,7 +256,7 @@ protected:
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 WrapperClass<Base, Args...> *
-Factory<Base, Key>::getWrapperClass(Key const &key)
+Factory<Base, Key>::getWrapperClass(Key const &key) const
 {
     std::type_index index = getClassTypeIndex<Interface>();
     std::lock_guard<std::mutex> lock(_mutex);
@@ -282,6 +287,37 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
         std::cerr << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>() << std::endl;
     }
     return pWrapper;
+}
+
+
+template<typename Base, typename Key>
+template<typename Interface, typename ...Args>
+std::map<Key, typename SmartPointerChooser<Interface>::type>
+Factory<Base, Key>::createAll(Args &&... args) const
+{
+    std::map<Key, typename SmartPointerChooser<Interface>::type> ret;
+    std::type_index index = getClassTypeIndex<Interface>();
+    std::list<Key> keys;
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+        auto it = _map.find(index);
+        if (it != _map.end())
+        {
+            for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+            {
+                keys.push_back(it2->first);
+            }
+        }
+    }
+    for (const auto &key : keys)
+    {
+        auto ptr = create<Interface, Args...>(key, std::forward<Args>(args)...);
+        if (ptr)
+        {
+            ret[key] = ptr;
+        }
+    }
+    return ret;
 }
 
 template<typename T>
@@ -316,7 +352,7 @@ inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &rig
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
 typename SmartPointerChooser<Interface>::type
-Factory<Base, Key>::create(Key const &key, Args &&... args)
+Factory<Base, Key>::create(Key const &key, Args &&... args) const
 {
     typedef typename SmartPointerChooser<Interface>::type return_type;
     return_type ret;
@@ -425,6 +461,7 @@ void Factory<Base, Key>::inscribe(
     std::function<ReturnType(Args...)> f = lambda;
     inscribe<fType, Interface>(f, key);
 }
+
 
 }
 
