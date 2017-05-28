@@ -211,6 +211,11 @@ private:
         Lambda const &lambda,
         Key const &key = Key());
 
+    template<FactoryType fType, typename Interface, typename Class, typename ... Args>
+    void inscribe(
+        BaseWrapperClass<Base> *pWrapper,
+        Key const &key = Key());
+
 protected:
     typedef Key key_type;
     typedef std::unique_ptr<BaseWrapperClass<Base>> value_type;
@@ -242,7 +247,7 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        std::cerr << "Can't find registered constructor in the factory.";
+        std::cerr << "Can't find registered constructor arguments in the factory.";
         return nullptr;
     }
     auto pWrapped = &*it3->second;
@@ -303,15 +308,24 @@ Factory<Base, Key>::create(Key const &key, Args &&... args)
 template<typename Base, typename Key>
 template<FactoryType fType, typename Interface, typename Class, typename ... Args>
 void Factory<Base, Key>::inscribe(
-    std::function<Class* (Args ... args)> const &delegate,
+    BaseWrapperClass<Base> *pWrapper,
     Key const &key)
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
     std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
-    auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(delegate);
     std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key][subindex] = value_type(pWrapperClassTyped);
+    _map[index][key][subindex] = value_type(pWrapper);
+}
+
+template<typename Base, typename Key>
+template<FactoryType fType, typename Interface, typename Class, typename ... Args>
+void Factory<Base, Key>::inscribe(
+    std::function<Class* (Args ... args)> const &delegate,
+    Key const &key)
+{
+    auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(delegate);
+    inscribe<fType, Interface, Class, Args...>(pWrapperClassTyped, key);
 }
 
 template<typename Base, typename Key>
@@ -320,12 +334,8 @@ void Factory<Base, Key>::inscribe(
     std::function<Class* (Args ... args)> &&delegate,
     Key const &key)
 {
-    static_assert_internal<Interface, Base, Class>();
-    std::type_index index = getClassTypeIndex<Interface>();
-    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(std::move(delegate));
-    std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key][subindex] = value_type(pWrapperClassTyped);
+    inscribe<fType, Interface, Class, Args...>(pWrapperClassTyped, key);
 }
 
 template<typename Base, typename Key>
@@ -334,12 +344,8 @@ void Factory<Base, Key>::inscribe(
     Class * (*delegate)(Args ... args),
     Key const &key)
 {
-    static_assert_internal<Interface, Base, Class>();
-    std::type_index index = getClassTypeIndex<Interface>();
-    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...> (delegate);
-    std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key][subindex] = value_type(pWrapperClassTyped);
+    inscribe<fType, Interface, Class, Args...>(pWrapperClassTyped, key);
 }
 
 template<typename Base, typename Key>
