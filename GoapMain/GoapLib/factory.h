@@ -242,7 +242,7 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        std::cerr << "Can't find registered constructor " << getClassName<Args...>() << " in the factory.";
+        std::cerr << "Can't find registered constructor in the factory.";
         return nullptr;
     }
     auto pWrapped = &*it3->second;

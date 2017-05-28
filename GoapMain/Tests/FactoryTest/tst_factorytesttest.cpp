@@ -136,6 +136,10 @@ private Q_SLOTS:
         factory.inscribe<FactoryType::Default, IStringData>(f, "Functor");
         factory.inscribe<FactoryType::Default, IStringData>(lstr, "Lambda");
         factory.inscribe<FactoryType::Default, IStringData, Counted, const std::string &>("Delegate");
+        factory.inscribe<FactoryType::Singleton, IStringData>([]()
+        {
+            return new Counted("The singleton");
+        }, "Singleton");
         Counted counted("Hola");
         {
             SmartPointerChooser<Counted>::type ptrCounted(new Counted("Hello"));
@@ -144,6 +148,8 @@ private Q_SLOTS:
                 auto smartCounted2 = factory.create<IStringData, const std::string &>("Lambda", "Haloha");
                 auto smartCounted3 = factory.create<IStringData, const std::string &>("Functor", "Jalo");
                 auto smartCounted4 = factory.create<IStringData, const std::string &>("Delegate", "Hi");
+                auto smartCounted5 = factory.create<IStringData>("Singleton");
+                auto smartCounted6 = factory.create<IStringData>("Singleton");
                 if (smartCounted)
                 {
                     qInfo() << smartCounted->data();
@@ -151,6 +157,10 @@ private Q_SLOTS:
                 //smartCounted->suicide();
             }
         }
+        factory.inscribe<FactoryType::Singleton, IStringDataFromRoot>([]()
+        {
+            return new CountedFromRoot("The singleton from root");
+        }, "Singleton");
         factory.inscribe<FactoryType::Default, IStringDataFromRoot>([](const std::string & str)
         {
             return new CountedFromRoot(str);
@@ -162,6 +172,8 @@ private Q_SLOTS:
         {
             auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
             auto smartCounted2 = factory.create<IStringDataFromRoot>({}, 123);
+            auto smartCounted3 = factory.create<IStringDataFromRoot>("Singleton");
+            auto smartCounted4 = factory.create<IStringDataFromRoot>("Singleton");
             if (smartCounted)
             {
                 qInfo() << smartCounted->data();
