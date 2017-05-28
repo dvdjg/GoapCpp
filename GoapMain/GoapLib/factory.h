@@ -53,37 +53,25 @@ std::type_index getClassTypeIndex() noexcept
 
 enum class FactoryType
 {
-    Undefined,
     Default,
     Singleton,
-    ObjectSmallPool,
-    ObjectMediumPool,
-    ObjectLargePool,
-    ThreadedDefault,
-    ThreadedSingleton,
-    ThreadedSmallPool,
-    ThreadedMediumPool,
-    ThreadedLargePool
+    //ObjectSmallPool,
+    //ObjectMediumPool,
+    //ObjectLargePool,
+    //ThreadedDefault,
+    //ThreadedSingleton,
+    //ThreadedSmallPool,
+    //ThreadedMediumPool,
+    //ThreadedLargePool
 };
 
+namespace fact
+{
 
 template<typename T>
-struct factoryCast
+struct SmartPointerChooser
 {
-    typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type smart_pointer;
-    //    static smart_pointer cast(T *p, FactoryType factoryType = FactoryType::Default)
-    //    {
-    //        if (factoryType == FactoryType::Singleton)
-    //        {
-    //            static smart_pointer singleton(p);
-    //            return singleton;
-    //        }
-    //        else if (factoryType == FactoryType::Default)
-    //        {
-    //            return p;
-    //        }
-    //        return nullptr;
-    //    }
+    typedef typename std::conditional<has_intrusive_ref_counter<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
 };
 
 template<typename Base, typename Class, FactoryType fType>
@@ -98,7 +86,7 @@ struct factoryCreate<Base, Class, FactoryType::Default>
     typedef std::shared_ptr<Base> smart_pointer;
     inline static void dumbDeleter(Base *) {}
     template<typename F, typename ... CallArgs>
-    static smart_pointer getInstance(F &func, CallArgs &&... args)
+    static smart_pointer getInstance(const F &func, CallArgs &&... args)
     {
         auto pInstance = func(std::forward<CallArgs>(args)...);
         return smart_pointer(pInstance, dumbDeleter);
@@ -111,7 +99,7 @@ struct factoryCreate<Base, Class, FactoryType::Singleton>
     typedef std::shared_ptr<Base> smart_pointer;
 public:
     template<typename F, typename ... CallArgs>
-    static smart_pointer getInstance(F &func,  CallArgs &&... args)
+    static smart_pointer getInstance(const F &func,  CallArgs &&... args)
     {
         static smart_pointer singleton(func(std::forward<CallArgs>(args)...));
         return singleton;
@@ -134,29 +122,11 @@ class WrapperClass : public BaseWrapperClass<Base>
 public:
     typedef std::function <typename BaseWrapperClass<Base>::return_type(Args...)> function_type;
     typedef std::shared_ptr<Base> base_smart_pointer;
+    function_type func;
 
     template<typename T>
-    WrapperClass(T &&func) : _func(std::forward<T>(func)) {}
-
-    typename function_type::result_type
-    operator()(Args &&... args) const
-    {
-        return _func(std::forward<Args>(args)...);
-    }
-    template<typename ... CallArgs>
-    typename function_type::result_type
-    call(CallArgs &&... args) const
-    {
-        return _func(std::forward<CallArgs>(args)...);
-    }
-    function_type &getFunc() const
-    {
-        return _func;
-    }
+    WrapperClass(T &&func) : func(std::forward<T>(func)) {}
     virtual base_smart_pointer getInstance(Args &&... args) = 0;
-
-protected:
-    function_type _func;
 };
 
 template<typename Base, typename Class, FactoryType fType = FactoryType::Default, typename ... Args>
@@ -173,10 +143,14 @@ public:
     }
     base_smart_pointer getInstance(Args &&... args) override
     {
-        auto instance = factoryCreate<Base, Class, fType>::getInstance(parent::_func, std::forward<Args>(args)...);
+        auto instance = factoryCreate<Base, Class, fType>::getInstance(parent::func, std::forward<Args>(args)...);
         return instance;
     }
 };
+
+}
+
+using namespace fact;
 
 template<typename Base, typename Key = std::string>
 class Factory : public Base
@@ -192,18 +166,12 @@ public:
         return factory;
     }
 
-    //template<typename Interface = Base, typename ... Args>
-    //Interface *
-    //createRaw(
-    //    Key const &key,
-    //    Args && ... args);
-
     template<typename Interface = Base, typename ... Args>
     WrapperClass<Base, Args...> *
     getWrapperClass(Key const &key);
 
     template<typename Interface = Base, typename ... Args>
-    typename factoryCast<Interface>::smart_pointer
+    typename SmartPointerChooser<Interface>::type
     create(Key const &key, Args && ... args);
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -228,26 +196,26 @@ public:
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Lambda>
     void inscribe(
         Lambda const &lambda,
-        Key const &key);
+        Key const &key = Key());
 
 private:
     template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
     void inscribe(
         ReturnType(Class::*)(Args...),
         Lambda const &lambda,
-        Key const &key);
+        Key const &key = Key());
 
     template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
     void inscribe(
         ReturnType(Class::*)(Args...) const,
         Lambda const &lambda,
-        Key const &key);
+        Key const &key = Key());
 
 protected:
     typedef Key key_type;
     typedef std::unique_ptr<BaseWrapperClass<Base>> value_type;
     std::mutex _mutex;
-    std::map<std::type_index, std::map<key_type, value_type>> _map;
+    std::map<std::type_index, std::map<key_type, std::map<std::type_index, value_type>>> _map;
 };
 
 
@@ -270,7 +238,14 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
         std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory.";
         return nullptr;
     }
-    auto pWrapped = &*it2->second;
+    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
+    auto it3 = it2->second.find(subindex);
+    if (it3 == it2->second.end())
+    {
+        std::cerr << "Can't find registered constructor " << getClassName<Args...>() << " in the factory.";
+        return nullptr;
+    }
+    auto pWrapped = &*it3->second;
     typedef WrapperClass<Base, Args...> wrapper_t;
     wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(pWrapped);
     if (!pWrapper)
@@ -279,27 +254,6 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
     }
     return pWrapper;
 }
-
-//template<typename Base, typename Key>
-//template<typename Interface, typename ... Args>
-//Interface *Factory<Base, Key>::createRaw(
-//    Key const &key,
-//    Args &&... args)
-//{
-//    auto pWrapper = getWrapperClass<Interface, Args...>(key);
-//    if (!pWrapper)
-//    {
-//        return nullptr;
-//    }
-//    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
-//    auto pInterface = dynamic_cast<Interface *>(pObj);
-//    if (!pInterface && pObj)
-//    {
-//        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
-//        instanceSuicider(pObj);
-//    }
-//    return pInterface;
-//}
 
 template<typename T>
 inline void copySingleton(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
@@ -317,17 +271,16 @@ inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &rig
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-typename factoryCast<Interface>::smart_pointer
+typename SmartPointerChooser<Interface>::type
 Factory<Base, Key>::create(Key const &key, Args &&... args)
 {
-    typename factoryCast<Interface>::smart_pointer ret;
+    typename SmartPointerChooser<Interface>::type ret;
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
-        std::cerr << "Can't finmd a registered class " << getClassName<Interface>() << " using the supplied arguments.";
+        std::cerr << "Can't find a registered class " << getClassName<Interface>() << " using the supplied arguments.";
         return ret;
     }
-    //https://stackoverflow.com/questions/12340810/using-custom-deleter-with-stdshared-ptr
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
     FactoryType factoryType = pWrapper->getFactoryType();
     if (factoryType == FactoryType::Default)
@@ -340,15 +293,11 @@ Factory<Base, Key>::create(Key const &key, Args &&... args)
         auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
         copySingleton(ret, ptr);
     }
+    if (!ret)
+    {
+        std::cerr << "Can't cast from " << getClassName<decltype(*smartInstance)>() << " to " << getClassName<Interface>();
+    }
     return ret;
-    //    auto pObj = (*pWrapper)(std::forward<Args>(args)...);
-    //    auto pInterface = dynamic_cast<Interface *>(pObj);
-    //    if (!pInterface && pObj)
-    //    {
-    //        std::cerr << "Can't cast from " << getClassName<decltype(*pObj)>() << " to " << getClassName<Interface>();
-    //        instanceSuicider(pObj);
-    //    }
-    //    return factoryCast<Interface>::cast(pInterface, pWrapper->getFactoryType());
 }
 
 template<typename Base, typename Key>
@@ -359,9 +308,10 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
+    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(delegate);
     std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key] = value_type(pWrapperClassTyped);
+    _map[index][key][subindex] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
@@ -372,9 +322,10 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
+    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...>(std::move(delegate));
     std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key] = value_type(pWrapperClassTyped);
+    _map[index][key][subindex] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
@@ -385,9 +336,10 @@ void Factory<Base, Key>::inscribe(
 {
     static_assert_internal<Interface, Base, Class>();
     std::type_index index = getClassTypeIndex<Interface>();
+    std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto pWrapperClassTyped = new WrapperClassTyped<Base, Class, fType, Args...> (delegate);
     std::lock_guard<std::mutex> lock(_mutex);
-    _map[index][key] = value_type(pWrapperClassTyped);
+    _map[index][key][subindex] = value_type(pWrapperClassTyped);
 }
 
 template<typename Base, typename Key>
