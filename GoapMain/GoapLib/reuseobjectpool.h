@@ -17,20 +17,35 @@ public:
     typedef std::queue<T *> pool_type;
     typedef typename pool_type::size_type size_type;
     typedef std::function <T*()> function_type;
+    typedef std::function <void(T *)> delete_function_type;
 
-    template<typename F>
-    ReuseObjectPool(F &&func, size_type maxSize = 512) : _maxSize(maxSize), _func(std::forward<F>(func)) {}
-
+    template<typename F, typename D>
+    ReuseObjectPool(F &&func, D &&delete_func, size_type maxSize = 512) : _maxSize(maxSize), _func(std::forward<F>(func)), _delete_func(std::forward<D>(delete_func)) {}
+    virtual ~ReuseObjectPool()
+    {
+        clear();
+    }
     static ReuseObjectPool<T> *singleton()
     {
         static ReuseObjectPool<T> pool{[]()
         {
             return new T;
+        }, [](T * t)
+        {
+            instanceDeleter(t);
         }};
         return &pool;
-        //return nullptr;
     }
-
+    void clear()
+    {
+        std::lock_guard<std::mutex> lock(_mutex);
+        while (!_pool.empty())
+        {
+            T *ret = _pool.front();
+            _pool.pop();
+            _delete_func(ret);
+        }
+    }
     size_type maxSize() const
     {
         return _maxSize;
@@ -65,7 +80,7 @@ public:
                 return;
             }
         }
-        instanceDeleter(t);
+        _delete_func(t);
     }
 
 private:
@@ -73,6 +88,7 @@ private:
     pool_type _pool;
     size_type _maxSize;
     function_type _func;
+    delete_function_type _delete_func;
 };
 
 template<typename P>

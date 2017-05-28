@@ -198,6 +198,7 @@ private Q_SLOTS:
             qInfo() << fromPool2->data();
             qInfo() << fromPool3->data();
         }
+
         typedef Recyclable<CountedFromRoot> RecyclableCountedFromRoot;
         {
             auto fromPool1(RecyclableCountedFromRoot::createFromPool());
