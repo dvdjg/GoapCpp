@@ -92,11 +92,29 @@ struct factoryCreate<Base, Class, FactoryType::Default>
 {
     typedef std::shared_ptr<Base> smart_pointer;
     inline static void dumbDeleter(Base *) {}
-    template<typename F, typename ... CallArgs>
-    static smart_pointer getInstance(const F &func, CallArgs &&... args)
+    template<typename F, typename C = Class, typename ... CallArgs>
+    static typename std::enable_if<has_intrusive_ptr<C>::value, smart_pointer>::type
+    getInstance(const F &func, CallArgs && ... args)
     {
         auto pInstance = func(std::forward<CallArgs>(args)...);
-        return smart_pointer(pInstance, dumbDeleter);
+        C *p = dynamic_cast<C *>(pInstance);
+        intrusive_ptr_add_ref(p);
+        return smart_pointer(pInstance, [](Base * b)
+        {
+            C *p = dynamic_cast<C *>(b);
+            intrusive_ptr_release(p);
+        });
+    }
+    template<typename F, typename C = Class, typename ... CallArgs>
+    static typename std::enable_if < !has_intrusive_ptr<C>::value, smart_pointer >::type
+    getInstance(const F &func, CallArgs && ... args)
+    {
+        auto pInstance = func(std::forward<CallArgs>(args)...);
+        return smart_pointer(pInstance, [](Base * b)
+        {
+            C *p = dynamic_cast<C *>(b);
+            instanceSuicider(p);
+        });
     }
 };
 
@@ -269,9 +287,10 @@ Factory<Base, Key>::getWrapperClass(Key const &key)
 template<typename T>
 inline void copyDefault(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
 {
-    T *ptr = right.get();
-    std::shared_ptr<T> ret{ptr, &instanceSuicider<T>};
-    left = ret;
+    //T *ptr = right.get();
+    //std::shared_ptr<T> ret{ptr, &instanceSuicider<T>};
+    //left = ret;
+    left = right;
 }
 
 template<typename T>

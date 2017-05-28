@@ -18,15 +18,15 @@ using namespace goap;
 class IStringData : virtual public IRefCounter
 {
 public:
-    virtual const std::string &data() const = 0;
-    virtual void setData(const std::string &data) = 0;
+    virtual const std::string &getData() const = 0;
+    virtual void setData(const std::string &getData) = 0;
 };
 
 class IStringDataFromRoot : virtual public IRoot
 {
 public:
-    virtual const std::string &data() const = 0;
-    virtual void setData(const std::string &data) = 0;
+    virtual const std::string &getData() const = 0;
+    virtual void setData(const std::string &getData) = 0;
 };
 
 class CountedFromRoot : virtual public IStringDataFromRoot
@@ -45,7 +45,7 @@ public:
     {
         qInfo() << "Destroyed " << _data;
     }
-    const std::string &data() const override
+    const std::string &getData() const override
     {
         return _data;
     }
@@ -55,7 +55,7 @@ public:
     }
     void clear()
     {
-        _data.clear();
+        _data = "<<" + _data + ">>";
     }
 };
 
@@ -83,7 +83,7 @@ public:
     {
         qInfo() << "Destroyed " << _data;
     }
-    const std::string &data() const override
+    const std::string &getData() const override
     {
         return _data;
     }
@@ -157,7 +157,7 @@ private Q_SLOTS:
                 auto smartCounted6 = factory.create<IStringData>("Singleton");
                 if (smartCounted)
                 {
-                    qInfo() << smartCounted->data();
+                    qInfo() << smartCounted->getData();
                 }
                 //smartCounted->suicide();
             }
@@ -181,7 +181,7 @@ private Q_SLOTS:
             auto smartCounted4 = factory.create<IStringDataFromRoot>("Singleton");
             if (smartCounted)
             {
-                qInfo() << smartCounted->data();
+                qInfo() << smartCounted->getData();
             }
         }
 
@@ -198,9 +198,9 @@ private Q_SLOTS:
             auto fromPool1(RecyclableCounted::createFromPool());
             auto fromPool2(RecyclableCounted::createFromPool());
             auto fromPool3(RecyclableCounted::createFromPool());
-            qInfo() << fromPool1->data();
-            qInfo() << fromPool2->data();
-            qInfo() << fromPool3->data();
+            qInfo() << fromPool1->getData();
+            qInfo() << fromPool2->getData();
+            qInfo() << fromPool3->getData();
         }
 
         typedef RecyclableWrapper<CountedFromRoot> RecyclableCountedFromRoot;
@@ -216,9 +216,9 @@ private Q_SLOTS:
             auto fromPool1(RecyclableCountedFromRoot::createFromPool());
             auto fromPool2(RecyclableCountedFromRoot::createFromPool());
             auto fromPool3(RecyclableCountedFromRoot::createFromPool());
-            qInfo() << fromPool1->data();
-            qInfo() << fromPool2->data();
-            qInfo() << fromPool3->data();
+            qInfo() << fromPool1->getData();
+            qInfo() << fromPool2->getData();
+            qInfo() << fromPool3->getData();
         }
         factory.inscribe<FactoryType::Default, IStringData>([]()
         {
@@ -228,18 +228,33 @@ private Q_SLOTS:
             auto fromPool1 = factory.create<IStringData>("Pool");
             auto fromPool2 = factory.create<IStringData>("Pool");
             auto fromPool3 = factory.create<IStringData>("Pool");
-            fromPool1->setData("FactoryPooledFromRoot1");
-            fromPool2->setData("FactoryPooledFromRoot2");
-            fromPool3->setData("FactoryPooledFromRoot3");
+            fromPool1->setData("FactoryPooled1");
+            fromPool2->setData("FactoryPooled2");
+            fromPool3->setData("FactoryPooled3");
         }
         {
             auto fromPool1 = factory.create<IStringData>("Pool");
             auto fromPool2 = factory.create<IStringData>("Pool");
             auto fromPool3 = factory.create<IStringData>("Pool");
+            fromPool1->setData(fromPool1->getData() + " - FactoryPooled1");
+            fromPool2->setData(fromPool2->getData() + " - FactoryPooled2");
+            fromPool3->setData(fromPool3->getData() + " - FactoryPooled3");
+        }
+        factory.inscribe<FactoryType::Default, IStringDataFromRoot>([]()
+        {
+            return RecyclableCountedFromRoot::createFromPoolRaw();
+        }, "Pool");
+        {
+            auto fromPool1 = factory.create<IStringDataFromRoot>("Pool");
+            auto fromPool2 = factory.create<IStringDataFromRoot>("Pool");
+            auto fromPool3 = factory.create<IStringDataFromRoot>("Pool");
             fromPool1->setData("FactoryPooledFromRoot1");
             fromPool2->setData("FactoryPooledFromRoot2");
             fromPool3->setData("FactoryPooledFromRoot3");
         }
+        qInfo() << "Cleanup";
+        RecyclableCounted::getPool()->clear();
+        RecyclableCountedFromRoot::getPool()->clear();
         qInfo() << "RecyclableCounted: " << RecyclableCounted::getPool()->avoidedAllocations();
         qInfo() << "RecyclableCountedFromRoot: " << RecyclableCountedFromRoot::getPool()->avoidedAllocations();
         QVERIFY2(true, "Failure");
