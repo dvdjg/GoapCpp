@@ -121,10 +121,6 @@ public:
     {
         pool_type::singleton()->recycle(this);
     }
-    static RecyclableWrapper<P> *createFromPoolRaw()
-    {
-        return pool_type::singleton()->create();
-    }
     template<typename R = RecyclableWrapper<P>>
     static typename std::enable_if <has_intrusive_ptr<R>::value, boost::intrusive_ptr<R>>::type
             createFromPool()
@@ -139,6 +135,11 @@ public:
         {
             p->suicide();
         });
+    }
+protected:
+    static RecyclableWrapper<P> *createFromPoolRaw()
+    {
+        return pool_type::singleton()->create();
     }
 };
 }
