@@ -72,6 +72,7 @@ public:
 
     void recycle(T *t)
     {
+        clearObject(t);
         {
             std::lock_guard<std::mutex> lock(_mutex);
             if (_pool.size() < _maxSize)
@@ -83,6 +84,24 @@ public:
         _delete_func(t);
     }
 
+protected:
+    /**
+        @brief clearObject
+        Helper object for calling clear() method if available.
+        @param obj
+    */
+    template<typename C = T>
+    static typename std::enable_if<has_member_void__clear<C>::value, void>::type
+    clearObject(C *obj)
+    {
+        return obj->clear();
+    }
+
+    template<typename C = T>
+    static typename std::enable_if < !has_member_void__clear<C>::value, void >::type
+    clearObject(C *)
+    {} // No clear object contents
+
 private:
     std::mutex _mutex;
     pool_type _pool;
@@ -92,27 +111,27 @@ private:
 };
 
 template<typename P>
-class Recyclable : public P
+class RecyclableWrapper : public P
 {
 public:
-    typedef ReuseObjectPool<Recyclable<P>> pool_type;
-    typedef typename std::conditional<has_intrusive_ptr<Recyclable<P>>::value, boost::intrusive_ptr<Recyclable<P>>, std::shared_ptr<Recyclable<P>>>::type smart_pointer;
-    Recyclable() : P() {}
+    typedef ReuseObjectPool<RecyclableWrapper<P>> pool_type;
+    typedef typename std::conditional<has_intrusive_ptr<RecyclableWrapper<P>>::value, boost::intrusive_ptr<RecyclableWrapper<P>>, std::shared_ptr<RecyclableWrapper<P>>>::type smart_pointer;
+    RecyclableWrapper() : P() {}
     virtual void suicide()
     {
         pool_type::singleton()->recycle(this);
     }
-    static Recyclable<P> *createFromPoolRaw()
+    static RecyclableWrapper<P> *createFromPoolRaw()
     {
         return pool_type::singleton()->create();
     }
-    template<typename R = Recyclable<P>>
+    template<typename R = RecyclableWrapper<P>>
     static typename std::enable_if <has_intrusive_ptr<R>::value, boost::intrusive_ptr<R>>::type
             createFromPool()
     {
         return createFromPoolRaw();
     }
-    template<typename R = Recyclable<P>>
+    template<typename R = RecyclableWrapper<P>>
     static typename std::enable_if < !has_intrusive_ptr<R>::value, std::shared_ptr<R >>::type
             createFromPool()
     {

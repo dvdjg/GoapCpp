@@ -53,6 +53,10 @@ public:
     {
         _data = data;
     }
+    void clear()
+    {
+        _data.clear();
+    }
 };
 
 CountedFromRoot *createCountedFromRoot(const std::string &str)
@@ -181,7 +185,7 @@ private Q_SLOTS:
             }
         }
 
-        typedef Recyclable<Counted> RecyclableCounted;
+        typedef RecyclableWrapper<Counted> RecyclableCounted;
         {
             auto fromPool1(RecyclableCounted::createFromPool());
             auto fromPool2(RecyclableCounted::createFromPool());
@@ -199,7 +203,7 @@ private Q_SLOTS:
             qInfo() << fromPool3->data();
         }
 
-        typedef Recyclable<CountedFromRoot> RecyclableCountedFromRoot;
+        typedef RecyclableWrapper<CountedFromRoot> RecyclableCountedFromRoot;
         {
             auto fromPool1(RecyclableCountedFromRoot::createFromPool());
             auto fromPool2(RecyclableCountedFromRoot::createFromPool());

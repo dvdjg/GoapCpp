@@ -49,6 +49,7 @@ HAS_MEMBER(void *, clone(), voidp__clone);
 HAS_MEMBER(void *, get(), voidp__get);
 HAS_MEMBER(void *, data(), voidp__data);
 HAS_MEMBER(void, reset(), void__reset);
+HAS_MEMBER(void, clear(), void__clear);
 HAS_MEMBER(const void *, constData(), voidp__constData);
 HAS_MEMBER(void, deleteLater(), void__deleteLater);
 //HAS_MEMBER(QAtomicInt, ref, QAtomicInt__ref);
