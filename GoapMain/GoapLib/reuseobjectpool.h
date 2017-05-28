@@ -45,6 +45,7 @@ public:
             _pool.pop();
             _delete_func(ret);
         }
+        _avoidedAllocations = 0;
     }
     size_type maxSize() const
     {
@@ -64,6 +65,7 @@ public:
             {
                 T *ret = _pool.front();
                 _pool.pop();
+                ++_avoidedAllocations;
                 return ret;
             }
         }
@@ -82,6 +84,11 @@ public:
             }
         }
         _delete_func(t);
+    }
+
+    size_type avoidedAllocations() const
+    {
+        return _avoidedAllocations;
     }
 
 protected:
@@ -106,6 +113,7 @@ private:
     std::mutex _mutex;
     pool_type _pool;
     size_type _maxSize;
+    size_type _avoidedAllocations {0};
     function_type _func;
     delete_function_type _delete_func;
 };
@@ -136,10 +144,13 @@ public:
             p->suicide();
         });
     }
-protected:
     static RecyclableWrapper<P> *createFromPoolRaw()
     {
-        return pool_type::singleton()->create();
+        return getPool()->create();
+    }
+    static pool_type *getPool()
+    {
+        return pool_type::singleton();
     }
 };
 }

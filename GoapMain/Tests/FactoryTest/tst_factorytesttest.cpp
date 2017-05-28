@@ -220,6 +220,28 @@ private Q_SLOTS:
             qInfo() << fromPool2->data();
             qInfo() << fromPool3->data();
         }
+        factory.inscribe<FactoryType::Default, IStringData>([]()
+        {
+            return RecyclableCounted::createFromPoolRaw();
+        }, "Pool");
+        {
+            auto fromPool1 = factory.create<IStringData>("Pool");
+            auto fromPool2 = factory.create<IStringData>("Pool");
+            auto fromPool3 = factory.create<IStringData>("Pool");
+            fromPool1->setData("FactoryPooledFromRoot1");
+            fromPool2->setData("FactoryPooledFromRoot2");
+            fromPool3->setData("FactoryPooledFromRoot3");
+        }
+        {
+            auto fromPool1 = factory.create<IStringData>("Pool");
+            auto fromPool2 = factory.create<IStringData>("Pool");
+            auto fromPool3 = factory.create<IStringData>("Pool");
+            fromPool1->setData("FactoryPooledFromRoot1");
+            fromPool2->setData("FactoryPooledFromRoot2");
+            fromPool3->setData("FactoryPooledFromRoot3");
+        }
+        qInfo() << "RecyclableCounted: " << RecyclableCounted::getPool()->avoidedAllocations();
+        qInfo() << "RecyclableCountedFromRoot: " << RecyclableCountedFromRoot::getPool()->avoidedAllocations();
         QVERIFY2(true, "Failure");
     }
 };
