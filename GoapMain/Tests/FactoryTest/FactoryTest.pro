@@ -6,7 +6,7 @@
 
 #QT       += testlib
 
-QT       -= gui
+QT       -= gui core
 
 TARGET = tst_factorytesttest
 CONFIG   += console
