@@ -1,6 +1,8 @@
 #include <gmock/gmock.h>
 
 #include <functional>
+#include <future>
+#include <mutex>
 #include "factory.h"
 #include "irefcounter.h"
 #include "refcounter.h"
@@ -41,8 +43,8 @@ public:
 class MockIStringData : public MockIRefCounter
 {
 public:
-MOCK_METHOD1(setData, void(const std::string &getData));
-MOCK_CONST_METHOD0(getData, const std::string &());
+    MOCK_METHOD1(setData, void(const std::string &getData));
+    MOCK_CONST_METHOD0(getData, const std::string & ());
 };
 
 class CountedFromRoot : virtual public IStringDataFromRoot
@@ -144,6 +146,7 @@ protected:
     virtual void SetUp() {  }
     virtual void TearDown() {  }
 };
+
 TEST_F(FactoryTestTest, Test1)
 {
     auto &factory = Factory<IRoot>::singleton();
@@ -278,6 +281,38 @@ TEST_F(FactoryTestTest, Test1)
     EXPECT_TRUE(true);
 }
 
+TEST_F(FactoryTestTest, Test2)
+{
+    std::mutex mtx;
+    std::cout << "Main thread id: " << std::this_thread::get_id()
+              << std::endl;
+    std::vector<std::future<std::thread::id>> futures;
+    for (int i = 0; i < 20; ++i)
+    {
+        auto fut = std::async(std::launch::async, [&](int counter)
+        {
+            std::thread::id id = std::this_thread::get_id();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::lock_guard<std::mutex> lock(mtx);
+            std::cout << "Inside thread [" << counter << "] " << id << "; \n";
+            return id;
+        }, i);
+        futures.push_back(std::move(fut));
+    }
+    for (auto &fut : futures)
+    {
+        // fut.wait();
+        while (fut.wait_for(std::chrono::milliseconds(500)) != std::future_status::ready)
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            std::cout << "... still not ready" << std::endl;
+        }
+        std::thread::id id = fut.get();
+        std::lock_guard<std::mutex> lock(mtx);
+        std::cout << "Finished " << id << std::endl;
+    }
+    std::cout << std::endl;
+}
 
 /*
     class Turtle
