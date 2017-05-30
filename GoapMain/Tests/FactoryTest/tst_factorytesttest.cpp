@@ -29,6 +29,22 @@ public:
     virtual void setData(const std::string &getData) = 0;
 };
 
+class MockIRefCounter : public IRefCounter
+{
+public:
+    MOCK_CONST_METHOD0(loadRef, int());
+    MOCK_CONST_METHOD0(addRef, int());
+    MOCK_CONST_METHOD0(releaseRef, int());
+    MOCK_METHOD0(suicide, void());
+};
+
+class MockIStringData : public MockIRefCounter
+{
+public:
+MOCK_METHOD1(setData, void(const std::string &getData));
+MOCK_CONST_METHOD0(getData, const std::string &());
+};
+
 class CountedFromRoot : virtual public IStringDataFromRoot
 {
     std::string _data;
@@ -132,7 +148,6 @@ TEST_F(FactoryTestTest, Test1)
 {
     auto &factory = Factory<IRoot>::singleton();
 
-    //auto l = []() {return new Counted;};
     auto lstr = [](const std::string & str)
     {
         return new Counted(str);

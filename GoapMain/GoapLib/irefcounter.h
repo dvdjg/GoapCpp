@@ -13,7 +13,7 @@ namespace goap
 */
 class IRefCounter : virtual public IRoot
 {
-private:
+protected:
     /**
         @brief loadRef
         The returned value is only usefull when there is no other threads
@@ -32,7 +32,6 @@ private:
     */
     virtual int releaseRef() const = 0;
 
-public:
     /**
         @brief suicide
         External petition for deletion.
