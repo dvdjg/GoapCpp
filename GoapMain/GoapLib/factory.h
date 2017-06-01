@@ -183,11 +183,12 @@ class Factory : public Base
     IMPLEMENT_REFCOUNTER()
 
 public:
+    typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
 
-    static Factory<Base, Key> &singleton()
+    static factory_pointer &singleton() // const factory_pointer& ptr = factory_pointer()
     {
-        static Factory<Base, Key> factory;
+        static factory_pointer factory{new Factory<Base, Key>};
         return factory;
     }
 
@@ -206,7 +207,7 @@ public:
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Class* (Args ... args)> &&delegate,
+        std::function<Class* (Args ... args)> && delegate,
         Key const &key = Key());
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>

@@ -155,7 +155,7 @@ protected:
 
 TEST_F(FactoryTestTest, Test1)
 {
-    auto &factory = Factory<IRoot>::singleton();
+    auto &factory = *Factory<IRoot>::singleton();
 
     auto lstr = [](const std::string & str)
     {
