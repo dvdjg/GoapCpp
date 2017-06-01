@@ -8,6 +8,12 @@
 #include "refcounter.h"
 #include "reuseobjectpool.h"
 
+// DDP
+// https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md
+// https://github.com/andrei-markeev/ddpserver
+// https://github.com/alexhancock/ddp-cpp
+// https://github.com/almightycouch/meteorpp
+// https://github.com/dhbaird/easywsclient
 
 int main(int argc, char **argv)
 {
