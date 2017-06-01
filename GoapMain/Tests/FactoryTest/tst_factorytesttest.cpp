@@ -15,12 +15,6 @@
 // https://github.com/almightycouch/meteorpp
 // https://github.com/dhbaird/easywsclient
 
-int main(int argc, char **argv)
-{
-    testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
-}
-
 using namespace goap;
 
 class IStringData : virtual public IRefCounter
@@ -123,11 +117,11 @@ Counted *createCounted(const std::string &str)
 }
 
 
-class FactoryTestTest : public ::testing::Test
+class FactoryTest : public ::testing::Test
 {
 
 public:
-    FactoryTestTest()
+    FactoryTest()
     {
     }
 protected:
@@ -153,7 +147,7 @@ protected:
     virtual void TearDown() {  }
 };
 
-TEST_F(FactoryTestTest, Test1)
+TEST_F(FactoryTest, Test1)
 {
     auto &factory = *Factory<IRoot>::singleton();
 
@@ -287,7 +281,7 @@ TEST_F(FactoryTestTest, Test1)
     EXPECT_TRUE(true);
 }
 
-TEST_F(FactoryTestTest, Test2)
+TEST_F(FactoryTest, Test2)
 {
     std::mutex mtx;
     std::cout << "Main thread id: " << std::this_thread::get_id()

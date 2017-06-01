@@ -31,7 +31,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 LIBS += -lgtest -lgmock
 
-SOURCES += tst_factorytesttest.cpp
+SOURCES += tst_factorytesttest.cpp \
+    main.cpp \
+    tst_signals.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/release/ -lGoapLib
