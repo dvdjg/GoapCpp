@@ -40,8 +40,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/release/
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/debug/ -lGoapLib
 else:unix: LIBS += -L$$OUT_PWD/../../GoapLib/ -lGoapLib
 
-INCLUDEPATH += $$PWD/../../GoapLib
-DEPENDPATH += $$PWD/../../GoapLib
+INCLUDEPATH += $$PWD/../../Factory $$PWD/../../Interfaces $$PWD/../../GoapLib
+DEPENDPATH += $$PWD/../../Factory $$PWD/../../Interfaces $$PWD/../../GoapLib
 
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/libGoapLib.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/libGoapLib.a

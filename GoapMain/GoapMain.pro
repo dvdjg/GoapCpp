@@ -5,6 +5,9 @@ SUBDIRS += \
     GoapLibrary \
     GoapApp \
     GoapLib \
-    Tests
+    Tests \
+    DistributedPersistence \
+    Factory \
+    Interfaces
 
 

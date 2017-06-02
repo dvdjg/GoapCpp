@@ -27,14 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += goaplib.cpp
 
-HEADERS += goaplib.h \
-    iroot.h \
-    irefcounter.h \
-    refcounter.h \
-    factory.h \
-    hasmember.h \
-    reuseobjectpool.h \
-    instancedeleter.h
+HEADERS += goaplib.h
+
 
 unix {
     target.path = /usr/lib

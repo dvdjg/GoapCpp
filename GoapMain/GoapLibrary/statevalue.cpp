@@ -9,7 +9,7 @@ StateValue::StateValue()
 {
 }
 
-StateValue::StateValue(const StateValue &other) : data(other.data)
+StateValue::StateValue(const StateValue &other) : parent(other), data(other.data)
 {
 }
 

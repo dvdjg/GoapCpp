@@ -13,6 +13,7 @@ protected:
     std::vector<half> data;
 
 public:
+    typedef std::enable_shared_from_this<StateValue> parent;
     StateValue();
     StateValue(const StateValue & other);
     StateValue(const std::u16string &str);

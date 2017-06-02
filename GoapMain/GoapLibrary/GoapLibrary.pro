@@ -32,7 +32,7 @@ staticlib {
     static:DESTDIR=$$DESTDIR-static
 }
 
-INCLUDEPATH=../GoapLib
+INCLUDEPATH=../Interfaces
 
 LIBDIR=$$LIBDIR/$$SPEC
 DESTDIR=$$DESTDIR/$$SPEC
