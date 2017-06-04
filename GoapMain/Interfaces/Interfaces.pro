@@ -9,7 +9,8 @@ QT       -= core gui
 TARGET = Interfaces
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
 
-HEADERS += iroot.h \
+HEADERS += \
+    iroot.h \
     irefcounter.h
 
 unix {
