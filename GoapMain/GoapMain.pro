@@ -10,6 +10,7 @@ SUBDIRS += \
     Factory \
     Interfaces \
     sqlite-amalgamation \
-    sqlite3
+    sqlite3 \
+    sqlite_modern_cpp
 
 
