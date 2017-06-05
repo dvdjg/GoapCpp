@@ -8,6 +8,8 @@ SUBDIRS += \
     Tests \
     DistributedPersistence \
     Factory \
-    Interfaces
+    Interfaces \
+    sqlite-amalgamation \
+    sqlite3
 
 
