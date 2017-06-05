@@ -1,8 +1,5 @@
 #include <gmock/gmock.h>
-
-
-using namespace goap;
-
+#include "sqlite_modern_cpp.h"
 
 
 class DataTest : public ::testing::Test

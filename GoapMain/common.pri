@@ -1,5 +1,7 @@
 CONFIG += c++11
 
+DEFINES += _MODERN_SQLITE_BOOST_OPTIONAL_SUPPORT
+
 win32 {
     INCLUDEPATH += D:/local/boost_1_64_0
     INCLUDEPATH += D:/OneDrive/Programa/GoapCpp/GoapMain/include
