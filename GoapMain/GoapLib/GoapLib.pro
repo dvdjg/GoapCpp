@@ -9,6 +9,7 @@ QT       -= core gui
 TARGET = GoapLib
 TEMPLATE = lib
 CONFIG += staticlib
+CONFIG += c++11
 
 !include(../common.pri) {
     error(Could not find the common.pri file!)
