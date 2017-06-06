@@ -1,16 +1,16 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    Factory \
+    Interfaces \
     half \
     GoapLibrary \
     GoapApp \
     GoapLib \
-    Tests \
-    DistributedPersistence \
-    Factory \
-    Interfaces \
     sqlite-amalgamation \
     sqlite3 \
-    sqlite_modern_cpp
+    sqlite_modern_cpp \
+    DistributedPersistence \
+    Tests
 
 

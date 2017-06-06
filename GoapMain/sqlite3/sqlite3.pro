@@ -2,6 +2,7 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
+CONFIG += c++11
 
 DEFINES +=
 
@@ -20,3 +21,9 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqli
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite-amalgamation/release/sqlite-amalgamation.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite-amalgamation/debug/sqlite-amalgamation.lib
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../sqlite-amalgamation/libsqlite-amalgamation.a
+
+unix {
+QMAKE_CXXFLAGS += -pthread
+QMAKE_CFLAGS += -pthread -fno-strict-aliasing
+LIBS += -pthread -ldl
+}
