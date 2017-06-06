@@ -79,9 +79,9 @@ std::size_t StateValue::hash() const
     return ::hash(&data[0], data.size());
 }
 
-ptr_value StateValue::clone() const
+PtrIValue StateValue::clone() const
 {
-    return ptr_value(new StateValue(*this));
+    return PtrIValue(new StateValue(*this));
 }
 
 }

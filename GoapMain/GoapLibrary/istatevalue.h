@@ -8,14 +8,14 @@
 namespace goap
 {
 class IStateValue;
-typedef std::shared_ptr<IStateValue> ptr_value;
-typedef std::shared_ptr<const IStateValue> cptr_value;
+typedef std::shared_ptr<IStateValue> PtrIValue;
+typedef std::shared_ptr<const IStateValue> CPtrIValue;
 
 class IStateValue : public IRoot
 {
 public:
     //virtual bool isNumeric() const = 0;
-    virtual ptr_value clone() const = 0;
+    virtual PtrIValue clone() const = 0;
     virtual std::size_t size() const = 0; ///< From 0 to 1000
     virtual void resize(std::size_t len) = 0;
     virtual float at(float idx = 0) const = 0;
@@ -35,18 +35,18 @@ namespace std {
 using namespace goap;
 
   template <>
-  struct hash<ptr_value>
+  struct hash<PtrIValue>
   {
-    std::size_t operator()(const ptr_value& k) const
+    std::size_t operator()(const PtrIValue& k) const
     {
       return k->hash();
     }
   };
 
   template<>
-  struct equal_to<ptr_value>
+  struct equal_to<PtrIValue>
   {
-      bool operator() (const ptr_value & data1, const ptr_value & data2) const
+      bool operator() (const PtrIValue & data1, const PtrIValue & data2) const
       {
           bool ret = !data1 && !data2;
           if (!ret) {

@@ -10,24 +10,24 @@ namespace goap
 class State : public IState
 {
 protected:
-    std::unordered_map<ptr_value, ptr_value> data;
+    std::unordered_map<PtrIValue, PtrIValue> data;
     float coste = 0;
 
 public:
     State();
 
-    void remove(const ptr_value &key) override;
-    ptr_value at(const ptr_value &key) const override;
-    void setAt(const ptr_value &key, const ptr_value &value) override;
+    void remove(const PtrIValue &key) override;
+    PtrIValue at(const PtrIValue &key) const override;
+    void setAt(const PtrIValue &key, const PtrIValue &value) override;
     size_t size() const override;
     void remove(const std::u16string &str) override;
-    void setAt(const std::u16string &str, const ptr_value &value) override;
-    ptr_value at(const std::u16string &str) const override;
+    void setAt(const std::u16string &str, const PtrIValue &value) override;
+    PtrIValue at(const std::u16string &str) const override;
     bool equals(const IState *other) const override;
     float cost() const override;
     void setCost(float c) override;
 
-    std::pair<ptr_value, ptr_value> at(ssize_t idx) const override;
+    std::pair<PtrIValue, PtrIValue> at(ssize_t idx) const override;
 };
 
 }
