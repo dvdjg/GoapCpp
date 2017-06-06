@@ -15,3 +15,7 @@ win32 {
 #            -lboost_filesystem-mgw46-mt-d-1_54 \
 #            -lboost_system-mgw46-mt-d-1_54
 }
+unix {
+    INCLUDEPATH += /opt/arrayfire-3/include
+    LIBS += -L /opt/arrayfire-3/lib -laf
+}
