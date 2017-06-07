@@ -45,7 +45,7 @@ void State::setCost(float c)
     coste = c;
 }
 
-std::pair<PtrIValue, PtrIValue> State::at(ssize_t idx) const
+std::pair<PtrIValue, PtrIValue> State::at(intptr_t idx) const
 {
     auto it = std::next(data.begin(), idx);
     return std::make_pair(it->first, it->second);

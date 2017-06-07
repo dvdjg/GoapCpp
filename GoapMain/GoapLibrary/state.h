@@ -27,7 +27,7 @@ public:
     float cost() const override;
     void setCost(float c) override;
 
-    std::pair<PtrIValue, PtrIValue> at(ssize_t idx) const override;
+    std::pair<PtrIValue, PtrIValue> at(intptr_t idx) const override;
 };
 
 }

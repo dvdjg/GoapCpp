@@ -9,8 +9,8 @@
 QT       -= gui core
 
 TARGET = tst_data
-CONFIG   += console
-CONFIG   -= app_bundle
+CONFIG += console
+CONFIG -= app_bundle
 CONFIG += c++14
 
 TEMPLATE = app
