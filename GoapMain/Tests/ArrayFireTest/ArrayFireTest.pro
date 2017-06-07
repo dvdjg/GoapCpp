@@ -52,7 +52,7 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../sqlite-amalgamat
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../sqlite-amalgamation/debug/ -lsqlite-amalgamation
 else:unix: LIBS += -L$$OUT_PWD/../../sqlite-amalgamation/ -lsqlite-amalgamation
 
-LIBS += -lgtest # -lgmock
+LIBS += -lgtest -lgmock
 
 unix {
 QMAKE_CXXFLAGS += -pthread
