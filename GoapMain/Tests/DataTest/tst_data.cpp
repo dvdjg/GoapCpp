@@ -1,4 +1,4 @@
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <iostream>
 #include <iomanip>
@@ -44,30 +44,32 @@ protected:
 TEST_F(DataTest, Test1)
 {
     bool error_detected = false;
-    error_log(
-        [&](errors::constraint)
     {
-        cerr << "Wrong error detected!" << endl;
-    },
-    [&](errors::constraint_primarykey e)
-    {
-        cerr << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
-        error_detected = true;
-    }
-    );
-    database db(":memory:");
-    db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
+        error_log(
+            [&](errors::constraint e)
+        {
+            cerr << "Wrong error detected! " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+        },
+        [&](errors::constraint_primarykey e)
+        {
+            cerr << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+            error_detected = true;
+        }
+        );
+        database db(":memory:");
+        db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
 
-    try
-    {
-        db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
-        // inserting again to produce error
-        db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+        try
+        {
+            db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+            // inserting again to produce error
+            db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+        }
+        catch (errors::constraint e)
+        {
+             cerr << "Catched error.- " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+        }
     }
-    catch (errors::constraint &e)
-    {
-    }
-
     EXPECT_TRUE(error_detected);
 }
 

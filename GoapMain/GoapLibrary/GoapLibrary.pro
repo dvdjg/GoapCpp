@@ -8,7 +8,7 @@ QT       -= core gui
 
 TARGET = GoapLibrary
 TEMPLATE = lib
-CONFIG += staticlib c++11
+CONFIG += staticlib c++14
 
 CONFIG(debug, debug|release):SUFFIX=d
 else:SUFFIX=

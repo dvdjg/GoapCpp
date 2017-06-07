@@ -1,4 +1,4 @@
-CONFIG += c++11
+CONFIG += c++14
 
 # in a new gcc_64/mkspecs/linux-g++-64v5:
 # QMAKE_CC = gcc-5
