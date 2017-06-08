@@ -60,14 +60,11 @@ SOURCES += goaplibrary.cpp \
     state.cpp
 
 HEADERS += goaplibrary.h \
-    istatevalue.h \
-    imemory.h \
-    imemoryvalue.h \
     statevalue.h \
     basicmath.h \
     memory.h \
-    ireadstate.h \
     state.h
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

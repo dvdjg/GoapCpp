@@ -2,12 +2,11 @@
 #define STATEVALUE_H
 #include <vector>
 #include <memory>
-#include "istatevalue.h"
+#include "goap/istatevalue.h"
 
 namespace goap
 {
-class StateValue : public IStateValue,
-        public std::enable_shared_from_this<StateValue>
+class StateValue : public virtual IStateValue
 {
 protected:
     std::vector<half> data;
