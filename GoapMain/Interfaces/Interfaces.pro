@@ -10,8 +10,12 @@ TARGET = Interfaces
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
 
 HEADERS += \
-    iroot.h \
-    irefcounter.h
+    common/iroot.h \
+    common/irefcounter.h \
+    goap/imemory.h \
+    goap/imemoryvalue.h \
+    goap/ireadstate.h \
+    goap/istatevalue.h
 
 unix {
     target.path = /usr/lib

@@ -717,16 +717,19 @@ TEST_F(DataTest, prepared_statment)
         pps << test; // set a bound var
 
         pps >> test; // execute statement
+        EXPECT_EQ(4, test);
 
         pps << 4; // bind a rvalue
         pps++; // and execute
 
         pps <<8>> test;
+        EXPECT_EQ(8, test);
 
         auto pps2 = db << "select 1,2,3,4,5"; // multiple extract test
 
         pps2 >> [](int a, int b, int c, int d, int e)
         {
+            EXPECT_TRUE(1 == a && 2 == b && 3 == c && 4 == d && 5 == e);
             std::cout << "L " << a << b << c << d << e << "\n"; // still works as intended
         };
 
@@ -859,7 +862,7 @@ TEST_F(DataTest, readme_example)
 
         cout << "The new record got assigned id " << db.last_insert_rowid() << endl;
 
-        // slects from user table on a condition ( age > 18 ) and executes
+        // selects from user table on a condition ( age > 18 ) and executes
         // the lambda for each row returned .
         db << "select age,name,weight from user where age > ? ;"
            <<21

@@ -28,11 +28,11 @@ void testBackend()
 }
 
 
-class DataTest : public ::testing::Test
+class ArrayFire : public ::testing::Test
 {
 
 public:
-    DataTest()
+    ArrayFire()
     {
     }
 protected:
@@ -58,7 +58,7 @@ protected:
     virtual void TearDown() {  }
 };
 
-TEST_F(DataTest, Test1)
+TEST_F(ArrayFire, Test1)
 {
     std::generate(input.begin(), input.end(), unifRand);
     try
@@ -97,7 +97,7 @@ TEST_F(DataTest, Test1)
     EXPECT_TRUE(true);
 }
 
-TEST_F(DataTest, Test2)
+TEST_F(ArrayFire, Test2)
 {
 
 }
