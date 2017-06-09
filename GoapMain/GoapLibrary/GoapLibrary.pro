@@ -36,7 +36,7 @@ staticlib {
     static:DESTDIR=$$DESTDIR-static
 }
 
-INCLUDEPATH=../Interfaces ../Factory
+INCLUDEPATH += ../Interfaces ../Factory
 
 LIBDIR=$$LIBDIR/$$SPEC
 DESTDIR=$$DESTDIR/$$SPEC
