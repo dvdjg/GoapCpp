@@ -1,12 +1,16 @@
 #ifndef MEMORY_H
 #define MEMORY_H
-#include "imemory.h"
+
+#include "refcounter.h"
+#include "goap/imemory.h"
 
 namespace goap
 {
 
-class Memory : public IMemory, public std::enable_shared_from_this<Memory>
+class Memory : public virtual IMemory
 {
+    IMPLEMENT_REFCOUNTER()
+
 protected:
 
 public:

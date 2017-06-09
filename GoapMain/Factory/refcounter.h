@@ -38,8 +38,4 @@
     inline int addRef() const { return -1; } \
     inline int releaseRef() const { return -1; }
 
-namespace goap
-{
-
-}
 #endif // REFCOUNTER_H

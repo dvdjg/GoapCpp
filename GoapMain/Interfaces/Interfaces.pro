@@ -9,6 +9,8 @@ QT       -= core gui
 TARGET = Interfaces
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
 
+INCLUDEPATH=
+
 HEADERS += \
     common/iroot.h \
     common/irefcounter.h \

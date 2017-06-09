@@ -2,7 +2,7 @@
 #define ISTATEVALUE_H
 #include <memory>
 #include <string>
-#include "irefcounter.h"
+#include "common/irefcounter.h"
 #include "../half/half.h"
 
 namespace goap

@@ -2,13 +2,16 @@
 #define STATE_H
 
 #include <unordered_map>
-#include "ireadstate.h"
+#include "refcounter.h"
+#include "goap/ireadstate.h"
 
 namespace goap
 {
 
-class State : public IState
+class State : public virtual IState
 {
+    IMPLEMENT_REFCOUNTER()
+
 protected:
     std::unordered_map<PtrIValue, PtrIValue> data;
     float coste = 0;

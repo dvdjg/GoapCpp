@@ -2,7 +2,7 @@
 #define IREADSTATE_H
 
 #include <memory>
-#include "irefcounter.h"
+#include "common/irefcounter.h"
 #include "istatevalue.h"
 
 namespace goap
