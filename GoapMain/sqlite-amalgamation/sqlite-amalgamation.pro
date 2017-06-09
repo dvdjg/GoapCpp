@@ -27,11 +27,15 @@ DEFINES += QT_DEPRECATED_WARNINGS SQLITE_ENABLE_FTS SQLITE_ENABLE_RTREE SQLITE_E
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    sqlite3.c
+    sqlite3.c \
+    codec.cpp \
+    codecext.c
 
 HEADERS += \
     sqlite3.h \
-    sqlite3ext.h
+    sqlite3ext.h \
+    codec_c_interface.h \
+    codec.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
