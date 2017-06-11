@@ -99,5 +99,5 @@ TEST_F(ArrayFire, Test1)
 
 TEST_F(ArrayFire, Test2)
 {
-
+    EXPECT_TRUE(true);
 }

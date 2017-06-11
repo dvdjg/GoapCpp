@@ -42,9 +42,7 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 LIBS += \
     -lsqlite-amalgamation$$SUFFIX \
     -lGoapLib$$SUFFIX \
-    -lgtest$$SUFFIX \
-    -lgmock
-
+    -lgtest$$SUFFIX
 unix {
 QMAKE_CXXFLAGS += -pthread
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing

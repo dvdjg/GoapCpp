@@ -28,7 +28,7 @@ void insert(database &db, bool is_null)
 
 void select(database &db, bool should_be_null)
 {
-    db <<"select id,val from test">> [&](long long, boost::optional<int> val)
+    db << "select id,val from test">> [&](long long, boost::optional<int> val)
     {
         if (should_be_null)
         {
@@ -55,21 +55,12 @@ public:
     {
     }
 protected:
-    // Per-test-case set-up.
-    // Called before the first test in this test case.
-    // Can be omitted if not needed.
     static void SetUpTestCase()
     {
-        //shared_resource_ = new ...;
     }
 
-    // Per-test-case tear-down.
-    // Called after the last test in this test case.
-    // Can be omitted if not needed.
     static void TearDownTestCase()
     {
-        //delete shared_resource_;
-        //shared_resource_ = NULL;
     }
 
     // You can define per-test set-up and tear-down logic as usual.
@@ -121,7 +112,7 @@ TEST_F(DataTest, blob_example)
         db << "INSERT INTO person VALUES (?, ?)" << "sara" << vector<double> { 1.0, 2.0, 3.0, 4.0};
 
         vector<int> numbers_bob;
-        db << "SELECT numbers from person where name = ?;" <<"bob">> numbers_bob;
+        db << "SELECT numbers from person where name = ?;" << "bob">> numbers_bob;
 
         if (numbers_bob.size() != 4 || numbers_bob[0] != 1
             || numbers_bob[1] != 2 || numbers_bob[2] != 3 || numbers_bob[3] != 4)
@@ -132,7 +123,7 @@ TEST_F(DataTest, blob_example)
         //else { for(auto e : numbers_bob) cout << e << ' '; cout << endl; }
 
         vector<char> numbers_jack;
-        db << "SELECT numbers from person where name = ?;" <<"jack">> numbers_jack;
+        db << "SELECT numbers from person where name = ?;" << "jack">> numbers_jack;
 
         if (numbers_jack.size() != 4 || numbers_jack[0] != '1'
             || numbers_jack[1] != '2' || numbers_jack[2] != '3' || numbers_jack[3] != '4')
@@ -143,7 +134,7 @@ TEST_F(DataTest, blob_example)
         //else { for(auto e : numbers_jack) cout << e << ' '; cout << endl; }
 
         vector<double> numbers_sara;
-        db << "SELECT numbers from person where name = ?;" <<"sara">> numbers_sara;
+        db << "SELECT numbers from person where name = ?;" << "sara">> numbers_sara;
 
         if (numbers_sara.size() != 4 || numbers_sara[0] != 1
             || numbers_sara[1] != 2 || numbers_sara[2] != 3 || numbers_sara[3] != 4)
@@ -319,50 +310,50 @@ TEST_F(DataTest, flags)
         std::string enc;
         {
             database db(":memory:", cfg);
-            db <<"PRAGMA encoding;">> enc;
+            db << "PRAGMA encoding;">> enc;
             if (enc != "UTF-8")
             {
                 cout << "Unexpected encoding on line " << __LINE__ << '\n';
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(enc != "UTF-8");
         }
         {
             database db(u":memory:", cfg);
-            db <<"PRAGMA encoding;">> enc;
+            db << "PRAGMA encoding;">> enc;
             if (enc != OUR_UTF16)
             {
                 cout << "Unexpected encoding on line " << __LINE__ << '\n';
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(enc != OUR_UTF16);
         }
         {
             cfg.encoding = Encoding::UTF8;
             database db(u":memory:", cfg);
-            db <<"PRAGMA encoding;">> enc;
+            db << "PRAGMA encoding;">> enc;
             if (enc != "UTF-8")
             {
                 cout << "Unexpected encoding on line " << __LINE__ << '\n';
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(enc != "UTF-8");
         }
         {
             cfg.encoding = Encoding::UTF16;
             database db(u":memory:", cfg);
-            db <<"PRAGMA encoding;">> enc;
+            db << "PRAGMA encoding;">> enc;
             if (enc != OUR_UTF16)
             {
                 cout << "Unexpected encoding on line " << __LINE__ << '\n';
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(enc != OUR_UTF16);
         }
         {
             database db(file.fname, cfg);
-            db <<"PRAGMA encoding;">> enc;
+            db << "PRAGMA encoding;">> enc;
             if (enc != OUR_UTF16)
             {
                 cout << "Unexpected encoding on line " << __LINE__ << '\n';
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(enc != OUR_UTF16);
 
             db << "CREATE TABLE foo (a string);";
             db << "INSERT INTO foo VALUES (?)" << "hello";
@@ -372,13 +363,13 @@ TEST_F(DataTest, flags)
             database db(file.fname, cfg);
 
             string str;
-            db <<"SELECT a FROM foo;">> str;
+            db << "SELECT a FROM foo;">> str;
 
             if (str != "hello")
             {
                 cout << "Bad result on line " << __LINE__ << endl;
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
+            EXPECT_FALSE(str != "hello");
 
             try
             {
@@ -425,9 +416,9 @@ TEST_F(DataTest, functions)
         db.define("add_integers", &add_integers);
         std::string test1, test3;
         int test2 = 0;
-        db <<"select my_new_concat('Hello ','world!')">> test1;
-        db <<"select add_integers(1,1)">> test2;
-        db <<"select my_new_concat('a','b','c')">> test3;
+        db << "select my_new_concat('Hello ','world!')">> test1;
+        db << "select add_integers(1,1)">> test2;
+        db << "select my_new_concat('a','b','c')">> test3;
 
         if (test1 != "Hello world!" || test2 != 2 || test3 != "abc")
         {
@@ -453,8 +444,8 @@ TEST_F(DataTest, functions)
         db << "insert into countable values(1, 'a')";
         db << "insert into countable values(2, 'b')";
         db << "insert into countable values(3, 'c')";
-        db <<"select my_count(i) from countable">> test2;
-        db <<"select my_concat_aggregate(s) from countable order by i">> test3;
+        db << "select my_count(i) from countable">> test2;
+        db << "select my_concat_aggregate(s) from countable order by i">> test3;
 
         if (test2 != 3 || test3 != "abc")
         {
@@ -473,7 +464,7 @@ TEST_F(DataTest, functions)
             db << "INSERT INTO numbers VALUES (?);" << i;
         }
 
-        db <<"SELECT number, tgamma(number+1) FROM numbers;">> [](double number, double factorial)
+        db << "SELECT number, tgamma(number+1) FROM numbers;">> [](double number, double factorial)
         {
             cout << number << "! = " << factorial << '\n';
         };
@@ -514,7 +505,7 @@ TEST_F(DataTest, functors)
         db << "INSERT INTO tbl VALUES (?, ?);" << 2 << "world";
 
         vector<pair<int, string>> vec;
-        db <<"select id,name from tbl;">> tbl_functor(vec);
+        db << "select id,name from tbl;">> tbl_functor(vec);
 
         if (vec.size() != 2)
         {
@@ -525,7 +516,7 @@ TEST_F(DataTest, functors)
         vec.clear();
 
         tbl_functor functor(vec);
-        db <<"select id,name from tbl;">> functor;
+        db << "select id,name from tbl;">> functor;
 
         if (vec.size() != 2 || vec[0].first != 1 || vec[0].second != "hello")
         {
@@ -573,7 +564,7 @@ struct user
     static std::vector<user> all(sqlite::database &db)
     {
         builder<user, int, std::string, double> person_builder;
-        db <<"SELECT * FROM user;"
+        db << "SELECT * FROM user;"
            >> person_builder;
         return std::move(person_builder.results); // move to avoid copying data ;-)
     };
@@ -657,11 +648,11 @@ TEST_F(DataTest, nullptr_uniqueptr)
     {
         database db(":memory:");
         db << "CREATE TABLE tbl (id integer,age integer, name string, img blob);";
-        db << "INSERT INTO tbl VALUES (?, ?, ?, ?);" << 1 << 24 << "bob" << vector<int> { 1, 2 , 3};
+        db << "INSERT INTO tbl VALUES (?, ?, ?, ?);" << 1 << 24 << "bob" << vector<int> { 1, 2, 3};
         unique_ptr<string> ptr_null;
         db << "INSERT INTO tbl VALUES (?, ?, ?, ?);" << 2 << nullptr << ptr_null << nullptr;
 
-        db <<"select age,name,img from tbl where id = 1">> [](unique_ptr<int> age_p, unique_ptr<string> name_p, unique_ptr<vector<int>> img_p)
+        db << "select age,name,img from tbl where id = 1">> [](unique_ptr<int> age_p, unique_ptr<string> name_p, unique_ptr<vector<int>> img_p)
         {
             if (age_p == nullptr || name_p == nullptr || img_p == nullptr)
             {
@@ -677,7 +668,7 @@ TEST_F(DataTest, nullptr_uniqueptr)
             cout << endl;
         };
 
-        db <<"select age,name,img from tbl where id = 2">> [](unique_ptr<int> age_p, unique_ptr<string> name_p, unique_ptr<vector<int>> img_p)
+        db << "select age,name,img from tbl where id = 2">> [](unique_ptr<int> age_p, unique_ptr<string> name_p, unique_ptr<vector<int>> img_p)
         {
             if (age_p != nullptr || name_p != nullptr || img_p != nullptr)
             {
@@ -722,7 +713,7 @@ TEST_F(DataTest, prepared_statment)
         pps << 4; // bind a rvalue
         pps++; // and execute
 
-        pps <<8>> test;
+        pps << 8>> test;
         EXPECT_EQ(8, test);
 
         auto pps2 = db << "select 1,2,3,4,5"; // multiple extract test
@@ -735,14 +726,14 @@ TEST_F(DataTest, prepared_statment)
 
         auto pps3 = db << "select ?,?,?";
 
-        pps3 << 1 << test <<5>> [](int a, int b, int, int c)
+        pps3 << 1 << test << 5>> [](int a, int b, int, int c)
         {
             std::cout << "L2 " << a << b << c << "\n"; // still works as intended
         };
 
-        db << "select ?,?" << test <<5>> test; // and mow everything together
+        db << "select ?,?" << test << 5>> test; // and mow everything together
 
-        db << "select ?, ?, ?" << 1 << test <<1>> [](int a, int b, int, int c)
+        db << "select ?, ?, ?" << 1 << test << 1>> [](int a, int b, int, int c)
         {
             std::cout << "L3 " << a << b << c << "\n"; // still works as intended
         };
@@ -753,31 +744,31 @@ TEST_F(DataTest, prepared_statment)
         db << "select ?,?" << 1 << 1;
         db << "select ?,?" << test << test;
 
-        db << "select ?" <<test>> test; 		// lVal
-        db << "select ?,?" << test <<1>> test;
-        db << "select ?,?" << 1 <<test>> test;
-        db << "select ?,?" << 1 <<1>> test;
-        db << "select ?,?" << test <<test>> test;
+        db << "select ?" << test>> test; 		// lVal
+        db << "select ?,?" << test << 1>> test;
+        db << "select ?,?" << 1 << test>> test;
+        db << "select ?,?" << 1 << 1>> test;
+        db << "select ?,?" << test << test>> test;
 
         int q = 0;
 
-        db << "select ?" <<test>> [&](int t)
+        db << "select ?" << test>> [&](int t)
         {
             q = t++;
         }; 		// rVal
-        db << "select ?,?" << test <<1>> [&](int t, int p)
+        db << "select ?,?" << test << 1>> [&](int t, int p)
         {
             q = t + p;
         };
-        db << "select ?,?" << 1 <<test>> [&](int t, int p)
+        db << "select ?,?" << 1 << test>> [&](int t, int p)
         {
             q = t + p;
         };
-        db << "select ?,?" << 1 <<1>> [&](int t, int p)
+        db << "select ?,?" << 1 << 1>> [&](int t, int p)
         {
             q = t + p;
         };
-        db << "select ?,?" << test <<test>> [&](int t, int p)
+        db << "select ?,?" << test << test>> [&](int t, int p)
         {
             q = t + p;
         };
@@ -865,7 +856,7 @@ TEST_F(DataTest, readme_example)
         // selects from user table on a condition ( age > 18 ) and executes
         // the lambda for each row returned .
         db << "select age,name,weight from user where age > ? ;"
-           <<21
+           << 21
            >> [&](int _age, string _name, double _weight)
         {
             if (_age != age || _name != name)
@@ -878,16 +869,16 @@ TEST_F(DataTest, readme_example)
         // selects the count(*) from user table
         // note that you can extract a single culumn single row result only to : int,long,long,float,double,string,u16string
         int count = 0;
-        db <<"select count(*) from user">> count;
+        db << "select count(*) from user">> count;
         cout << "cout : " << count << endl;
 
         // you can also extract multiple column rows
-        db <<"select age, name from user where _id=1;">> tie(age, name);
+        db << "select age, name from user where _id=1;">> tie(age, name);
         cout << "Age = " << age << ", name = " << name << endl;
 
         // this also works and the returned value will be automatically converted to string
         string str_count;
-        db <<"select count(*) from user">> str_count;
+        db << "select count(*) from user">> str_count;
         cout << "scount : " << str_count << endl;
     }
     catch (exception &e)
@@ -908,7 +899,7 @@ TEST_F(DataTest, shared_connection)
             {
                 database db2(con);
                 int test = 0;
-                db2 <<"select 1">> test;
+                db2 << "select 1">> test;
                 if (test != 1)
                 {
                     EXPECT_FALSE("exit(EXIT_FAILURE)");
@@ -916,7 +907,7 @@ TEST_F(DataTest, shared_connection)
             }
 
             int test = 0;
-            db <<"select 1">> test;
+            db << "select 1">> test;
             if (test != 1)
             {
                 EXPECT_FALSE("exit(EXIT_FAILURE)");
@@ -949,7 +940,7 @@ TEST_F(DataTest, simple_examples)
         db << "INSERT INTO foo VALUES (?, ?)" << 2 << "world";
 
         string str;
-        db << "SELECT b from FOO where a=?;" <<2L>> str;
+        db << "SELECT b from FOO where a=?;" << 2L>> str;
 
         if (str != "world")
         {
@@ -959,7 +950,7 @@ TEST_F(DataTest, simple_examples)
 
         std::string sql("select 1+1");
         long test = 0;
-        db <<sql>> test;
+        db << sql>> test;
 
         if (test != 2)
         {
@@ -1034,7 +1025,7 @@ public:
             string username, timestamp, ip, request;
 
             db  << "select username, timestamp, ip, request from log_request where username = ?"
-                <<"test"
+                << "test"
                 >> std::tie(username, timestamp, ip, request);
 
             if (username == "test" && ip == "127.0.0.1" && request == "hello world")

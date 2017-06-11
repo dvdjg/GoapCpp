@@ -85,6 +85,7 @@ error_log(Handler &&handler)
 {
     return error_log(std::forward<Handler>(handler), [](const sqlite_exception &) {});
 }
+
 template<class Handler>
 typename std::enable_if<detail::is_callable<Handler(const sqlite_exception &)>::value>::type
 error_log(Handler &&handler)
@@ -111,10 +112,14 @@ error_log(Handler &&handler)
         }
     });
 
-    sqlite3_config(SQLITE_CONFIG_LOG, /*(void(*)(void *, int, const char *))*/[](void *functor, int error_code_, const char *errstr_)
+    struct Lamb
     {
-        (*static_cast<decltype(ptr.get())>(functor))(error_code_, errstr_);
-    }, ptr.get());
+        static void sqliteGonfigLog(void *functor, int error_code, const char *errstr)
+        {
+            (*static_cast<decltype(ptr.get())>(functor))(error_code, errstr);
+        }
+    };
+    sqlite3_config(SQLITE_CONFIG_LOG, &Lamb::sqliteGonfigLog, ptr.get());
     detail::store_error_log_data_pointer(std::move(ptr));
 }
 }

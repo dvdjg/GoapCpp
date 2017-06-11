@@ -28,21 +28,21 @@ SPEC=$$replace(SPEC, win32, windows)-$$QMAKE_TARGET.arch
 LIBDIR=$$top_srcdir/lib
 staticlib {
     DEFINES += STATIC
-    DESTDIR=$$LIBDIR
+    DESTDIRCOMMON=$$LIBDIR
 } else {
-    # Binaries and dynamic libs goes to bin
-    DESTDIR=$$top_srcdir/bin
+    # DESTDIRCOMMON and dynamic libs goes to bin
+    DESTDIRCOMMON=$$top_srcdir/bin
     #static:DESTDIR=$$DESTDIR-static
 }
 
 LIBDIR=$$LIBDIR/$$SPEC
-DESTDIR=$$DESTDIR/$$SPEC
+DESTDIR=$$DESTDIRCOMMON
 
 LIBS += -L$$LIBDIR -L$$LIBDIR/$$CONFDIR
 
 win32 {
-    INCLUDEPATH += D:/local/boost_1_64_0
     INCLUDEPATH += \
+        D:/local/boost_1_64_0 \
         "C:/Program Files/ArrayFire/v3/include" \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
