@@ -16,6 +16,8 @@ CONFIG(debug, debug|release){
 
 TARGET=$$TARGET$$SUFFIX
 
+DEFINES += SRCDIR=\\\"$$top_srcdir/\\\"
+
 *-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 *-g++-32:QMAKE_TARGET.arch = x86
 *-g++-64:QMAKE_TARGET.arch = x86_64
@@ -42,7 +44,7 @@ win32 {
     INCLUDEPATH += D:/local/boost_1_64_0
     INCLUDEPATH += \
         "C:/Program Files/ArrayFire/v3/include" \
-        "D:/OneDrive/Programa/googletest/googletest/include" /
+        "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
 
     #  D:/OneDrive/Programa/GoapCpp/GoapMain/include
