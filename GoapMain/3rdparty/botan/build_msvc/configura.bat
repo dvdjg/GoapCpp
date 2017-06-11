@@ -1,0 +1,1 @@
+python ..\configure.py --cc=msvc --amalgamation   --with-cmake --disable-shared --optimize-for-size  --with-zlib  --with-openssl  --with-sqlite3 --with-lzma --with-bzip2 --with-boost --cc-abi-flags=/MT 

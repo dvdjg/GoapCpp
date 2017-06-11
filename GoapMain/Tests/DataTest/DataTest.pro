@@ -39,8 +39,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/release/
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/debug/ -lGoapLib
 else:unix: LIBS += -L$$OUT_PWD/../../GoapLib/ -lGoapLib
 
-INCLUDEPATH += $$PWD/../../Factory $$PWD/../../Interfaces $$PWD/../../GoapLib $$PWD/../../sqlite_modern_cpp $$PWD/../../sqlite-amalgamation
-DEPENDPATH += $$PWD/../../Factory $$PWD/../../Interfaces $$PWD/../../GoapLib $$PWD/../../sqlite_modern_cpp $$PWD/../../sqlite-amalgamation
+INCLUDEPATH += $$top_srcdir/../Factory $$top_srcdir/../Interfaces $$top_srcdir/../GoapLib $$top_srcdir/../sqlite_modern_cpp $$top_srcdir/../sqlite-amalgamation
+DEPENDPATH += $$top_srcdir/../Factory $$top_srcdir/../Interfaces $$top_srcdir/../GoapLib $$top_srcdir/../sqlite_modern_cpp $$top_srcdir/../sqlite-amalgamation
 
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/libGoapLib.a $$OUT_PWD/../../sqlite-amalgamation/release/libsqlite-amalgamation.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/libGoapLib.a $$OUT_PWD/../../sqlite-amalgamation/debug/libsqlite-amalgamation.a
@@ -60,3 +60,5 @@ QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 LIBS += -pthread -ldl
 }
 
+win32-msvc*:INCLUDEPATH += D:/OneDrive/Programa/GoapCpp/GoapMain/3rdparty/botan/build_msvc
+win32-msvc*:LIBS += -L"D:/OneDrive/Programa/GoapCpp/GoapMain/3rdparty/botan/build_msvc" D:/OneDrive/Programa/GoapCpp/GoapMain/3rdparty/botan/build_msvc/botan.lib -lUser32 -lAdvapi32

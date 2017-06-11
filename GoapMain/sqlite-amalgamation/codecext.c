@@ -6,7 +6,7 @@
  */
 
 #ifndef SQLITE_OMIT_DISKIO
-#ifdef SQLITE_HAS_CODEC
+#if defined SQLITE_HAS_CODEC || 1
 
 #include "codec_c_interface.h"
 
@@ -203,7 +203,7 @@ int sqlite3_rekey(sqlite3 *db, const void *zKey, int nKey)
             if (n == nSkip)
                 continue;
 
-            rc = sqlite3PagerGet(pPager, n, &pPage);
+            rc = sqlite3PagerGet(pPager, n, &pPage, 0);
 
             if (!rc)
             {
@@ -239,7 +239,7 @@ int sqlite3_rekey(sqlite3 *db, const void *zKey, int nKey)
     else
     {
         // Rollback, rekey failed
-        sqlite3BtreeRollback(pbt, SQLITE_ERROR);
+        sqlite3BtreeRollback(pbt, SQLITE_ERROR, 0);
 
         // go back to read key
         if (HasReadKey(pCodec))

@@ -4,11 +4,11 @@ SUBDIRS += \
     Factory \
     Interfaces \
     half \
+    sqlite-amalgamation \
+    sqlite3 \
     GoapLibrary \
     GoapApp \
     GoapLib \
-    sqlite-amalgamation \
-    sqlite3 \
     sqlite_modern_cpp \
     DistributedPersistence \
     Tests

@@ -16,7 +16,3 @@ HEADERS += \
     refcounter.h \
     reuseobjectpool.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
