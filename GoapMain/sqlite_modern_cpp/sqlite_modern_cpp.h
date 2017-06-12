@@ -384,6 +384,7 @@ namespace sqlite {
 		OpenFlags flags = OpenFlags::READWRITE | OpenFlags::CREATE;
 		const char *zVfs = nullptr;
 		Encoding encoding = Encoding::ANY;
+        std::string db_key;
 	};
 
 	class database {
@@ -396,10 +397,18 @@ namespace sqlite {
 			auto ret = sqlite3_open_v2(db_name.data(), &tmp, static_cast<int>(config.flags), config.zVfs);
 			_db = std::shared_ptr<sqlite3>(tmp, [=](sqlite3* ptr) { sqlite3_close_v2(ptr); }); // this will close the connection eventually when no longer needed.
 			if(ret != SQLITE_OK) errors::throw_sqlite_error(_db ? sqlite3_extended_errcode(_db.get()) : ret);
+            if(!config.db_key.empty()) {
+#ifdef SQLITE_HAS_CODEC
+                ret = sqlite3_key(_db.get(), config.db_key.data(), config.db_key.length());
+                if(ret != SQLITE_OK) errors::throw_sqlite_error(_db ? sqlite3_extended_errcode(_db.get()) : ret);
+#else
+                throw std::runtime_error("A key was supplied to db crypting but SQLITE_HAS_CODEC was not defined");
+#endif
+            }
 			sqlite3_extended_result_codes(_db.get(), true);
 			if(config.encoding == Encoding::UTF16)
 				*this << R"(PRAGMA encoding = "UTF-16";)";
-		}
+        }
 
 		database(const std::u16string &db_name, const sqlite_config &config = {}): _db(nullptr) {
 #ifdef _MSC_VER
@@ -411,6 +420,14 @@ namespace sqlite {
 			auto ret = sqlite3_open_v2(db_name_utf8.data(), &tmp, static_cast<int>(config.flags), config.zVfs);
 			_db = std::shared_ptr<sqlite3>(tmp, [=](sqlite3* ptr) { sqlite3_close_v2(ptr); }); // this will close the connection eventually when no longer needed.
 			if(ret != SQLITE_OK) errors::throw_sqlite_error(_db ? sqlite3_extended_errcode(_db.get()) : ret);
+            if(!config.db_key.empty()) {
+#ifdef SQLITE_HAS_CODEC
+                ret = sqlite3_key(_db.get(), config.db_key.data(), config.db_key.length());
+                if(ret != SQLITE_OK) errors::throw_sqlite_error(_db ? sqlite3_extended_errcode(_db.get()) : ret);
+#else
+                throw std::runtime_error("A key was supplied to db crypting but SQLITE_HAS_CODEC was not defined");
+#endif
+            }
 			sqlite3_extended_result_codes(_db.get(), true);
 			if(config.encoding != Encoding::UTF8)
 				*this << R"(PRAGMA encoding = "UTF-16";)";

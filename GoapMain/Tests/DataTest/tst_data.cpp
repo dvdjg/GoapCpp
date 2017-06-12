@@ -13,7 +13,31 @@
 using namespace sqlite;
 using namespace std;
 
-void insert(database &db, bool is_null)
+namespace SQL
+{
+static const char *CREATE_TABLE_TEST =
+    "create table 'test' (id INTEGER PRIMARY KEY, name TEXT, creationtime TEXT);";
+static const char *CREATE_TABLE_TEST2 =
+    "create table 'test2' (id INTEGER PRIMARY KEY, name TEXT, creationtime TEXT);";
+static const char *INSERT_INTO_TEST =
+    "INSERT INTO test (name, creationtime) VALUES ('widget', '1st time');\
+         INSERT INTO test (name, creationtime) VALUES ('widget', '2nd time');\
+         INSERT INTO test (name, creationtime) VALUES ('widget', '3rd time');\
+         INSERT INTO test (name, creationtime) VALUES ('widget', '4th time');\
+         INSERT INTO test (name, creationtime) VALUES ('widget', '5th time');";
+static const char *INSERT_INTO_TEST2 =
+    "INSERT INTO test2 (name, creationtime) VALUES ('widget2', '1st time2');\
+         INSERT INTO test2 (name, creationtime) VALUES ('widget2', '2nd time2');\
+         INSERT INTO test2 (name, creationtime) VALUES ('widget2', '3rd time2');\
+         INSERT INTO test2 (name, creationtime) VALUES ('widget2', '4th time2');\
+         INSERT INTO test2 (name, creationtime) VALUES ('widget2', '5th time2');";
+static const char *SELECT_FROM_TEST =
+    "SELECT * FROM test;";
+static const char *SELECT_FROM_TEST2 =
+    "SELECT * FROM test2;";
+};
+
+static void insert(database &db, bool is_null)
 {
     int id = 1;
     boost::optional<int> val;
@@ -26,7 +50,7 @@ void insert(database &db, bool is_null)
     db << "insert into test(id,val) values(?,?)" << id << val;
 }
 
-void select(database &db, bool should_be_null)
+static void select(database &db, bool should_be_null)
 {
     db << "select id,val from test">> [&](long long, boost::optional<int> val)
     {
@@ -170,7 +194,6 @@ TEST_F(DataTest, boost_optional)
     {
         // creates a database file 'dbfile.db' if it does not exists.
         database db(":memory:");
-
         db << "drop table if exists test";
         db <<
            "create table if not exists test ("
@@ -395,7 +418,7 @@ TEST_F(DataTest, flags)
     EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
-int add_integers(int i, int j)
+static int add_integers(int i, int j)
 {
     return i + j;
 }
@@ -973,12 +996,12 @@ TEST_F(DataTest, simple_examples)
     EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
-struct TmpTryCatchFile
+struct AutoDeleteFile
 {
     string fname;
 
-    TmpTryCatchFile(): fname("./trycatchblocks.db") {}
-    ~TmpTryCatchFile()
+    AutoDeleteFile(const string &fileName = "./trycatchblocks.db"): fname(fileName) {}
+    ~AutoDeleteFile()
     {
         remove(fname.c_str());
     }
@@ -987,10 +1010,10 @@ struct TmpTryCatchFile
 
 class DBInterface
 {
-    database db;
+    database _db;
 
 public:
-    DBInterface(const string &fileName) : db(fileName) { }
+    DBInterface(const string &fileName, const sqlite::sqlite_config &config = {}) : _db(fileName, config) { }
 
     void LogRequest(const string &username, const string &ip, const string &request)
     {
@@ -998,7 +1021,7 @@ public:
         {
             auto timestamp = std::to_string(time(nullptr));
 
-            db  <<
+            _db  <<
                 "create table if not exists log_request ("
                 "   _id integer primary key autoincrement not null,"
                 "   username text,"
@@ -1006,7 +1029,7 @@ public:
                 "   ip text,"
                 "   request text"
                 ");";
-            db  << "INSERT INTO log_request (username, timestamp, ip, request) VALUES (?,?,?,?);"
+            _db  << "INSERT INTO log_request (username, timestamp, ip, request) VALUES (?,?,?,?);"
                 << username
                 << timestamp
                 << ip
@@ -1024,7 +1047,7 @@ public:
         {
             string username, timestamp, ip, request;
 
-            db  << "select username, timestamp, ip, request from log_request where username = ?"
+            _db  << "select username, timestamp, ip, request from log_request where username = ?"
                 << "test"
                 >> std::tie(username, timestamp, ip, request);
 
@@ -1053,7 +1076,9 @@ TEST_F(DataTest, trycatchblocks)
     }
     catch (...)
     {
-        TmpTryCatchFile tmpF;
+        sqlite::sqlite_config cfg;
+        cfg.db_key = "MyKey";
+        AutoDeleteFile tmpF;
         DBInterface interf(tmpF.fname);
         interf.LogRequest("test", "127.0.0.1", "hello world");
         if (!interf.TestData())
