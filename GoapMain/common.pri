@@ -18,6 +18,12 @@ TARGET=$$TARGET$$SUFFIX
 
 DEFINES += SRCDIR=\\\"$$top_srcdir/\\\"
 
+DEFINES += QT_DEPRECATED_WARNINGS SQLITE_ENABLE_FTS SQLITE_ENABLE_RTREE SQLITE_ENABLE_COLUMN_METADATA \
+    SQLITE_ENABLE_MEMORY_MANAGEMENT SQLITE_ALLOW_URI_AUTHORITY SQLITE_ENABLE_API_ARMOR SQLITE_ENABLE_COLUMN_METADATA SQLITE_ENABLE_DBSTAT_VTAB \
+    SQLITE_ENABLE_EXPLAIN_COMMENTS SQLITE_ENABLE_FTS5 SQLITE_ENABLE_JSON1 SQLITE_ENABLE_PREUPDATE_HOOK SQLITE_ENABLE_RBU \
+    SQLITE_ENABLE_SESSION SQLITE_ENABLE_SQLLOG SQLITE_ENABLE_STAT4 SQLITE_ENABLE_UPDATE_DELETE_LIMIT SQLITE_ENABLE_UNLOCK_NOTIFY \
+    SQLITE_SOUNDEX SQLITE_USE_FCNTL_TRAC SQLITE_THREADSAFE=1 SQLITE_HAS_CODEC _CRT_SECURE_NO_WARNINGS # SQLITE_OMIT_LOAD_EXTENSION SQLITE_ENABLE_ICU
+
 *-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 *-g++-32:QMAKE_TARGET.arch = x86
 *-g++-64:QMAKE_TARGET.arch = x86_64
@@ -32,13 +38,11 @@ staticlib {
 } else {
     # DESTDIRCOMMON and dynamic libs goes to bin
     DESTDIRCOMMON=$$top_srcdir/bin
-    #static:DESTDIR=$$DESTDIR-static
 }
 
-LIBDIR=$$LIBDIR/$$SPEC
 DESTDIR=$$DESTDIRCOMMON
 
-LIBS += -L$$LIBDIR -L$$LIBDIR/$$CONFDIR
+LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
 
 win32 {
     INCLUDEPATH += \
@@ -47,16 +51,7 @@ win32 {
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
 
-    #  D:/OneDrive/Programa/GoapCpp/GoapMain/include
-    # win32-g++:LIBS += -LD:/OneDrive/Programa/GoapCpp/GoapMain/lib/windows-g++-x86
     win32-msvc*:LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -laf
-    #win32-msvc*:LIBS += -LD:/OneDrive/Programa/GoapCpp/GoapMain/lib/windows-msvc-mt-x86_64
-    #CONFIG(release, debug|release): LIBS += -LD:/OneDrive/Programa/GoapCpp/GoapMain/lib/windows-msvc-mt-x86_64/Release
-    #else:CONFIG(debug, debug|release): LIBS += -LD:/OneDrive/Programa/GoapCpp/GoapMain/lib/windows-msvc-mt-x86_64/Debug
-#    LIBS += -LC:/boost/lib \
-#            -lboost_serialization-mgw46-mt-d-1_54 \
-#            -lboost_filesystem-mgw46-mt-d-1_54 \
-#            -lboost_system-mgw46-mt-d-1_54
 }
 unix {
     INCLUDEPATH += /opt/arrayfire-3/include

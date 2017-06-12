@@ -11,7 +11,6 @@
 #include <string>
 #include <memory>
 #include <botan_all.h>
-//#include <botan/loadstor.h>
 
 using namespace std;
 using namespace Botan;

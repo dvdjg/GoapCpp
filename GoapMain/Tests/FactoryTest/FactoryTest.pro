@@ -25,7 +25,14 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 
 LIBS += \
     -lGoapLib$$SUFFIX \
-    -lbotan$$SUFFIX \
-    -lgtest$$SUFFIX \
     -lgmock
+unix {
+INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
+QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp
+QMAKE_CFLAGS += -pthread -fno-strict-aliasing -fopenmp
+QMAKE_LFLAGS += -pthread -fopenmp
+LIBS += -lgtest
+}
+win32-msvc*:LIBS += -lgtest$$SUFFIX
 
+# win32-msvc*:LIBS += -lbotan$$SUFFIX

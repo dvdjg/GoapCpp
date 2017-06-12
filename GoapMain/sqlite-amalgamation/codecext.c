@@ -6,7 +6,7 @@
  */
 
 #ifndef SQLITE_OMIT_DISKIO
-#if defined SQLITE_HAS_CODEC || 1
+#if defined SQLITE_HAS_CODEC
 
 #include "codec_c_interface.h"
 
@@ -14,7 +14,7 @@ Bool HandleError(void *pCodec)
 {
     const char *error = GetAndResetError(pCodec);
     if (error) {
-        sqlite3Error((sqlite3*)GetDB(pCodec), SQLITE_ERROR, "Botan Error: %s", error);
+        sqlite3ErrorWithMsg((sqlite3*)GetDB(pCodec), SQLITE_ERROR, "Botan Error: %s", error);
         return 1;
     }
     return 0;
@@ -211,11 +211,11 @@ int sqlite3_rekey(sqlite3 *db, const void *zKey, int nKey)
                 sqlite3PagerUnref(pPage);
             }
             else
-                sqlite3Error(db, SQLITE_ERROR, "%s", "Error while rekeying database page. Transaction Canceled.");
+                sqlite3ErrorWithMsg(db, SQLITE_ERROR, "%s", "Error while rekeying database page. Transaction Canceled.");
         }
     }
     else
-        sqlite3Error(db, SQLITE_ERROR, "%s", "Error beginning rekey transaction. Make sure that the current encryption key is correct.");
+        sqlite3ErrorWithMsg(db, SQLITE_ERROR, "%s", "Error beginning rekey transaction. Make sure that the current encryption key is correct.");
 
     if (rc == SQLITE_OK)
     {
@@ -233,7 +233,7 @@ int sqlite3_rekey(sqlite3 *db, const void *zKey, int nKey)
         else
         {
             //FIXME: can't trigger this, not sure if rollback is needed, reference implementation didn't rollback
-            sqlite3Error(db, SQLITE_ERROR, "%s", "Could not commit rekey transaction.");
+            sqlite3ErrorWithMsg(db, SQLITE_ERROR, "%s", "Could not commit rekey transaction.");
         }
     }
     else
