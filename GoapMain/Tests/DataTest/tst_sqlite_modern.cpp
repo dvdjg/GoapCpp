@@ -973,6 +973,50 @@ TEST_F(SQLiteModern, simple_examples)
     cout << "OK\n";
     EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
+#ifdef __has_include
+#if __cplusplus > 201402 && __has_include(<variant>)
+#define MODERN_SQLITE_STD_VARIANT_SUPPORT
+#endif
+#endif
+
+TEST_F(SQLiteModern, variant)
+{
+#ifdef MODERN_SQLITE_STD_VARIANT_SUPPORT
+    bool bException = false;
+    try
+    {
+        database db(":memory:");
+
+        db << "CREATE TABLE foo (a);";
+        std::variant<std::string, int, std::optional<float>> v;
+        v = 1;
+        db << "INSERT INTO foo VALUES (?)" << v;
+        v = "a";
+        db << "INSERT INTO foo VALUES (?)" << v;
+
+        db << "SELECT a FROM foo WHERE a=?;" << 1 >> v;
+
+        EXPECT_FALSE(v.index() != 1 || std::get<1>(v) != 1) << "Bad result on line " << __LINE__ << endl;
+
+        db << "SELECT NULL" >> v;
+        EXPECT_FALSE(std::get<2>(v)) << "Bad result on line " << __LINE__ << endl;
+
+        db << "SELECT 0.0" >> v;
+        EXPECT_FALSE(!std::get<2>(v)) << "Bad result on line " << __LINE__ << endl;
+    }
+    catch(sqlite_exception e)
+    {
+        cout << "Unexpected error " << e.what() << endl;
+        bException = true;
+    }
+    catch(...)
+    {
+        cout << "Unknown error\n";
+        bException = true;
+    }
+    EXPECT_FALSE(bException);
+#endif
+}
 
 struct AutoDeleteFile
 {
