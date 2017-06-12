@@ -77,26 +77,11 @@ class DataTest : public ::testing::Test
 {
 
 public:
+    database db;
+    static bool error_detected;
     DataTest()
-    {
-    }
-protected:
+    {}
     static void SetUpTestCase()
-    {
-    }
-
-    static void TearDownTestCase()
-    {
-    }
-
-    // You can define per-test set-up and tear-down logic as usual.
-    virtual void SetUp() {  }
-    virtual void TearDown() {  }
-};
-
-TEST_F(DataTest, error_log)
-{
-    bool error_detected = false;
     {
         error_log(
             [&](errors::constraint e)
@@ -109,21 +94,53 @@ TEST_F(DataTest, error_log)
             error_detected = true;
         }
         );
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-        db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
+    }
 
+    static void TearDownTestCase()
+    {
+    }
+
+    // You can define per-test set-up and tear-down logic as usual.
+    virtual void SetUp()
+    {
         try
         {
-            db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
-            // inserting again to produce error
-            db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+            sqlite::sqlite_config cfg;
+            cfg.db_key = DEFAULT_KEY;
+            db = database(":memory:", cfg);
         }
-        catch (errors::constraint e)
+        catch (sqlite_exception e)
         {
-            cerr << "Catched error.- " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+            cout << "Unexpected error " << e.what() << endl;
+            EXPECT_FALSE("exit(EXIT_FAILURE)");
         }
+        catch (...)
+        {
+            cout << "Unknown error\n";
+            EXPECT_FALSE("exit(EXIT_FAILURE)");
+        }
+    }
+    virtual void TearDown()
+    {
+        db = database();
+    }
+};
+
+bool DataTest::error_detected = false;
+
+TEST_F(DataTest, error_log)
+{
+    db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
+
+    try
+    {
+        db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+        // inserting again to produce error
+        db << "INSERT INTO person (id,name) VALUES (?,?)" << 1 << "jack";
+    }
+    catch (errors::constraint e)
+    {
+        cerr << "Catched error.- " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
     }
     EXPECT_TRUE(error_detected);
 }
@@ -132,10 +149,6 @@ TEST_F(DataTest, blob_example)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         db << "CREATE TABLE person (name TEXT, numbers BLOB);";
         db << "INSERT INTO person VALUES (?, ?)" << "bob" << vector<int> { 1, 2, 3, 4};
         db << "INSERT INTO person VALUES (?, ?)" << "jack" << vector<char> { '1', '2', '3', '4'};
@@ -190,18 +203,12 @@ TEST_F(DataTest, blob_example)
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
 
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 TEST_F(DataTest, boost_optional)
 {
     try
     {
-        // creates a database file 'dbfile.db' if it does not exists.
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
         db << "drop table if exists test";
         db <<
            "create table if not exists test ("
@@ -226,9 +233,6 @@ TEST_F(DataTest, boost_optional)
 
 TEST_F(DataTest, exception_dont_execute)
 {
-    sqlite::sqlite_config cfg;
-    cfg.db_key = DEFAULT_KEY;
-    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT not null);";
 
     try
@@ -245,9 +249,6 @@ TEST_F(DataTest, exception_dont_execute)
 
 TEST_F(DataTest, exceptions)
 {
-    sqlite::sqlite_config cfg;
-    cfg.db_key = DEFAULT_KEY;
-    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
     bool expception_thrown = false;
 
@@ -263,30 +264,17 @@ TEST_F(DataTest, exceptions)
              << quoted(e.get_sql()) << endl;
         expception_thrown = true;
 #if SQLITE_VERSION_NUMBER >= 3014000
-        if (e.get_sql() != "INSERT INTO person (id,name) VALUES (1,'jack')")
-        {
+        EXPECT_TRUE(e.get_sql() == "INSERT INTO person (id,name) VALUES (1,'jack')") << "Wrong statement failed\n";
 #else
-        if (e.get_sql() != "INSERT INTO person (id,name) VALUES (?,?)")
-        {
+        EXPECT_TRUE(e.get_sql() == "INSERT INTO person (id,name) VALUES (?,?)") << "Wrong statement failed\n";
 #endif
-            cerr << "Wrong statement failed\n";
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
     }
 
-    if (!expception_thrown)
-    {
-        EXPECT_FALSE("exit(EXIT_FAILURE)");
-    }
-
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
+    EXPECT_TRUE(expception_thrown);
 }
 
 TEST_F(DataTest, extended_exceptions)
 {
-    sqlite::sqlite_config cfg;
-    cfg.db_key = DEFAULT_KEY;
-    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
     bool expception_thrown = false;
 
@@ -302,23 +290,13 @@ TEST_F(DataTest, extended_exceptions)
              << quoted(e.get_sql()) << endl;
         expception_thrown = true;
 #if SQLITE_VERSION_NUMBER >= 3014000
-        if (e.get_sql() != "INSERT INTO person (id,name) VALUES (1,'jack')")
-        {
+        EXPECT_TRUE(e.get_sql() == "INSERT INTO person (id,name) VALUES (1,'jack')") << "Wrong statement failed\n";
 #else
-        if (e.get_sql() != "INSERT INTO person (id,name) VALUES (?,?)")
-        {
+        EXPECT_TRUE(e.get_sql() == "INSERT INTO person (id,name) VALUES (?,?)") << "Wrong statement failed\n";
 #endif
-            cerr << "Wrong statement failed\n";
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
     }
 
-    if (!expception_thrown)
-    {
-        EXPECT_FALSE("exit(EXIT_FAILURE)");
-    }
-
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
+    EXPECT_TRUE(expception_thrown);
 }
 
 struct TmpFile
@@ -338,7 +316,7 @@ struct TmpFile
 #define OUR_UTF16 "UTF-16le"
 #endif
 
-TEST_F(DataTest, flags)
+TEST(UtfTest, flags)
 {
     try
     {
@@ -437,14 +415,11 @@ static int add_integers(int i, int j)
 {
     return i + j;
 }
+
 TEST_F(DataTest, functions)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         db.define("my_new_concat", [](std::string i, std::string j)
         {
             return i + j;
@@ -460,11 +435,7 @@ TEST_F(DataTest, functions)
         db << "select add_integers(1,1)">> test2;
         db << "select my_new_concat('a','b','c')">> test3;
 
-        if (test1 != "Hello world!" || test2 != 2 || test3 != "abc")
-        {
-            cout << "Wrong result\n";
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
+        EXPECT_FALSE(test1 != "Hello world!" || test2 != 2 || test3 != "abc") << "Wrong result\n";
 
         db.define("my_count", [](int &i, int)
         {
@@ -487,11 +458,7 @@ TEST_F(DataTest, functions)
         db << "select my_count(i) from countable">> test2;
         db << "select my_concat_aggregate(s) from countable order by i">> test3;
 
-        if (test2 != 3 || test3 != "abc")
-        {
-            cout << "Wrong result\n";
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
+        EXPECT_FALSE(test2 != 3 || test3 != "abc") << "Wrong result\n";
 
         db.define("tgamma", [](double i)
         {
@@ -519,9 +486,6 @@ TEST_F(DataTest, functions)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 struct tbl_functor
@@ -539,9 +503,6 @@ TEST_F(DataTest, functors)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
         db << "CREATE TABLE tbl (id integer, name string);";
         db << "INSERT INTO tbl VALUES (?, ?);" << 1 << "hello";
         db << "INSERT INTO tbl VALUES (?, ?);" << 2 << "world";
@@ -577,9 +538,6 @@ TEST_F(DataTest, functors)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 
@@ -591,7 +549,7 @@ struct builder
     void operator()(AttrTypes... args)
     {
         results.emplace_back(std::forward < AttrTypes && > (args)...);
-    };
+    }
 };
 
 
@@ -609,17 +567,13 @@ struct user
         db << "SELECT * FROM user;"
            >> person_builder;
         return std::move(person_builder.results); // move to avoid copying data ;-)
-    };
+    }
 };
 
 TEST_F(DataTest, lvalue_functor_example)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         db <<
            "create table if not exists user ("
            "   age int,"
@@ -637,17 +591,13 @@ TEST_F(DataTest, lvalue_functor_example)
         {
             cout << u.age << ' ' << u.name << ' ' << u.weight << endl;
         }
-        if (users.size() != 3)
-        {
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
+        EXPECT_EQ(users.size(), 3);
     }
     catch (exception &e)
     {
         cerr << e.what() << endl;
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
 }
 
 struct dbFront
@@ -665,7 +615,7 @@ struct dbFront
 };
 
 
-TEST_F(DataTest, mov_ctor)
+TEST(AloneTest, mov_ctor)
 {
     try
     {
@@ -690,9 +640,6 @@ TEST_F(DataTest, nullptr_uniqueptr)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
         db << "CREATE TABLE tbl (id integer,age integer, name string, img blob);";
         db << "INSERT INTO tbl VALUES (?, ?, ?, ?);" << 1 << 24 << "bob" << vector<int> { 1, 2, 3};
         unique_ptr<string> ptr_null;
@@ -716,11 +663,7 @@ TEST_F(DataTest, nullptr_uniqueptr)
 
         db << "select age,name,img from tbl where id = 2">> [](unique_ptr<int> age_p, unique_ptr<string> name_p, unique_ptr<vector<int>> img_p)
         {
-            if (age_p != nullptr || name_p != nullptr || img_p != nullptr)
-            {
-                cerr << "ERROR: values should be nullptr" << std::endl;
-                EXPECT_FALSE("exit(EXIT_FAILURE)");
-            }
+            EXPECT_FALSE(age_p != nullptr || name_p != nullptr || img_p != nullptr) << "ERROR: values should be nullptr" << endl;
 
             cout << "OK all three values are nullptr" << endl;
         };
@@ -736,19 +679,12 @@ TEST_F(DataTest, nullptr_uniqueptr)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 TEST_F(DataTest, prepared_statment)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         auto pps = db << "select ?"; // get a prepared parsed and ready statment
 
         int test = 4;
@@ -844,8 +780,6 @@ TEST_F(DataTest, prepared_statment)
             prep << 6;
             prep.execute();
         }
-
-
     }
     catch (sqlite_exception e)
     {
@@ -857,19 +791,12 @@ TEST_F(DataTest, prepared_statment)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 TEST_F(DataTest, readme_example)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         // executes the query and creates a 'user' table
         db <<
            "create table if not exists user ("
@@ -940,28 +867,20 @@ TEST_F(DataTest, shared_connection)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
+        auto con = db.connection();
         {
-            auto con = db.connection();
-            {
-                database db2(con);
-                int test = 0;
-                db2 << "select 1">> test;
-                if (test != 1)
-                {
-                    EXPECT_FALSE("exit(EXIT_FAILURE)");
-                }
-            }
-
+            database db2(con);
             int test = 0;
-            db << "select 1">> test;
+            db2 << "select 1">> test;
             if (test != 1)
             {
                 EXPECT_FALSE("exit(EXIT_FAILURE)");
             }
         }
+
+        int test = 0;
+        db << "select 1">> test;
+        EXPECT_EQ(test, 1);
     }
     catch (sqlite_exception e)
     {
@@ -973,19 +892,12 @@ TEST_F(DataTest, shared_connection)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 TEST_F(DataTest, simple_examples)
 {
     try
     {
-        sqlite::sqlite_config cfg;
-        cfg.db_key = DEFAULT_KEY;
-        database db(":memory:", cfg);
-
         db << "CREATE TABLE foo (a integer, b string);";
         db << "INSERT INTO foo VALUES (?, ?)" << 1 << "hello";
         db << "INSERT INTO foo VALUES (?, ?)" << 2 << "world";
@@ -1003,10 +915,7 @@ TEST_F(DataTest, simple_examples)
         long test = 0;
         db << sql>> test;
 
-        if (test != 2)
-        {
-            EXPECT_FALSE("exit(EXIT_FAILURE)");
-        }
+        EXPECT_EQ(test, 2);
 
     }
     catch (sqlite_exception e)
@@ -1019,9 +928,6 @@ TEST_F(DataTest, simple_examples)
         cout << "Unknown error\n";
         EXPECT_FALSE("exit(EXIT_FAILURE)");
     }
-
-    cout << "OK\n";
-    EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
 
 struct AutoDeleteFile
@@ -1050,18 +956,18 @@ public:
             auto timestamp = std::to_string(time(nullptr));
 
             _db  <<
-                "create table if not exists log_request ("
-                "   _id integer primary key autoincrement not null,"
-                "   username text,"
-                "   timestamp text,"
-                "   ip text,"
-                "   request text"
-                ");";
+                 "create table if not exists log_request ("
+                 "   _id integer primary key autoincrement not null,"
+                 "   username text,"
+                 "   timestamp text,"
+                 "   ip text,"
+                 "   request text"
+                 ");";
             _db  << "INSERT INTO log_request (username, timestamp, ip, request) VALUES (?,?,?,?);"
-                << username
-                << timestamp
-                << ip
-                << request;
+                 << username
+                 << timestamp
+                 << ip
+                 << request;
         }
         catch (const std::exception &e)
         {
@@ -1076,8 +982,8 @@ public:
             string username, timestamp, ip, request;
 
             _db  << "select username, timestamp, ip, request from log_request where username = ?"
-                << "test"
-                >> std::tie(username, timestamp, ip, request);
+                 << "test"
+                 >> std::tie(username, timestamp, ip, request);
 
             if (username == "test" && ip == "127.0.0.1" && request == "hello world")
             {
@@ -1093,27 +999,25 @@ public:
     }
 };
 
-TEST_F(DataTest, trycatchblocks)
+TEST(TryCatch, trycatchblocks)
 {
     // --------------------------------------------------------------------------
     // -- Test if writing to disk works properly from within a catch block.
     // --------------------------------------------------------------------------
+    bool bCatched = false;
     try
     {
         throw "hello";
     }
     catch (...)
     {
+        bCatched = true;
         sqlite::sqlite_config cfg;
         cfg.db_key = DEFAULT_KEY;
         AutoDeleteFile tmpF;
         DBInterface interf(tmpF.fname, cfg);
         interf.LogRequest("test", "127.0.0.1", "hello world");
-        if (!interf.TestData())
-        {
-            EXPECT_FALSE("exit( EXIT_FAILURE )");
-        }
+        EXPECT_TRUE(interf.TestData());
     }
-
-    EXPECT_TRUE("exit( EXIT_SUCCESS )");
+    EXPECT_TRUE(bCatched);
 }

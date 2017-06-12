@@ -108,7 +108,6 @@ error_log(Handler &&handler)
 #undef SQLITE_MODERN_CPP_ERROR_CODE
             default:
                 handler(sqlite_exception(errstr, "", error_code));
-                \
         }
     });
 
