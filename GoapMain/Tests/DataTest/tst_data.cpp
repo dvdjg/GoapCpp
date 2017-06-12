@@ -10,6 +10,8 @@
 #include <sqlite_modern_cpp.h>
 #include <sqlite_modern_cpp/log.h>
 
+#define DEFAULT_KEY "MyKey"
+
 using namespace sqlite;
 using namespace std;
 
@@ -107,7 +109,9 @@ TEST_F(DataTest, error_log)
             error_detected = true;
         }
         );
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
         db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
 
         try
@@ -128,7 +132,9 @@ TEST_F(DataTest, blob_example)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         db << "CREATE TABLE person (name TEXT, numbers BLOB);";
         db << "INSERT INTO person VALUES (?, ?)" << "bob" << vector<int> { 1, 2, 3, 4};
@@ -193,7 +199,9 @@ TEST_F(DataTest, boost_optional)
     try
     {
         // creates a database file 'dbfile.db' if it does not exists.
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
         db << "drop table if exists test";
         db <<
            "create table if not exists test ("
@@ -218,7 +226,9 @@ TEST_F(DataTest, boost_optional)
 
 TEST_F(DataTest, exception_dont_execute)
 {
-    database db(":memory:");
+    sqlite::sqlite_config cfg;
+    cfg.db_key = DEFAULT_KEY;
+    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT not null);";
 
     try
@@ -235,7 +245,9 @@ TEST_F(DataTest, exception_dont_execute)
 
 TEST_F(DataTest, exceptions)
 {
-    database db(":memory:");
+    sqlite::sqlite_config cfg;
+    cfg.db_key = DEFAULT_KEY;
+    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
     bool expception_thrown = false;
 
@@ -272,7 +284,9 @@ TEST_F(DataTest, exceptions)
 
 TEST_F(DataTest, extended_exceptions)
 {
-    database db(":memory:");
+    sqlite::sqlite_config cfg;
+    cfg.db_key = DEFAULT_KEY;
+    database db(":memory:", cfg);
     db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
     bool expception_thrown = false;
 
@@ -330,6 +344,7 @@ TEST_F(DataTest, flags)
     {
         TmpFile file;
         sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
         std::string enc;
         {
             database db(":memory:", cfg);
@@ -426,7 +441,9 @@ TEST_F(DataTest, functions)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         db.define("my_new_concat", [](std::string i, std::string j)
         {
@@ -522,7 +539,9 @@ TEST_F(DataTest, functors)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
         db << "CREATE TABLE tbl (id integer, name string);";
         db << "INSERT INTO tbl VALUES (?, ?);" << 1 << "hello";
         db << "INSERT INTO tbl VALUES (?, ?);" << 2 << "world";
@@ -597,7 +616,9 @@ TEST_F(DataTest, lvalue_functor_example)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         db <<
            "create table if not exists user ("
@@ -669,7 +690,9 @@ TEST_F(DataTest, nullptr_uniqueptr)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
         db << "CREATE TABLE tbl (id integer,age integer, name string, img blob);";
         db << "INSERT INTO tbl VALUES (?, ?, ?, ?);" << 1 << 24 << "bob" << vector<int> { 1, 2, 3};
         unique_ptr<string> ptr_null;
@@ -722,8 +745,9 @@ TEST_F(DataTest, prepared_statment)
 {
     try
     {
-
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         auto pps = db << "select ?"; // get a prepared parsed and ready statment
 
@@ -842,8 +866,9 @@ TEST_F(DataTest, readme_example)
 {
     try
     {
-        // creates a database file 'dbfile.db' if it does not exists.
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         // executes the query and creates a 'user' table
         db <<
@@ -915,8 +940,9 @@ TEST_F(DataTest, shared_connection)
 {
     try
     {
-
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
         {
             auto con = db.connection();
             {
@@ -956,7 +982,9 @@ TEST_F(DataTest, simple_examples)
 {
     try
     {
-        database db(":memory:");
+        sqlite::sqlite_config cfg;
+        cfg.db_key = DEFAULT_KEY;
+        database db(":memory:", cfg);
 
         db << "CREATE TABLE foo (a integer, b string);";
         db << "INSERT INTO foo VALUES (?, ?)" << 1 << "hello";
@@ -1077,9 +1105,9 @@ TEST_F(DataTest, trycatchblocks)
     catch (...)
     {
         sqlite::sqlite_config cfg;
-        cfg.db_key = "MyKey";
+        cfg.db_key = DEFAULT_KEY;
         AutoDeleteFile tmpF;
-        DBInterface interf(tmpF.fname);
+        DBInterface interf(tmpF.fname, cfg);
         interf.LogRequest("test", "127.0.0.1", "hello world");
         if (!interf.TestData())
         {
