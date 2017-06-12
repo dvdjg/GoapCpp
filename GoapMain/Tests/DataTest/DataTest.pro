@@ -12,7 +12,8 @@ CONFIG -= qt app_bundle
 
 SOURCES += \
     tst_data.cpp \
-    main.cpp
+    main.cpp \
+    tst_sqlite_encrypted.cpp
 
 INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
 DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
