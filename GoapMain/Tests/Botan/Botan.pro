@@ -12,7 +12,8 @@ CONFIG -= qt app_bundle
 
 SOURCES += \
     main.cpp \
-    test_compression.cpp
+    test_compression.cpp \
+    tests.cpp
 
 INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
 DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
@@ -23,23 +24,31 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/GoapLib.lib $$OUT_PWD/../../sqlite-amalgamation/debug/sqlite-amalgamation.lib
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite-amalgamation/libsqlite-amalgamation.a
 
-LIBS += \
-    -lsqlite-amalgamation$$SUFFIX \
-    -lGoapLib$$SUFFIX \
-    -lgmock
-
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -ldl \
-    -L/home/david/Programa/GoapCpp/GoapMain/3rdparty/botan/build_gcc  -lbotan-2
+
+LIBS += -ldl
+LIBS += -L$$top_srcdir/3rdparty/botan/build_gcc -lbotan-2
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
 LIBS +=  -lboost_system -lboost_filesystem
 }
 
-win32-msvc*:LIBS += \
+win32-msvc* {
+LIBS += \
+    -L$$top_srcdir/3rdparty/botan/build_msvc_d \
     -lgtest$$SUFFIX \
     -lbotan$$SUFFIX \
     -lUser32 -lAdvapi32
+}
+
+HEADERS += \
+    tests.h
+
+LIBS += \
+    -lsqlite-amalgamation$$SUFFIX \
+    -lGoapLib$$SUFFIX \
+    -lgmock
+

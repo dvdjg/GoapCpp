@@ -38,7 +38,7 @@ LIBS += -ldl \
     -L/home/david/Programa/GoapCpp/GoapMain/3rdparty/botan/build_gcc  -lbotan-2
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
-LIBS +=  -lboost_system -lboost_filesystem
+LIBS += -lboost_system -lboost_filesystem
 }
 
 win32-msvc*:LIBS += \

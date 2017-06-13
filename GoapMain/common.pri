@@ -46,9 +46,11 @@ win32 {
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
 
+    INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
+
     win32-msvc*:LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -laf
 }
 unix {
-    INCLUDEPATH += /opt/arrayfire-3/include
+    INCLUDEPATH += /opt/arrayfire-3/include $$top_srcdir/3rdparty/botan/build_gcc
     LIBS += -L /opt/arrayfire-3/lib -laf
 }
