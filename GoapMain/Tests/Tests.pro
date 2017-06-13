@@ -3,4 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     FactoryTest \
     DataTest \
-    ArrayFireTest
+    ArrayFireTest \
+    Botan

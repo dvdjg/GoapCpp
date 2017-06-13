@@ -973,11 +973,6 @@ TEST_F(SQLiteModern, simple_examples)
     cout << "OK\n";
     EXPECT_TRUE("exit(EXIT_SUCCESS)");
 }
-#ifdef __has_include
-#if __cplusplus > 201402 && __has_include(<variant>)
-#define MODERN_SQLITE_STD_VARIANT_SUPPORT
-#endif
-#endif
 
 TEST_F(SQLiteModern, variant)
 {
