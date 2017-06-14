@@ -42,7 +42,8 @@ HEADERS += \
     gzguts.h \
     deflate.h \
     crypt.h \
-    crc32.h
+    crc32.h \
+    mztools.h
 
 SOURCES += \
     zutil.c \
@@ -63,7 +64,8 @@ SOURCES += \
     deflate.c \
     crc32.c \
     compress.c \
-    adler32.c
+    adler32.c \
+    mztools.c
 
 unix {
     target.path = /usr/lib
