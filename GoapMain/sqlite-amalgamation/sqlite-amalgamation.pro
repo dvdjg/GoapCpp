@@ -16,7 +16,7 @@ CONFIG += c++14
     error(Could not find the common.pri file!)
 }
 
-win32-msvc*:INCLUDEPATH += D:/OneDrive/Programa/GoapCpp/GoapMain/3rdparty/botan/build_msvc
+
 #win32-msvc*:LIBS += -L"D:/OneDrive/Programa/GoapCpp/GoapMain/3rdparty/botan/build_msvc" -lbotan
 
 SOURCES += \
@@ -28,8 +28,8 @@ HEADERS += \
     sqlite3ext.h \
     codec_c_interface.h \
     codec.h
+
 unix {
-    INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
     target.path = /usr/lib
     INSTALLS += target
 }

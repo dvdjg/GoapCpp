@@ -39,18 +39,16 @@ DESTDIR=$$DESTDIRCOMMON
 
 LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
 
-win32 {
+win32-msvc* {
     INCLUDEPATH += \
         D:/local/boost_1_64_0 \
         "C:/Program Files/ArrayFire/v3/include" \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
 
-    INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
-
-    win32-msvc*:LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -laf
+    LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -laf
 }
 unix {
-    INCLUDEPATH += /opt/arrayfire-3/include $$top_srcdir/3rdparty/botan/build_gcc
+    INCLUDEPATH += /opt/arrayfire-3/include
     LIBS += -L /opt/arrayfire-3/lib -laf
 }

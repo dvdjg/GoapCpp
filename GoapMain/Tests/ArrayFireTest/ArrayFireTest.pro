@@ -43,9 +43,8 @@ LIBS += \
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
-QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -ldl \
-    -L/home/david/Programa/GoapCpp/GoapMain/3rdparty/botan/build_gcc  -lbotan-2
+QMAKE_LFLAGS += -pthread
+LIBS += -ldl
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
 LIBS +=  -lboost_system -lboost_filesystem

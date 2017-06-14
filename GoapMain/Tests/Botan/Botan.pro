@@ -30,17 +30,12 @@ QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
 
 LIBS += -ldl
-LIBS += -L$$top_srcdir/3rdparty/botan/build_gcc -lbotan-2
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
 LIBS +=  -lboost_system -lboost_filesystem
-}
-
-win32-msvc* {
+} else:win32-msvc* {
 LIBS += \
-    -L$$top_srcdir/3rdparty/botan/build_msvc_d \
     -lgtest$$SUFFIX \
-    -lbotan$$SUFFIX \
     -lUser32 -lAdvapi32
 }
 
@@ -50,5 +45,6 @@ HEADERS += \
 LIBS += \
     -lsqlite-amalgamation$$SUFFIX \
     -lGoapLib$$SUFFIX \
+    -lbotan$$SUFFIX \
     -lgmock
 

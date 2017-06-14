@@ -28,14 +28,14 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 LIBS += \
     -lsqlite-amalgamation$$SUFFIX \
     -lGoapLib$$SUFFIX \
+    -lbotan$$SUFFIX \
     -lgmock
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -ldl \
-    -L/home/david/Programa/GoapCpp/GoapMain/3rdparty/botan/build_gcc  -lbotan-2
+LIBS += -ldl
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
 LIBS += -lboost_system -lboost_filesystem
@@ -43,5 +43,4 @@ LIBS += -lboost_system -lboost_filesystem
 
 win32-msvc*:LIBS += \
     -lgtest$$SUFFIX \
-    -lbotan$$SUFFIX \
     -lUser32 -lAdvapi32

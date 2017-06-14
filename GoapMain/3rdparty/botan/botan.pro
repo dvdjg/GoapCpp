@@ -1,4 +1,8 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    build_msvc
+
+win32-msvc* {
+SUBDIRS += build_msvc
+} else {
+SUBDIRS += build_gcc
+}
