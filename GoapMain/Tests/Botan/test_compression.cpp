@@ -90,7 +90,7 @@ TEST_F(Compression_Tests, run)
                 continue;
             }
 
-            // EXPECT_EQ(c->name(), d->name());
+            EXPECT_NE(c->name(), d->name());
 
             const Botan::secure_vector<uint8_t> empty;
             const Botan::secure_vector<uint8_t> all_zeros(text_len, 0);
