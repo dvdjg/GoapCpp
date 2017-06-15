@@ -23,7 +23,10 @@ SOURCES += \
     botan_all_aesni.cpp \
     botan_all_avx2.cpp \
     botan_all_rdrand.cpp \
-    botan_all_ssse3.cpp
+    botan_all_ssse3.cpp \
+    botan_all_rdseed.cpp \
+    botan_all_sha_sse4.1_ssse3.cpp \
+    botan_all_sha_sse4.1.cpp
 
 HEADERS += \
     botan_all.h \
