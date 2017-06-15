@@ -10,7 +10,7 @@ LIB_LINK_CMD   = $(LINKER) /DLL
 CLI_LINK_CMD   = $(LINKER)
 TEST_LINK_CMD  = $(LINKER)
 
-LIB_LINKS_TO   = advapi32.lib user32.lib
+LIB_LINKS_TO   = advapi32.lib boost_filesystem boost_system user32.lib z
 CLI_LINKS_TO   = $(LIB_LINKS_TO)
 TEST_LINKS_TO  = $(LIB_LINKS_TO)
 

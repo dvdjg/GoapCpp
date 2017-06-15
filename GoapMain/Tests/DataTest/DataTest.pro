@@ -26,21 +26,22 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite-amalgamation/libsqlite-amalgamation.a
 
 LIBS += \
+    -lbotan$$SUFFIX \
     -lsqlite-amalgamation$$SUFFIX \
     -lGoapLib$$SUFFIX \
-    -lbotan$$SUFFIX \
+    -lzip$$SUFFIX \
     -lgmock
+
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -ldl
 LIBS += -lgtest
-LIBS += -lbz2 -llzma -lz -ldl
-LIBS += -lboost_system -lboost_filesystem
-}
-
-win32-msvc*:LIBS += \
+LIBS += -lbz2 -llzma -ldl
+LIBS +=  -lboost_system -lboost_filesystem
+} else:win32-msvc* {
+LIBS += \
     -lgtest$$SUFFIX \
     -lUser32 -lAdvapi32
+}

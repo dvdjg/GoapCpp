@@ -47,7 +47,7 @@ QMAKE_LFLAGS += -pthread
 LIBS += -ldl
 LIBS += -lgtest
 LIBS += -lbz2 -llzma -lz -ldl
-LIBS +=  -lboost_system -lboost_filesystem
+LIBS += -lboost_system -lboost_filesystem
 }
 
 win32-msvc*:LIBS += -lgtest$$SUFFIX

@@ -32,6 +32,9 @@ HEADERS += \
     pkcs11f.h \
     pkcs11t.h
 
+INCLUDEPATH += ../..//zlib
+LIBS += -lzip
+
 unix {
     target.path = /usr/lib
     INSTALLS += target

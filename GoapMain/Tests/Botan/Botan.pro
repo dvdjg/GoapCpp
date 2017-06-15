@@ -34,14 +34,16 @@ LIBS += \
     -lbotan$$SUFFIX \
     -lsqlite-amalgamation$$SUFFIX \
     -lGoapLib$$SUFFIX \
+    -lzip$$SUFFIX \
     -lgmock
+
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
 LIBS += -lgtest
-LIBS += -lbz2 -llzma -lz -ldl
+LIBS += -lbz2 -llzma -ldl
 LIBS +=  -lboost_system -lboost_filesystem
 } else:win32-msvc* {
 LIBS += \

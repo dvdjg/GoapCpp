@@ -10611,6 +10611,265 @@ void Comb4P::final_result(uint8_t out[])
 }
 
 /*
+* Compression Utils
+* (C) 2014,2016 Jack Lloyd
+*
+* Botan is released under the Simplified BSD License (see license.txt)
+*/
+
+
+namespace Botan {
+
+void* Compression_Alloc_Info::do_malloc(size_t n, size_t size)
+   {
+   const size_t total_size = n * size;
+
+   BOTAN_ASSERT_EQUAL(total_size / size, n, "Overflow check");
+
+   // TODO maximum length check here?
+
+   void* ptr = std::malloc(total_size);
+
+   /*
+   * Return null rather than throwing here as we are being called by a
+   * C library and it may not be possible for an exception to unwind
+   * the call stack from here. The compression library is expecting a
+   * function written in C and a null return on error, which it will
+   * send upwards to the compression wrappers.
+   */
+
+   if(ptr)
+      {
+      std::memset(ptr, 0, total_size);
+      m_current_allocs[ptr] = total_size;
+      }
+
+   return ptr;
+   }
+
+void Compression_Alloc_Info::do_free(void* ptr)
+   {
+   if(ptr)
+      {
+      auto i = m_current_allocs.find(ptr);
+
+      if(i == m_current_allocs.end())
+         throw Exception("Compression_Alloc_Info::free got pointer not allocated by us");
+
+      secure_scrub_memory(ptr, i->second);
+      std::free(ptr);
+      m_current_allocs.erase(i);
+      }
+   }
+
+void Stream_Compression::clear()
+   {
+   m_stream.reset();
+   }
+
+void Stream_Compression::start(size_t level)
+   {
+   m_stream.reset(make_stream(level));
+   }
+
+void Stream_Compression::process(secure_vector<uint8_t>& buf, size_t offset, uint32_t flags)
+   {
+   BOTAN_ASSERT(m_stream, "Initialized");
+   BOTAN_ASSERT(buf.size() >= offset, "Offset is sane");
+
+   if(m_buffer.size() < buf.size() + offset)
+      m_buffer.resize(buf.size() + offset);
+
+   // If the output buffer has zero length, .data() might return nullptr. This would
+   // make some compression algorithms (notably those provided by zlib) fail.
+   // Any small positive value works fine, but we choose 32 as it is the smallest power
+   // of two that is large enough to hold all the headers and trailers of the common
+   // formats, preventing further resizings to make room for output data.
+   if(m_buffer.size() == 0)
+      m_buffer.resize(32);
+
+   m_stream->next_in(buf.data() + offset, buf.size() - offset);
+   m_stream->next_out(m_buffer.data() + offset, m_buffer.size() - offset);
+
+   while(true)
+      {
+      m_stream->run(flags);
+
+      if(m_stream->avail_out() == 0)
+         {
+         const size_t added = 8 + m_buffer.size();
+         m_buffer.resize(m_buffer.size() + added);
+         m_stream->next_out(m_buffer.data() + m_buffer.size() - added, added);
+         }
+      else if(m_stream->avail_in() == 0)
+         {
+         m_buffer.resize(m_buffer.size() - m_stream->avail_out());
+         break;
+         }
+      }
+
+   copy_mem(m_buffer.data(), buf.data(), offset);
+   buf.swap(m_buffer);
+   }
+
+void Stream_Compression::update(secure_vector<uint8_t>& buf, size_t offset, bool flush)
+   {
+   BOTAN_ASSERT(m_stream, "Initialized");
+   process(buf, offset, flush ? m_stream->flush_flag() : m_stream->run_flag());
+   }
+
+void Stream_Compression::finish(secure_vector<uint8_t>& buf, size_t offset)
+   {
+   BOTAN_ASSERT(m_stream, "Initialized");
+   process(buf, offset, m_stream->finish_flag());
+   clear();
+   }
+
+void Stream_Decompression::clear()
+   {
+   m_stream.reset();
+   }
+
+void Stream_Decompression::start()
+   {
+   m_stream.reset(make_stream());
+   }
+
+void Stream_Decompression::process(secure_vector<uint8_t>& buf, size_t offset, uint32_t flags)
+   {
+   BOTAN_ASSERT(m_stream, "Initialized");
+   BOTAN_ASSERT(buf.size() >= offset, "Offset is sane");
+
+   if(m_buffer.size() < buf.size() + offset)
+      m_buffer.resize(buf.size() + offset);
+
+   m_stream->next_in(buf.data() + offset, buf.size() - offset);
+   m_stream->next_out(m_buffer.data() + offset, m_buffer.size() - offset);
+
+   while(true)
+      {
+      const bool stream_end = m_stream->run(flags);
+
+      if(stream_end)
+         {
+         if(m_stream->avail_in() == 0) // all data consumed?
+            {
+            m_buffer.resize(m_buffer.size() - m_stream->avail_out());
+            clear();
+            break;
+            }
+
+         // More data follows: try to process as a following stream
+         const size_t read = (buf.size() - offset) - m_stream->avail_in();
+         start();
+         m_stream->next_in(buf.data() + offset + read, buf.size() - offset - read);
+         }
+
+      if(m_stream->avail_out() == 0)
+         {
+         const size_t added = 8 + m_buffer.size();
+         m_buffer.resize(m_buffer.size() + added);
+         m_stream->next_out(m_buffer.data() + m_buffer.size() - added, added);
+         }
+      else if(m_stream->avail_in() == 0)
+         {
+         m_buffer.resize(m_buffer.size() - m_stream->avail_out());
+         break;
+         }
+      }
+
+   copy_mem(m_buffer.data(), buf.data(), offset);
+   buf.swap(m_buffer);
+   }
+
+void Stream_Decompression::update(secure_vector<uint8_t>& buf, size_t offset)
+   {
+   process(buf, offset, m_stream->run_flag());
+   }
+
+void Stream_Decompression::finish(secure_vector<uint8_t>& buf, size_t offset)
+   {
+   if(buf.size() != offset || m_stream.get())
+      process(buf, offset, m_stream->finish_flag());
+
+   if(m_stream.get())
+      throw Exception(name() + " finished but not at stream end");
+   }
+
+}
+/*
+* Compression Factory
+* (C) 2014,2016 Jack Lloyd
+*
+* Botan is released under the Simplified BSD License (see license.txt)
+*/
+
+#include <cstdlib>
+
+#if defined(BOTAN_HAS_ZLIB)
+#endif
+
+#if defined(BOTAN_HAS_BZIP2)
+#endif
+
+#if defined(BOTAN_HAS_LZMA)
+#endif
+
+namespace Botan {
+
+Compression_Algorithm* make_compressor(const std::string& name)
+   {
+#if defined(BOTAN_HAS_ZLIB)
+   if(name == "Zlib" || name == "zlib")
+      return new Zlib_Compression;
+   if(name == "Gzip" || name == "gzip" || name == "gz")
+      return new Gzip_Compression;
+   if(name == "Deflate" || name == "deflate")
+      return new Deflate_Compression;
+#endif
+
+#if defined(BOTAN_HAS_BZIP2)
+   if(name == "bzip2" || name == "bz2" || name == "Bzip2")
+      return new Bzip2_Compression;
+#endif
+
+#if defined(BOTAN_HAS_LZMA)
+   if(name == "lzma" || name == "xz" || name == "LZMA")
+      return new LZMA_Compression;
+#endif
+
+   BOTAN_UNUSED(name);
+   return nullptr;
+   }
+
+Decompression_Algorithm* make_decompressor(const std::string& name)
+   {
+#if defined(BOTAN_HAS_ZLIB)
+   if(name == "Zlib" || name == "zlib")
+      return new Zlib_Decompression;
+   if(name == "Gzip" || name == "gzip" || name == "gz")
+      return new Gzip_Decompression;
+   if(name == "Deflate" || name == "deflate")
+      return new Deflate_Decompression;
+#endif
+
+#if defined(BOTAN_HAS_BZIP2)
+   if(name == "bzip2" || name == "bz2" || name == "Bzip2")
+      return new Bzip2_Decompression;
+#endif
+
+#if defined(BOTAN_HAS_LZMA)
+   if(name == "lzma" || name == "xz" || name == "LZMA")
+      return new LZMA_Decompression;
+#endif
+
+   BOTAN_UNUSED(name);
+   return nullptr;
+   }
+
+
+}
+/*
 * CRC24
 * (C) 1999-2007 Jack Lloyd
 *
@@ -31310,7 +31569,6 @@ Lion::Lion(HashFunction* hash, StreamCipher* cipher, size_t bs) :
 * Botan is released under the Simplified BSD License (see license.txt)
 */
 
-#include <cstdlib>
 
 namespace Botan {
 
@@ -71615,6 +71873,182 @@ void XTS_Decryption::finish(secure_vector<uint8_t>& buffer, size_t offset)
 
       buffer += last;
       }
+   }
+
+}
+/*
+* Zlib Compressor
+* (C) 2001 Peter J Jones
+*     2001-2007,2014 Jack Lloyd
+*     2006 Matt Johnston
+*
+* Botan is released under the Simplified BSD License (see license.txt)
+*/
+
+#include <zlib.h>
+
+namespace Botan {
+
+namespace {
+
+class Zlib_Stream : public Zlib_Style_Stream<z_stream, Bytef>
+   {
+   public:
+      Zlib_Stream()
+         {
+         streamp()->opaque = alloc();
+         streamp()->zalloc = Compression_Alloc_Info::malloc<unsigned int>;
+         streamp()->zfree = Compression_Alloc_Info::free;
+         }
+
+      uint32_t run_flag() const override { return Z_NO_FLUSH; }
+      uint32_t flush_flag() const override { return Z_SYNC_FLUSH; }
+      uint32_t finish_flag() const override { return Z_FINISH; }
+
+      int compute_window_bits(int wbits, int wbits_offset) const
+         {
+         if(wbits_offset == -1)
+            return -wbits;
+         else
+            return wbits + wbits_offset;
+         }
+   };
+
+class Zlib_Compression_Stream : public Zlib_Stream
+   {
+   public:
+      Zlib_Compression_Stream(size_t level, int wbits, int wbits_offset = 0)
+         {
+         wbits = compute_window_bits(wbits, wbits_offset);
+
+         if(level >= 9)
+            level = 9;
+         else if(level == 0)
+            level = 6;
+
+         int rc = ::deflateInit2(streamp(), level, Z_DEFLATED, wbits, 8, Z_DEFAULT_STRATEGY);
+
+         if(rc != Z_OK)
+            throw Exception("zlib deflate initialization failed");
+         }
+
+      ~Zlib_Compression_Stream()
+         {
+         ::deflateEnd(streamp());
+         }
+
+      bool run(uint32_t flags) override
+         {
+         int rc = ::deflate(streamp(), flags);
+
+         if(rc == Z_MEM_ERROR)
+            throw Exception("zlib memory allocation failure");
+         else if(rc != Z_OK && rc != Z_STREAM_END && rc != Z_BUF_ERROR)
+            throw Exception("zlib deflate error " + std::to_string(rc));
+
+         return (rc == Z_STREAM_END);
+         }
+   };
+
+class Zlib_Decompression_Stream : public Zlib_Stream
+   {
+   public:
+      Zlib_Decompression_Stream(int wbits, int wbits_offset = 0)
+         {
+         int rc = ::inflateInit2(streamp(), compute_window_bits(wbits, wbits_offset));
+
+         if(rc == Z_MEM_ERROR)
+            throw Exception("zlib memory allocation failure");
+         else if(rc != Z_OK)
+            throw Exception("zlib inflate initialization failed");
+         }
+
+      ~Zlib_Decompression_Stream()
+         {
+         ::inflateEnd(streamp());
+         }
+
+      bool run(uint32_t flags) override
+         {
+         int rc = ::inflate(streamp(), flags);
+
+         if(rc == Z_MEM_ERROR)
+            throw Exception("zlib memory allocation failure");
+         else if(rc != Z_OK && rc != Z_STREAM_END && rc != Z_BUF_ERROR)
+            throw Exception("zlib inflate error " + std::to_string(rc));
+
+         return (rc == Z_STREAM_END);
+         }
+   };
+
+class Deflate_Compression_Stream : public Zlib_Compression_Stream
+   {
+   public:
+      Deflate_Compression_Stream(size_t level, int wbits) :
+         Zlib_Compression_Stream(level, wbits, -1) {}
+   };
+
+class Deflate_Decompression_Stream : public Zlib_Decompression_Stream
+   {
+   public:
+      explicit Deflate_Decompression_Stream(int wbits) : Zlib_Decompression_Stream(wbits, -1) {}
+   };
+
+class Gzip_Compression_Stream : public Zlib_Compression_Stream
+   {
+   public:
+      Gzip_Compression_Stream(size_t level, int wbits, uint8_t os_code) :
+         Zlib_Compression_Stream(level, wbits, 16)
+         {
+         clear_mem(&m_header, 1);
+         m_header.os = os_code;
+         m_header.time = std::time(nullptr);
+
+         int rc = deflateSetHeader(streamp(), &m_header);
+         if(rc != Z_OK)
+            throw Exception("setting gzip header failed");
+         }
+
+   private:
+      ::gz_header m_header;
+   };
+
+class Gzip_Decompression_Stream : public Zlib_Decompression_Stream
+   {
+   public:
+      explicit Gzip_Decompression_Stream(int wbits) : Zlib_Decompression_Stream(wbits, 16) {}
+   };
+
+}
+
+Compression_Stream* Zlib_Compression::make_stream(size_t level) const
+   {
+   return new Zlib_Compression_Stream(level, 15);
+   }
+
+Compression_Stream* Zlib_Decompression::make_stream() const
+   {
+   return new Zlib_Decompression_Stream(15);
+   }
+
+Compression_Stream* Deflate_Compression::make_stream(size_t level) const
+   {
+   return new Deflate_Compression_Stream(level, 15);
+   }
+
+Compression_Stream* Deflate_Decompression::make_stream() const
+   {
+   return new Deflate_Decompression_Stream(15);
+   }
+
+Compression_Stream* Gzip_Compression::make_stream(size_t level) const
+   {
+   return new Gzip_Compression_Stream(level, 15, m_os_code);
+   }
+
+Compression_Stream* Gzip_Decompression::make_stream() const
+   {
+   return new Gzip_Decompression_Stream(15);
    }
 
 }
