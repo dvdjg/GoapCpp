@@ -42,15 +42,18 @@ DESTDIR=$$DESTDIRCOMMON
 LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
 
 win32-msvc* {
+    LIBPRE=
+    LIBPOST=.lib
     INCLUDEPATH += \
         D:/local/boost_1_64_0 \
         "C:/Program Files/ArrayFire/v3/include" \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
-
     LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -LD:/local/boost_1_64_0/lib64-msvc-14.1 -laf
 }
 unix {
+    LIBPRE=lib
+    LIBPOST=.a
     INCLUDEPATH += /opt/arrayfire-3/include
     LIBS += -L /opt/arrayfire-3/lib -laf
 }

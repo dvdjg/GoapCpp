@@ -24,16 +24,16 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a
 
 LIBS += \
-    -lGoapLib$$SUFFIX \
-    -lgmock
+    -lGoapLib$$SUFFIX
+
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing -fopenmp
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -lgtest
+LIBS += -lgtest -lgmock
 } else:win32-msvc* {
 QMAKE_CXXFLAGS += -openmp
 QMAKE_CFLAGS += -openmp
-LIBS += -lgtest$$SUFFIX
+LIBS += -lgtest$$SUFFIX -lgmock$$SUFFIX
 }
 # win32-msvc*:LIBS += -lbotan$$SUFFIX

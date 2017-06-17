@@ -29,19 +29,18 @@ LIBS += \
     -lbotan$$SUFFIX \
     -lsqlite$$SUFFIX \
     -lGoapLib$$SUFFIX \
-    -lz$$SUFFIX \
-    -lgmock
-
+    -lz$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -lgtest
+LIBS += -lgtest -lgmock
 LIBS += -lbz2 -llzma -ldl
 LIBS +=  -lboost_system -lboost_filesystem
 } else:win32-msvc* {
 LIBS += \
     -lgtest$$SUFFIX \
+    -lgmock$$SUFFIX \
     -lUser32 -lAdvapi32
 }

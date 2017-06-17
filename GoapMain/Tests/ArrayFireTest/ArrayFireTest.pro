@@ -22,10 +22,6 @@ SOURCES += \
     tst_arrayfire.cpp \
     main.cpp
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/release/ -lGoapLib
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../GoapLib/debug/ -lGoapLib
-#else:unix: LIBS += -L$$OUT_PWD/../../GoapLib/ -lGoapLib
-
 INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 
@@ -37,17 +33,16 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 
 LIBS += \
     -lsqlite$$SUFFIX \
-    -lGoapLib$$SUFFIX \
-    -lgmock
+    -lGoapLib$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread
 LIBS += -ldl
-LIBS += -lgtest
+LIBS += -lgtest -lgmock
 LIBS += -lbz2 -llzma -lz -ldl
 LIBS += -lboost_system -lboost_filesystem
 }
 
-win32-msvc*:LIBS += -lgtest$$SUFFIX
+win32-msvc*:LIBS += -lgtest$$SUFFIX -lgmock$$SUFFIX

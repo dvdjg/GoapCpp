@@ -4,4 +4,4 @@ SUBDIRS += \
     FactoryTest \
     DataTest \
     ArrayFireTest \
-    Botan
+    BotanTest
