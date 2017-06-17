@@ -14,7 +14,7 @@ CONFIG += staticlib
     error(Could not find the common.pri file!)
 }
 
-INCLUDEPATH += ../Interfaces ../Factory
+INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half
 
 SOURCES += goaplibrary.cpp \
     statevalue.cpp \
