@@ -4,7 +4,7 @@ QT       -= core gui
 TEMPLATE = lib
 CONFIG+= staticlib
 
-!include(../common.pri) {
+!include(../../common.pri) {
     error(Could not find the common.pri file!)
 }
 

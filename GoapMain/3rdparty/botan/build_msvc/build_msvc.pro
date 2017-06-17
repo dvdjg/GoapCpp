@@ -33,7 +33,7 @@ HEADERS += \
     pkcs11t.h
 
 INCLUDEPATH += ../..//zlib
-LIBS += -lzip
+LIBS += -lz
 
 unix {
     target.path = /usr/lib

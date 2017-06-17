@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = zip
+TARGET = z
 QT       -= core gui
 
 TEMPLATE = lib

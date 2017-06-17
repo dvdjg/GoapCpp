@@ -6,13 +6,13 @@
 
 QT       -= core gui
 
-TARGET = sqlite-amalgamation
+TARGET = sqlite
 TEMPLATE = lib
 CONFIG += staticlib
 CONFIG += c++14
 
 
-!include(../common.pri) {
+!include(../../common.pri) {
     error(Could not find the common.pri file!)
 }
 

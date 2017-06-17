@@ -19,17 +19,17 @@ SOURCES += distributedpersistence.cpp
 
 HEADERS += distributedpersistence.h
 
-INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
-DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/sqlite_modern_cpp $$top_srcdir/sqlite-amalgamation
+INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
+DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 
-#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/release/libGoapLib.a $$OUT_PWD/../sqlite-amalgamation/release/libsqlite-amalgamation$$SUFFIX.a
-#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/debug/libGoapLib.a $$OUT_PWD/../sqlite-amalgamation/debug/libsqlite-amalgamation$$SUFFIX.a
-#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/release/GoapLib.lib $$OUT_PWD/../sqlite-amalgamation/release/sqlite-amalgamation$$SUFFIX.lib
-#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/debug/GoapLib.lib $$OUT_PWD/../sqlite-amalgamation/debug/sqlite-amalgamation$$SUFFIX.lib
-#else:unix: PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/libGoapLib.a $$OUT_PWD/../sqlite-amalgamation/libsqlite-amalgamation.a
+#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/release/libGoapLib.a $$OUT_PWD/../sqlite/release/libsqlite$$SUFFIX.a
+#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/debug/libGoapLib.a $$OUT_PWD/../sqlite/debug/libsqlite$$SUFFIX.a
+#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/release/GoapLib.lib $$OUT_PWD/../sqlite/release/sqlite$$SUFFIX.lib
+#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/debug/GoapLib.lib $$OUT_PWD/../sqlite/debug/sqlite$$SUFFIX.lib
+#else:unix: PRE_TARGETDEPS += $$OUT_PWD/../GoapLib/libGoapLib.a $$OUT_PWD/../sqlite/libsqlite.a
 
 LIBS += \
-    -lsqlite-amalgamation$$SUFFIX \
+    -lsqlite$$SUFFIX \
     -lGoapLib$$SUFFIX
 
 unix {
