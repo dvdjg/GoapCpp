@@ -34,7 +34,6 @@ LIBS += -lgtest
 } else:win32-msvc* {
 QMAKE_CXXFLAGS += -openmp
 QMAKE_CFLAGS += -openmp
-QMAKE_LFLAGS += -openmp
 LIBS += -lgtest$$SUFFIX
 }
 # win32-msvc*:LIBS += -lbotan$$SUFFIX

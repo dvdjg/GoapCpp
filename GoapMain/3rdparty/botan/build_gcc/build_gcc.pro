@@ -12,7 +12,6 @@ win32-msvc* {
 QMAKE_CXXFLAGS += -bigobj
 QMAKE_LFLAGS += -bigobj
 QMAKE_CXXFLAGS+= -openmp
-QMAKE_LFLAGS +=  -openmp
 } else {
 QMAKE_CXXFLAGS+= -fopenmp
 QMAKE_LFLAGS +=  -fopenmp

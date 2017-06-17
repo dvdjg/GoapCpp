@@ -23,18 +23,17 @@ DEPENDPATH += $$top_srcdir/3rdparty/sqlite
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../sqlite/libsqlite.a
 
 LIBS += -lsqlite$$SUFFIX \
-    -lbotan$$SUFFIX
+    -lbotan$$SUFFIX -lz
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing -fopenmp
 QMAKE_LFLAGS += -pthread -fopenmp
 LIBS +=  -lboost_system -lboost_filesystem
-LIBS += -lbz2 -llzma -lz -ldl
+LIBS += -lbz2 -llzma -ldl
 } else:win32-msvc* {
 LIBS += -lUser32 -lAdvapi32
 QMAKE_CXXFLAGS += -openmp
 QMAKE_CFLAGS += -openmp
-QMAKE_LFLAGS += -openmp
 }
 
