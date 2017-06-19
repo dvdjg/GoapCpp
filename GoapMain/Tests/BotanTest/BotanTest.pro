@@ -30,24 +30,27 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/GoapLib.lib $$OUT_PWD/../../sqlite/debug/sqlite.lib
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite/libsqlite.a
 
+PRE_TARGETDEPS += \
+    $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
+
 LIBS += \
     -lbotan$$SUFFIX \
     -lsqlite$$SUFFIX \
     -lGoapLib$$SUFFIX \
-    -lz$$SUFFIX \
-    -lgmock
-
+    -lz$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -lgtest
+LIBS += -lgtest -lgmock
 LIBS += -lbz2 -llzma -ldl
 LIBS +=  -lboost_system -lboost_filesystem
 } else:win32-msvc* {
 LIBS += \
     -lgtest$$SUFFIX \
+    -lgmock$$SUFFIX \
     -lUser32 -lAdvapi32
 }
 
