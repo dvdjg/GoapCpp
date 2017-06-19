@@ -6,6 +6,12 @@
 namespace goap
 {
 
+#if defined(BOOST_SMART_PTR_INTRUSIVE_PTR_HPP_INCLUDED)
+#if !defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
+#define HAS_BOOST_SMART_PTR_INTRUSIVE_PTR
+#endif
+#endif
+
 /** @brief HAS_MEMBER(member_type, member_call, templ_postfix)
     Check for the existence of a member callable with the `member_call` signature
     returning a type converitible to `member_type`.

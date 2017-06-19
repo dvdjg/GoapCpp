@@ -4,7 +4,6 @@
 #include <mutex>
 #include <queue>
 #include <memory>
-#include <boost/intrusive_ptr.hpp>
 #include "instancedeleter.h"
 
 namespace goap
@@ -123,12 +122,18 @@ class RecyclableWrapper : public P
 {
 public:
     typedef ReuseObjectPool<RecyclableWrapper<P>> pool_type;
+#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
     typedef typename std::conditional<has_intrusive_ptr<RecyclableWrapper<P>>::value, boost::intrusive_ptr<RecyclableWrapper<P>>, std::shared_ptr<RecyclableWrapper<P>>>::type smart_pointer;
+#else
+    typedef std::shared_ptr<RecyclableWrapper<P>> smart_pointer;
+#endif
+
     RecyclableWrapper() : P() {}
     virtual void suicide()
     {
         pool_type::singleton()->recycle(this);
     }
+#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
     template<typename R = RecyclableWrapper<P>>
     static typename std::enable_if <has_intrusive_ptr<R>::value, boost::intrusive_ptr<R>>::type
             createFromPool()
@@ -144,6 +149,17 @@ public:
             p->suicide();
         });
     }
+#else
+    template<typename R = RecyclableWrapper<P>>
+    static std::shared_ptr<R>
+    createFromPool()
+    {
+        return std::shared_ptr<R>(createFromPoolRaw(), [ ](R * p)
+        {
+            p->suicide();
+        });
+    }
+#endif
     static RecyclableWrapper<P> *createFromPoolRaw()
     {
         return getPool()->create();

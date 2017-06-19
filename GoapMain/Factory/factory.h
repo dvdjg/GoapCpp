@@ -9,13 +9,9 @@
 #include <list>
 #include <iostream>
 #include <mutex>
-#include "refcounter.h"
+#include "hasmember.h"
+#include "instancedeleter.h"
 
-#if defined(BOOST_SMART_PTR_INTRUSIVE_PTR_HPP_INCLUDED)
-#if !defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
-#define HAS_BOOST_SMART_PTR_INTRUSIVE_PTR
-#endif
-#endif
 
 namespace goap
 {
@@ -190,8 +186,6 @@ using namespace fact;
 template<typename Base, typename Key = std::string>
 class Factory : public Base
 {
-    IMPLEMENT_REFCOUNTER()
-
 public:
     typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
@@ -334,9 +328,6 @@ Factory<Base, Key>::createAll(Args &&... args) const
 template<typename T>
 inline void copyDefault(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
 {
-    //T *ptr = right.get();
-    //std::shared_ptr<T> ret{ptr, &instanceSuicider<T>};
-    //left = ret;
     left = right;
 }
 
