@@ -10,7 +10,8 @@ CONFIG -= qt
 }
 
 SOURCES += \
-    tst_factorytesttest.cpp \
+    tst_factory_all.cpp \
+    tst_factory_nocount.cpp \
     main.cpp \
     tst_signals.cpp
 

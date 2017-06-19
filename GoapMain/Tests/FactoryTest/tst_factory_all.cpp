@@ -1,4 +1,4 @@
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <functional>
 #include <future>
@@ -10,6 +10,9 @@
 
 
 using namespace goap;
+
+namespace goap_boost
+{
 
 class IStringData : virtual public IRefCounter
 {
@@ -25,6 +28,7 @@ public:
     virtual void setData(const std::string &getData) = 0;
 };
 
+/*
 class MockIRefCounter : public IRefCounter
 {
 public:
@@ -40,6 +44,7 @@ public:
     MOCK_METHOD1(setData, void(const std::string &getData));
     MOCK_CONST_METHOD0(getData, const std::string & ());
 };
+*/
 
 class NonCounted : virtual public IStringDataFromRoot
 {
@@ -111,11 +116,11 @@ Counted *createCounted(const std::string &str)
 }
 
 
-class FactoryTest : public ::testing::Test
+class FactoryAllTest : public ::testing::Test
 {
 
 public:
-    FactoryTest()
+    FactoryAllTest()
     {
     }
 protected:
@@ -141,7 +146,11 @@ protected:
     virtual void TearDown() {  }
 };
 
-TEST_F(FactoryTest, Test1)
+}
+
+using namespace goap_boost;
+
+TEST_F(FactoryAllTest, Test1)
 {
     auto &factory = *Factory<IRoot>::singleton();
 
@@ -274,7 +283,7 @@ TEST_F(FactoryTest, Test1)
     EXPECT_TRUE(true);
 }
 
-TEST_F(FactoryTest, Test2)
+TEST_F(FactoryAllTest, Test2)
 {
     std::mutex mtx;
     std::cout << "Main thread id: " << std::this_thread::get_id()

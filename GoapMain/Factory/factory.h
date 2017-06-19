@@ -196,7 +196,7 @@ public:
     typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
 
-    static factory_pointer &singleton() // const factory_pointer& ptr = factory_pointer()
+    static factory_pointer &singleton()
     {
         static factory_pointer factory{new Factory<Base, Key>};
         return factory;
