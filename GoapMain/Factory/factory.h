@@ -9,7 +9,7 @@
 #include <list>
 #include <iostream>
 #include <mutex>
-#include "refcounter.h"
+#include "hasmember.h"
 
 #if defined(BOOST_SMART_PTR_INTRUSIVE_PTR_HPP_INCLUDED)
 #if !defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
@@ -190,8 +190,6 @@ using namespace fact;
 template<typename Base, typename Key = std::string>
 class Factory : public Base
 {
-    IMPLEMENT_REFCOUNTER()
-
 public:
     typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
