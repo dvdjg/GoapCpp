@@ -216,19 +216,19 @@ TEST_F(FactoryTest, Test1)
         std::cerr << "[          ] " << fromPool3->getData() << std::endl;
     }
 
-    typedef RecyclableWrapper<NonCounted> RecyclableCountedFromRoot;
+    typedef RecyclableWrapper<NonCounted> RecyclableNonCounted;
     {
-        auto fromPool1(RecyclableCountedFromRoot::createFromPool());
-        auto fromPool2(RecyclableCountedFromRoot::createFromPool());
-        auto fromPool3(RecyclableCountedFromRoot::createFromPool());
+        auto fromPool1(RecyclableNonCounted::createFromPool());
+        auto fromPool2(RecyclableNonCounted::createFromPool());
+        auto fromPool3(RecyclableNonCounted::createFromPool());
         fromPool1->setData("PooledFromRoot1");
         fromPool2->setData("PooledFromRoot2");
         fromPool3->setData("PooledFromRoot3");
     }
     {
-        auto fromPool1(RecyclableCountedFromRoot::createFromPool());
-        auto fromPool2(RecyclableCountedFromRoot::createFromPool());
-        auto fromPool3(RecyclableCountedFromRoot::createFromPool());
+        auto fromPool1(RecyclableNonCounted::createFromPool());
+        auto fromPool2(RecyclableNonCounted::createFromPool());
+        auto fromPool3(RecyclableNonCounted::createFromPool());
         std::cerr << "[          ] " << fromPool1->getData() << std::endl;
         std::cerr << "[          ] " << fromPool2->getData() << std::endl;
         std::cerr << "[          ] " << fromPool3->getData() << std::endl;
@@ -255,7 +255,7 @@ TEST_F(FactoryTest, Test1)
     }
     factory.inscribe<FactoryType::Default, IStringDataFromRoot>([]()
     {
-        return RecyclableCountedFromRoot::createFromPoolRaw();
+        return RecyclableNonCounted::createFromPoolRaw();
     }, "Pool");
     {
         auto fromPool1 = factory.create<IStringDataFromRoot>("Pool");
@@ -268,9 +268,9 @@ TEST_F(FactoryTest, Test1)
     auto created = factory.createAll<IStringDataFromRoot, const std::string &>("Datos");
     std::cerr << "[          ] " << "Cleanup" << std::endl;
     RecyclableCounted::getPool()->clear();
-    RecyclableCountedFromRoot::getPool()->clear();
+    RecyclableNonCounted::getPool()->clear();
     std::cerr << "[          ] " << "RecyclableCounted: " << RecyclableCounted::getPool()->avoidedAllocations() << std::endl;
-    std::cerr << "[          ] " << "RecyclableCountedFromRoot: " << RecyclableCountedFromRoot::getPool()->avoidedAllocations() << std::endl;
+    std::cerr << "[          ] " << "RecyclableNonCounted: " << RecyclableNonCounted::getPool()->avoidedAllocations() << std::endl;
     EXPECT_TRUE(true);
 }
 
