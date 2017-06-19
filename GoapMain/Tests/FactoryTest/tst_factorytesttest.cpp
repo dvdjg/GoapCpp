@@ -41,19 +41,19 @@ public:
     MOCK_CONST_METHOD0(getData, const std::string & ());
 };
 
-class CountedFromRoot : virtual public IStringDataFromRoot
+class NonCounted : virtual public IStringDataFromRoot
 {
     std::string _data;
 public:
-    CountedFromRoot(const std::string &data = {}) : _data(data)
+    NonCounted(const std::string &data = {}) : _data(data)
     {
         std::cerr << "[          ] " << "Created " << _data << std::endl;
     }
-    CountedFromRoot(int number) : _data(std::to_string(number))
+    NonCounted(int number) : _data(std::to_string(number))
     {
         std::cerr << "[          ] " << "Created " << _data << std::endl;
     }
-    ~CountedFromRoot()
+    ~NonCounted()
     {
         std::cerr << "[          ] " << "Destroyed " << _data << std::endl;
     }
@@ -71,9 +71,9 @@ public:
     }
 };
 
-CountedFromRoot *createCountedFromRoot(const std::string &str)
+NonCounted *createCountedFromRoot(const std::string &str)
 {
-    return new CountedFromRoot(str);
+    return new NonCounted(str);
 }
 
 
@@ -150,7 +150,6 @@ TEST_F(FactoryTest, Test1)
         return new Counted(str);
     };
     std::function<Counted* (const std::string &str)> f = lstr;
-    //Factory<IRoot>::singleton().Register<IStringData, Counted>([](int i) { return new Counted("Dentro");});
     factory.inscribe<FactoryType::Default, IStringData>(&createCounted);
     factory.inscribe<FactoryType::Default, IStringData>(f, "Functor");
     factory.inscribe<FactoryType::Default, IStringData>(lstr, "Lambda");
@@ -178,15 +177,15 @@ TEST_F(FactoryTest, Test1)
     }
     factory.inscribe<FactoryType::Singleton, IStringDataFromRoot>([]()
     {
-        return new CountedFromRoot("The singleton from root");
+        return new NonCounted("The singleton from root");
     }, "Singleton");
     factory.inscribe<FactoryType::Default, IStringDataFromRoot>([](const std::string & str)
     {
-        return new CountedFromRoot(str);
+        return new NonCounted(str);
     });
     factory.inscribe<FactoryType::Default, IStringDataFromRoot>([](int number)
     {
-        return new CountedFromRoot(number);
+        return new NonCounted(number);
     });
     {
         auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
@@ -217,7 +216,7 @@ TEST_F(FactoryTest, Test1)
         std::cerr << "[          ] " << fromPool3->getData() << std::endl;
     }
 
-    typedef RecyclableWrapper<CountedFromRoot> RecyclableCountedFromRoot;
+    typedef RecyclableWrapper<NonCounted> RecyclableCountedFromRoot;
     {
         auto fromPool1(RecyclableCountedFromRoot::createFromPool());
         auto fromPool2(RecyclableCountedFromRoot::createFromPool());

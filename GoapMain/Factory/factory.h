@@ -11,6 +11,12 @@
 #include <mutex>
 #include "refcounter.h"
 
+#if defined(BOOST_SMART_PTR_INTRUSIVE_PTR_HPP_INCLUDED)
+#if !defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
+#define HAS_BOOST_SMART_PTR_INTRUSIVE_PTR
+#endif
+#endif
+
 namespace goap
 {
 
@@ -76,7 +82,11 @@ namespace fact
 template<typename T>
 struct SmartPointerChooser
 {
+#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
     typedef typename std::conditional<has_intrusive_ptr<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
+#else
+    typedef std::shared_ptr<T> type;
+#endif
 };
 
 /**
@@ -330,18 +340,22 @@ inline void copyDefault(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
     left = right;
 }
 
+#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
 template<typename T>
 inline void copyDefault(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
 {
     T *ptr = right.get();
     left.reset(ptr);
 }
+#endif
+
 template<typename T>
 inline void copySingleton(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
 {
     left = right;
 }
 
+#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
 template<typename T>
 inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
 {
@@ -349,6 +363,7 @@ inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &rig
     intrusive_ptr_add_ref(ptr);
     left.reset(ptr);
 }
+#endif
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
