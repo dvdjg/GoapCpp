@@ -31,6 +31,8 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite/libsqlite.a
 
 PRE_TARGETDEPS += \
+    $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
 

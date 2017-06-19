@@ -17,23 +17,23 @@ CONFIG -= rtti
 }
 
 INCLUDEPATH += com common api lz rangecoder lzma check simple delta # api/lzma
-DEFINES += HAVE_INTTYPES_H HAVE_STDINT_H HAVE_LIMITS_H HAVE_STDBOOL_H HAVE_STRING_H HAVE_MEMORY_H HAVE_CLOCK_GETTIME \
+DEFINES += HAVE_INTTYPES_H HAVE_STDINT_H HAVE_LIMITS_H HAVE_STDBOOL_H HAVE_STRING_H HAVE_MEMORY_H \
     HAVE_CHECK_CRC32 HAVE_CHECK_CRC64 HAVE_CHECK_SHA256 \
     HAVE_DECODERS HAVE_DECODER_LZMA1 HAVE_DECODER_LZMA2 HAVE_DECODER_X86 HAVE_DECODER_DELTA \
     HAVE_ENCODERS HAVE_ENCODER_LZMA1 HAVE_ENCODER_LZMA2 HAVE_ENCODER_X86 HAVE_ENCODER_DELTA \
     HAVE_IMMINTRIN_H HAVE_MF_HC3 HAVE_MF_HC4 HAVE_MF_BT2 HAVE_MF_BT3 HAVE_MF_BT4 \
-    HAVE_FUTIMES HAVE_FUTIMESAT HAVE_UTIMES ASSUME_RAM=1 PACKAGE_NAME=\\\"CustomLZMA\\\" PACKAGE_BUGREPORT=\\\"CustomLZMABugReport\\\" PACKAGE_URL=\\\"file://CustomLZMA\\\"
+    ASSUME_RAM=1 PACKAGE_NAME=\\\"CustomLZMA\\\" PACKAGE_BUGREPORT=\\\"CustomLZMABugReport\\\" PACKAGE_URL=\\\"file://CustomLZMA\\\"
 
 
 win32 {
 
-DEFINES += _WIN32_WINNT=0x0501
+DEFINES += _WIN32_WINNT=0x0501 HAVE__FUTIME
 DEFINES += _SCL_SECURE_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE _AFX_SECURE_NO_WARNINGS _ATL_SECURE_NO_WARNINGS
 # _MBCS
 #DEFINES -= UNICODE _UNICODE
 DEFINES += MYTHREAD_VISTA
 } else {
-DEFINES += MYTHREAD_POSIX
+DEFINES += HAVE_FUTIMES HAVE_FUTIMESAT HAVE_UTIMES MYTHREAD_POSIX HAVE_CLOCK_GETTIME
 }
 
 HEADERS += \
@@ -123,7 +123,6 @@ HEADERS += \
 
 SOURCES += \
     lzma/fastpos_table.c \
-    lzma/fastpos_tablegen.c \
     lzma/lzma_decoder.c \
     lzma/lzma_encoder_optimum_fast.c \
     lzma/lzma_encoder_optimum_normal.c \
@@ -179,7 +178,6 @@ SOURCES += \
     com/tuklib_open_stdxxx.c \
     com/tuklib_physmem.c \
     com/tuklib_progname.c \
-    xz/args.c \
     xz/coder.c \
     xz/file_io.c \
     xz/hardware.c \
@@ -191,19 +189,15 @@ SOURCES += \
     xz/signals.c \
     xz/suffix.c \
     xz/util.c \
-    xz/xzdec.c \
     lz/lz_decoder.c \
     lz/lz_encoder_mf.c \
     lz/lz_encoder.c \
     rangecoder/price_table.c \
-    rangecoder/price_tablegen.c \
     check/check.c \
     check/crc32_fast.c \
     check/crc32_table.c \
-    check/crc32_tablegen.c \
     check/crc64_fast.c \
     check/crc64_table.c \
-    check/crc64_tablegen.c \
     check/sha256.c \
     simple/armthumb.c \
     simple/powerpc.c \
@@ -214,6 +208,13 @@ SOURCES += \
     delta/delta_common.c \
     delta/delta_decoder.c \
     delta/delta_encoder.c
+
+    # xz/xzdec.c \
+    # xz/args.c \
+    # lzma/fastpos_tablegen.c \
+    # rangecoder/price_tablegen.c \
+    # check/crc32_tablegen.c \
+    # check/crc64_tablegen.c \
 
 unix {
     target.path = /usr/lib

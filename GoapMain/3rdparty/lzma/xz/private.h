@@ -21,7 +21,6 @@
 #include <signal.h>
 #include <locale.h>
 #include <stdio.h>
-#include <unistd.h>
 
 #include "tuklib_gettext.h"
 #include "tuklib_progname.h"
@@ -31,6 +30,8 @@
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #ifndef STDIN_FILENO

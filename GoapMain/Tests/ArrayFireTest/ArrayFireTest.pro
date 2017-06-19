@@ -25,11 +25,11 @@ SOURCES += \
 INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 
-#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/libGoapLib.a $$OUT_PWD/../../sqlite/release/libsqlite$$SUFFIX.a
-#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/libGoapLib.a $$OUT_PWD/../../sqlite/debug/libsqlite$$SUFFIX.a
-#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/release/GoapLib.lib $$OUT_PWD/../../sqlite/release/sqlite$$SUFFIX.lib
-#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/debug/GoapLib.lib $$OUT_PWD/../../sqlite/debug/sqlite$$SUFFIX.lib
-#else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite/libsqlite$$SUFFIX.a
+PRE_TARGETDEPS += \
+    $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
 
 LIBS += \
     -lGoapLib$$SUFFIX \

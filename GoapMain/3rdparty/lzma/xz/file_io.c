@@ -14,6 +14,15 @@
 
 #include <fcntl.h>
 
+#ifdef _WIN32
+#include <sys\stat.h>
+#define S_IRUSR _S_IREAD
+#define S_IWUSR _S_IWRITE
+#define SSIZE_MAX 0x7FFFFFFF
+typedef int ssize_t;
+typedef int mode_t;
+#endif
+
 #ifdef TUKLIB_DOSLIKE
 #	include <io.h>
 #else
