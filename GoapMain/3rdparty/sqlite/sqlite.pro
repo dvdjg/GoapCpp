@@ -16,6 +16,8 @@ CONFIG += c++14
     error(Could not find the common.pri file!)
 }
 
+DEFINES += HAVE_STDINT_H HAVE_INTTYPES_H HAVE_UTIME HAVE_GETHOSTUUID
+
 unix:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
 win32-msvc*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
 

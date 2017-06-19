@@ -1,0 +1,8 @@
+build
+GoapMain/lib
+GoapMain/bin
+*.orig
+*.user
+*.inc
+*.am
+*.in

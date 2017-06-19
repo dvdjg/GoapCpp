@@ -16,6 +16,8 @@ CONFIG -= rtti
     error(Could not find the common.pri file!)
 }
 
+DEFINES += HAVE_MEMCPY HAVE_UNISTD_H HAVE_STDARG_H
+
 win32 {
 
 DEFINES += _WIN32_WINNT=0x0501

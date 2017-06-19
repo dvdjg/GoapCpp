@@ -8,6 +8,8 @@ CONFIG+= staticlib
     error(Could not find the common.pri file!)
 }
 
+INCLUDEPATH += ../../lzma/api
+
 win32-msvc* {
 QMAKE_CXXFLAGS += -bigobj
 QMAKE_LFLAGS += -bigobj
