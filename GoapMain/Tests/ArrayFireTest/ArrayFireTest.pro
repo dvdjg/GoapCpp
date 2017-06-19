@@ -32,16 +32,18 @@ DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib 
 #else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../GoapLib/libGoapLib.a $$OUT_PWD/../../sqlite/libsqlite$$SUFFIX.a
 
 LIBS += \
+    -lGoapLib$$SUFFIX \
     -lsqlite$$SUFFIX \
-    -lGoapLib$$SUFFIX
+    -lbotan$$SUFFIX \
+    -lz$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
-QMAKE_LFLAGS += -pthread
+QMAKE_LFLAGS += -pthread -fopenmp
 LIBS += -ldl
 LIBS += -lgtest -lgmock
-LIBS += -lbz2 -llzma -lz -ldl
+LIBS += -lbz2 -llzma -ldl
 LIBS += -lboost_system -lboost_filesystem
 }
 
