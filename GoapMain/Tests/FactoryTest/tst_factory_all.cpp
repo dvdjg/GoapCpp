@@ -162,6 +162,9 @@ TEST_F(FactoryAllTest, Test1)
     bool bInscribed = factory.isInscribed<IStringData, const std::string &>();
     EXPECT_FALSE(bInscribed);
 
+    bInscribed = factory.isInscribed<IStringData>("Singleton");
+    EXPECT_FALSE(bInscribed);
+
     std::function<Counted* (const std::string &str)> f = lstr;
     factory.inscribe<FactoryType::Default, IStringData>(&createCounted);
     factory.inscribe<FactoryType::Default, IStringData>(f, "Functor");
@@ -172,6 +175,8 @@ TEST_F(FactoryAllTest, Test1)
         return new Counted("The singleton");
     }, "Singleton");
     bInscribed = factory.isInscribed<IStringData, const std::string &>();
+    EXPECT_TRUE(bInscribed);
+    bInscribed = factory.isInscribed<IStringData>("Singleton");
     EXPECT_TRUE(bInscribed);
     Counted counted("Hola");
     {
