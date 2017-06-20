@@ -197,6 +197,9 @@ public:
     }
 
     template<typename Interface = Base, typename ... Args>
+    bool isInscribed(Key const &key = {}) const;
+
+    template<typename Interface = Base, typename ... Args>
     typename SmartPointerChooser<Interface>::type
     create(Key const &key, Args && ... args) const;
 
@@ -211,7 +214,7 @@ public:
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
     void inscribe(
-        std::function<Class* (Args ... args)> && delegate,
+        std::function<Class* (Args ... args)> &&delegate,
         Key const &key = Key());
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -355,6 +358,14 @@ inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &rig
     left.reset(ptr);
 }
 #endif
+
+template<typename Base, typename Key>
+template<typename Interface, typename ... Args>
+bool Factory<Base, Key>::isInscribed(Key const &key) const
+{
+    WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
+    return pWrapper != nullptr;
+}
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>

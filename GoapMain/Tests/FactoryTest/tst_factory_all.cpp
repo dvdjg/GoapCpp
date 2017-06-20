@@ -30,21 +30,21 @@ public:
 };
 
 /*
-class MockIRefCounter : public IRefCounter
-{
-public:
+    class MockIRefCounter : public IRefCounter
+    {
+    public:
     MOCK_CONST_METHOD0(loadRef, int());
     MOCK_CONST_METHOD0(addRef, int());
     MOCK_CONST_METHOD0(releaseRef, int());
     MOCK_METHOD0(suicide, void());
-};
+    };
 
-class MockIStringData : public MockIRefCounter
-{
-public:
+    class MockIStringData : public MockIRefCounter
+    {
+    public:
     MOCK_METHOD1(setData, void(const std::string &getData));
     MOCK_CONST_METHOD0(getData, const std::string & ());
-};
+    };
 */
 
 class NonCounted : virtual public IStringDataFromRoot
@@ -159,6 +159,9 @@ TEST_F(FactoryAllTest, Test1)
     {
         return new Counted(str);
     };
+    bool bInscribed = factory.isInscribed<IStringData, const std::string &>();
+    EXPECT_FALSE(bInscribed);
+
     std::function<Counted* (const std::string &str)> f = lstr;
     factory.inscribe<FactoryType::Default, IStringData>(&createCounted);
     factory.inscribe<FactoryType::Default, IStringData>(f, "Functor");
@@ -168,19 +171,21 @@ TEST_F(FactoryAllTest, Test1)
     {
         return new Counted("The singleton");
     }, "Singleton");
+    bInscribed = factory.isInscribed<IStringData, const std::string &>();
+    EXPECT_TRUE(bInscribed);
     Counted counted("Hola");
     {
         SmartPointerChooser<Counted>::type ptrCounted(new Counted("Hello"));
         {
-            auto smartCounted = factory.create<IStringData, const std::string &>({}, "Hallo");
+            auto smartCounted1 = factory.create<IStringData, const std::string &>({}, "Hallo");
             auto smartCounted2 = factory.create<IStringData, const std::string &>("Lambda", "Haloha");
             auto smartCounted3 = factory.create<IStringData, const std::string &>("Functor", "Jalo");
             auto smartCounted4 = factory.create<IStringData, const std::string &>("Delegate", "Hi");
             auto smartCounted5 = factory.create<IStringData>("Singleton");
             auto smartCounted6 = factory.create<IStringData>("Singleton");
-            if (smartCounted)
+            if (smartCounted1)
             {
-                std::cerr << "[          ] " << smartCounted->getData() << std::endl;
+                std::cerr << "[          ] " << smartCounted1->getData() << std::endl;
             }
             //smartCounted->suicide();
         }
