@@ -107,15 +107,16 @@ TEST_F(FactoryNoCountTest, Test1)
 
     factory.inscribe<FactoryType::Default, IStringDataFromRoot, NonCounted, const std::string &>("Delegate");
 
-    factory.inscribe<FactoryType::Default, IStringDataFromRoot, NonCounted, int>("Delegate2");
+    factory.inscribe<FactoryType::Default, IStringDataFromRoot, NonCounted, int>("Delegate");
 
     {
         auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
         auto smartCounted2 = factory.create<IStringDataFromRoot>({}, 123);
+
         auto smartCounted3 = factory.create<IStringDataFromRoot>("Singleton");
         auto smartCounted4 = factory.create<IStringDataFromRoot>("Singleton");
         auto smartCounted5 = factory.create<IStringDataFromRoot, const std::string &>("Delegate", "Hi");
-        auto smartCounted6 = factory.create<IStringDataFromRoot>("Delegate2", 12345678);
+        auto smartCounted6 = factory.create<IStringDataFromRoot>("Delegate", 12345678);
         if (smartCounted)
         {
             std::cerr << "[          ] " << smartCounted->getData() << std::endl;

@@ -35,7 +35,7 @@ static const char *SELECT_FROM_TEST2 =
     "SELECT * FROM test2;";
 };
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
+static int callback(void *, int argc, char **argv, char **azColName)
 {
     int i;
     fprintf(stderr, "\t");

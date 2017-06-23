@@ -1,0 +1,11 @@
+INCLUDEPATH += $$top_srcdir/3rdparty/dependencies/include
+
+DEFINES += \
+    ASIO_STANDALONE
+
+win32-msvc*:DEFINES += \
+    ASIO_HAS_STD_ADDRESSOF \
+    ASIO_HAS_STD_ARRAY \
+    ASIO_HAS_CSTDINT \
+    ASIO_HAS_STD_SHARED_PTR \
+    ASIO_HAS_STD_TYPE_TRAITS
