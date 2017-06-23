@@ -3,7 +3,7 @@ DEFINES += \
     ASIO_STANDALONE \
     RPCLIB_ASIO=clmdep_asio \
     RPCLIB_FMT=clmdep_fmt \
-    RPCLIB_MSGPACK=msgpack
+    RPCLIB_MSGPACK=clmdep_msgpack
 
 win32-msvc*:DEFINES += \
     RPCLIB_WIN32 \

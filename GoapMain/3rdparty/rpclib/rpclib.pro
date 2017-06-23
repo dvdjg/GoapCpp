@@ -259,7 +259,9 @@ HEADERS += \
     include/rpc/msgpack/v2/x3_parse.hpp \
     include/rpc/msgpack/v2/x3_unpack.hpp \
     include/rpc/msgpack/v2/zbuffer_decl.hpp \
-    include/rpc/msgpack/v2/zone_decl.hpp
+    include/rpc/msgpack/v2/zone_decl.hpp \
+    include/rpc/msgpack/detail/cpp03_zone.hpp \
+    include/rpc/msgpack/detail/cpp11_zone.hpp
 
 unix {
     target.path = /usr/lib

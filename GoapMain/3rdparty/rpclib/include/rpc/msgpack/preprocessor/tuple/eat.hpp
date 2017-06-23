@@ -8,14 +8,14 @@
 #  */
 #
 # /* Revised by Paul Mensonides (2002-2011) */
-# /* Revised by Edward Diener (2011,2015) */
+# /* Revised by Edward Diener (2011) */
 #
 # /* See http://www.boost.org for most recent version. */
 #
 # ifndef MSGPACK_PREPROCESSOR_TUPLE_EAT_HPP
 # define MSGPACK_PREPROCESSOR_TUPLE_EAT_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_EAT */
 #
@@ -38,15 +38,6 @@
 #    endif
 #    define MSGPACK_PP_TUPLE_EAT_I(size) MSGPACK_PP_TUPLE_EAT_ ## size
 # endif
-#
-# if ~MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MWCC()
-#     define MSGPACK_PP_TUPLE_EAT_N(size) MSGPACK_PP_TUPLE_EAT_N_I(size)
-# else
-#     define MSGPACK_PP_TUPLE_EAT_N(size) MSGPACK_PP_TUPLE_EAT_N_OO((size))
-#     define MSGPACK_PP_TUPLE_EAT_N_OO(par) MSGPACK_PP_TUPLE_EAT_N_I ## par
-# endif
-# define MSGPACK_PP_TUPLE_EAT_N_I(size) MSGPACK_PP_TUPLE_EAT_ ## size
-#
 # define MSGPACK_PP_TUPLE_EAT_1(e0)
 # define MSGPACK_PP_TUPLE_EAT_2(e0, e1)
 # define MSGPACK_PP_TUPLE_EAT_3(e0, e1, e2)

@@ -14,7 +14,7 @@
 # ifndef MSGPACK_PREPROCESSOR_ARITHMETIC_DEC_HPP
 # define MSGPACK_PREPROCESSOR_ARITHMETIC_DEC_HPP
 #
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # /* MSGPACK_PP_DEC */
 #
@@ -284,6 +284,5 @@
 # define MSGPACK_PP_DEC_254 253
 # define MSGPACK_PP_DEC_255 254
 # define MSGPACK_PP_DEC_256 255
-# define MSGPACK_PP_DEC_257 256
 #
 # endif

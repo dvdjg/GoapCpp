@@ -26,7 +26,6 @@ INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcd
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \

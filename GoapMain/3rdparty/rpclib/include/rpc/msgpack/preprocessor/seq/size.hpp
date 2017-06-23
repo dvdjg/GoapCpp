@@ -12,8 +12,8 @@
 # ifndef MSGPACK_PREPROCESSOR_SEQ_SIZE_HPP
 # define MSGPACK_PREPROCESSOR_SEQ_SIZE_HPP
 #
-# include <msgpack/preprocessor/cat.hpp>
-# include <msgpack/preprocessor/config/config.hpp>
+# include <rpc/msgpack/preprocessor/cat.hpp>
+# include <rpc/msgpack/preprocessor/config/config.hpp>
 #
 # if MSGPACK_PP_CONFIG_FLAGS() & MSGPACK_PP_CONFIG_MWCC()
 #    define MSGPACK_PP_SEQ_SIZE(seq) MSGPACK_PP_SEQ_SIZE_I((seq))
@@ -543,6 +543,5 @@
 # define MSGPACK_PP_SEQ_SIZE_MSGPACK_PP_SEQ_SIZE_254 254
 # define MSGPACK_PP_SEQ_SIZE_MSGPACK_PP_SEQ_SIZE_255 255
 # define MSGPACK_PP_SEQ_SIZE_MSGPACK_PP_SEQ_SIZE_256 256
-# define MSGPACK_PP_SEQ_SIZE_MSGPACK_PP_SEQ_SIZE_257 257
 #
 # endif

@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2011-2015
+Copyright Rene Rivera 2011-2013
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -8,8 +8,8 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_ARCHITECTURE_PYRAMID_H
 #define MSGPACK_PREDEF_ARCHITECTURE_PYRAMID_H
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_ARCH_PYRAMID`]
@@ -36,7 +36,8 @@ Pyramid 9810 architecture.
 
 #define MSGPACK_ARCH_PYRAMID_NAME "Pyramid 9810"
 
-#endif
-
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_ARCH_PYRAMID,MSGPACK_ARCH_PYRAMID_NAME)
+
+
+#endif

@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2008-2015
+Copyright Rene Rivera 2008-2013
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -8,10 +8,10 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_LIBRARY_STD_DINKUMWARE_H
 #define MSGPACK_PREDEF_LIBRARY_STD_DINKUMWARE_H
 
-#include <msgpack/predef/library/std/_prefix.h>
+#include <rpc/msgpack/predef/library/std/_prefix.h>
 
-#include <msgpack/predef/version_number.h>
-#include <msgpack/predef/make.h>
+#include <rpc/msgpack/predef/version_number.h>
+#include <rpc/msgpack/predef/make.h>
 
 /*`
 [heading `MSGPACK_LIB_STD_DINKUMWARE`]
@@ -46,7 +46,8 @@ If available version number as major, minor, and patch.
 
 #define MSGPACK_LIB_STD_DINKUMWARE_NAME "Dinkumware"
 
-#endif
-
-#include <msgpack/predef/detail/test.h>
+#include <rpc/msgpack/predef/detail/test.h>
 MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_LIB_STD_DINKUMWARE,MSGPACK_LIB_STD_DINKUMWARE_NAME)
+
+
+#endif
