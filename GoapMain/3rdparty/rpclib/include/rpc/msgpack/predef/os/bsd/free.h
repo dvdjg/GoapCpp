@@ -1,5 +1,5 @@
 /*
-Copyright Rene Rivera 2012-2013
+Copyright Rene Rivera 2012-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 #ifndef MSGPACK_PREDEF_OS_BSD_FREE_H
 #define MSGPACK_PREDEF_OS_BSD_FREE_H
 
-#include <rpc/msgpack/predef/os/bsd.h>
+#include <msgpack/predef/os/bsd.h>
 
 /*`
 [heading `MSGPACK_OS_BSD_FREE`]
@@ -49,12 +49,12 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #if MSGPACK_OS_BSD_FREE
 #   define MSGPACK_OS_BSD_FREE_AVAILABLE
-#   include <rpc/msgpack/predef/detail/os_detected.h>
+#   include <msgpack/predef/detail/os_detected.h>
 #endif
 
 #define MSGPACK_OS_BSD_FREE_NAME "Free BSD"
 
-#include <rpc/msgpack/predef/detail/test.h>
-MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_BSD_FREE,MSGPACK_OS_BSD_FREE_NAME)
-
 #endif
+
+#include <msgpack/predef/detail/test.h>
+MSGPACK_PREDEF_DECLARE_TEST(MSGPACK_OS_BSD_FREE,MSGPACK_OS_BSD_FREE_NAME)
