@@ -1,4 +1,4 @@
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include "sqlite_modern_cpp.h"
 
 #include <arrayfire.h>

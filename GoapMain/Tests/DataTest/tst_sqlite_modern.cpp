@@ -72,8 +72,7 @@ TEST_F(SQLiteModern, error_log)
 {
     bool error_detected = false;
     {
-        error_log(
-            [&](errors::constraint e)
+        error_log([&](errors::constraint e)
         {
             cerr << "Wrong error detected! " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
         },
@@ -81,8 +80,7 @@ TEST_F(SQLiteModern, error_log)
         {
             cerr << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
             error_detected = true;
-        }
-        );
+        });
         database db(":memory:");
         db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
 
@@ -999,12 +997,12 @@ TEST_F(SQLiteModern, variant)
         db << "SELECT 0.0" >> v;
         EXPECT_FALSE(!std::get<2>(v)) << "Bad result on line " << __LINE__ << endl;
     }
-    catch(sqlite_exception e)
+    catch (sqlite_exception e)
     {
         cout << "Unexpected error " << e.what() << endl;
         bException = true;
     }
-    catch(...)
+    catch (...)
     {
         cout << "Unknown error\n";
         bException = true;
