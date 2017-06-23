@@ -34,7 +34,8 @@ DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}rpc$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}dependencies$$SUFFIX$$LIBPOST
+    $$top_srcdir/lib/$${LIBPRE}dependencies$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 LIBS += \
     -lrpc$$SUFFIX \

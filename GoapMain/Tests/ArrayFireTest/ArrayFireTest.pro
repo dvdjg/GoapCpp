@@ -22,14 +22,15 @@ SOURCES += \
     tst_arrayfire.cpp \
     main.cpp
 
-INCLUDEPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
-DEPENDPATH += $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
+INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
+DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
+    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 LIBS += \
     -lGoapLib$$SUFFIX \
@@ -41,10 +42,9 @@ unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
 QMAKE_CFLAGS += -pthread -fno-strict-aliasing
 QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -ldl
-LIBS += -lgtest -lgmock
 LIBS += -lbz2 -llzma -ldl
 LIBS += -lboost_system -lboost_filesystem
 }
 
-win32-msvc*:LIBS += -lgtest$$SUFFIX -lgmock$$SUFFIX
+LIBS += \
+    -lgmock-gtest$$SUFFIX
