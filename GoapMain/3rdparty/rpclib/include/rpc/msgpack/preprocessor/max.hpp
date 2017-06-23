@@ -12,6 +12,6 @@
 # ifndef MSGPACK_PREPROCESSOR_MAX_HPP
 # define MSGPACK_PREPROCESSOR_MAX_HPP
 #
-# include <rpc/msgpack/preprocessor/selection/max.hpp>
+# include <msgpack/preprocessor/selection/max.hpp>
 #
 # endif
