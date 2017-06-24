@@ -1,36 +1,16 @@
 //
 // MessagePack for C++ memory pool
 //
-// Copyright (C) 2008-2010 FURUHASHI Sadayuki
+// Copyright (C) 2008-2016 FURUHASHI Sadayuki and KONDO Takatoshi
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-//
-#ifndef MSGPACK_CPP03_ZONE_HPP
-#define MSGPACK_CPP03_ZONE_HPP
+#ifndef MSGPACK_V1_CPP03_ZONE_HPP
+#define MSGPACK_V1_CPP03_ZONE_HPP
 
-#include <cstdlib>
-#include <memory>
-#include <vector>
-
-#include "rpc/msgpack/versioning.hpp"
-
-#ifndef MSGPACK_ZONE_CHUNK_SIZE
-#define MSGPACK_ZONE_CHUNK_SIZE 8192
-#endif
-
-#ifndef MSGPACK_ZONE_ALIGN
-#define MSGPACK_ZONE_ALIGN sizeof(void*)
-#endif
+#include "msgpack/zone_decl.hpp"
 
 
 namespace msgpack {
@@ -47,7 +27,7 @@ class zone {
         void* m_data;
     };
     struct finalizer_array {
-        finalizer_array():m_tail(nullptr), m_end(nullptr), m_array(nullptr) {}
+        finalizer_array():m_tail(MSGPACK_NULLPTR), m_end(MSGPACK_NULLPTR), m_array(MSGPACK_NULLPTR) {}
         void call() {
             finalizer* fin = m_tail;
             for(; fin != m_array; --fin) (*(fin-1))();
@@ -113,7 +93,7 @@ class zone {
             m_head = c;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(c) + sizeof(chunk);
-            c->m_next = nullptr;
+            c->m_next = MSGPACK_NULLPTR;
         }
         ~chunk_list()
         {
@@ -133,10 +113,11 @@ class zone {
                     ::free(c);
                     c = n;
                 } else {
+                    m_head = c;
                     break;
                 }
             }
-            m_head->m_next = nullptr;
+            m_head->m_next = MSGPACK_NULLPTR;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
         }
@@ -355,7 +336,7 @@ inline void zone::undo_allocate(size_t size)
 
 inline std::size_t aligned_size(
     std::size_t size,
-    std::size_t align = MSGPACK_ZONE_ALIGN) {
+    std::size_t align) {
     return (size + align - 1) / align * align;
 }
 
@@ -673,4 +654,4 @@ T* zone::allocate(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9,
 
 }  // namespace msgpack
 
-#endif // MSGPACK_CPP03_ZONE_HPP
+#endif // MSGPACK_V1_CPP03_ZONE_HPP

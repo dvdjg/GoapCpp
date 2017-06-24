@@ -1,86 +1,19 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2009 FURUHASHI Sadayuki
+// Copyright (C) 2008-2016 FURUHASHI Sadayuki and KONDO Takatoshi
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-//
-#ifndef MSGPACK_CPP03_DEFINE_ARRAY_HPP
-#define MSGPACK_CPP03_DEFINE_ARRAY_HPP
+#ifndef MSGPACK_V1_CPP03_DEFINE_ARRAY_HPP
+#define MSGPACK_V1_CPP03_DEFINE_ARRAY_HPP
 
-#include "rpc/msgpack/versioning.hpp"
-#include "rpc/msgpack/adaptor/msgpack_tuple.hpp"
-#include "rpc/msgpack/adaptor/adaptor_base.hpp"
-#include "rpc/msgpack/object_fwd.hpp"
-
-#define MSGPACK_DEFINE_ARRAY(...) \
-    template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_pack(pk); \
-    } \
-    void msgpack_unpack(msgpack::object const& o) \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_unpack(o); \
-    }\
-    template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
-    { \
-        msgpack::type::make_define_array(__VA_ARGS__).msgpack_object(o, z); \
-    }
-
-#define MSGPACK_BASE_ARRAY(base) (*const_cast<base *>(static_cast<base const*>(this)))
-
-// MSGPACK_ADD_ENUM must be used in the global namespace.
-#define MSGPACK_ADD_ENUM(enum_name) \
-  namespace msgpack { \
-  /** @cond */ \
-  MSGPACK_API_VERSION_NAMESPACE(v1) { \
-  /** @endcond */ \
-  namespace adaptor { \
-    template<> \
-    struct convert<enum_name> { \
-      msgpack::object const& operator()(msgpack::object const& o, enum_name& v) const {\
-        int tmp; \
-        o >> tmp; \
-        v = static_cast<enum_name>(tmp); \
-        return o; \
-      } \
-    }; \
-    template<> \
-    struct object<enum_name> { \
-      void operator()(msgpack::object& o, const enum_name& v) const {\
-        o << static_cast<int>(v); \
-      } \
-    }; \
-    template<> \
-    struct object_with_zone<enum_name> { \
-      void operator()(msgpack::object::with_zone& o, const enum_name& v) const { \
-        o << static_cast<int>(v); \
-      } \
-    }; \
-    template<> \
-    struct pack<enum_name> { \
-      template <typename Stream> \
-      msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const enum_name& v) const { \
-        return o << static_cast<int>(v); \
-      } \
-    }; \
-  } \
-  /** @cond */ \
-  } \
-  /** @endcond */ \
-  }
+#include "msgpack/v1/adaptor/detail/cpp03_define_array_decl.hpp"
+#include "msgpack/adaptor/msgpack_tuple.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/object_fwd.hpp"
 
 namespace msgpack {
 /// @cond
@@ -88,11 +21,6 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 namespace type {
 
-/// @cond
-
-template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
-struct define_array;
-/// @endcond
 
 template <>
 struct define_array<> {
@@ -110,7 +38,7 @@ struct define_array<> {
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
         o->type = msgpack::type::ARRAY;
-        o->via.array.ptr = nullptr;
+        o->via.array.ptr = MSGPACK_NULLPTR;
         o->via.array.size = 0;
     }
 };
@@ -139,6 +67,8 @@ struct define_array<A0> {
             switch(size) {
             default:
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -177,7 +107,11 @@ struct define_array<A0, A1> {
             switch(size) {
             default:
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -219,8 +153,14 @@ struct define_array<A0, A1, A2> {
             switch(size) {
             default:
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -265,9 +205,17 @@ struct define_array<A0, A1, A2, A3> {
             switch(size) {
             default:
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -315,10 +263,20 @@ struct define_array<A0, A1, A2, A3, A4> {
             switch(size) {
             default:
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -369,11 +327,23 @@ struct define_array<A0, A1, A2, A3, A4, A5> {
             switch(size) {
             default:
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -427,12 +397,26 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6> {
             switch(size) {
             default:
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -489,13 +473,29 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7> {
             switch(size) {
             default:
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -555,14 +555,32 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
             switch(size) {
             default:
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -625,15 +643,35 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
             switch(size) {
             default:
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -699,16 +737,38 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
             switch(size) {
             default:
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -777,17 +837,41 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
             switch(size) {
             default:
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -859,18 +943,44 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
             switch(size) {
             default:
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -945,19 +1055,47 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> 
             switch(size) {
             default:
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1035,20 +1173,50 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1129,21 +1297,53 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1227,22 +1427,56 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1329,23 +1563,59 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1435,24 +1705,62 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1545,25 +1853,65 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1659,26 +2007,68 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1777,27 +2167,71 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -1899,28 +2333,74 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2025,29 +2505,77 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2155,30 +2683,80 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2289,31 +2867,83 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2427,32 +3057,86 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2569,33 +3253,89 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 28: ptr[27].convert(a27);
+            // fallthrough
+
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2715,34 +3455,92 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 29: ptr[28].convert(a28);
+            // fallthrough
+
             case 28: ptr[27].convert(a27);
+            // fallthrough
+
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -2865,35 +3663,95 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 30: ptr[29].convert(a29);
+            // fallthrough
+
             case 29: ptr[28].convert(a28);
+            // fallthrough
+
             case 28: ptr[27].convert(a27);
+            // fallthrough
+
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -3019,36 +3877,98 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 31: ptr[30].convert(a30);
+            // fallthrough
+
             case 30: ptr[29].convert(a29);
+            // fallthrough
+
             case 29: ptr[28].convert(a28);
+            // fallthrough
+
             case 28: ptr[27].convert(a27);
+            // fallthrough
+
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -3177,37 +4097,101 @@ struct define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
             switch(size) {
             default:
             case 32: ptr[31].convert(a31);
+            // fallthrough
+
             case 31: ptr[30].convert(a30);
+            // fallthrough
+
             case 30: ptr[29].convert(a29);
+            // fallthrough
+
             case 29: ptr[28].convert(a28);
+            // fallthrough
+
             case 28: ptr[27].convert(a27);
+            // fallthrough
+
             case 27: ptr[26].convert(a26);
+            // fallthrough
+
             case 26: ptr[25].convert(a25);
+            // fallthrough
+
             case 25: ptr[24].convert(a24);
+            // fallthrough
+
             case 24: ptr[23].convert(a23);
+            // fallthrough
+
             case 23: ptr[22].convert(a22);
+            // fallthrough
+
             case 22: ptr[21].convert(a21);
+            // fallthrough
+
             case 21: ptr[20].convert(a20);
+            // fallthrough
+
             case 20: ptr[19].convert(a19);
+            // fallthrough
+
             case 19: ptr[18].convert(a18);
+            // fallthrough
+
             case 18: ptr[17].convert(a17);
+            // fallthrough
+
             case 17: ptr[16].convert(a16);
+            // fallthrough
+
             case 16: ptr[15].convert(a15);
+            // fallthrough
+
             case 15: ptr[14].convert(a14);
+            // fallthrough
+
             case 14: ptr[13].convert(a13);
+            // fallthrough
+
             case 13: ptr[12].convert(a12);
+            // fallthrough
+
             case 12: ptr[11].convert(a11);
+            // fallthrough
+
             case 11: ptr[10].convert(a10);
+            // fallthrough
+
             case 10: ptr[9].convert(a9);
+            // fallthrough
+
             case 9: ptr[8].convert(a8);
+            // fallthrough
+
             case 8: ptr[7].convert(a7);
+            // fallthrough
+
             case 7: ptr[6].convert(a6);
+            // fallthrough
+
             case 6: ptr[5].convert(a5);
+            // fallthrough
+
             case 5: ptr[4].convert(a4);
+            // fallthrough
+
             case 4: ptr[3].convert(a3);
+            // fallthrough
+
             case 3: ptr[2].convert(a2);
+            // fallthrough
+
             case 2: ptr[1].convert(a1);
+            // fallthrough
+
             case 1: ptr[0].convert(a0);
+            // fallthrough
+
             }
         }
     }
@@ -3494,5 +4478,4 @@ inline define_array<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, 
 /// @endcond
 }  // namespace msgpack
 
-
-#endif // MSGPACK_CPP03_DEFINE_ARRAY_HPP
+#endif // MSGPACK_V1_CPP03_DEFINE_ARRAY_HPP

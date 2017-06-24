@@ -84,6 +84,9 @@ public:
     const msgpack::unique_ptr<msgpack::zone>& zone() const
         { return m_zone; }
 
+    template <typename T>
+    T as() const { return m_obj.as<T>(); }
+
 #if defined(MSGPACK_USE_CPP03)
     struct object_handle_ref {
         object_handle_ref(object_handle* oh):m_oh(oh) {}

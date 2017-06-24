@@ -1,26 +1,16 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
+// Copyright (C) 2008-2016 FURUHASHI Sadayuki and KONDO Takatoshi
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-//
-#ifndef MSGPACK_CPP03_MSGPACK_TUPLE_HPP
-#define MSGPACK_CPP03_MSGPACK_TUPLE_HPP
+#ifndef MSGPACK_V1_CPP03_MSGPACK_TUPLE_HPP
+#define MSGPACK_V1_CPP03_MSGPACK_TUPLE_HPP
 
-#include "rpc/msgpack/versioning.hpp"
-#include "rpc/msgpack/object.hpp"
-#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/v1/adaptor/msgpack_tuple_decl.hpp"
 
 namespace msgpack {
 
@@ -33,17 +23,6 @@ namespace type {
 // FIXME operator==
 // FIXME operator!=
 
-
-/// @cond
-template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
-struct tuple;
-/// @endcond
-
-template <typename Tuple, int N>
-struct tuple_element;
-
-template <typename Tuple, int N>
-struct const_tuple_element;
 
 template <typename T>
 struct tuple_type {
@@ -9187,6 +9166,7 @@ struct tuple<> {
     tuple() {}
     tuple(msgpack::object const& o) { o.convert(*this); }
     typedef tuple<> value_type;
+    std::size_t size() const { return 0; }
 };
 
 /// @cond
@@ -9194,6 +9174,7 @@ struct tuple<> {
 template <typename A0>
 struct tuple<A0> {
     typedef tuple<A0> value_type;
+    std::size_t size() const { return 1; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0) :
         a0(_a0) {}
@@ -9216,6 +9197,7 @@ inline typename type::const_tuple_element<type::tuple<A0>, N>::const_reference g
 template <typename A0, typename A1>
 struct tuple<A0, A1> {
     typedef tuple<A0, A1> value_type;
+    std::size_t size() const { return 2; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1) :
         a0(_a0), a1(_a1) {}
@@ -9239,6 +9221,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1>, N>::const_referen
 template <typename A0, typename A1, typename A2>
 struct tuple<A0, A1, A2> {
     typedef tuple<A0, A1, A2> value_type;
+    std::size_t size() const { return 3; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2) :
         a0(_a0), a1(_a1), a2(_a2) {}
@@ -9263,6 +9246,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2>, N>::const_ref
 template <typename A0, typename A1, typename A2, typename A3>
 struct tuple<A0, A1, A2, A3> {
     typedef tuple<A0, A1, A2, A3> value_type;
+    std::size_t size() const { return 4; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3) {}
@@ -9288,6 +9272,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3>, N>::const
 template <typename A0, typename A1, typename A2, typename A3, typename A4>
 struct tuple<A0, A1, A2, A3, A4> {
     typedef tuple<A0, A1, A2, A3, A4> value_type;
+    std::size_t size() const { return 5; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4) {}
@@ -9314,6 +9299,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4>, N>::c
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5>
 struct tuple<A0, A1, A2, A3, A4, A5> {
     typedef tuple<A0, A1, A2, A3, A4, A5> value_type;
+    std::size_t size() const { return 6; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5) {}
@@ -9341,6 +9327,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5>, N
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6>
 struct tuple<A0, A1, A2, A3, A4, A5, A6> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6> value_type;
+    std::size_t size() const { return 7; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6) {}
@@ -9369,6 +9356,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7> value_type;
+    std::size_t size() const { return 8; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7) {}
@@ -9398,6 +9386,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> value_type;
+    std::size_t size() const { return 9; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8) {}
@@ -9428,6 +9417,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> value_type;
+    std::size_t size() const { return 10; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9) {}
@@ -9459,6 +9449,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> value_type;
+    std::size_t size() const { return 11; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10) {}
@@ -9491,6 +9482,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> value_type;
+    std::size_t size() const { return 12; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11) {}
@@ -9524,6 +9516,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12> value_type;
+    std::size_t size() const { return 13; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12) {}
@@ -9558,6 +9551,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> value_type;
+    std::size_t size() const { return 14; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13) {}
@@ -9593,6 +9587,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14> value_type;
+    std::size_t size() const { return 15; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14) {}
@@ -9629,6 +9624,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15> value_type;
+    std::size_t size() const { return 16; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15) {}
@@ -9666,6 +9662,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16> value_type;
+    std::size_t size() const { return 17; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16) {}
@@ -9704,6 +9701,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17> value_type;
+    std::size_t size() const { return 18; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17) {}
@@ -9743,6 +9741,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18> value_type;
+    std::size_t size() const { return 19; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18) {}
@@ -9783,6 +9782,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19> value_type;
+    std::size_t size() const { return 20; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19) {}
@@ -9824,6 +9824,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20> value_type;
+    std::size_t size() const { return 21; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20) {}
@@ -9866,6 +9867,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21> value_type;
+    std::size_t size() const { return 22; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21) {}
@@ -9909,6 +9911,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22> value_type;
+    std::size_t size() const { return 23; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22) {}
@@ -9953,6 +9956,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23> value_type;
+    std::size_t size() const { return 24; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23) {}
@@ -9998,6 +10002,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24> value_type;
+    std::size_t size() const { return 25; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24) {}
@@ -10044,6 +10049,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25> value_type;
+    std::size_t size() const { return 26; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25) {}
@@ -10091,6 +10097,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26> value_type;
+    std::size_t size() const { return 27; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26) {}
@@ -10139,6 +10146,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27> value_type;
+    std::size_t size() const { return 28; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26, typename tuple_type<A27>::transparent_reference _a27) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26), a27(_a27) {}
@@ -10188,6 +10196,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28> value_type;
+    std::size_t size() const { return 29; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26, typename tuple_type<A27>::transparent_reference _a27, typename tuple_type<A28>::transparent_reference _a28) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26), a27(_a27), a28(_a28) {}
@@ -10238,6 +10247,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29> value_type;
+    std::size_t size() const { return 30; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26, typename tuple_type<A27>::transparent_reference _a27, typename tuple_type<A28>::transparent_reference _a28, typename tuple_type<A29>::transparent_reference _a29) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26), a27(_a27), a28(_a28), a29(_a29) {}
@@ -10289,6 +10299,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30> value_type;
+    std::size_t size() const { return 31; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26, typename tuple_type<A27>::transparent_reference _a27, typename tuple_type<A28>::transparent_reference _a28, typename tuple_type<A29>::transparent_reference _a29, typename tuple_type<A30>::transparent_reference _a30) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26), a27(_a27), a28(_a28), a29(_a29), a30(_a30) {}
@@ -10341,6 +10352,7 @@ inline typename type::const_tuple_element<type::tuple<A0, A1, A2, A3, A4, A5, A6
 template <typename A0, typename A1, typename A2, typename A3, typename A4, typename A5, typename A6, typename A7, typename A8, typename A9, typename A10, typename A11, typename A12, typename A13, typename A14, typename A15, typename A16, typename A17, typename A18, typename A19, typename A20, typename A21, typename A22, typename A23, typename A24, typename A25, typename A26, typename A27, typename A28, typename A29, typename A30, typename A31>
 struct tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> {
     typedef tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31> value_type;
+    std::size_t size() const { return 32; }
     tuple() {}
     tuple(typename tuple_type<A0>::transparent_reference _a0, typename tuple_type<A1>::transparent_reference _a1, typename tuple_type<A2>::transparent_reference _a2, typename tuple_type<A3>::transparent_reference _a3, typename tuple_type<A4>::transparent_reference _a4, typename tuple_type<A5>::transparent_reference _a5, typename tuple_type<A6>::transparent_reference _a6, typename tuple_type<A7>::transparent_reference _a7, typename tuple_type<A8>::transparent_reference _a8, typename tuple_type<A9>::transparent_reference _a9, typename tuple_type<A10>::transparent_reference _a10, typename tuple_type<A11>::transparent_reference _a11, typename tuple_type<A12>::transparent_reference _a12, typename tuple_type<A13>::transparent_reference _a13, typename tuple_type<A14>::transparent_reference _a14, typename tuple_type<A15>::transparent_reference _a15, typename tuple_type<A16>::transparent_reference _a16, typename tuple_type<A17>::transparent_reference _a17, typename tuple_type<A18>::transparent_reference _a18, typename tuple_type<A19>::transparent_reference _a19, typename tuple_type<A20>::transparent_reference _a20, typename tuple_type<A21>::transparent_reference _a21, typename tuple_type<A22>::transparent_reference _a22, typename tuple_type<A23>::transparent_reference _a23, typename tuple_type<A24>::transparent_reference _a24, typename tuple_type<A25>::transparent_reference _a25, typename tuple_type<A26>::transparent_reference _a26, typename tuple_type<A27>::transparent_reference _a27, typename tuple_type<A28>::transparent_reference _a28, typename tuple_type<A29>::transparent_reference _a29, typename tuple_type<A30>::transparent_reference _a30, typename tuple_type<A31>::transparent_reference _a31) :
         a0(_a0), a1(_a1), a2(_a2), a3(_a3), a4(_a4), a5(_a5), a6(_a6), a7(_a7), a8(_a8), a9(_a9), a10(_a10), a11(_a11), a12(_a12), a13(_a13), a14(_a14), a15(_a15), a16(_a16), a17(_a17), a18(_a18), a19(_a19), a20(_a20), a21(_a21), a22(_a22), a23(_a23), a24(_a24), a25(_a25), a26(_a26), a27(_a27), a28(_a28), a29(_a29), a30(_a30), a31(_a31) {}
@@ -10616,10 +10628,10 @@ struct convert<type::tuple<A0> > {
         msgpack::object const& o,
         type::tuple<A0>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 1) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         return o;
     }
 };
@@ -10630,12 +10642,13 @@ struct convert<type::tuple<A0, A1> > {
         msgpack::object const& o,
         type::tuple<A0, A1>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 2) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         return o;
     }
 };
@@ -10646,14 +10659,16 @@ struct convert<type::tuple<A0, A1, A2> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 3) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         return o;
     }
 };
@@ -10664,16 +10679,19 @@ struct convert<type::tuple<A0, A1, A2, A3> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 4) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         return o;
     }
 };
@@ -10684,18 +10702,22 @@ struct convert<type::tuple<A0, A1, A2, A3, A4> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 5) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         return o;
     }
 };
@@ -10706,20 +10728,25 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 6) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         return o;
     }
 };
@@ -10730,22 +10757,28 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 7) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         return o;
     }
 };
@@ -10756,24 +10789,31 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 8) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         return o;
     }
 };
@@ -10784,26 +10824,34 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 9) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         return o;
     }
 };
@@ -10814,28 +10862,37 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 10) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         return o;
     }
 };
@@ -10846,30 +10903,40 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 11) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         return o;
     }
 };
@@ -10880,32 +10947,43 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> > {
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 12) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         return o;
     }
 };
@@ -10916,34 +10994,46 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 13) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         return o;
     }
 };
@@ -10954,36 +11044,49 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 14) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         return o;
     }
 };
@@ -10994,38 +11097,52 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 15) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         return o;
     }
 };
@@ -11036,40 +11153,55 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 16) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         return o;
     }
 };
@@ -11080,42 +11212,58 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 17) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         return o;
     }
 };
@@ -11126,44 +11274,61 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 18) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         return o;
     }
 };
@@ -11174,46 +11339,64 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 19) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         return o;
     }
 };
@@ -11224,48 +11407,67 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 20) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         return o;
     }
 };
@@ -11276,50 +11478,70 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 21) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         return o;
     }
 };
@@ -11330,52 +11552,73 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 22) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         return o;
     }
 };
@@ -11386,54 +11629,76 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 23) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         return o;
     }
 };
@@ -11444,56 +11709,79 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 24) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         return o;
     }
 };
@@ -11504,58 +11792,82 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 25) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         return o;
     }
 };
@@ -11566,60 +11878,85 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 26) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         return o;
     }
 };
@@ -11630,62 +11967,88 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 27) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         return o;
     }
 };
@@ -11696,64 +12059,91 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 28) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        if(o.via.array.size > 27)
+            o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
         return o;
     }
 };
@@ -11764,66 +12154,94 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 29) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        if(o.via.array.size > 27)
+            o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        if(o.via.array.size > 28)
+            o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
         return o;
     }
 };
@@ -11834,68 +12252,97 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 30) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        if(o.via.array.size > 27)
+            o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        if(o.via.array.size > 28)
+            o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        if(o.via.array.size > 29)
+            o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
         return o;
     }
 };
@@ -11906,70 +12353,100 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 31) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        if(o.via.array.size > 27)
+            o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        if(o.via.array.size > 28)
+            o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        if(o.via.array.size > 29)
+            o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
+        if(o.via.array.size > 30)
+            o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
         return o;
     }
 };
@@ -11980,72 +12457,103 @@ struct convert<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12
         msgpack::object const& o,
         type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31>& v) const {
         if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
-        if(o.via.array.size < 32) { throw msgpack::type_error(); }
         
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
+        if(o.via.array.size > 0)
+            o.via.array.ptr[0].msgpack::object::convert<typename type::tuple_type<A0>::type>(v.template get<0>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
+        if(o.via.array.size > 1)
+            o.via.array.ptr[1].msgpack::object::convert<typename type::tuple_type<A1>::type>(v.template get<1>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
+        if(o.via.array.size > 2)
+            o.via.array.ptr[2].msgpack::object::convert<typename type::tuple_type<A2>::type>(v.template get<2>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
+        if(o.via.array.size > 3)
+            o.via.array.ptr[3].msgpack::object::convert<typename type::tuple_type<A3>::type>(v.template get<3>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
+        if(o.via.array.size > 4)
+            o.via.array.ptr[4].msgpack::object::convert<typename type::tuple_type<A4>::type>(v.template get<4>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
+        if(o.via.array.size > 5)
+            o.via.array.ptr[5].msgpack::object::convert<typename type::tuple_type<A5>::type>(v.template get<5>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
+        if(o.via.array.size > 6)
+            o.via.array.ptr[6].msgpack::object::convert<typename type::tuple_type<A6>::type>(v.template get<6>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
+        if(o.via.array.size > 7)
+            o.via.array.ptr[7].msgpack::object::convert<typename type::tuple_type<A7>::type>(v.template get<7>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
+        if(o.via.array.size > 8)
+            o.via.array.ptr[8].msgpack::object::convert<typename type::tuple_type<A8>::type>(v.template get<8>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
+        if(o.via.array.size > 9)
+            o.via.array.ptr[9].msgpack::object::convert<typename type::tuple_type<A9>::type>(v.template get<9>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
+        if(o.via.array.size > 10)
+            o.via.array.ptr[10].msgpack::object::convert<typename type::tuple_type<A10>::type>(v.template get<10>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
+        if(o.via.array.size > 11)
+            o.via.array.ptr[11].msgpack::object::convert<typename type::tuple_type<A11>::type>(v.template get<11>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
+        if(o.via.array.size > 12)
+            o.via.array.ptr[12].msgpack::object::convert<typename type::tuple_type<A12>::type>(v.template get<12>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
+        if(o.via.array.size > 13)
+            o.via.array.ptr[13].msgpack::object::convert<typename type::tuple_type<A13>::type>(v.template get<13>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
+        if(o.via.array.size > 14)
+            o.via.array.ptr[14].msgpack::object::convert<typename type::tuple_type<A14>::type>(v.template get<14>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
+        if(o.via.array.size > 15)
+            o.via.array.ptr[15].msgpack::object::convert<typename type::tuple_type<A15>::type>(v.template get<15>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
+        if(o.via.array.size > 16)
+            o.via.array.ptr[16].msgpack::object::convert<typename type::tuple_type<A16>::type>(v.template get<16>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
+        if(o.via.array.size > 17)
+            o.via.array.ptr[17].msgpack::object::convert<typename type::tuple_type<A17>::type>(v.template get<17>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
+        if(o.via.array.size > 18)
+            o.via.array.ptr[18].msgpack::object::convert<typename type::tuple_type<A18>::type>(v.template get<18>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
+        if(o.via.array.size > 19)
+            o.via.array.ptr[19].msgpack::object::convert<typename type::tuple_type<A19>::type>(v.template get<19>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
+        if(o.via.array.size > 20)
+            o.via.array.ptr[20].msgpack::object::convert<typename type::tuple_type<A20>::type>(v.template get<20>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
+        if(o.via.array.size > 21)
+            o.via.array.ptr[21].msgpack::object::convert<typename type::tuple_type<A21>::type>(v.template get<21>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
+        if(o.via.array.size > 22)
+            o.via.array.ptr[22].msgpack::object::convert<typename type::tuple_type<A22>::type>(v.template get<22>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
+        if(o.via.array.size > 23)
+            o.via.array.ptr[23].msgpack::object::convert<typename type::tuple_type<A23>::type>(v.template get<23>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
+        if(o.via.array.size > 24)
+            o.via.array.ptr[24].msgpack::object::convert<typename type::tuple_type<A24>::type>(v.template get<24>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
+        if(o.via.array.size > 25)
+            o.via.array.ptr[25].msgpack::object::convert<typename type::tuple_type<A25>::type>(v.template get<25>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
+        if(o.via.array.size > 26)
+            o.via.array.ptr[26].msgpack::object::convert<typename type::tuple_type<A26>::type>(v.template get<26>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
+        if(o.via.array.size > 27)
+            o.via.array.ptr[27].msgpack::object::convert<typename type::tuple_type<A27>::type>(v.template get<27>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
+        if(o.via.array.size > 28)
+            o.via.array.ptr[28].msgpack::object::convert<typename type::tuple_type<A28>::type>(v.template get<28>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
+        if(o.via.array.size > 29)
+            o.via.array.ptr[29].msgpack::object::convert<typename type::tuple_type<A29>::type>(v.template get<29>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
+        if(o.via.array.size > 30)
+            o.via.array.ptr[30].msgpack::object::convert<typename type::tuple_type<A30>::type>(v.template get<30>());
         // In order to avoid clang++'s invalid warning, msgpack::object:: has been added.
-        o.via.array.ptr[31].msgpack::object::convert<typename type::tuple_type<A31>::type>(v.template get<31>());
+        if(o.via.array.size > 31)
+            o.via.array.ptr[31].msgpack::object::convert<typename type::tuple_type<A31>::type>(v.template get<31>());
         return o;
     }
 };
@@ -12985,7 +13493,7 @@ struct object_with_zone<type::tuple<> > {
         msgpack::object::with_zone& o,
         const type::tuple<>&) const {
         o.type = msgpack::type::ARRAY;
-        o.via.array.ptr = nullptr;
+        o.via.array.ptr = MSGPACK_NULLPTR;
         o.via.array.size = 0;
     }
 };
@@ -13914,4 +14422,4 @@ struct object_with_zone<type::tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10,
 
 }  // namespace msgpack
 
-#endif // MSGPACK_CPP03_MSGPACK_TUPLE_HPP
+#endif // MSGPACK_V1_CPP03_MSGPACK_TUPLE_HPP

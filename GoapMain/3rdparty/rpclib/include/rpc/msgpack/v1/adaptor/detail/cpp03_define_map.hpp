@@ -1,78 +1,21 @@
 //
 // MessagePack for C++ static resolution routine
 //
-// Copyright (C) 2015 KONDO Takatoshi
+// Copyright (C) 2015-2016 KONDO Takatoshi
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-//
-#ifndef MSGPACK_CPP03_DEFINE_MAP_HPP
-#define MSGPACK_CPP03_DEFINE_MAP_HPP
+#ifndef MSGPACK_V1_CPP03_DEFINE_MAP_HPP
+#define MSGPACK_V1_CPP03_DEFINE_MAP_HPP
 
-// BOOST_PP_VARIADICS is defined in boost/preprocessor/config/config.hpp
-// http://www.boost.org/libs/preprocessor/doc/ref/variadics.html
-// However, supporting compiler detection is not complete. msgpack-c requires
-// variadic macro arguments support. So BOOST_PP_VARIADICS is defined here explicitly.
-#if !defined(MSGPACK_PP_VARIADICS)
-#define MSGPACK_PP_VARIADICS
-#endif
+#include "msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp"
+#include "msgpack/adaptor/msgpack_tuple.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/object_fwd.hpp"
 
-#include <rpc/msgpack/preprocessor.hpp>
-
-#include "rpc/msgpack/versioning.hpp"
-#include "rpc/msgpack/adaptor/msgpack_tuple.hpp"
-#include "rpc/msgpack/adaptor/adaptor_base.hpp"
-#include "rpc/msgpack/object_fwd.hpp"
-
-#define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
-    MSGPACK_PP_IF( \
-        MSGPACK_PP_IS_BEGIN_PARENS(elem), \
-        elem, \
-        (MSGPACK_PP_STRINGIZE(elem))(elem) \
-    )
-
-#define MSGPACK_DEFINE_MAP_IMPL(...) \
-    MSGPACK_PP_SEQ_TO_TUPLE( \
-        MSGPACK_PP_SEQ_FOR_EACH( \
-            MSGPACK_DEFINE_MAP_EACH_PROC, \
-            0, \
-            MSGPACK_PP_VARIADIC_TO_SEQ(__VA_ARGS__) \
-        ) \
-    )
-
-#define MSGPACK_DEFINE_MAP(...) \
-    template <typename Packer> \
-    void msgpack_pack(Packer& pk) const \
-    { \
-        msgpack::type::make_define_map \
-            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_pack(pk); \
-    } \
-    void msgpack_unpack(msgpack::object const& o) \
-    { \
-        msgpack::type::make_define_map \
-            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_unpack(o); \
-    }\
-    template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
-    { \
-        msgpack::type::make_define_map \
-            MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
-            .msgpack_object(o, z); \
-    }
-
-#define MSGPACK_BASE_MAP(base) \
-    (MSGPACK_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
+#include <map>
 
 namespace msgpack {
 /// @cond
@@ -80,11 +23,6 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
 namespace type {
 
-/// @cond
-
-template <typename A0 = void, typename A1 = void, typename A2 = void, typename A3 = void, typename A4 = void, typename A5 = void, typename A6 = void, typename A7 = void, typename A8 = void, typename A9 = void, typename A10 = void, typename A11 = void, typename A12 = void, typename A13 = void, typename A14 = void, typename A15 = void, typename A16 = void, typename A17 = void, typename A18 = void, typename A19 = void, typename A20 = void, typename A21 = void, typename A22 = void, typename A23 = void, typename A24 = void, typename A25 = void, typename A26 = void, typename A27 = void, typename A28 = void, typename A29 = void, typename A30 = void, typename A31 = void, typename A32 = void>
-struct define_map;
-/// @endcond
 
 template <>
 struct define_map<> {
@@ -100,7 +38,7 @@ struct define_map<> {
     void msgpack_object(msgpack::object* o, msgpack::zone&) const
     {
         o->type = msgpack::type::MAP;
-        o->via.map.ptr = nullptr;
+        o->via.map.ptr = MSGPACK_NULLPTR;
         o->via.map.size = 0;
     }
 };
@@ -2796,4 +2734,4 @@ inline define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
 /// @endcond
 }  // namespace msgpack
 
-#endif // MSGPACK_CPP03_DEFINE_MAP_HPP
+#endif // MSGPACK_V1_CPP03_DEFINE_MAP_HPP

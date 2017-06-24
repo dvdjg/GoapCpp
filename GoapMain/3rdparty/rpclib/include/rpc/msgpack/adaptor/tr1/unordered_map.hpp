@@ -3,24 +3,16 @@
 //
 // Copyright (C) 2008-2015 FURUHASHI Sadayuki
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
 #ifndef MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP
 #define MSGPACK_TYPE_TR1_UNORDERED_MAP_HPP
 
-#include "rpc/msgpack/versioning.hpp"
-#include "rpc/msgpack/adaptor/adaptor_base.hpp"
-#include "rpc/msgpack/adaptor/check_container_size.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/adaptor/adaptor_base.hpp"
+#include "msgpack/adaptor/check_container_size.hpp"
 
 #if defined(_LIBCPP_VERSION) || (_MSC_VER >= 1700)
 
@@ -88,7 +80,7 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_map<K, V, Hash, Pred, Alloc> 
     void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_map<K, V, Hash, Pred, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
@@ -145,7 +137,7 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_multimap<K, V, Hash, Pred, Al
     void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_multimap<K, V, Hash, Pred, Alloc>& v) const {
         o.type = msgpack::type::MAP;
         if(v.empty()) {
-            o.via.map.ptr  = nullptr;
+            o.via.map.ptr  = MSGPACK_NULLPTR;
             o.via.map.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());

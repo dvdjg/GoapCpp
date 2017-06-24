@@ -3,36 +3,20 @@
 //
 // Copyright (C) 2008-2013 FURUHASHI Sadayuki and KONDO Takatoshi
 //
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+//    Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//    http://www.boost.org/LICENSE_1_0.txt)
 //
 #ifndef MSGPACK_CPP11_ZONE_HPP
 #define MSGPACK_CPP11_ZONE_HPP
 
-#include "rpc/msgpack/versioning.hpp"
+#include "msgpack/versioning.hpp"
+#include "msgpack/cpp_config.hpp"
+#include "msgpack/zone_decl.hpp"
 
 #include <cstdlib>
 #include <memory>
 #include <vector>
-
-#include "rpc/msgpack/cpp_config.hpp"
-
-#ifndef MSGPACK_ZONE_CHUNK_SIZE
-#define MSGPACK_ZONE_CHUNK_SIZE 8192
-#endif
-
-#ifndef MSGPACK_ZONE_ALIGN
-#define MSGPACK_ZONE_ALIGN sizeof(void*)
-#endif
 
 namespace msgpack {
 
@@ -49,7 +33,7 @@ private:
         void* m_data;
     };
     struct finalizer_array {
-        finalizer_array():m_tail(nullptr), m_end(nullptr), m_array(nullptr) {}
+        finalizer_array():m_tail(MSGPACK_NULLPTR), m_end(MSGPACK_NULLPTR), m_array(MSGPACK_NULLPTR) {}
         void call() {
             finalizer* fin = m_tail;
             for(; fin != m_array; --fin) (*(fin-1))();
@@ -100,9 +84,9 @@ private:
         finalizer_array(finalizer_array&& other) noexcept
             :m_tail(other.m_tail), m_end(other.m_end), m_array(other.m_array)
         {
-            other.m_tail = nullptr;
-            other.m_end = nullptr;
-            other.m_array = nullptr;
+            other.m_tail = MSGPACK_NULLPTR;
+            other.m_end = MSGPACK_NULLPTR;
+            other.m_array = MSGPACK_NULLPTR;
         }
         finalizer_array& operator=(finalizer_array&& other) noexcept
         {
@@ -133,7 +117,7 @@ private:
             m_head = c;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(c) + sizeof(chunk);
-            c->m_next = nullptr;
+            c->m_next = MSGPACK_NULLPTR;
         }
         ~chunk_list()
         {
@@ -157,14 +141,14 @@ private:
                     break;
                 }
             }
-            m_head->m_next = nullptr;
+            m_head->m_next = MSGPACK_NULLPTR;
             m_free = chunk_size;
             m_ptr  = reinterpret_cast<char*>(m_head) + sizeof(chunk);
         }
         chunk_list(chunk_list&& other) noexcept
             :m_free(other.m_free), m_ptr(other.m_ptr), m_head(other.m_head)
         {
-            other.m_head = nullptr;
+            other.m_head = MSGPACK_NULLPTR;
         }
         chunk_list& operator=(chunk_list&& other) noexcept
         {
@@ -363,7 +347,7 @@ T* zone::allocate(Args... args)
 
 inline std::size_t aligned_size(
     std::size_t size,
-    std::size_t align = MSGPACK_ZONE_ALIGN) {
+    std::size_t align) {
     return (size + align - 1) / align * align;
 }
 
