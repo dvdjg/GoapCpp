@@ -83,7 +83,7 @@ struct client::impl
                 pac_.buffer_consumed(length);
 
                 msgpack::unpacked result;
-                while (pac_.next(&result))
+                while (pac_.next(result))
                 {
                     auto r = response(std::move(result));
                     auto id = r.get_id();

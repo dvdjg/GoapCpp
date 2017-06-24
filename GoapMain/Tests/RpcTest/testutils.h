@@ -19,7 +19,7 @@ inline msgpack::unpacked make_unpacked(Types... items) {
     msgpack::sbuffer buf;
     msgpack::pack(buf, obj);
     msgpack::unpacked msg;
-    msgpack::unpack(&msg, buf.data(), buf.size());
+    msgpack::unpack(msg, buf.data(), buf.size());
     return msg;
 }
 

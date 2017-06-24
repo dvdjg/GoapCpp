@@ -41,9 +41,7 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 LIBS += \
-    -lrpc$$SUFFIX \
-    -lgmock-gtest$$SUFFIX \
-    -ldependencies$$SUFFIX
+    -lgmock-gtest$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
@@ -53,3 +51,5 @@ QMAKE_LFLAGS += -pthread -fopenmp
 LIBS += \
     -lUser32 -lAdvapi32
 }
+LIBS += \
+    -lgmock-gtest$$SUFFIX \

@@ -19,7 +19,7 @@ DEPENDPATH += $$INCLUDEPATH
 LIBS += \
     -lsqlite$$SUFFIX \
     -lbotan$$SUFFIX \
-    -lz
+    -lz$$SUFFIX
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp

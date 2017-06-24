@@ -92,6 +92,12 @@ void operator<< (msgpack::v1::object& o, const T(&v)[N]) {
     msgpack::v1::adaptor::object<T[N]>()(o, v);
 }
 
+template <typename T, std::size_t N>
+inline
+void operator<< (msgpack::object& o, const T(&v)[N]) {
+    msgpack::v1::adaptor::object<T[N]>()(o, v); // djg
+}
+
 template <typename T>
 inline
 typename msgpack::enable_if<

@@ -29,7 +29,13 @@ SOURCES += \
     lib/rpc/this_session.cc \
     lib/rpc/detail/client_error.cc \
     lib/rpc/detail/response.cc \
-    lib/rpc/detail/server_session.cc
+    lib/rpc/detail/server_session.cc \
+    include/rpc/dispatcher.inl \
+    lib/rpc/msgpack/objectc.c \
+    lib/rpc/msgpack/unpack.c \
+    lib/rpc/msgpack/version.c \
+    lib/rpc/msgpack/vrefbuffer.c \
+    lib/rpc/msgpack/zone.c
 
 HEADERS += \ 
     include/rpc/client.h \
@@ -394,7 +400,12 @@ HEADERS += \
     include/rpc/msgpack/adaptor/detail/cpp03_msgpack_tuple.hpp \
     include/rpc/msgpack/adaptor/detail/cpp11_define_array.hpp \
     include/rpc/msgpack/adaptor/detail/cpp11_define_map.hpp \
-    include/rpc/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp
+    include/rpc/msgpack/adaptor/detail/cpp11_msgpack_tuple.hpp \
+    include/rpc/msgpack/v1/adaptor/detail/cpp03_define_array.hpp \
+    include/rpc/msgpack/v1/adaptor/detail/cpp03_define_map.hpp \
+    include/rpc/msgpack/v1/adaptor/detail/cpp03_msgpack_tuple.hpp \
+    include/rpc/msgpack/v1/detail/cpp03_zone.hpp \
+    include/rpc/msgpack/v1/detail/cpp11_zone.hpp
 
 unix {
     target.path = /usr/lib

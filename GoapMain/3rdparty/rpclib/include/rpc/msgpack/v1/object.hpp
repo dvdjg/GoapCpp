@@ -87,6 +87,9 @@ public:
     template <typename T>
     T as() const { return m_obj.as<T>(); }
 
+    template <typename T>
+    T& convert(T& t) const { return m_obj.convert(t); }
+
 #if defined(MSGPACK_USE_CPP03)
     struct object_handle_ref {
         object_handle_ref(object_handle* oh):m_oh(oh) {}
