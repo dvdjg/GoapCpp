@@ -36,6 +36,7 @@
 
 #include <type_traits>
 #include <tuple>
+#include <map>
 
 #define MSGPACK_DEFINE_MAP_EACH_PROC(r, data, elem) \
     MSGPACK_PP_IF( \
@@ -57,20 +58,20 @@
     template <typename Packer> \
     void msgpack_pack(Packer& pk) const \
     { \
-        clmdep_msgpack::type::make_define_map \
+        msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
             .msgpack_pack(pk); \
     } \
-    void msgpack_unpack(clmdep_msgpack::object const& o) \
+    void msgpack_unpack(msgpack::object const& o) \
     { \
-        clmdep_msgpack::type::make_define_map \
+        msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
             .msgpack_unpack(o); \
     }\
     template <typename MSGPACK_OBJECT> \
-    void msgpack_object(MSGPACK_OBJECT* o, clmdep_msgpack::zone& z) const \
+    void msgpack_object(MSGPACK_OBJECT* o, msgpack::zone& z) const \
     { \
-        clmdep_msgpack::type::make_define_map \
+        msgpack::type::make_define_map \
             MSGPACK_DEFINE_MAP_IMPL(__VA_ARGS__) \
             .msgpack_object(o, z); \
     }
@@ -78,7 +79,7 @@
 #define MSGPACK_BASE_MAP(base) \
     (MSGPACK_PP_STRINGIZE(base))(*const_cast<base *>(static_cast<base const*>(this)))
 
-namespace clmdep_msgpack {
+namespace msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -92,18 +93,18 @@ struct define_map_imp {
         pk.pack(std::get<N-1>(t));
     }
     static void unpack(
-        clmdep_msgpack::object const& o, Tuple const& t,
-        std::map<std::string, clmdep_msgpack::object const*> const& kvmap) {
+        msgpack::object const& o, Tuple const& t,
+        std::map<std::string, msgpack::object const*> const& kvmap) {
         define_map_imp<Tuple, N-2>::unpack(o, t, kvmap);
         auto it = kvmap.find(std::get<N-2>(t));
         if (it != kvmap.end()) {
             it->second->convert(std::get<N-1>(t));
         }
     }
-    static void object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z, Tuple const& t) {
+    static void object(msgpack::object* o, msgpack::zone& z, Tuple const& t) {
         define_map_imp<Tuple, N-2>::object(o, z, t);
-        o->via.map.ptr[(N-1)/2].key = clmdep_msgpack::object(std::get<N-2>(t), z);
-        o->via.map.ptr[(N-1)/2].val = clmdep_msgpack::object(std::get<N-1>(t), z);
+        o->via.map.ptr[(N-1)/2].key = msgpack::object(std::get<N-2>(t), z);
+        o->via.map.ptr[(N-1)/2].val = msgpack::object(std::get<N-1>(t), z);
     }
 };
 
@@ -112,9 +113,9 @@ struct define_map_imp<Tuple, 0> {
     template <typename Packer>
     static void pack(Packer&, Tuple const&) {}
     static void unpack(
-        clmdep_msgpack::object const&, Tuple const&,
-        std::map<std::string, clmdep_msgpack::object const*> const&) {}
-    static void object(clmdep_msgpack::object*, clmdep_msgpack::zone&, Tuple const&) {}
+        msgpack::object const&, Tuple const&,
+        std::map<std::string, msgpack::object const*> const&) {}
+    static void object(msgpack::object*, msgpack::zone&, Tuple const&) {}
 };
 
 template <typename... Args>
@@ -129,10 +130,10 @@ struct define_map {
 
         define_map_imp<std::tuple<Args&...>, sizeof...(Args)>::pack(pk, a);
     }
-    void msgpack_unpack(clmdep_msgpack::object const& o) const
+    void msgpack_unpack(msgpack::object const& o) const
     {
-        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
-        std::map<std::string, clmdep_msgpack::object const*> kvmap;
+        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        std::map<std::string, msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.emplace(
                 std::string(
@@ -142,11 +143,11 @@ struct define_map {
         }
         define_map_imp<std::tuple<Args&...>, sizeof...(Args)>::unpack(o, a, kvmap);
     }
-    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
+    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
     {
         static_assert(sizeof...(Args) % 2 == 0, "");
-        o->type = clmdep_msgpack::type::MAP;
-        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*sizeof...(Args)/2));
+        o->type = msgpack::type::MAP;
+        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*sizeof...(Args)/2));
         o->via.map.size = sizeof...(Args) / 2;
 
         define_map_imp<std::tuple<Args&...>, sizeof...(Args)>::object(o, z, a);
@@ -166,6 +167,6 @@ define_map<Args...> make_define_map(Args&... args)
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace clmdep_msgpack
+}  // namespace msgpack
 
 #endif // MSGPACK_CPP11_DEFINE_MAP_HPP

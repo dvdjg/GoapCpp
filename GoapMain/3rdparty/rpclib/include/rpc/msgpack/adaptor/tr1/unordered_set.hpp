@@ -43,7 +43,7 @@
 
 #if defined(MSGPACK_STD_TR1)
 
-namespace clmdep_msgpack {
+namespace msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -53,10 +53,10 @@ namespace adaptor {
 
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct convert<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> > {
-    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
-        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
-        clmdep_msgpack::object* p = o.via.array.ptr + o.via.array.size;
-        clmdep_msgpack::object* const pbegin = o.via.array.ptr;
+    msgpack::object const& operator()(msgpack::object const& o, MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        msgpack::object* p = o.via.array.ptr + o.via.array.size;
+        msgpack::object* const pbegin = o.via.array.ptr;
         MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> tmp;
         while(p > pbegin) {
             --p;
@@ -70,7 +70,7 @@ struct convert<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> > {
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct pack<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> > {
     template <typename Stream>
-    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
         for(typename MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>::const_iterator it(v.begin()), it_end(v.end());
@@ -83,20 +83,20 @@ struct pack<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> > {
 
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct object_with_zone<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> > {
-    void operator()(clmdep_msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
-        o.type = clmdep_msgpack::type::ARRAY;
+    void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>& v) const {
+        o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            clmdep_msgpack::object* p = static_cast<clmdep_msgpack::object*>(o.zone.allocate_align(sizeof(clmdep_msgpack::object)*size));
-            clmdep_msgpack::object* const pend = p + size;
+            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+            msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
             typename MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc>::const_iterator it(v.begin());
             do {
-                *p = clmdep_msgpack::object(*it, o.zone);
+                *p = msgpack::object(*it, o.zone);
                 ++p;
                 ++it;
             } while(p < pend);
@@ -107,10 +107,10 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_set<T, Hash, Compare, Alloc> 
 
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct convert<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> > {
-    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
-        if(o.type != clmdep_msgpack::type::ARRAY) { throw clmdep_msgpack::type_error(); }
-        clmdep_msgpack::object* p = o.via.array.ptr + o.via.array.size;
-        clmdep_msgpack::object* const pbegin = o.via.array.ptr;
+    msgpack::object const& operator()(msgpack::object const& o, MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
+        if(o.type != msgpack::type::ARRAY) { throw msgpack::type_error(); }
+        msgpack::object* p = o.via.array.ptr + o.via.array.size;
+        msgpack::object* const pbegin = o.via.array.ptr;
         MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> tmp;
         while(p > pbegin) {
             --p;
@@ -124,7 +124,7 @@ struct convert<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> > {
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct pack<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> > {
     template <typename Stream>
-    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
+    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_array(size);
         for(typename MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>::const_iterator it(v.begin()), it_end(v.end());
@@ -137,20 +137,20 @@ struct pack<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> > {
 
 template <typename T, typename Hash, typename Compare, typename Alloc>
 struct object_with_zone<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc> > {
-    void operator()(clmdep_msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
-        o.type = clmdep_msgpack::type::ARRAY;
+    void operator()(msgpack::object::with_zone& o, const MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>& v) const {
+        o.type = msgpack::type::ARRAY;
         if(v.empty()) {
             o.via.array.ptr = nullptr;
             o.via.array.size = 0;
         } else {
             uint32_t size = checked_get_container_size(v.size());
-            clmdep_msgpack::object* p = static_cast<clmdep_msgpack::object*>(o.zone.allocate_align(sizeof(clmdep_msgpack::object)*size));
-            clmdep_msgpack::object* const pend = p + size;
+            msgpack::object* p = static_cast<msgpack::object*>(o.zone.allocate_align(sizeof(msgpack::object)*size));
+            msgpack::object* const pend = p + size;
             o.via.array.ptr = p;
             o.via.array.size = size;
             typename MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Alloc>::const_iterator it(v.begin());
             do {
-                *p = clmdep_msgpack::object(*it, o.zone);
+                *p = msgpack::object(*it, o.zone);
                 ++p;
                 ++it;
             } while(p < pend);
@@ -164,7 +164,7 @@ struct object_with_zone<MSGPACK_STD_TR1::unordered_multiset<T, Hash, Compare, Al
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace clmdep_msgpack
+} // namespace msgpack
 
 #undef MSGPACK_STD_TR1
 

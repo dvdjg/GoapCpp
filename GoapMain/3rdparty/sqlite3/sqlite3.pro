@@ -12,18 +12,14 @@ CONFIG -= qt
 SOURCES += \
     shell.c
 
-
 INCLUDEPATH += $$top_srcdir/3rdparty/sqlite
-DEPENDPATH += $$top_srcdir/3rdparty/sqlite
+DEPENDPATH += $$INCLUDEPATH
 
-#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite/release/libsqlite.a
-#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite/debug/libsqlite.a
-#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite/release/sqlite.lib
-#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../sqlite/debug/sqlite.lib
-#else:unix: PRE_TARGETDEPS += $$OUT_PWD/../sqlite/libsqlite.a
 
-LIBS += -lsqlite$$SUFFIX \
-    -lbotan$$SUFFIX -lz
+LIBS += \
+    -lsqlite$$SUFFIX \
+    -lbotan$$SUFFIX \
+    -lz
 
 unix {
 QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp

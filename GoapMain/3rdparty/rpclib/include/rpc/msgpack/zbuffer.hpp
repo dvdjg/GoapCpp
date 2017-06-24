@@ -31,7 +31,7 @@
 #define MSGPACK_ZBUFFER_INIT_SIZE 8192
 #endif
 
-namespace clmdep_msgpack {
+namespace msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -170,6 +170,6 @@ private:
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace clmdep_msgpack
+}  // namespace msgpack
 
 #endif /* msgpack/zbuffer.hpp */

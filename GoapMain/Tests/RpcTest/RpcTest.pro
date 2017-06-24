@@ -17,6 +17,9 @@ CONFIG -= qt app_bundle
     error(Could not find the dependencies.pri file!)
 }
 
+HEADERS += \
+    testutils.h
+
 SOURCES += \
     testmain.cc \
     rpc/client_test.cc \
@@ -29,7 +32,7 @@ SOURCES += \
     rpc/this_session_test.cc
 
 
-INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest # $$top_srcdir/3rdparty/dependencies/include $$top_srcdir/3rdparty/rpclib/include $$top_srcdir/3rdparty/rpclib/include/rpc
+INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
@@ -50,6 +53,3 @@ QMAKE_LFLAGS += -pthread -fopenmp
 LIBS += \
     -lUser32 -lAdvapi32
 }
-
-HEADERS += \
-    testutils.h

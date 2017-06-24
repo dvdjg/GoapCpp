@@ -19,8 +19,8 @@ void this_handler_t::disable_response() { resp_enabled_ = false; }
 void this_handler_t::enable_response() { resp_enabled_ = true; }
 
 void this_handler_t::clear() {
-    error_.set(RPCLIB_MSGPACK::object());
-    resp_.set(RPCLIB_MSGPACK::object());
+    error_.set(msgpack::object());
+    resp_.set(msgpack::object());
     enable_response();
 }
 

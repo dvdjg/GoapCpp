@@ -25,15 +25,19 @@
 
 #include <typeinfo>
 
-namespace clmdep_msgpack {
+namespace msgpack
+{
 
 /// @cond
-MSGPACK_API_VERSION_NAMESPACE(v1) {
-/// @endcond
+MSGPACK_API_VERSION_NAMESPACE(v1)
+{
+    /// @endcond
 
 
-namespace type {
-    enum object_type {
+    namespace type
+    {
+    enum object_type
+    {
         NIL                 = MSGPACK_OBJECT_NIL,
         BOOLEAN             = MSGPACK_OBJECT_BOOLEAN,
         POSITIVE_INTEGER    = MSGPACK_OBJECT_POSITIVE_INTEGER,
@@ -48,156 +52,176 @@ namespace type {
         MAP                 = MSGPACK_OBJECT_MAP,
         EXT                 = MSGPACK_OBJECT_EXT
     };
-}
+    }
 
 
-struct object;
-struct object_kv;
+    struct object;
+    struct object_kv;
 
-struct object_array {
-    uint32_t size;
-    clmdep_msgpack::object* ptr;
-};
+    struct object_array
+    {
+        uint32_t size;
+        msgpack::object *ptr;
+    };
 
-struct object_map {
-    uint32_t size;
-    clmdep_msgpack::object_kv* ptr;
-};
+    struct object_map
+    {
+        uint32_t size;
+        msgpack::object_kv *ptr;
+    };
 
-struct object_str {
-    uint32_t size;
-    const char* ptr;
-};
+    struct object_str
+    {
+        uint32_t size;
+        const char *ptr;
+    };
 
-struct object_bin {
-    uint32_t size;
-    const char* ptr;
-};
+    struct object_bin
+    {
+        uint32_t size;
+        const char *ptr;
+    };
 
-struct object_ext {
-    int8_t type() const { return ptr[0]; }
-    const char* data() const { return &ptr[1]; }
-    uint32_t size;
-    const char* ptr;
-};
+    struct object_ext
+    {
+        int8_t type() const
+        {
+            return ptr[0];
+        }
+        const char *data() const
+        {
+            return &ptr[1];
+        }
+        uint32_t size;
+        const char *ptr;
+    };
 
 
 #if !defined(MSGPACK_USE_CPP03)
-struct object;
+    struct object;
 
-namespace adaptor {
-template <typename T, typename Enabler = void>
-struct as;
-} // namespace adaptor
+    namespace adaptor
+    {
+    template <typename T, typename Enabler = void>
+    struct as;
+    } // namespace adaptor
 
-template <typename T>
-struct has_as {
-private:
-    template <typename U>
-    static auto check(U*) ->
-        typename std::is_same<
-            decltype(clmdep_msgpack::adaptor::as<U>()(std::declval<clmdep_msgpack::object>())),
-            T>::type;
-    template <typename>
-    static std::false_type check(...);
-public:
-    using type = decltype(check<T>(nullptr));
-    static constexpr bool value = type::value;
-};
+    template <typename T>
+    struct has_as
+    {
+    private:
+        template <typename U>
+        static auto check(U *) ->
+        typename std::is_same <
+        decltype(msgpack::adaptor::as<U>()(std::declval<msgpack::object>())),
+                 T >::type;
+        template <typename>
+        static std::false_type check(...);
+    public:
+        using type = decltype(check<T>(nullptr));
+        static constexpr bool value = type::value;
+    };
 
 #endif // !defined(MSGPACK_USE_CPP03)
 
 
-struct object {
-    union union_type {
-        bool boolean;
-        uint64_t u64;
-        int64_t  i64;
+    struct object
+    {
+        union union_type
+        {
+            bool boolean;
+            uint64_t u64;
+            int64_t  i64;
 #if defined(MSGPACK_USE_LEGACY_NAME_AS_FLOAT)
-        double   dec; // obsolete
+            double   dec; // obsolete
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
-        double   f64;
-        clmdep_msgpack::object_array array;
-        clmdep_msgpack::object_map map;
-        clmdep_msgpack::object_str str;
-        clmdep_msgpack::object_bin bin;
-        clmdep_msgpack::object_ext ext;
-    };
+            double   f64;
+            msgpack::object_array array;
+            msgpack::object_map map;
+            msgpack::object_str str;
+            msgpack::object_bin bin;
+            msgpack::object_ext ext;
+        };
 
-    clmdep_msgpack::type::object_type type;
-    union_type via;
+        msgpack::type::object_type type;
+        union_type via;
 
-    bool is_nil() const { return type == clmdep_msgpack::type::NIL; }
+        bool is_nil() const
+        {
+            return type == msgpack::type::NIL;
+        }
 
 #if defined(MSGPACK_USE_CPP03)
 
-    template <typename T>
-    T as() const;
+        template <typename T>
+        T as() const;
 
 #else  // defined(MSGPACK_USE_CPP03)
 
-    template <typename T>
-    typename std::enable_if<clmdep_msgpack::has_as<T>::value, T>::type as() const;
+        template <typename T>
+        typename std::enable_if<msgpack::has_as<T>::value, T>::type as() const;
 
-    template <typename T>
-    typename std::enable_if<!clmdep_msgpack::has_as<T>::value, T>::type as() const;
+        template <typename T>
+        typename std::enable_if < !msgpack::has_as<T>::value, T >::type as() const;
 
 #endif // defined(MSGPACK_USE_CPP03)
 
-    template <typename T>
-    T& convert(T& v) const;
-    template <typename T>
-    T* convert(T* v) const;
+        template <typename T>
+        T &convert(T &v) const;
+        template <typename T>
+        T *convert(T *v) const;
 
-    template <typename T>
-    bool convert_if_not_nil(T& v) const;
+        template <typename T>
+        bool convert_if_not_nil(T &v) const;
 
-    object();
+        object();
 
-    object(const msgpack_object& o);
+        object(const msgpack_object &o);
 
-    template <typename T>
-    explicit object(const T& v);
+        template <typename T>
+        explicit object(const T &v);
 
-    template <typename T>
-    object(const T& v, clmdep_msgpack::zone& z);
+        template <typename T>
+        object(const T &v, msgpack::zone &z);
 
-    // obsolete
-    template <typename T>
-    object(const T& v, clmdep_msgpack::zone* z);
+        // obsolete
+        template <typename T>
+        object(const T &v, msgpack::zone *z);
 
-    template <typename T>
-    object& operator=(const T& v);
+        template <typename T>
+        object &operator=(const T &v);
 
-    operator msgpack_object() const;
+        operator msgpack_object() const;
 
-    struct with_zone;
+        struct with_zone;
 
-private:
-    struct implicit_type;
+    private:
+        struct implicit_type;
 
-public:
-    implicit_type convert() const;
-};
+    public:
+        implicit_type convert() const;
+    };
 
-class type_error : public std::bad_cast { };
+    class type_error : public std::bad_cast { };
 
-struct object_kv {
-    clmdep_msgpack::object key;
-    clmdep_msgpack::object val;
-};
+    struct object_kv
+    {
+        msgpack::object key;
+        msgpack::object val;
+    };
 
-struct object::with_zone : object {
-    with_zone(clmdep_msgpack::zone& zone) : zone(zone) { }
-    clmdep_msgpack::zone& zone;
-private:
-    with_zone();
-};
+    struct object::with_zone : object
+    {
+        with_zone(msgpack::zone &zone) : zone(zone) { }
+        msgpack::zone &zone;
+    private:
+        with_zone();
+    };
 
-/// @cond
+    /// @cond
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace clmdep_msgpack
+} // namespace msgpack
 
 #endif // MSGPACK_OBJECT_FWD_HPP
