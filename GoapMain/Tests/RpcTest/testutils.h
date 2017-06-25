@@ -3,7 +3,7 @@
 #ifndef TESTUTILS_H_LHCAMVUX
 #define TESTUTILS_H_LHCAMVUX
 
-#include "gmock/gmock.h"
+//#include "gmock/gmock.h"
 #include "msgpack.hpp"
 #include <regex>
 #include <thread>
@@ -45,11 +45,11 @@ struct IDummy {
     virtual void dummy_void_multiarg(int x, int y) = 0;
 };
 
-struct MockDummy : IDummy {
-    MOCK_METHOD0(dummy_void_zeroarg, void());
-    MOCK_METHOD1(dummy_void_singlearg, void(int));
-    MOCK_METHOD2(dummy_void_multiarg, void(int, int));
-};
+//struct MockDummy : IDummy {
+//    MOCK_METHOD0(dummy_void_zeroarg, void());
+//    MOCK_METHOD1(dummy_void_singlearg, void(int));
+//    MOCK_METHOD2(dummy_void_multiarg, void(int, int));
+//};
 
 inline std::string get_blob(std::size_t size) {
     std::string s;

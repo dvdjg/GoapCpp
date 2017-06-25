@@ -18,12 +18,13 @@ response::response(msgpack::object_handle o) : response()
     // TODO: check protocol [t.szelei 2015-12-30]
     id_ = std::get<1>(r);
     auto &&error_obj = std::get<2>(r);
-    if (error_obj.is_nil()) // djg
+    if (!error_obj.is_nil()) // djg
     {
-        error_ = std::make_shared<msgpack::object_handle>(msgpack::clone(error_obj));
+        error_ = std::make_shared<msgpack::object_handle>();
+        error_->set(error_obj);
+        //error_ = std::make_shared<msgpack::object_handle>(msgpack::clone(error_obj));
     }
-    result_ = std::make_shared<msgpack::object_handle>(
-                  std::get<3>(r), std::move(o.zone()));
+    result_ = std::make_shared<msgpack::object_handle>(std::get<3>(r), std::move(o.zone()));
 }
 
 msgpack::sbuffer response::get_data() const

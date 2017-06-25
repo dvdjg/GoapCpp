@@ -36,11 +36,13 @@ private:
         finalizer_array():m_tail(MSGPACK_NULLPTR), m_end(MSGPACK_NULLPTR), m_array(MSGPACK_NULLPTR) {}
         void call() {
             finalizer* fin = m_tail;
-            for(; fin != m_array; --fin) (*(fin-1))();
+            for(; fin != m_array; --fin)
+                (*(fin-1))();
         }
         ~finalizer_array() {
             call();
             ::free(m_array);
+            m_array = MSGPACK_NULLPTR;
         }
         void clear() {
             call();

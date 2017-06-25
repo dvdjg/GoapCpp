@@ -30,7 +30,6 @@ SOURCES += \
     convert.cpp \
     fixint.cpp \
     fixint_c.cpp \
-    inc_adaptor_define.cpp \
     iterator_cpp11.cpp \
     json.cpp \
     limit.cpp \
@@ -59,7 +58,8 @@ SOURCES += \
     user_class.cpp \
     version.cpp \
     visitor.cpp \
-    zone.cpp
+    zone.cpp \
+    testmain.cc
 
 HEADERS += \
     test_allocator.hpp

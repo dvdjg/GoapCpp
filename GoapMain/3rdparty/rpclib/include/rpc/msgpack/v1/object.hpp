@@ -58,7 +58,7 @@ public:
         msgpack::unique_ptr<msgpack::zone>&& z
 #endif // defined(MSGPACK_USE_CPP03)
     ) :
-        m_obj(obj), m_zone(msgpack::move(z)) { }
+        m_zone(msgpack::move(z)), m_obj(obj){ }
 
     void set(msgpack::object const& obj)
         { m_obj = obj; }
@@ -97,13 +97,13 @@ public:
     };
 
     object_handle(object_handle& other):
-        m_obj(other.m_obj),
-        m_zone(msgpack::move(other.m_zone)) {
+        m_zone(msgpack::move(other.m_zone)),
+        m_obj(other.m_obj) {
     }
 
     object_handle(object_handle_ref ref):
-        m_obj(ref.m_oh->m_obj),
-        m_zone(msgpack::move(ref.m_oh->m_zone)) {
+        m_zone(msgpack::move(ref.m_oh->m_zone)),
+        m_obj(ref.m_oh->m_obj) {
     }
 
     object_handle& operator=(object_handle& other) {
@@ -124,8 +124,8 @@ public:
 #endif // defined(MSGPACK_USE_CPP03)
 
 private:
-    msgpack::object m_obj;
     msgpack::unique_ptr<msgpack::zone> m_zone;
+    msgpack::object m_obj; // djg m_obj can hold a reference to m_zone so must be deleted before (by appearing after m_zone in the class declaration)
 };
 
 namespace detail {
@@ -188,7 +188,15 @@ inline object_handle clone(msgpack::object const& obj) {
     msgpack::object newobj = z.get() ? msgpack::object(obj, *z) : obj;
     return object_handle(newobj, msgpack::move(z));
 }
-
+//inline object_handle clone(msgpack::object const& obj) {
+//    std::size_t size = msgpack::aligned_zone_size(obj);
+//    if(size == 0) {
+//        return object_handle(obj, msgpack::unique_ptr<msgpack::zone>(MSGPACK_NULLPTR));
+//    } else {
+//        msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone(size));
+//        return object_handle(msgpack::object(obj,*z), msgpack::move(z)); //, msgpack::unique_ptr<msgpack::zone>(MSGPACK_NULLPTR));
+//    }
+//}
 template <typename T>
 inline object::implicit_type::operator T() { return obj.as<T>(); }
 

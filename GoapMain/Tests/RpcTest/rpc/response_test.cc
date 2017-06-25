@@ -16,11 +16,11 @@ TEST(response, object_ctor)
     response r(std::move(o));
     EXPECT_EQ(r.get_id(), 42);
     std::string error;
-    r.get_error()->get().convert(error);
+    r.get_error()->convert(error);
     EXPECT_TRUE(error == "foo");
 
     std::string result;
-    r.get_result()->get().convert(result);
+    r.get_result()->convert(result);
     EXPECT_TRUE(result == "bar");
 }
 
