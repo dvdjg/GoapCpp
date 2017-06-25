@@ -1,4 +1,4 @@
-TARGET = tst_data
+TARGET = tst_rpc
 
 QT       -= gui core
 TEMPLATE = app
@@ -22,14 +22,14 @@ HEADERS += \
 
 SOURCES += \
     testmain.cc \
-    rpc/client_test.cc \
-    rpc/dispatcher_test.cc \
     rpc/response_test.cc \
     rpc/server_session_test.cc \
     rpc/server_test.cc \
     rpc/this_handler_test.cc \
     rpc/this_server_test.cc \
     rpc/this_session_test.cc
+#    rpc/client_test.cc \
+#    rpc/dispatcher_test.cc \
 
 
 INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest
