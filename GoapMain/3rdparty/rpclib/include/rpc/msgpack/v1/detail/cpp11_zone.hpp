@@ -172,6 +172,9 @@ private:
 
 public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
+    ~zone() {
+        // djg
+    }
 
 public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);

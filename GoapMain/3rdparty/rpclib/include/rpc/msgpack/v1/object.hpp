@@ -122,7 +122,10 @@ public:
         return object_handle_ref(this);
     }
 #endif // defined(MSGPACK_USE_CPP03)
-
+//    ~object_handle()
+//    {
+//        // djg
+//    }
 private:
     msgpack::unique_ptr<msgpack::zone> m_zone;
     msgpack::object m_obj; // djg m_obj can hold a reference to m_zone so must be deleted before (by appearing after m_zone in the class declaration)

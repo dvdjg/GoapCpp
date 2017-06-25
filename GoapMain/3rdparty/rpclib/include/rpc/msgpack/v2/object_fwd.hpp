@@ -48,6 +48,11 @@ struct object : v1::object {
     template <typename T>
     object(const T& v, msgpack::zone& z):v1::object(v, z) {}
 
+    ~object()
+    {
+        // djg
+    }
+
 public:
     /// Convert the object
     /**
