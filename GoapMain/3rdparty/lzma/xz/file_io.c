@@ -14,7 +14,7 @@
 
 #include <fcntl.h>
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include <sys\stat.h>
 #define S_IRUSR _S_IREAD
 #define S_IWUSR _S_IWRITE

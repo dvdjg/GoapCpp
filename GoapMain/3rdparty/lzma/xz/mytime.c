@@ -12,14 +12,15 @@
 
 #include "private.h"
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <Winsock2.h>
 #define BILLION                             (1E9)
 
 static BOOL g_first_time = 1;
 static LARGE_INTEGER g_counts_per_sec;
+#ifndef _TIMESPEC_DEFINED
 struct timespec { long tv_sec; long tv_nsec; };
-
+#endif
 int clock_gettime(int dummy, struct timespec *ct)
 {
     LARGE_INTEGER count;
