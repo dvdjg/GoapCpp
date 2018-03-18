@@ -23,9 +23,7 @@ SOURCES += \
 
 HEADERS += \
     sqlite3.h \
-    sqlite3ext.h \
-    codec_c_interface.h \
-    codec.h
+    sqlite3ext.h
 
 unix {
     target.path = /usr/lib

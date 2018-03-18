@@ -92,10 +92,17 @@ namespace sqlite {
 				  default: handler(sqlite_exception(errstr, "", error_code)); \
 			  }
 			});
-
-		sqlite3_config(SQLITE_CONFIG_LOG, (void(*)(void*,int,const char*))[](void *functor, int error_code, const char *errstr) {
-				(*static_cast<decltype(ptr.get())>(functor))(error_code, errstr);
-			}, ptr.get());
-		detail::store_error_log_data_pointer(std::move(ptr));
+        struct Lamb
+        {
+            static void sqliteGonfigLog(void *functor, int error_code, const char *errstr)
+            {
+                (*static_cast<decltype(ptr.get())>(functor))(error_code, errstr);
+            }
+        };
+        sqlite3_config(SQLITE_CONFIG_LOG, &Lamb::sqliteGonfigLog, ptr.get());
+//        sqlite3_config(SQLITE_CONFIG_LOG, (void(*)(void*,int,const char*))[](void *functor, int error_code, const char *errstr) {
+//				(*static_cast<decltype(ptr.get())>(functor))(error_code, errstr);
+//			}, ptr.get());
+        detail::store_error_log_data_pointer(std::move(ptr));
 	}
 }

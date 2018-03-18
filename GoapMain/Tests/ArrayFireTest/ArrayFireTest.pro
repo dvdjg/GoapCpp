@@ -26,10 +26,16 @@ INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcd
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
+
+win32-msvc* {
+    INCLUDEPATH += \
+        "F:/Program Files/ArrayFire/v3/include"
+    LIBS += \
+        -L"F:/Program Files/ArrayFire/v3/lib" \
+        -laf
+}
 
 LIBS += \
     -lGoapLib$$SUFFIX \
