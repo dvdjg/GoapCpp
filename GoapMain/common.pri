@@ -23,9 +23,15 @@ win32-msvc*:DEFINES += \
     WIN32_LEAN_AND_MEAN \
     NOMINMAX \
     VC_EXTRALEAN \
+    _SCL_SECURE_NO_DEPRECATE \
+    _CRT_SECURE_NO_DEPRECATE \
     _CRT_SECURE_NO_WARNINGS \
     _CRT_NONSTDC_NO_DEPRECATE \
+    _AFX_SECURE_NO_WARNINGS \
+    _ATL_SECURE_NO_WARNINGS \
     _WIN32_WINNT=0x0501
+
+DEFINES -= UNICODE _UNICODE
 
 *-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 *-g++-32:QMAKE_TARGET.arch = x86
@@ -51,11 +57,11 @@ win32-msvc* {
     LIBPRE=
     LIBPOST=.lib
     INCLUDEPATH += \
-        D:/local/boost_1_64_0 \
+        F:/Programa/boost_1_66_0 \
         "C:/Program Files/ArrayFire/v3/include" \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
-    LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -LD:/local/boost_1_64_0/lib64-msvc-14.1 -laf
+    LIBS += -L"C:/Program Files/ArrayFire/v3/lib" -LF:/Programa/boost_1_66_0/stage/lib -laf
 }
 unix {
     LIBPRE=lib
