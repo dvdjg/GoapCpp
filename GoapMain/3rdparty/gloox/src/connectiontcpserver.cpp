@@ -126,7 +126,7 @@ namespace gloox
       std::string message = "getaddrinfo() for " + ( m_server.empty() ? std::string( "*" ) : m_server )
           + " (" + util::int2string( m_port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           + strerror( err ) + " (errno: " + util::int2string( err ) + ")";
 #endif
@@ -142,7 +142,7 @@ namespace gloox
       std::string message = "bind() to " + ( m_server.empty() ? std::string( "*" ) : m_server )
           + " (" + /*inet_ntoa( local.sin_addr ) + ":" +*/ util::int2string( m_port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           + strerror( err ) + " (errno: " + util::int2string( err ) + ")";
 #endif
@@ -158,7 +158,7 @@ namespace gloox
       std::string message = "listen() on " + ( m_server.empty() ? std::string( "*" ) : m_server )
           + " (" + /*inet_ntoa( local.sin_addr ) +*/ ":" + util::int2string( m_port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           + strerror( err ) + " (errno: " + util::int2string( err ) + ")";
 #endif

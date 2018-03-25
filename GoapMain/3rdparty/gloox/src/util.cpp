@@ -9,11 +9,15 @@
 
   This software is distributed without any warranty.
 */
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+#include <windows.h>
+#endif /* _INC_WINDOWS */
 
 #include "util.h"
 #include "gloox.h"
 
 #include <cstdio>
+
 
 namespace gloox
 {
@@ -191,6 +195,18 @@ namespace gloox
       }
     }
 
+#if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
+    std::string formatWindowsMessage(int imsg) { // DJG
+        char *s = NULL;
+        FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                       NULL, imsg,
+                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                       (LPSTR)&s, 0, NULL);
+        std::string ret(s);
+        LocalFree(s);
+        return ret;
+    }
+#endif
   }
 
 }

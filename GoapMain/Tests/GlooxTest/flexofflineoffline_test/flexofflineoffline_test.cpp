@@ -102,7 +102,7 @@ TEST(Gloox, FlexibleOfflineOffline)
   }
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "FlexibleOffline::Offline: " );
 //    if( fail == 0 )

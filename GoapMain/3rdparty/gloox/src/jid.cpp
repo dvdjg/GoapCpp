@@ -32,8 +32,10 @@ namespace gloox
 
     if( at != std::string::npos && !( m_valid = prep::nodeprep( jid.substr( 0, at ), m_username ) ) )
       return false;
+    std::transform(m_username.begin(), m_username.end(), m_username.begin(), [](unsigned char c){ return ::tolower(c); }); // DJG
 
     m_serverRaw = jid.substr( at == std::string::npos ? 0 : at + 1, slash - at - 1 );
+    std::transform(m_serverRaw.begin(), m_serverRaw.end(), m_serverRaw.begin(), [](unsigned char c){ return ::tolower(c); }); // DJG
     if( !( m_valid = prep::nameprep( m_serverRaw, m_server ) ) )
       return false;
 
@@ -77,10 +79,11 @@ namespace gloox
 
   void JID::setBare()
   {
-    if( !m_username.empty() )
+    if( !m_username.empty() ) {
       m_bare = m_username + '@';
-    else
+    } else {
       m_bare = ""/*EmptyString*/;
+    }
     m_bare += m_server;
   }
 

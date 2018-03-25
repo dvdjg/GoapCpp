@@ -287,7 +287,7 @@ TEST(Gloox, ChatStateFilter)
   f = 0;
 //   s = 0;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 
 

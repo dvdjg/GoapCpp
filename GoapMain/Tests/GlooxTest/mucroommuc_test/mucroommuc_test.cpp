@@ -139,7 +139,7 @@ TEST(Gloox, MUCRoomMUC)
     delete f;
   }
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 //  printf( "MUCRoom::MUC: " );
 //  if( !fail )
 //    printf( "OK\n" );

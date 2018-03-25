@@ -98,7 +98,7 @@ TEST(Gloox, AdhocCommand)
   }
   delete f;
 
-  EXPECT_FALSE(fail);
+  EXPECT_EQ(0, fail);
 //  if( fail == 0 )
 //  {
 //    printf( "Adhoc::Command: OK\n" );

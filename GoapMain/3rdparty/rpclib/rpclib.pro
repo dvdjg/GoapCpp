@@ -31,11 +31,7 @@ SOURCES += \
     lib/rpc/detail/response.cc \
     lib/rpc/detail/server_session.cc \
     include/rpc/dispatcher.inl \
-    lib/rpc/msgpack/objectc.c \
-    lib/rpc/msgpack/unpack.c \
-    lib/rpc/msgpack/version.c \
-    lib/rpc/msgpack/vrefbuffer.c \
-    lib/rpc/msgpack/zone.c
+    lib/rpc/nonstd/optional.cc
 
 HEADERS += \ 
     include/rpc/client.h \

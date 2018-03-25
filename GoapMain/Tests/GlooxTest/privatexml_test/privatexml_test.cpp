@@ -210,7 +210,7 @@ TEST(Gloox, PrivateXML)
   delete t1;
   delete cb;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 // printf( "PrivateXML: " );
 //    if( fail == 0 )

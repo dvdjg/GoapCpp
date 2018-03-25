@@ -86,7 +86,7 @@ TEST(Gloox, SHIM)
   }
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "SHIM: " );
 //    if( fail == 0 )

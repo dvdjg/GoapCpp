@@ -322,7 +322,7 @@ TEST(Gloox, Presence)
   delete pres;
   pres = 0;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //    if( fail == 0 )
 //  {

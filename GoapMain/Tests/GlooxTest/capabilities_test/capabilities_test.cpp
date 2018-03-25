@@ -85,7 +85,7 @@ TEST(Gloox, Capabilities)
   }
 
 
-    EXPECT_FALSE(fail);
+    EXPECT_EQ(0, fail);
 
 //  printf( "Capabilities: " );
 //  if( fail == 0 )

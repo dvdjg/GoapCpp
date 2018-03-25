@@ -129,7 +129,7 @@ TEST(Gloox, LastActivity)
   delete la;
   delete cb;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "LastActivity: " );
 //    if( fail == 0 )

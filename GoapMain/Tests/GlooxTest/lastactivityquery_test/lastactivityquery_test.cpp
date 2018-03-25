@@ -130,7 +130,7 @@ TEST(Gloox, LastActivityQuery)
   }
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "LastActivity::Query: " );
 //    if( fail == 0 )

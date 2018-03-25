@@ -1289,7 +1289,7 @@ class ParserTest : private TagHandler
       delete p;
       p = 0;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
     if( fail == 0 )
       {

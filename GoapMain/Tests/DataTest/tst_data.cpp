@@ -314,7 +314,7 @@ struct TmpFile
 #define OUR_UTF16 "UTF-16le"
 #endif
 
-TEST(DataTest, UtfTestFlags)
+TEST(UtfTestFlags)
 {
     try
     {
@@ -998,7 +998,7 @@ public:
     }
 };
 
-TEST(DataTest, TryCatchBlocks)
+TEST(TryCatchBlocks)
 {
     // --------------------------------------------------------------------------
     // -- Test if writing to disk works properly from within a catch block.

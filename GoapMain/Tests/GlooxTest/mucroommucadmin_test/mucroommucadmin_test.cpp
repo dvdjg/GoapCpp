@@ -308,7 +308,7 @@ TEST(Gloox, MUCRoomMUCAdmin)
   }
   delete f;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 //  printf( "MUCRoom::MUCAdmin: " );
 //  if( !fail )
 //    printf( "OK\n" );

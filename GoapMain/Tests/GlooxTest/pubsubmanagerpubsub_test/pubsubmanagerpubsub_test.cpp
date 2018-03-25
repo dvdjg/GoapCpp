@@ -54,7 +54,7 @@ TEST(Gloox, PubSubManagerPubSub)
     delete f;
   }
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 //  printf( "PubSub::Manager::PubSub: " );
 //  if( fail )
 //    fprintf( stderr, "%d test(s) failed\n", fail );

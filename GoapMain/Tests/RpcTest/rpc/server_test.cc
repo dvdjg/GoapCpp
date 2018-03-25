@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 #include "rpc/client.h"
@@ -92,12 +93,6 @@ TEST_F(server_error_handling, suppress) {
     // this seems like the opposite check, but the client throwing
     // the exception means that it reached the other side, i.e.
     // the server suppressed it.
-//    try {
-//        c.call("blue");
-//    } catch (std::exception e) {
-//        std::cout << e.what() << std::endl;
-//    }
-
     EXPECT_THROW(c.call("blue"), std::runtime_error);
     EXPECT_THROW(c.call("red"), std::runtime_error);
     EXPECT_THROW(c.call("green"), std::runtime_error);
@@ -173,4 +168,12 @@ TEST(server_misc, single_param_ctor) {
     rpc::server s(test_port);
     s.async_run();
     rpc::client c("127.0.0.1", test_port);
+}
+
+TEST(server_misc, server_is_moveable) {
+    rpc::server s(test_port);
+    s.bind("foo", [](){});
+    std::vector<rpc::server> vec;
+    vec.push_back(std::move(s));
+    EXPECT_THROW(vec[0].bind("foo", [](){}), std::logic_error);
 }

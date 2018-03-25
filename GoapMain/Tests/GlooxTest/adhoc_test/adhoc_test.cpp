@@ -223,7 +223,7 @@ TEST(Gloox, AdhocTest)
   delete at;
 
 
-  EXPECT_FALSE(fail);
+  EXPECT_EQ(0, fail);
 
 //  if( fail == 0 )
 //  {

@@ -891,16 +891,6 @@ TEST(Gloox, XPath)
 
 
 
-
-
-
-
-
-
-
-
-
-
 //   Tag *c2 = new Tag( ddd, "ccc" );
 //   Tag *c3 = new Tag( c2, "ccc" );
 //   Tag *c4 = new Tag( eee, "ccc" );
@@ -935,13 +925,9 @@ TEST(Gloox, XPath)
 
 
 
-
-
-
-
   delete aaa;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //    if( fail == 0 )
 //  {

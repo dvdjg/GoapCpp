@@ -1,13 +1,10 @@
-RPCLIB_VERSION_MAJOR=2
-RPCLIB_VERSION_MINOR=0
-RPCLIB_VERSION_PATCH=1
-
 
 DEFINES += \
     RPCLIB_ARCH_X64 \
     ASIO_STANDALONE \
     RPCLIB_ASIO=clmdep_asio \
-    RPCLIB_FMT=clmdep_fmt
+    RPCLIB_FMT=clmdep_fmt \
+    RPCLIB_MSGPACK=clmdep_msgpack
 
 win32-msvc*:DEFINES += \
     RPCLIB_WIN32 \

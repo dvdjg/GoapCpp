@@ -160,7 +160,7 @@ TEST(Gloox, SIManagerSI)
   }
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "SIManager::SI: " );
 //    if( fail == 0 )

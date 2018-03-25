@@ -373,7 +373,7 @@ TEST(Gloox, Registration)
 
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "Registration: " );
 //    if( fail == 0 )

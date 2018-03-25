@@ -268,7 +268,7 @@ TEST(Gloox, MUCRoomMUCUser)
     delete f;
   }
 
-  EXPECT_FALSE(fail);
+  EXPECT_EQ(0, fail);
 //  printf( "MUCRoom::MUCUser: " );
 //  if( !fail )
 //    printf( "OK\n" );

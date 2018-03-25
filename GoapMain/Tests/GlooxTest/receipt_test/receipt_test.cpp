@@ -104,7 +104,7 @@ TEST(Gloox, Receipt)
     delete f;
   }
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "Receipt: " );
 //    if( fail == 0 )

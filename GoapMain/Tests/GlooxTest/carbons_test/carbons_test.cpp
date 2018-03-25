@@ -151,7 +151,7 @@ TEST(Gloox, Carbons)
   delete cm;
 
 
-    EXPECT_FALSE(fail);
+    EXPECT_EQ(0, fail);
 
 
 

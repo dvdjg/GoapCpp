@@ -302,7 +302,7 @@ namespace gloox
 
     std::string message = "connect() failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-        "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+        "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
         "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -339,7 +339,7 @@ namespace gloox
     if( WSAStartup( MAKEWORD( 1, 1 ), &wsaData ) != 0 )
     {
       logInstance.dbg( LogAreaClassDns, "WSAStartup() failed. WSAGetLastError: "
-                                        + util::int2string( ::WSAGetLastError() ) );
+                                        + util::formatWindowsMessage( ::WSAGetLastError() ) );
       return -ConnDnsError;
     }
 #endif
@@ -355,7 +355,7 @@ namespace gloox
     {
       std::string message = "getprotobyname( \"tcp\" ) failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() )
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() )
 #else
           "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -384,7 +384,7 @@ namespace gloox
           + util::int2string( proto )
           + " ) failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -442,7 +442,7 @@ namespace gloox
       freeaddrinfo( servinfo );
       std::string message = "Connection to " + host + ":" + util::int2string( port ) + " failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-      "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+      "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
       "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -500,7 +500,7 @@ namespace gloox
     std::string message = "Connection to " + host + " ("
         + inet_ntoa( target.sin_addr ) + ":" + util::int2string( port ) + ") failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-        "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+        "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
         "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -523,7 +523,7 @@ namespace gloox
     {
       std::string message = "closeSocket() failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
@@ -537,11 +537,12 @@ namespace gloox
     if( WSACleanup() != 0 )
     {
       logInstance.dbg( LogAreaClassDns, "WSACleanup() failed. WSAGetLastError: "
-          + util::int2string( ::WSAGetLastError() ) );
+          + util::formatWindowsMessage( ::WSAGetLastError() ) );
     }
 #else
     (void)logInstance;
 #endif
   }
+
 
 }

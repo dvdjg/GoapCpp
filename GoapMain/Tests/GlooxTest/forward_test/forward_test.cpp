@@ -81,7 +81,7 @@ TEST(Gloox, Forward)
 
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "Forward: " );
 //    if( fail == 0 )

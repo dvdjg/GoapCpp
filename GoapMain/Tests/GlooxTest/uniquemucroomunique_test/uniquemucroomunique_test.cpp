@@ -76,7 +76,7 @@ TEST(Gloox, UniqueMUCRoomUnique)
   }
   delete f;
 
-  EXPECT_FALSE(fail);
+  EXPECT_EQ(0, fail);
 //  printf( "UniqueMUCRoom::Unique: " );
 //  if( !fail )
 //    printf( "OK\n" );

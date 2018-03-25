@@ -280,6 +280,8 @@ namespace gloox
       return long2string( value );
     }
 
+    std::string formatWindowsMessage(int imsg); // DJG
+
   }
 
 }

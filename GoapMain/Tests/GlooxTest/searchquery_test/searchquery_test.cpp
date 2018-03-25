@@ -245,7 +245,7 @@ TEST(Gloox, SearchQuery)
 
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "Search::Query: " );
 //    if( fail == 0 )

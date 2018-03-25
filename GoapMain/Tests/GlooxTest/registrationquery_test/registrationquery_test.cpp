@@ -249,7 +249,7 @@ TEST(Gloox, RegistrationQuery)
 
 
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //printf( "Registration::Query: " );
 //    if( fail == 0 )

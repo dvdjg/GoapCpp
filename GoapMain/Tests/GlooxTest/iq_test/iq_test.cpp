@@ -211,7 +211,7 @@ TEST(Gloox, IOData)
   delete iq;
   iq = 0;
 
-EXPECT_FALSE(fail);
+EXPECT_EQ(0, fail);
 
 //    if( fail == 0 )
 //  {

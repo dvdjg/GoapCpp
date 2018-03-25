@@ -161,7 +161,7 @@ namespace gloox
         // recv() failed for an unexpected reason
         std::string message = "recv() failed. "
 #if defined( _WIN32 ) && !defined( __SYMBIAN32__ )
-          "WSAGetLastError: " + util::int2string( ::WSAGetLastError() );
+          "WSAGetLastError: " + util::formatWindowsMessage( ::WSAGetLastError() );
 #else
           "errno: " + util::int2string( errno ) + ": " + strerror( errno );
 #endif
