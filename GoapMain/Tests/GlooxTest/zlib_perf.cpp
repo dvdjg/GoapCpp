@@ -9,14 +9,15 @@
  *
  *  This software is distributed without any warranty.
  */
+#include <gtest/gtest.h>
 
 #ifndef _WIN32
 
-#include "../../compressionzlib.h"
-#include "../../compressiondatahandler.h"
+#include "compressionzlib.h"
+#include "compressiondatahandler.h"
 using namespace gloox;
 
-#include "../../config.h"
+#include "config.h"
 
 #include <stdio.h>
 #include <locale.h>
@@ -75,7 +76,7 @@ static void randomize( const int size )
   values[size] = 0;
 }
 
-int main( int, char** )
+TEST(Gloox, ZlibPerf)
 {
 //   int fail = 0;
   std::string name;
@@ -122,12 +123,15 @@ int main( int, char** )
 }
 
 #else
-int main( int /*argc*/, char** /*argv*/ )
+TEST(Gloox, ZlibPerf)
 {
   printf( "Zlib not available. Skipped tests.\n" );
 }
 #endif // HAVE_ZLIB
 
 #else // _WIN32
-int main( int, char** ) { return 0; }
+TEST(Gloox, ZlibPerf)
+{
+
+}
 #endif // !_WIN32

@@ -84,6 +84,10 @@ server::server(uint16_t port)
     pimpl->start_accept();
 }
 
+server::server(server&& other) noexcept {
+    *this = std::move(other);
+}
+
 server::server(std::string const &address, uint16_t port)
     : pimpl(new server::impl(this, address, port)),
     disp_(std::make_shared<dispatcher>()) {
@@ -92,7 +96,17 @@ server::server(std::string const &address, uint16_t port)
 }
 
 server::~server() {
-    pimpl->stop();
+    if (pimpl) {
+        pimpl->stop();
+    }
+}
+
+server& server::operator=(server &&other) {
+    pimpl = std::move(other.pimpl);
+    other.pimpl = nullptr;
+    disp_ = std::move(other.disp_);
+    other.disp_ = nullptr;
+    return *this;
 }
 
 void server::suppress_exceptions(bool suppress) {
@@ -113,5 +127,12 @@ void server::async_run(std::size_t worker_threads) {
 void server::stop() { pimpl->stop(); }
 
 void server::close_sessions() { pimpl->close_sessions(); }
+
+void server::close_session(std::shared_ptr<detail::server_session> const &s) {
+  auto it = std::find(begin(pimpl->sessions_), end(pimpl->sessions_), s);
+  if (it != end(pimpl->sessions_)) {
+    pimpl->sessions_.erase(it);
+  }
+}
 
 } /* rpc */

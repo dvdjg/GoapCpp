@@ -10,9 +10,9 @@
 #ifndef MSGPACK_V2_ADAPTOR_BASE_HPP
 #define MSGPACK_V2_ADAPTOR_BASE_HPP
 
-#include "msgpack/v2/adaptor/adaptor_base_decl.hpp"
+#include "rpc/msgpack/v2/adaptor/adaptor_base_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -35,9 +35,9 @@ template <typename T, typename Enabler>
 struct object<
     T,
     Enabler,
-    typename msgpack::enable_if<
-        !msgpack::is_same<T, std::string>::value &&
-        !msgpack::is_array<T>::value
+    typename clmdep_msgpack::enable_if<
+        !clmdep_msgpack::is_same<T, std::string>::value &&
+        !clmdep_msgpack::is_array<T>::value
     >::type>
     : v1::adaptor::object<T, Enabler> {
 };
@@ -52,7 +52,7 @@ struct object_with_zone : v1::adaptor::object_with_zone<T, Enabler> {
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_V2_ADAPTOR_BASE_HPP

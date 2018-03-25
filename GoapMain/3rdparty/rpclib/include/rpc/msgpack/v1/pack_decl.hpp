@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V1_PACK_DECL_HPP
 #define MSGPACK_V1_PACK_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/cpp_config.hpp"
-#include "msgpack/sysdep.h"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/cpp_config.hpp"
+#include "rpc/msgpack/sysdep.h"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -86,6 +86,6 @@ char take8_64(T d);
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_PACK_DECL_HPP

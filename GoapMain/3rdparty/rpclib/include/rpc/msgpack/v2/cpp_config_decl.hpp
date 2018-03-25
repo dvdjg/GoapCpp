@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V2_CPP_CONFIG_DECL_HPP
 #define MSGPACK_V2_CPP_CONFIG_DECL_HPP
 
-#include "msgpack/v1/cpp_config_decl.hpp"
+#include "rpc/msgpack/v1/cpp_config_decl.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -44,12 +44,12 @@ using v1::is_pointer;
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #else  // MSGPACK_USE_CPP03
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
@@ -76,7 +76,7 @@ using v1::is_pointer;
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_USE_CPP03

@@ -10,13 +10,13 @@
 #ifndef MSGPACK_V1_TYPE_EXT_HPP
 #define MSGPACK_V1_TYPE_EXT_HPP
 
-#include "msgpack/v1/adaptor/ext_decl.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/v1/adaptor/ext_decl.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 #include <cstring>
 #include <string>
 #include <cassert>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -28,13 +28,13 @@ class ext {
 public:
     ext() : m_data(1, 0) {}
     ext(int8_t t, const char* p, uint32_t s) {
-        msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        clmdep_msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
         m_data.reserve(static_cast<std::size_t>(s) + 1);
         m_data.push_back(static_cast<char>(t));
         m_data.insert(m_data.end(), p, p + s);
     }
     ext(int8_t t, uint32_t s) {
-        msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        clmdep_msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
         m_data.resize(static_cast<std::size_t>(s) + 1);
         m_data[0] = static_cast<char>(t);
     }
@@ -76,20 +76,20 @@ private:
 namespace adaptor {
 
 template <>
-struct convert<msgpack::type::ext> {
-    msgpack::object const& operator()(msgpack::object const& o, msgpack::type::ext& v) const {
-        if(o.type != msgpack::type::EXT) {
-            throw msgpack::type_error();
+struct convert<clmdep_msgpack::type::ext> {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, clmdep_msgpack::type::ext& v) const {
+        if(o.type != clmdep_msgpack::type::EXT) {
+            throw clmdep_msgpack::type_error();
         }
-        v = msgpack::type::ext(o.via.ext.type(), o.via.ext.data(), o.via.ext.size);
+        v = clmdep_msgpack::type::ext(o.via.ext.type(), o.via.ext.data(), o.via.ext.size);
         return o;
     }
 };
 
 template <>
-struct pack<msgpack::type::ext> {
+struct pack<clmdep_msgpack::type::ext> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::ext& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::type::ext& v) const {
         // size limit has already been checked at ext's constructor
         uint32_t size = v.size();
         o.pack_ext(size, v.type());
@@ -99,12 +99,12 @@ struct pack<msgpack::type::ext> {
 };
 
 template <>
-struct object_with_zone<msgpack::type::ext> {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::ext& v) const {
+struct object_with_zone<clmdep_msgpack::type::ext> {
+    void operator()(clmdep_msgpack::object::with_zone& o, const clmdep_msgpack::type::ext& v) const {
         // size limit has already been checked at ext's constructor
         uint32_t size = v.size();
-        o.type = msgpack::type::EXT;
-        char* ptr = static_cast<char*>(o.zone.allocate_align(size + 1));
+        o.type = clmdep_msgpack::type::EXT;
+        char* ptr = static_cast<char*>(o.zone.allocate_align(size + 1, MSGPACK_ZONE_ALIGNOF(char)));
         o.via.ext.ptr = ptr;
         o.via.ext.size = size;
         ptr[0] = static_cast<char>(v.type());
@@ -127,7 +127,7 @@ public:
     ext_ref(const char* p, uint32_t s) :
         m_ptr(s == 0 ? static_cast<char*>(static_cast<void*>(&m_size)) : p),
         m_size(s == 0 ? 0 : s - 1) {
-        msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
+        clmdep_msgpack::detail::check_container_size_for_ext<sizeof(std::size_t)>(s);
     }
 
     // size limit has already been checked at ext's constructor
@@ -171,7 +171,7 @@ public:
 private:
     const char* m_ptr;
     uint32_t m_size;
-    friend struct adaptor::object<msgpack::type::ext_ref>;
+    friend struct adaptor::object<clmdep_msgpack::type::ext_ref>;
 };
 
 inline ext::ext(ext_ref const& x) {
@@ -187,18 +187,18 @@ inline ext::ext(ext_ref const& x) {
 namespace adaptor {
 
 template <>
-struct convert<msgpack::type::ext_ref> {
-    msgpack::object const& operator()(msgpack::object const& o, msgpack::type::ext_ref& v) const {
-        if(o.type != msgpack::type::EXT) { throw msgpack::type_error(); }
-        v = msgpack::type::ext_ref(o.via.ext.ptr, o.via.ext.size + 1);
+struct convert<clmdep_msgpack::type::ext_ref> {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, clmdep_msgpack::type::ext_ref& v) const {
+        if(o.type != clmdep_msgpack::type::EXT) { throw clmdep_msgpack::type_error(); }
+        v = clmdep_msgpack::type::ext_ref(o.via.ext.ptr, o.via.ext.size + 1);
         return o;
     }
 };
 
 template <>
-struct pack<msgpack::type::ext_ref> {
+struct pack<clmdep_msgpack::type::ext_ref> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const msgpack::type::ext_ref& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::type::ext_ref& v) const {
         // size limit has already been checked at ext_ref's constructor
         uint32_t size = v.size();
         o.pack_ext(size, v.type());
@@ -208,20 +208,20 @@ struct pack<msgpack::type::ext_ref> {
 };
 
 template <>
-struct object<msgpack::type::ext_ref> {
-    void operator()(msgpack::object& o, const msgpack::type::ext_ref& v) const {
+struct object<clmdep_msgpack::type::ext_ref> {
+    void operator()(clmdep_msgpack::object& o, const clmdep_msgpack::type::ext_ref& v) const {
         // size limit has already been checked at ext_ref's constructor
         uint32_t size = v.size();
-        o.type = msgpack::type::EXT;
+        o.type = clmdep_msgpack::type::EXT;
         o.via.ext.ptr = v.m_ptr;
         o.via.ext.size = size;
     }
 };
 
 template <>
-struct object_with_zone<msgpack::type::ext_ref> {
-    void operator()(msgpack::object::with_zone& o, const msgpack::type::ext_ref& v) const {
-        static_cast<msgpack::object&>(o) << v;
+struct object_with_zone<clmdep_msgpack::type::ext_ref> {
+    void operator()(clmdep_msgpack::object::with_zone& o, const clmdep_msgpack::type::ext_ref& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -231,6 +231,6 @@ struct object_with_zone<msgpack::type::ext_ref> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_EXT_HPP

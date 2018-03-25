@@ -10,12 +10,12 @@
 #ifndef MSGPACK_V1_FBUFFER_HPP
 #define MSGPACK_V1_FBUFFER_HPP
 
-#include "msgpack/v1/fbuffer_decl.hpp"
+#include "rpc/msgpack/v1/fbuffer_decl.hpp"
 
 #include <cstdio>
 #include <stdexcept>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -55,6 +55,6 @@ private:
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_FBUFFER_HPP

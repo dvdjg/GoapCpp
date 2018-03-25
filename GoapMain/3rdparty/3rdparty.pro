@@ -10,6 +10,6 @@ SUBDIRS += \
     sqlite \
     sqlite3 \
     sqlite_modern_cpp \
+    rpclib \
     botan
 
-#    rpclib \

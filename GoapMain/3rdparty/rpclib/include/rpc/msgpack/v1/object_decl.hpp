@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V1_OBJECT_DECL_HPP
 #define MSGPACK_V1_OBJECT_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/pack.hpp"
-#include "msgpack/zone.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/pack.hpp"
+#include "rpc/msgpack/zone.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
 #include <cstring>
 #include <stdexcept>
@@ -23,7 +23,7 @@
 #include <typeinfo>
 #include <iomanip>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -42,7 +42,7 @@ std::size_t add_ext_type_size<4>(std::size_t size);
 
 } // namespace detail
 
-std::size_t aligned_zone_size(msgpack::object const& obj);
+std::size_t aligned_zone_size(clmdep_msgpack::object const& obj);
 
 /// clone object
 /**
@@ -52,7 +52,7 @@ std::size_t aligned_zone_size(msgpack::object const& obj);
  *
  * @return object_handle that holds deep copied object and zone.
  */
-object_handle clone(msgpack::object const& obj);
+object_handle clone(clmdep_msgpack::object const& obj);
 
 namespace detail {
 
@@ -65,51 +65,51 @@ struct packer_serializer;
 template <typename Type>
 class define;
 
-bool operator==(const msgpack::object& x, const msgpack::object& y);
+bool operator==(const clmdep_msgpack::object& x, const clmdep_msgpack::object& y);
 
 template <typename T>
-bool operator==(const msgpack::object& x, const T& y);
+bool operator==(const clmdep_msgpack::object& x, const T& y);
 
-bool operator!=(const msgpack::object& x, const msgpack::object& y);
-
-template <typename T>
-bool operator==(const T& y, const msgpack::object& x);
+bool operator!=(const clmdep_msgpack::object& x, const clmdep_msgpack::object& y);
 
 template <typename T>
-bool operator!=(const msgpack::object& x, const T& y);
+bool operator==(const T& y, const clmdep_msgpack::object& x);
 
 template <typename T>
-bool operator!=(const T& y, const msgpack::object& x);
+bool operator!=(const clmdep_msgpack::object& x, const T& y);
 
-void operator<< (msgpack::object& o, const msgpack_object& v);
+template <typename T>
+bool operator!=(const T& y, const clmdep_msgpack::object& x);
+
+void operator<< (clmdep_msgpack::object& o, const msgpack_object& v);
 
 // obsolete
 template <typename T>
 MSGPACK_DEPRECATED("please use member function version of object::convert(T&)")
-void convert(T& v, msgpack::object const& o);
+void convert(T& v, clmdep_msgpack::object const& o);
 
 // obsolete
 template <typename Stream, typename T>
 MSGPACK_DEPRECATED("please use member function version of packer::pack(const T&)")
-void pack(msgpack::packer<Stream>& o, const T& v);
+void pack(clmdep_msgpack::packer<Stream>& o, const T& v);
 
 // obsolete
 template <typename Stream, typename T>
 MSGPACK_DEPRECATED("please use member function version of packer::pack(const T&)")
-void pack_copy(msgpack::packer<Stream>& o, T v);
+void pack_copy(clmdep_msgpack::packer<Stream>& o, T v);
 
 template <typename Stream>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object& v);
+clmdep_msgpack::packer<Stream>& operator<< (clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::object& v);
 
 template <typename Stream>
-msgpack::packer<Stream>& operator<< (msgpack::packer<Stream>& o, const msgpack::object::with_zone& v);
+clmdep_msgpack::packer<Stream>& operator<< (clmdep_msgpack::packer<Stream>& o, const clmdep_msgpack::object::with_zone& v);
 
-std::ostream& operator<< (std::ostream& s, const msgpack::object& o);
+std::ostream& operator<< (std::ostream& s, const clmdep_msgpack::object& o);
 
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_OBJECT_DECL_HPP

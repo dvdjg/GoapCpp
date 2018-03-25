@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V1_CPP03_MSGPACK_TUPLE_DECL_HPP
 #define MSGPACK_V1_CPP03_MSGPACK_TUPLE_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/object.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -312,6 +312,6 @@ tuple<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16,
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CPP03_MSGPACK_TUPLE_DECL_HPP

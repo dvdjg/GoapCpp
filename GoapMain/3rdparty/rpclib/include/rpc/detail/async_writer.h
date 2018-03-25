@@ -49,14 +49,21 @@ public:
 
                     if (exit_) {
                         LOG_INFO("Closing socket");
-                        socket_.shutdown(
-                            RPCLIB_ASIO::ip::tcp::socket::shutdown_both);
+                        try {
+                            socket_.shutdown(
+                                RPCLIB_ASIO::ip::tcp::socket::shutdown_both);
+                        }
+                        catch (std::system_error &e) {
+                            (void)e;
+                            LOG_WARN("std::system_error during socket shutdown. "
+                                     "Code: {}. Message: {}", e.code(), e.what());
+                        }
                         socket_.close();
                     }
                 }));
     }
 
-    void write(msgpack::sbuffer &&data) {
+    void write(RPCLIB_MSGPACK::sbuffer &&data) {
         write_queue_.push_back(std::move(data));
         if (write_queue_.size() > 1) {
             return; // there is an ongoing write chain so don't start another
@@ -68,6 +75,12 @@ public:
     friend class rpc::client;
 
 protected:
+    template <typename Derived>
+    std::shared_ptr<Derived> shared_from_base() {
+        return std::static_pointer_cast<Derived>(shared_from_this());
+    }
+
+protected:
     RPCLIB_ASIO::ip::tcp::socket socket_;
     RPCLIB_ASIO::strand write_strand_;
     std::atomic_bool exit_{false};
@@ -76,7 +89,7 @@ protected:
     std::condition_variable cv_exit_;
 
 private:
-    std::deque<msgpack::sbuffer> write_queue_;
+    std::deque<RPCLIB_MSGPACK::sbuffer> write_queue_;
     RPCLIB_CREATE_LOG_CHANNEL(async_writer)
 };
 

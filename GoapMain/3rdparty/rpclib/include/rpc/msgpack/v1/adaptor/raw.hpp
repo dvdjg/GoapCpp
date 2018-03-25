@@ -10,12 +10,12 @@
 #ifndef MSGPACK_V1_TYPE_RAW_HPP
 #define MSGPACK_V1_TYPE_RAW_HPP
 
-#include "msgpack/v1/adaptor/raw_decl.hpp"
+#include "rpc/msgpack/v1/adaptor/raw_decl.hpp"
 
 #include <cstring>
 #include <string>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -61,8 +61,8 @@ namespace adaptor {
 
 template <>
 struct convert<type::raw_ref> {
-    msgpack::object const& operator()(msgpack::object const& o, type::raw_ref& v) const {
-        if(o.type != msgpack::type::BIN) { throw msgpack::type_error(); }
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, type::raw_ref& v) const {
+        if(o.type != clmdep_msgpack::type::BIN) { throw clmdep_msgpack::type_error(); }
         v.ptr  = o.via.bin.ptr;
         v.size = o.via.bin.size;
         return o;
@@ -72,7 +72,7 @@ struct convert<type::raw_ref> {
 template <>
 struct pack<type::raw_ref> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::raw_ref& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const type::raw_ref& v) const {
         o.pack_bin(v.size);
         o.pack_bin_body(v.ptr, v.size);
         return o;
@@ -81,8 +81,8 @@ struct pack<type::raw_ref> {
 
 template <>
 struct object<type::raw_ref> {
-    void operator()(msgpack::object& o, const type::raw_ref& v) const {
-        o.type = msgpack::type::BIN;
+    void operator()(clmdep_msgpack::object& o, const type::raw_ref& v) const {
+        o.type = clmdep_msgpack::type::BIN;
         o.via.bin.ptr = v.ptr;
         o.via.bin.size = v.size;
     }
@@ -90,8 +90,8 @@ struct object<type::raw_ref> {
 
 template <>
 struct object_with_zone<type::raw_ref> {
-    void operator()(msgpack::object::with_zone& o, const type::raw_ref& v) const {
-        static_cast<msgpack::object&>(o) << v;
+    void operator()(clmdep_msgpack::object::with_zone& o, const type::raw_ref& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -101,6 +101,6 @@ struct object_with_zone<type::raw_ref> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_RAW_HPP

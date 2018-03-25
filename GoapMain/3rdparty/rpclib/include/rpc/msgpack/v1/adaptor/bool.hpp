@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V1_TYPE_BOOL_HPP
 #define MSGPACK_V1_TYPE_BOOL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -23,8 +23,8 @@ namespace adaptor {
 
 template <>
 struct convert<bool> {
-    msgpack::object const& operator()(msgpack::object const& o, bool& v) const {
-        if(o.type != msgpack::type::BOOLEAN) { throw msgpack::type_error(); }
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, bool& v) const {
+        if(o.type != clmdep_msgpack::type::BOOLEAN) { throw clmdep_msgpack::type_error(); }
         v = o.via.boolean;
         return o;
     }
@@ -33,7 +33,7 @@ struct convert<bool> {
 template <>
 struct pack<bool> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const bool& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const bool& v) const {
         if(v) { o.pack_true(); }
         else { o.pack_false(); }
         return o;
@@ -42,16 +42,16 @@ struct pack<bool> {
 
 template <>
 struct object<bool> {
-    void operator()(msgpack::object& o, bool v) const {
-        o.type = msgpack::type::BOOLEAN;
+    void operator()(clmdep_msgpack::object& o, bool v) const {
+        o.type = clmdep_msgpack::type::BOOLEAN;
         o.via.boolean = v;
     }
 };
 
 template <>
 struct object_with_zone<bool> {
-    void operator()(msgpack::object::with_zone& o, bool v) const {
-        static_cast<msgpack::object&>(o) << v;
+    void operator()(clmdep_msgpack::object::with_zone& o, bool v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -61,6 +61,6 @@ struct object_with_zone<bool> {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_BOOL_HPP

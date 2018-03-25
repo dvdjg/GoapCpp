@@ -11,9 +11,9 @@
 #ifndef MSGPACK_V1_OBJECT_FWD_HPP
 #define MSGPACK_V1_OBJECT_FWD_HPP
 
-#include "msgpack/object_fwd_decl.hpp"
+#include "rpc/msgpack/object_fwd_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -21,12 +21,12 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 
 struct object_array {
     uint32_t size;
-    msgpack::object* ptr;
+    clmdep_msgpack::object* ptr;
 };
 
 struct object_map {
     uint32_t size;
-    msgpack::object_kv* ptr;
+    clmdep_msgpack::object_kv* ptr;
 };
 
 struct object_str {
@@ -56,7 +56,7 @@ private:
     static auto check(U*) ->
         // Check v1 specialization
         typename std::is_same<
-            decltype(adaptor::as<U>()(std::declval<msgpack::object>())),
+            decltype(adaptor::as<U>()(std::declval<clmdep_msgpack::object>())),
             T
         >::type;
     template <typename>
@@ -82,27 +82,27 @@ struct object {
         double   dec; // obsolete
 #endif // MSGPACK_USE_LEGACY_NAME_AS_FLOAT
         double   f64;
-        msgpack::object_array array;
-        msgpack::object_map map;
-        msgpack::object_str str;
-        msgpack::object_bin bin;
-        msgpack::object_ext ext;
+        clmdep_msgpack::object_array array;
+        clmdep_msgpack::object_map map;
+        clmdep_msgpack::object_str str;
+        clmdep_msgpack::object_bin bin;
+        clmdep_msgpack::object_ext ext;
     };
 
-    msgpack::type::object_type type;
+    clmdep_msgpack::type::object_type type;
     union_type via;
 
     /// Cheking nil
     /**
      * @return If the object is nil, then return true, else return false.
      */
-    bool is_nil() const { return type == msgpack::type::NIL; }
+    bool is_nil() const { return type == clmdep_msgpack::type::NIL; }
 
 #if defined(MSGPACK_USE_CPP03)
 
     /// Get value as T
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type you want to get.
      * @return The converted object.
      */
@@ -113,34 +113,34 @@ struct object {
 
     /// Get value as T
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type you want to get.
      * @return The converted object.
      */
     template <typename T>
-    typename std::enable_if<msgpack::has_as<T>::value, T>::type as() const;
+    typename std::enable_if<clmdep_msgpack::has_as<T>::value, T>::type as() const;
 
     /// Get value as T
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type you want to get.
      * @return The converted object.
      */
     template <typename T>
-    typename std::enable_if<!msgpack::has_as<T>::value, T>::type as() const;
+    typename std::enable_if<!clmdep_msgpack::has_as<T>::value, T>::type as() const;
 
 #endif // defined(MSGPACK_USE_CPP03)
 
     /// Convert the object
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type of v.
      * @param v The value you want to get. `v` is output parameter. `v` is overwritten by converted value from the object.
      * @return The reference of `v`.
      */
     template <typename T>
-    typename msgpack::enable_if<
-        !msgpack::is_array<T>::value && !msgpack::is_pointer<T>::value,
+    typename clmdep_msgpack::enable_if<
+        !clmdep_msgpack::is_array<T>::value && !clmdep_msgpack::is_pointer<T>::value,
         T&
     >::type
     convert(T& v) const;
@@ -152,15 +152,15 @@ struct object {
 #if !defined(MSGPACK_DISABLE_LEGACY_CONVERT)
     /// Convert the object (obsolete)
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type of v.
      * @param v The pointer of the value you want to get. `v` is output parameter. `*v` is overwritten by converted value from the object.
      * @return The pointer of `v`.
      */
     template <typename T>
     MSGPACK_DEPRECATED("please use reference version instead")
-    typename msgpack::enable_if<
-        msgpack::is_pointer<T>::value,
+    typename clmdep_msgpack::enable_if<
+        clmdep_msgpack::is_pointer<T>::value,
         T
     >::type
     convert(T v) const;
@@ -168,7 +168,7 @@ struct object {
 
     /// Convert the object if not nil
     /**
-     * If the object is not nil and can't be converted to T, msgpack::type_error would be thrown.
+     * If the object is not nil and can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type of v.
      * @param v The value you want to get. `v` is output parameter. `v` is overwritten by converted value from the object if the object is not nil.
      * @return If the object is nil, then return false, else return true.
@@ -185,7 +185,7 @@ struct object {
     /// Construct object from T
     /**
      * If `v` is the type that is corresponding to MessegePack format str, bin, ext, array, or map,
-     * you need to call `object(const T& v, msgpack::zone& z)` instead of this constructor.
+     * you need to call `object(const T& v, clmdep_msgpack::zone& z)` instead of this constructor.
      *
      * @tparam T The type of `v`.
      * @param v The value you want to convert.
@@ -203,12 +203,12 @@ struct object {
      * @param z The zone that is used by the object.
      */
     template <typename T>
-    object(const T& v, msgpack::zone& z);
+    object(const T& v, clmdep_msgpack::zone& z);
 
     /// Construct object from T (obsolete)
     /**
      * The object is constructed on the zone `z`.
-     * Use `object(const T& v, msgpack::zone& z)` instead of this constructor.
+     * Use `object(const T& v, clmdep_msgpack::zone& z)` instead of this constructor.
      * See https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_object
      *
      * @tparam T The type of `v`.
@@ -217,7 +217,7 @@ struct object {
      */
     template <typename T>
     MSGPACK_DEPRECATED("please use zone reference version instead of the pointer version")
-    object(const T& v, msgpack::zone* z);
+    object(const T& v, clmdep_msgpack::zone* z);
 
     template <typename T>
     object& operator=(const T& v);
@@ -250,6 +250,6 @@ private:
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_OBJECT_FWD_HPP

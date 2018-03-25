@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V1_TYPE_FIXINT_DECL_HPP
 #define MSGPACK_V1_TYPE_FIXINT_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/int.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/int.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -41,6 +41,6 @@ typedef fix_int<int64_t> fix_int64;
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_FIXINT_DECL_HPP

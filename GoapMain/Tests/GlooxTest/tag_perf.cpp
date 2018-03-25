@@ -9,10 +9,11 @@
  *
  *  This software is distributed without any warranty.
  */
+#include <gtest/gtest.h>
 
 #ifndef _WIN32
 
-#include "../../tag.h"
+#include "tag.h"
 using namespace gloox;
 
 #include <stdio.h>

@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V1_VREFBUFFER_HPP
 #define MSGPACK_V1_VREFBUFFER_HPP
 
-#include "msgpack/v1/vrefbuffer_decl.hpp"
+#include "rpc/msgpack/v1/vrefbuffer_decl.hpp"
 
 #include <stdexcept>
 #include <algorithm>
@@ -31,7 +31,7 @@ struct iovec {
 };
 #endif
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -287,6 +287,6 @@ private:
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_VREFBUFFER_HPP

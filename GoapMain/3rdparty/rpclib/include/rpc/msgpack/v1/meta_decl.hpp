@@ -13,10 +13,10 @@
 
 #if !defined(MSGPACK_USE_CPP03)
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 #include <type_traits>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -50,7 +50,7 @@ struct is_non_const_pointer;
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // !defined(MSGPACK_USE_CPP03)
 

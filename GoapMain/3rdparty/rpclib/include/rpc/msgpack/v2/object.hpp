@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V2_OBJECT_HPP
 #define MSGPACK_V2_OBJECT_HPP
 
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -28,6 +28,6 @@ inline object::implicit_type object::convert() const
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_OBJECT_HPP

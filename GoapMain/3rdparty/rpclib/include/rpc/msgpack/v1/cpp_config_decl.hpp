@@ -10,7 +10,7 @@
 #ifndef MSGPACK_V1_CPP_CONFIG_DECL_HPP
 #define MSGPACK_V1_CPP_CONFIG_DECL_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #if !defined(MSGPACK_USE_CPP03)
 # if defined(_MSC_VER)
@@ -37,7 +37,7 @@
 
 #include <memory>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -84,7 +84,7 @@ struct is_pointer;
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #else  // MSGPACK_USE_CPP03
@@ -98,7 +98,7 @@ struct is_pointer;
 #include <memory>
 #include <tuple>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -123,7 +123,7 @@ MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_USE_CPP03

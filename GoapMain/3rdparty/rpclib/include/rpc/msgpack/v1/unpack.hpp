@@ -10,14 +10,14 @@
 #ifndef MSGPACK_V1_UNPACK_HPP
 #define MSGPACK_V1_UNPACK_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/unpack_decl.hpp"
-#include "msgpack/object.hpp"
-#include "msgpack/zone.hpp"
-#include "msgpack/unpack_exception.hpp"
-#include "msgpack/unpack_define.h"
-#include "msgpack/cpp_config.hpp"
-#include "msgpack/sysdep.h"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/unpack_decl.hpp"
+#include "rpc/msgpack/object.hpp"
+#include "rpc/msgpack/zone.hpp"
+#include "rpc/msgpack/unpack_exception.hpp"
+#include "rpc/msgpack/unpack_define.h"
+#include "rpc/msgpack/cpp_config.hpp"
+#include "rpc/msgpack/sysdep.h"
 
 #include <memory>
 
@@ -33,7 +33,7 @@
 #endif
 #endif // defined(_MSC_VER)
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -47,9 +47,9 @@ public:
                 void* user_data = MSGPACK_NULLPTR,
                 unpack_limit const& limit = unpack_limit())
         :m_func(f), m_user_data(user_data), m_limit(limit) {}
-    msgpack::zone const& zone() const { return *m_zone; }
-    msgpack::zone& zone() { return *m_zone; }
-    void set_zone(msgpack::zone& zone) { m_zone = &zone; }
+    clmdep_msgpack::zone const& zone() const { return *m_zone; }
+    clmdep_msgpack::zone& zone() { return *m_zone; }
+    void set_zone(clmdep_msgpack::zone& zone) { m_zone = &zone; }
     bool referenced() const { return m_referenced; }
     void set_referenced(bool referenced) { m_referenced = referenced; }
     unpack_reference_func reference_func() const { return m_func; }
@@ -58,96 +58,96 @@ public:
     unpack_limit& limit() { return m_limit; }
 
 private:
-    msgpack::zone* m_zone;
+    clmdep_msgpack::zone* m_zone;
     bool m_referenced;
     unpack_reference_func m_func;
     void* m_user_data;
     unpack_limit m_limit;
 };
 
-inline void unpack_uint8(uint8_t d, msgpack::object& o)
-{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint8(uint8_t d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint16(uint16_t d, msgpack::object& o)
-{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint16(uint16_t d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint32(uint32_t d, msgpack::object& o)
-{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint32(uint32_t d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_uint64(uint64_t d, msgpack::object& o)
-{ o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+inline void unpack_uint64(uint64_t d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
 
-inline void unpack_int8(int8_t d, msgpack::object& o)
-{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int8(int8_t d, clmdep_msgpack::object& o)
+{ if(d >= 0) { o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = clmdep_msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int16(int16_t d, msgpack::object& o)
-{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int16(int16_t d, clmdep_msgpack::object& o)
+{ if(d >= 0) { o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = clmdep_msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int32(int32_t d, msgpack::object& o)
-{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int32(int32_t d, clmdep_msgpack::object& o)
+{ if(d >= 0) { o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = clmdep_msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_int64(int64_t d, msgpack::object& o)
-{ if(d >= 0) { o.type = msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
-        else { o.type = msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
+inline void unpack_int64(int64_t d, clmdep_msgpack::object& o)
+{ if(d >= 0) { o.type = clmdep_msgpack::type::POSITIVE_INTEGER; o.via.u64 = d; }
+        else { o.type = clmdep_msgpack::type::NEGATIVE_INTEGER; o.via.i64 = d; } }
 
-inline void unpack_float(float d, msgpack::object& o)
-{ o.type = msgpack::type::FLOAT32; o.via.f64 = d; }
+inline void unpack_float(float d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::FLOAT32; o.via.f64 = d; }
 
-inline void unpack_double(double d, msgpack::object& o)
-{ o.type = msgpack::type::FLOAT64; o.via.f64 = d; }
+inline void unpack_double(double d, clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::FLOAT64; o.via.f64 = d; }
 
-inline void unpack_nil(msgpack::object& o)
-{ o.type = msgpack::type::NIL; }
+inline void unpack_nil(clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::NIL; }
 
-inline void unpack_true(msgpack::object& o)
-{ o.type = msgpack::type::BOOLEAN; o.via.boolean = true; }
+inline void unpack_true(clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::BOOLEAN; o.via.boolean = true; }
 
-inline void unpack_false(msgpack::object& o)
-{ o.type = msgpack::type::BOOLEAN; o.via.boolean = false; }
+inline void unpack_false(clmdep_msgpack::object& o)
+{ o.type = clmdep_msgpack::type::BOOLEAN; o.via.boolean = false; }
 
 struct unpack_array {
-    void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
-        if (n > u.limit().array()) throw msgpack::array_size_overflow("array size overflow");
-        o.type = msgpack::type::ARRAY;
+    void operator()(unpack_user& u, uint32_t n, clmdep_msgpack::object& o) const {
+        if (n > u.limit().array()) throw clmdep_msgpack::array_size_overflow("array size overflow");
+        o.type = clmdep_msgpack::type::ARRAY;
         o.via.array.size = 0;
-        size_t size = n*sizeof(msgpack::object);
-        if (size / sizeof(msgpack::object) != n) {
-            throw msgpack::array_size_overflow("array size overflow");
+        size_t size = n*sizeof(clmdep_msgpack::object);
+        if (size / sizeof(clmdep_msgpack::object) != n) {
+            throw clmdep_msgpack::array_size_overflow("array size overflow");
         }
-        o.via.array.ptr = static_cast<msgpack::object*>(u.zone().allocate_align(size));
+        o.via.array.ptr = static_cast<clmdep_msgpack::object*>(u.zone().allocate_align(size, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object)));
     }
 };
 
-inline void unpack_array_item(msgpack::object& c, msgpack::object const& o)
+inline void unpack_array_item(clmdep_msgpack::object& c, clmdep_msgpack::object const& o)
 {
 #if defined(__GNUC__) && !defined(__clang__)
-    std::memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(msgpack::object));
+    std::memcpy(&c.via.array.ptr[c.via.array.size++], &o, sizeof(clmdep_msgpack::object));
 #else  /* __GNUC__ && !__clang__ */
     c.via.array.ptr[c.via.array.size++] = o;
 #endif /* __GNUC__ && !__clang__ */
 }
 
 struct unpack_map {
-    void operator()(unpack_user& u, uint32_t n, msgpack::object& o) const {
-        if (n > u.limit().map()) throw msgpack::map_size_overflow("map size overflow");
-        o.type = msgpack::type::MAP;
+    void operator()(unpack_user& u, uint32_t n, clmdep_msgpack::object& o) const {
+        if (n > u.limit().map()) throw clmdep_msgpack::map_size_overflow("map size overflow");
+        o.type = clmdep_msgpack::type::MAP;
         o.via.map.size = 0;
-        size_t size = n*sizeof(msgpack::object_kv);
-        if (size / sizeof(msgpack::object_kv) != n) {
-            throw msgpack::map_size_overflow("map size overflow");
+        size_t size = n*sizeof(clmdep_msgpack::object_kv);
+        if (size / sizeof(clmdep_msgpack::object_kv) != n) {
+            throw clmdep_msgpack::map_size_overflow("map size overflow");
         }
-        o.via.map.ptr = static_cast<msgpack::object_kv*>(u.zone().allocate_align(size));
+        o.via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(u.zone().allocate_align(size, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
     }
 };
 
-inline void unpack_map_item(msgpack::object& c, msgpack::object const& k, msgpack::object const& v)
+inline void unpack_map_item(clmdep_msgpack::object& c, clmdep_msgpack::object const& k, clmdep_msgpack::object const& v)
 {
 #if defined(__GNUC__) && !defined(__clang__)
-    std::memcpy(&c.via.map.ptr[c.via.map.size].key, &k, sizeof(msgpack::object));
-    std::memcpy(&c.via.map.ptr[c.via.map.size].val, &v, sizeof(msgpack::object));
+    std::memcpy(&c.via.map.ptr[c.via.map.size].key, &k, sizeof(clmdep_msgpack::object));
+    std::memcpy(&c.via.map.ptr[c.via.map.size].val, &v, sizeof(clmdep_msgpack::object));
 #else  /* __GNUC__ && !__clang__ */
     c.via.map.ptr[c.via.map.size].key = k;
     c.via.map.ptr[c.via.map.size].val = v;
@@ -155,48 +155,48 @@ inline void unpack_map_item(msgpack::object& c, msgpack::object const& k, msgpac
     ++c.via.map.size;
 }
 
-inline void unpack_str(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
+inline void unpack_str(unpack_user& u, const char* p, uint32_t l, clmdep_msgpack::object& o)
 {
-    o.type = msgpack::type::STR;
+    o.type = clmdep_msgpack::type::STR;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.str.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().str()) throw msgpack::str_size_overflow("str size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        if (l > u.limit().str()) throw clmdep_msgpack::str_size_overflow("str size overflow");
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.str.ptr = tmp;
     }
     o.via.str.size = l;
 }
 
-inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, msgpack::object& o)
+inline void unpack_bin(unpack_user& u, const char* p, uint32_t l, clmdep_msgpack::object& o)
 {
-    o.type = msgpack::type::BIN;
+    o.type = clmdep_msgpack::type::BIN;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.bin.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().bin()) throw msgpack::bin_size_overflow("bin size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        if (l > u.limit().bin()) throw clmdep_msgpack::bin_size_overflow("bin size overflow");
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.bin.ptr = tmp;
     }
     o.via.bin.size = l;
 }
 
-inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::object& o)
+inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, clmdep_msgpack::object& o)
 {
-    o.type = msgpack::type::EXT;
+    o.type = clmdep_msgpack::type::EXT;
     if (u.reference_func() && u.reference_func()(o.type, l, u.user_data())) {
         o.via.ext.ptr = p;
         u.set_referenced(true);
     }
     else {
-        if (l > u.limit().ext()) throw msgpack::ext_size_overflow("ext size overflow");
-        char* tmp = static_cast<char*>(u.zone().allocate_align(l));
+        if (l > u.limit().ext()) throw clmdep_msgpack::ext_size_overflow("ext size overflow");
+        char* tmp = static_cast<char*>(u.zone().allocate_align(l, MSGPACK_ZONE_ALIGNOF(char)));
         std::memcpy(tmp, p, l);
         o.via.ext.ptr = tmp;
     }
@@ -206,21 +206,21 @@ inline void unpack_ext(unpack_user& u, const char* p, std::size_t l, msgpack::ob
 
 class unpack_stack {
 public:
-    msgpack::object const& obj() const { return m_obj; }
-    msgpack::object& obj() { return m_obj; }
-    void set_obj(msgpack::object const& obj) { m_obj = obj; }
+    clmdep_msgpack::object const& obj() const { return m_obj; }
+    clmdep_msgpack::object& obj() { return m_obj; }
+    void set_obj(clmdep_msgpack::object const& obj) { m_obj = obj; }
     std::size_t count() const { return m_count; }
     void set_count(std::size_t count) { m_count = count; }
     std::size_t decr_count() { return --m_count; }
     uint32_t container_type() const { return m_container_type; }
     void set_container_type(uint32_t container_type) { m_container_type = container_type; }
-    msgpack::object const& map_key() const { return m_map_key; }
-    void set_map_key(msgpack::object const& map_key) { m_map_key = map_key; }
+    clmdep_msgpack::object const& map_key() const { return m_map_key; }
+    void set_map_key(clmdep_msgpack::object const& map_key) { m_map_key = map_key; }
 private:
-    msgpack::object m_obj;
+    clmdep_msgpack::object m_obj;
     std::size_t m_count;
     uint32_t m_container_type;
-    msgpack::object m_map_key;
+    clmdep_msgpack::object m_map_key;
 };
 
 inline void init_count(void* buffer)
@@ -276,27 +276,27 @@ struct value<fix_tag> {
 };
 
 template <typename T>
-inline typename msgpack::enable_if<sizeof(T) == sizeof(fix_tag)>::type load(uint32_t& dst, const char* n) {
+inline typename clmdep_msgpack::enable_if<sizeof(T) == sizeof(fix_tag)>::type load(uint32_t& dst, const char* n) {
     dst = static_cast<uint32_t>(*reinterpret_cast<const uint8_t*>(n)) & 0x0f;
 }
 
 template <typename T>
-inline typename msgpack::enable_if<sizeof(T) == 1>::type load(T& dst, const char* n) {
+inline typename clmdep_msgpack::enable_if<sizeof(T) == 1>::type load(T& dst, const char* n) {
     dst = static_cast<T>(*reinterpret_cast<const uint8_t*>(n));
 }
 
 template <typename T>
-inline typename msgpack::enable_if<sizeof(T) == 2>::type load(T& dst, const char* n) {
+inline typename clmdep_msgpack::enable_if<sizeof(T) == 2>::type load(T& dst, const char* n) {
     _msgpack_load16(T, n, &dst);
 }
 
 template <typename T>
-inline typename msgpack::enable_if<sizeof(T) == 4>::type load(T& dst, const char* n) {
+inline typename clmdep_msgpack::enable_if<sizeof(T) == 4>::type load(T& dst, const char* n) {
     _msgpack_load32(T, n, &dst);
 }
 
 template <typename T>
-inline typename msgpack::enable_if<sizeof(T) == 8>::type load(T& dst, const char* n) {
+inline typename clmdep_msgpack::enable_if<sizeof(T) == 8>::type load(T& dst, const char* n) {
     _msgpack_load64(T, n, &dst);
 }
 
@@ -314,10 +314,10 @@ public:
         m_cs = MSGPACK_CS_HEADER;
         m_trail = 0;
         m_stack.resize(1);
-        m_stack[0].set_obj(msgpack::object());
+        m_stack[0].set_obj(clmdep_msgpack::object());
     }
 
-    msgpack::object const& data() const
+    clmdep_msgpack::object const& data() const
     {
         return m_stack[0].obj();
     }
@@ -345,7 +345,7 @@ private:
     int push_aggregate(
         Func const& f,
         uint32_t container_type,
-        msgpack::object& obj,
+        clmdep_msgpack::object& obj,
         const char* load_pos,
         std::size_t& off) {
         typename value<T>::type tmp;
@@ -363,7 +363,7 @@ private:
                 m_stack.push_back(unpack_stack());
             }
             else {
-                throw msgpack::depth_size_overflow("depth size overflow");
+                throw clmdep_msgpack::depth_size_overflow("depth size overflow");
             }
             m_cs = MSGPACK_CS_HEADER;
             ++m_current;
@@ -371,7 +371,7 @@ private:
         return 0;
     }
 
-    int push_item(msgpack::object& obj) {
+    int push_item(clmdep_msgpack::object& obj) {
         bool finish = false;
         while (!finish) {
             if(m_stack.size() == 1) {
@@ -412,7 +412,7 @@ private:
         return 0;
     }
 
-    int push_proc(msgpack::object& obj, std::size_t& off) {
+    int push_proc(clmdep_msgpack::object& obj, std::size_t& off) {
         int ret = push_item(obj);
         if (ret > 0) {
             m_stack[0].set_obj(obj);
@@ -446,7 +446,7 @@ private:
 
 template <>
 inline void context::check_ext_size<4>(std::size_t size) {
-    if (size == 0xffffffff) throw msgpack::ext_size_overflow("ext size overflow");
+    if (size == 0xffffffff) throw clmdep_msgpack::ext_size_overflow("ext size overflow");
 }
 
 inline int context::execute(const char* data, std::size_t len, std::size_t& off)
@@ -458,7 +458,7 @@ inline int context::execute(const char* data, std::size_t len, std::size_t& off)
     const char* const pe = data + len;
     const char* n = MSGPACK_NULLPTR;
 
-    msgpack::object obj;
+    clmdep_msgpack::object obj;
 
     if(m_current == pe) {
         off = m_current - m_start;
@@ -849,10 +849,10 @@ public:
     /// Constructor
     /**
      * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
-     * @param f A judging function that msgpack::object refer to the buffer.
+     * @param f A judging function that clmdep_msgpack::object refer to the buffer.
      * @param user_data This parameter is passed to f.
      * @param initial_buffer_size The memory size to allocate when unpacker is constructed.
-     * @param limit The size limit information of msgpack::object.
+     * @param limit The size limit information of clmdep_msgpack::object.
      *
      */
     unpacker(unpack_reference_func f = &unpacker::default_reference_func,
@@ -895,7 +895,7 @@ public:
      */
     std::size_t buffer_capacity() const;
 
-    /// Notify a buffer consumed information to msgpack::unpacker.
+    /// Notify a buffer consumed information to clmdep_msgpack::unpacker.
     /**
      * @param size The size of memory that you consumed.
      *
@@ -907,14 +907,14 @@ public:
      */
     void buffer_consumed(std::size_t size);
 
-    /// Unpack one msgpack::object. [obsolete]
+    /// Unpack one clmdep_msgpack::object. [obsolete]
     /**
      *
      * @param result The object that contains unpacked data.
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
@@ -922,37 +922,37 @@ public:
      * the pointer interface version.
      */
     MSGPACK_DEPRECATED("please use reference version instead")
-    bool next(msgpack::object_handle* result);
+    bool next(clmdep_msgpack::object_handle* result);
 
-    /// Unpack one msgpack::object.
+    /// Unpack one clmdep_msgpack::object.
     /**
      *
      * @param result The object that contains unpacked data.
      * @param referenced If the unpacked object contains reference of the buffer,
      *                   then set as true, otherwise false.
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(msgpack::object_handle& result, bool& referenced);
+    bool next(clmdep_msgpack::object_handle& result, bool& referenced);
 
-    /// Unpack one msgpack::object.
+    /// Unpack one clmdep_msgpack::object.
     /**
      *
      * @param result The object that contains unpacked data.
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(msgpack::object_handle& result);
+    bool next(clmdep_msgpack::object_handle& result);
 
     /// Get message size.
     /**
@@ -964,10 +964,10 @@ public:
     bool execute();
 
     /*! for backward compatibility */
-    msgpack::object const& data();
+    clmdep_msgpack::object const& data();
 
     /*! for backward compatibility */
-    msgpack::zone* release_zone();
+    clmdep_msgpack::zone* release_zone();
 
     /*! for backward compatibility */
     void reset_zone();
@@ -1024,7 +1024,7 @@ private:
     void expand_buffer(std::size_t size);
     int execute_imp();
     bool flush_zone();
-    static bool default_reference_func(msgpack::type::object_type type, std::size_t len, void*);
+    static bool default_reference_func(clmdep_msgpack::type::object_type type, std::size_t len, void*);
 
 private:
     char* m_buffer;
@@ -1032,7 +1032,7 @@ private:
     std::size_t m_free;
     std::size_t m_off;
     std::size_t m_parsed;
-    msgpack::unique_ptr<msgpack::zone> m_z;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> m_z;
     std::size_t m_initial_buffer_size;
     detail::context m_ctx;
 
@@ -1050,7 +1050,7 @@ inline unpacker::unpacker(unpack_reference_func f,
                           void* user_data,
                           std::size_t initial_buffer_size,
                           unpack_limit const& limit)
-    :m_z(new msgpack::zone), m_ctx(f, user_data, limit)
+    :m_z(new clmdep_msgpack::zone), m_ctx(f, user_data, limit)
 {
     if(initial_buffer_size < COUNTER_SIZE) {
         initial_buffer_size = COUNTER_SIZE;
@@ -1200,17 +1200,17 @@ inline void unpacker::buffer_consumed(std::size_t size)
     m_free -= size;
 }
 
-inline bool unpacker::next(msgpack::object_handle& result, bool& referenced)
+inline bool unpacker::next(clmdep_msgpack::object_handle& result, bool& referenced)
 {
     referenced = false;
     int ret = execute_imp();
     if(ret < 0) {
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     }
 
     if(ret == 0) {
         result.zone().reset();
-        result.set(msgpack::object());
+        result.set(clmdep_msgpack::object());
         return false;
 
     } else {
@@ -1222,13 +1222,13 @@ inline bool unpacker::next(msgpack::object_handle& result, bool& referenced)
     }
 }
 
-inline bool unpacker::next(msgpack::object_handle& result)
+inline bool unpacker::next(clmdep_msgpack::object_handle& result)
 {
     bool referenced;
     return next(result, referenced);
 }
 
-inline bool unpacker::next(msgpack::object_handle* result)
+inline bool unpacker::next(clmdep_msgpack::object_handle* result)
 {
     return next(*result);
 }
@@ -1238,7 +1238,7 @@ inline bool unpacker::execute()
 {
     int ret = execute_imp();
     if(ret < 0) {
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     } else if(ret == 0) {
         return false;
     } else {
@@ -1256,19 +1256,19 @@ inline int unpacker::execute_imp()
     return ret;
 }
 
-inline msgpack::object const& unpacker::data()
+inline clmdep_msgpack::object const& unpacker::data()
 {
     return m_ctx.data();
 }
 
-inline msgpack::zone* unpacker::release_zone()
+inline clmdep_msgpack::zone* unpacker::release_zone()
 {
     if(!flush_zone()) {
         return MSGPACK_NULLPTR;
     }
 
-    msgpack::zone* r =  new msgpack::zone;
-    msgpack::zone* old = m_z.release();
+    clmdep_msgpack::zone* r =  new clmdep_msgpack::zone;
+    clmdep_msgpack::zone* old = m_z.release();
     m_z.reset(r);
     m_ctx.user().set_zone(*m_z);
 
@@ -1337,7 +1337,7 @@ namespace detail {
 
 inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
-           msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
+           clmdep_msgpack::zone& result_zone, clmdep_msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
            unpack_limit const& limit = unpack_limit())
 {
@@ -1380,14 +1380,14 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 
 // reference version
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit
 )
 {
-    msgpack::object obj;
-    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
+    clmdep_msgpack::object obj;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> z(new clmdep_msgpack::zone);
     referenced = false;
     std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
@@ -1396,20 +1396,20 @@ inline msgpack::object_handle unpack(
     switch(ret) {
     case PARSE_SUCCESS:
         off = noff;
-        return msgpack::object_handle(obj, msgpack::move(z));
+        return clmdep_msgpack::object_handle(obj, clmdep_msgpack::move(z));
     case PARSE_EXTRA_BYTES:
         off = noff;
-        return msgpack::object_handle(obj, msgpack::move(z));
+        return clmdep_msgpack::object_handle(obj, clmdep_msgpack::move(z));
     case PARSE_CONTINUE:
-        throw msgpack::insufficient_bytes("insufficient bytes");
+        throw clmdep_msgpack::insufficient_bytes("insufficient bytes");
     case PARSE_PARSE_ERROR:
     default:
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     }
-    return msgpack::object_handle();
+    return clmdep_msgpack::object_handle();
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1418,7 +1418,7 @@ inline msgpack::object_handle unpack(
     return unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1427,7 +1427,7 @@ inline msgpack::object_handle unpack(
     return unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1438,13 +1438,13 @@ inline msgpack::object_handle unpack(
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
-    msgpack::object obj;
-    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
+    clmdep_msgpack::object obj;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> z(new clmdep_msgpack::zone);
     referenced = false;
     std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
@@ -1454,23 +1454,23 @@ inline void unpack(
     case PARSE_SUCCESS:
         off = noff;
         result.set(obj);
-        result.zone() = msgpack::move(z);
+        result.zone() = clmdep_msgpack::move(z);
         return;
     case PARSE_EXTRA_BYTES:
         off = noff;
         result.set(obj);
-        result.zone() = msgpack::move(z);
+        result.zone() = clmdep_msgpack::move(z);
         return;
     case PARSE_CONTINUE:
-        throw msgpack::insufficient_bytes("insufficient bytes");
+        throw clmdep_msgpack::insufficient_bytes("insufficient bytes");
     case PARSE_PARSE_ERROR:
     default:
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     }
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
             unpack_limit const& limit)
@@ -1480,7 +1480,7 @@ inline void unpack(
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1490,7 +1490,7 @@ inline void unpack(
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1501,13 +1501,13 @@ inline void unpack(
 }
 
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
-    msgpack::object obj;
+    clmdep_msgpack::object obj;
     std::size_t noff = off;
     referenced = false;
     parse_return ret = detail::unpack_imp(
@@ -1521,16 +1521,16 @@ inline msgpack::object unpack(
         off = noff;
         return obj;
     case PARSE_CONTINUE:
-        throw msgpack::insufficient_bytes("insufficient bytes");
+        throw clmdep_msgpack::insufficient_bytes("insufficient bytes");
     case PARSE_PARSE_ERROR:
     default:
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     }
     return obj;
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1539,8 +1539,8 @@ inline msgpack::object unpack(
     return unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1549,8 +1549,8 @@ inline msgpack::object unpack(
     return unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1564,7 +1564,7 @@ inline msgpack::object unpack(
 // pointer version
 MSGPACK_DEPRECATED("please use reference version instead")
 inline void unpack(
-    msgpack::object_handle* result,
+    clmdep_msgpack::object_handle* result,
     const char* data, std::size_t len, std::size_t* off, bool* referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
@@ -1577,7 +1577,7 @@ inline void unpack(
         else unpack(*result, data, len, f, user_data, limit);
 }
 
-inline bool unpacker::default_reference_func(msgpack::type::object_type /*type*/, std::size_t /*len*/, void*)
+inline bool unpacker::default_reference_func(clmdep_msgpack::type::object_type /*type*/, std::size_t /*len*/, void*)
 {
     return true;
 }
@@ -1586,7 +1586,7 @@ inline bool unpacker::default_reference_func(msgpack::type::object_type /*type*/
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_V1_UNPACK_HPP

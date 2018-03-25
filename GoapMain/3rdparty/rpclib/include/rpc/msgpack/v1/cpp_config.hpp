@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V1_CPP_CONFIG_HPP
 #define MSGPACK_V1_CPP_CONFIG_HPP
 
-#include "msgpack/cpp_config_decl.hpp"
+#include "rpc/msgpack/cpp_config_decl.hpp"
 
 #if defined(MSGPACK_USE_CPP03)
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -100,8 +100,8 @@ struct remove_volatile<volatile T> {
 
 template<class T>
 struct remove_cv {
-    typedef typename msgpack::remove_volatile<
-        typename msgpack::remove_const<T>::type
+    typedef typename clmdep_msgpack::remove_volatile<
+        typename clmdep_msgpack::remove_const<T>::type
     >::type type;
 };
 
@@ -122,7 +122,7 @@ template<class T> struct is_pointer : detail::is_pointer_helper<typename remove_
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_USE_CPP03
 

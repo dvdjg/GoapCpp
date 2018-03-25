@@ -10,15 +10,15 @@
 #ifndef MSGPACK_CPP11_ZONE_HPP
 #define MSGPACK_CPP11_ZONE_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/cpp_config.hpp"
-#include "msgpack/zone_decl.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/cpp_config.hpp"
+#include "rpc/msgpack/zone_decl.hpp"
 
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -36,13 +36,11 @@ private:
         finalizer_array():m_tail(MSGPACK_NULLPTR), m_end(MSGPACK_NULLPTR), m_array(MSGPACK_NULLPTR) {}
         void call() {
             finalizer* fin = m_tail;
-            for(; fin != m_array; --fin)
-                (*(fin-1))();
+            for(; fin != m_array; --fin) (*(fin-1))();
         }
         ~finalizer_array() {
             call();
             ::free(m_array);
-            m_array = MSGPACK_NULLPTR;
         }
         void clear() {
             call();
@@ -172,9 +170,6 @@ private:
 
 public:
     zone(size_t chunk_size = MSGPACK_ZONE_CHUNK_SIZE) noexcept;
-    ~zone() {
-        // djg
-    }
 
 public:
     void* allocate_align(size_t size, size_t align = MSGPACK_ZONE_ALIGN);
@@ -183,12 +178,11 @@ public:
     void push_finalizer(void (*func)(void*), void* data);
 
     template <typename T>
-    void push_finalizer(msgpack::unique_ptr<T> obj);
+    void push_finalizer(clmdep_msgpack::unique_ptr<T> obj);
 
     void clear();
 
     void swap(zone& o);
-
 
     static void* operator new(std::size_t size)
     {
@@ -225,44 +219,51 @@ private:
     template <typename T>
     static void object_delete(void* obj);
 
-    void* allocate_expand(size_t size);
+    static char* get_aligned(char* ptr, size_t align);
+
+    char* allocate_expand(size_t size);
 };
 
 inline zone::zone(size_t chunk_size) noexcept:m_chunk_size(chunk_size), m_chunk_list(m_chunk_size)
 {
 }
 
-inline void* zone::allocate_align(size_t size, size_t align)
+inline char* zone::get_aligned(char* ptr, size_t align)
 {
-    char* aligned =
+    return
         reinterpret_cast<char*>(
             reinterpret_cast<size_t>(
-                (m_chunk_list.m_ptr + (align - 1))) / align * align);
+            (ptr + (align - 1))) / align * align);
+}
+
+inline void* zone::allocate_align(size_t size, size_t align)
+{
+    char* aligned = get_aligned(m_chunk_list.m_ptr, align);
     size_t adjusted_size = size + (aligned - m_chunk_list.m_ptr);
-    if(m_chunk_list.m_free >= adjusted_size) {
-        m_chunk_list.m_free -= adjusted_size;
-        m_chunk_list.m_ptr  += adjusted_size;
-        return aligned;
+    if (m_chunk_list.m_free < adjusted_size) {
+        size_t enough_size = size + align - 1;
+        char* ptr = allocate_expand(enough_size);
+        aligned = get_aligned(ptr, align);
+        adjusted_size = size + (aligned - m_chunk_list.m_ptr);
     }
-    return reinterpret_cast<char*>(
-        reinterpret_cast<size_t>(
-            allocate_expand(size + (align - 1))) / align * align);
+    m_chunk_list.m_free -= adjusted_size;
+    m_chunk_list.m_ptr  += adjusted_size;
+    return aligned;
 }
 
 inline void* zone::allocate_no_align(size_t size)
 {
-    if(m_chunk_list.m_free < size) {
-        return allocate_expand(size);
-    }
-
     char* ptr = m_chunk_list.m_ptr;
+    if(m_chunk_list.m_free < size) {
+        ptr = allocate_expand(size);
+    }
     m_chunk_list.m_free -= size;
     m_chunk_list.m_ptr  += size;
 
     return ptr;
 }
 
-inline void* zone::allocate_expand(size_t size)
+inline char* zone::allocate_expand(size_t size)
 {
     chunk_list* const cl = &m_chunk_list;
 
@@ -284,8 +285,8 @@ inline void* zone::allocate_expand(size_t size)
 
     c->m_next  = cl->m_head;
     cl->m_head = c;
-    cl->m_free = sz - size;
-    cl->m_ptr  = ptr + size;
+    cl->m_free = sz;
+    cl->m_ptr  = ptr;
 
     return ptr;
 }
@@ -296,7 +297,7 @@ inline void zone::push_finalizer(void (*func)(void*), void* data)
 }
 
 template <typename T>
-inline void zone::push_finalizer(msgpack::unique_ptr<T> obj)
+inline void zone::push_finalizer(clmdep_msgpack::unique_ptr<T> obj)
 {
     m_finalizer_array.push(&zone::object_delete<T>, obj.release());
 }
@@ -334,7 +335,7 @@ inline void zone::undo_allocate(size_t size)
 template <typename T, typename... Args>
 T* zone::allocate(Args... args)
 {
-    void* x = allocate_align(sizeof(T));
+    void* x = allocate_align(sizeof(T), MSGPACK_ZONE_ALIGNOF(T));
     try {
         m_finalizer_array.push(&zone::object_destruct<T>, x);
     } catch (...) {
@@ -360,6 +361,6 @@ inline std::size_t aligned_size(
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_CPP11_ZONE_HPP

@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V1_CHECK_CONTAINER_SIZE_HPP
 #define MSGPACK_V1_CHECK_CONTAINER_SIZE_HPP
 
-#include "msgpack/v1/adaptor/check_container_size_decl.hpp"
+#include "rpc/msgpack/v1/adaptor/check_container_size_decl.hpp"
 #include <stdexcept>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -62,6 +62,6 @@ inline uint32_t checked_get_container_size(T size) {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CHECK_CONTAINER_SIZE_HPP

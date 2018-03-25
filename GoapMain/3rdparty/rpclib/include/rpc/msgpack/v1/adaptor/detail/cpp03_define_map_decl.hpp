@@ -10,9 +10,9 @@
 #ifndef MSGPACK_V1_CPP03_DEFINE_MAP_DECL_HPP
 #define MSGPACK_V1_CPP03_DEFINE_MAP_DECL_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -130,6 +130,6 @@ define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15,
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CPP03_DEFINE_MAP_DECL_HPP

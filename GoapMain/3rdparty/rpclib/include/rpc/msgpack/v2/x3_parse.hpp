@@ -16,7 +16,7 @@
 
 #if BOOST_VERSION >= 106100
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #if __GNUC__ >= 4
 #pragma GCC diagnostic push
@@ -27,7 +27,7 @@
 #include <boost/spirit/home/x3.hpp>
 #include <boost/spirit/home/x3/binary.hpp>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -298,7 +298,7 @@ const auto mp_object_def =
                 auto& app_specific = x3::get<tag_app_specific>(ctx).get();
                 union { uint32_t i; float f; } mem;
                 mem.i = _attr(ctx);
-                app_specific.vis.visit_float(mem.f);
+                app_specific.vis.visit_float32(mem.f);
             }
         )
     ]
@@ -316,7 +316,7 @@ const auto mp_object_def =
                 // https://github.com/msgpack/msgpack-perl/pull/1
                 mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-                app_specific.vis.visit_float(mem.f);
+                app_specific.vis.visit_float64(mem.f);
             }
         )
     ]
@@ -857,7 +857,7 @@ inline bool parse(Iterator&& begin, Iterator&& end, Visitor&& vis) {
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #if __GNUC__ >= 4
 #pragma GCC diagnostic pop

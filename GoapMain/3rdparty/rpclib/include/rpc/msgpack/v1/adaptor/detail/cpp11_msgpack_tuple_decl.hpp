@@ -10,13 +10,13 @@
 #ifndef MSGPACK_V1_CPP11_MSGPACK_TUPLE_DECL_HPP
 #define MSGPACK_V1_CPP11_MSGPACK_TUPLE_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/object_fwd.hpp"
-#include "msgpack/meta.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
+#include "rpc/msgpack/meta.hpp"
 
 #include <tuple>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -115,6 +115,6 @@ struct MsgpackTupleToObjectWithZone;
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 ///@endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CPP11_MSGPACK_TUPLE_DECL_HPP

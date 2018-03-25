@@ -11,9 +11,9 @@
 #ifndef MSGPACK_V2_OBJECT_FWD_DECL_HPP
 #define MSGPACK_V2_OBJECT_FWD_DECL_HPP
 
-#include "msgpack/v1/object_fwd_decl.hpp"
+#include "rpc/msgpack/v1/object_fwd_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -70,6 +70,6 @@ struct has_as;
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_OBJECT_FWD_DECL_HPP

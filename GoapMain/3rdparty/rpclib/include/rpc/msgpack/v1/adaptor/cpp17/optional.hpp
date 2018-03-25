@@ -12,13 +12,13 @@
 
 #if __cplusplus >= 201703
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 
 #include <optional>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -29,8 +29,8 @@ namespace adaptor {
 #if !defined (MSGPACK_USE_CPP03)
 
 template <typename T>
-struct as<std::optional<T>, typename std::enable_if<msgpack::has_as<T>::value>::type> {
-    std::optional<T> operator()(msgpack::object const& o) const {
+struct as<std::optional<T>, typename std::enable_if<clmdep_msgpack::has_as<T>::value>::type> {
+    std::optional<T> operator()(clmdep_msgpack::object const& o) const {
         if(o.is_nil()) return std::nullopt;
         return o.as<T>();
     }
@@ -40,11 +40,11 @@ struct as<std::optional<T>, typename std::enable_if<msgpack::has_as<T>::value>::
 
 template <typename T>
 struct convert<std::optional<T> > {
-    msgpack::object const& operator()(msgpack::object const& o, std::optional<T>& v) const {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, std::optional<T>& v) const {
         if(o.is_nil()) v = std::nullopt;
         else {
             T t;
-            msgpack::adaptor::convert<T>()(o, t);
+            clmdep_msgpack::adaptor::convert<T>()(o, t);
             v = t;
         }
         return o;
@@ -54,7 +54,7 @@ struct convert<std::optional<T> > {
 template <typename T>
 struct pack<std::optional<T> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::optional<T>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const std::optional<T>& v) const {
         if (v) o.pack(*v);
         else o.pack_nil();
         return o;
@@ -63,17 +63,17 @@ struct pack<std::optional<T> > {
 
 template <typename T>
 struct object<std::optional<T> > {
-    void operator()(msgpack::object& o, const std::optional<T>& v) const {
-        if (v) msgpack::adaptor::object<T>()(o, *v);
-        else o.type = msgpack::type::NIL;
+    void operator()(clmdep_msgpack::object& o, const std::optional<T>& v) const {
+        if (v) clmdep_msgpack::adaptor::object<T>()(o, *v);
+        else o.type = clmdep_msgpack::type::NIL;
     }
 };
 
 template <typename T>
 struct object_with_zone<std::optional<T> > {
-    void operator()(msgpack::object::with_zone& o, const std::optional<T>& v) const {
-        if (v) msgpack::adaptor::object_with_zone<T>()(o, *v);
-        else o.type = msgpack::type::NIL;
+    void operator()(clmdep_msgpack::object::with_zone& o, const std::optional<T>& v) const {
+        if (v) clmdep_msgpack::adaptor::object_with_zone<T>()(o, *v);
+        else o.type = clmdep_msgpack::type::NIL;
     }
 };
 
@@ -83,7 +83,7 @@ struct object_with_zone<std::optional<T> > {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // __cplusplus >= 201703
 

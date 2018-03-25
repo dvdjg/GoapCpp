@@ -10,13 +10,13 @@
 #ifndef MSGPACK_V1_CPP11_ZONE_DECL_HPP
 #define MSGPACK_V1_CPP11_ZONE_DECL_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #include <cstdlib>
 #include <memory>
 #include <vector>
 
-#include "msgpack/cpp_config.hpp"
+#include "rpc/msgpack/cpp_config.hpp"
 
 #ifndef MSGPACK_ZONE_CHUNK_SIZE
 #define MSGPACK_ZONE_CHUNK_SIZE 8192
@@ -26,7 +26,15 @@
 #define MSGPACK_ZONE_ALIGN sizeof(void*)
 #endif
 
-namespace msgpack {
+#if defined(_MSC_VER)
+#define MSGPACK_ZONE_ALIGNOF(type) __alignof(type)
+#else
+#define MSGPACK_ZONE_ALIGNOF(type) __alignof__(type)
+#endif
+// For a compiler that doesn't support __alignof__:
+// #define MSGPACK_ZONE_ALIGNOF(type) MSGPACK_ZONE_ALIGN
+
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -42,6 +50,6 @@ std::size_t aligned_size(
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CPP11_ZONE_DECL_HPP

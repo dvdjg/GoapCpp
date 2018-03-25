@@ -10,9 +10,9 @@
 #ifndef MSGPACK_V1_TYPE_SIZE_EQUAL_ONLY_HPP
 #define MSGPACK_V1_TYPE_SIZE_EQUAL_ONLY_HPP
 
-#include "msgpack/v1/adaptor/size_equal_only_decl.hpp"
+#include "rpc/msgpack/v1/adaptor/size_equal_only_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -68,16 +68,16 @@ namespace adaptor {
 
 template <typename T>
 struct convert<type::size_equal_only<T> > {
-    msgpack::object const& operator()(msgpack::object const& o, type::size_equal_only<T>& v) const {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, type::size_equal_only<T>& v) const {
         switch(o.type) {
-        case msgpack::type::ARRAY:
-            if (o.via.array.size != msgpack::type::size(v.m_t)) throw msgpack::type_error();
+        case clmdep_msgpack::type::ARRAY:
+            if (o.via.array.size != clmdep_msgpack::type::size(v.m_t)) throw clmdep_msgpack::type_error();
             break;
-        case msgpack::type::MAP:
-            if (o.via.map.size != msgpack::type::size(v.m_t)) throw msgpack::type_error();
+        case clmdep_msgpack::type::MAP:
+            if (o.via.map.size != clmdep_msgpack::type::size(v.m_t)) throw clmdep_msgpack::type_error();
             break;
         default:
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
         }
         o >> v.m_t;
         return o;
@@ -87,7 +87,7 @@ struct convert<type::size_equal_only<T> > {
 template <typename T>
 struct pack<type::size_equal_only<T> > {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const type::size_equal_only<T>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const type::size_equal_only<T>& v) const {
         o << v.m_t;
         return o;
     }
@@ -95,14 +95,14 @@ struct pack<type::size_equal_only<T> > {
 
 template <typename T>
 struct object<type::size_equal_only<T> > {
-    void operator()(msgpack::object& o, type::size_equal_only<T> const& v) const {
+    void operator()(clmdep_msgpack::object& o, type::size_equal_only<T> const& v) const {
         o << v.m_t;
     }
 };
 
 template <typename T>
 struct object_with_zone<type::size_equal_only<T> > {
-    void operator()(msgpack::object::with_zone& o, type::size_equal_only<T> v) const {
+    void operator()(clmdep_msgpack::object::with_zone& o, type::size_equal_only<T> v) const {
         o << v.m_t;
     }
 };
@@ -113,6 +113,6 @@ struct object_with_zone<type::size_equal_only<T> > {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_SIZE_EQUAL_ONLY_HPP

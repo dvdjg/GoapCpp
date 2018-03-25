@@ -31,7 +31,7 @@ HEADERS += \
     pkcs11f.h \
     pkcs11t.h
 
-INCLUDEPATH += ../../zlib
+#INCLUDEPATH += ../../zlib
 
 LIBS += -lz
 

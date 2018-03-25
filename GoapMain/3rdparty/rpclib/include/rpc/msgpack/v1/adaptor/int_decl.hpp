@@ -10,11 +10,11 @@
 #ifndef MSGPACK_V1_TYPE_INT_DECL_HPP
 #define MSGPACK_V1_TYPE_INT_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 #include <limits>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1){
@@ -30,12 +30,12 @@ template <typename T>
 struct is_signed;
 
 template <typename T>
-T convert_integer(msgpack::object const& o);
+T convert_integer(clmdep_msgpack::object const& o);
 
 template <bool Signed>
 struct object_char_sign;
 
-void object_char(msgpack::object& o, char v);
+void object_char(clmdep_msgpack::object& o, char v);
 
 }  // namespace detail
 }  // namespace type
@@ -44,6 +44,6 @@ void object_char(msgpack::object& o, char v);
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_INT_DECL_HPP

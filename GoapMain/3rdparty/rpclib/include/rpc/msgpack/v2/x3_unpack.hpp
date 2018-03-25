@@ -16,11 +16,11 @@
 
 #if BOOST_VERSION >= 106100
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
-#include "msgpack/v2/x3_parse.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/v2/create_object_visitor.hpp"
+#include "rpc/msgpack/v2/x3_parse.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -31,7 +31,7 @@ namespace detail {
 template <typename Iterator>
 inline void
 unpack_imp(Iterator&& begin, Iterator&& end,
-           msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
+           clmdep_msgpack::zone& result_zone, clmdep_msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
            unpack_limit const& limit = unpack_limit())
 {
@@ -40,7 +40,7 @@ unpack_imp(Iterator&& begin, Iterator&& end,
     referenced = false;
     v.set_referenced(referenced);
     if (!parse(std::forward<Iterator>(begin), std::forward<Iterator>(end), v)) {
-        throw msgpack::parse_error("parse error");
+        throw clmdep_msgpack::parse_error("parse error");
     }
     referenced = v.referenced();
     result = v.data();
@@ -50,22 +50,22 @@ unpack_imp(Iterator&& begin, Iterator&& end,
 
 
 template <typename Iterator>
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     Iterator&& begin, Iterator&& end,
     bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
     unpack_limit const& limit = unpack_limit())
 {
-    msgpack::object obj;
-    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
+    clmdep_msgpack::object obj;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> z(new clmdep_msgpack::zone);
     referenced = false;
     detail::unpack_imp(
         std::forward<Iterator>(begin), std::forward<Iterator>(end), *z, obj, referenced, f, user_data, limit);
-    return msgpack::object_handle(obj, msgpack::move(z));
+    return clmdep_msgpack::object_handle(obj, clmdep_msgpack::move(z));
 }
 
 template <typename Iterator>
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     Iterator&& begin, Iterator&& end,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
     unpack_limit const& limit = unpack_limit())
@@ -75,14 +75,14 @@ inline msgpack::object_handle unpack(
 }
 
 template <typename Iterator>
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     Iterator&& begin, Iterator&& end,
     bool& referenced,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
     unpack_limit const& limit = unpack_limit())
 {
-    msgpack::object obj;
+    clmdep_msgpack::object obj;
     referenced = false;
     detail::unpack_imp(
         std::forward<Iterator>(begin), std::forward<Iterator>(end), z, obj, referenced, f, user_data, limit);
@@ -90,8 +90,8 @@ inline msgpack::object unpack(
 }
 
 template <typename Iterator>
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     Iterator&& begin, Iterator&& end,
     unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
     unpack_limit const& limit = unpack_limit())
@@ -106,7 +106,7 @@ inline msgpack::object unpack(
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #else  // BOOST_VERSION >= 106100
 

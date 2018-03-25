@@ -10,9 +10,9 @@
 #ifndef MSGPACK_V2_CPP03_DEFINE_MAP_DECL_HPP
 #define MSGPACK_V2_CPP03_DEFINE_MAP_DECL_HPP
 
-#include "msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp"
+#include "rpc/msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
@@ -26,6 +26,6 @@ using v1::type::make_define_map;
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_CPP03_DEFINE_MAP_DECL_HPP

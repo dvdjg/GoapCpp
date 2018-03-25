@@ -10,6 +10,6 @@
 #ifndef MSGPACK_TYPE_CARRAY_HPP
 #define MSGPACK_TYPE_CARRAY_HPP
 
-#include "msgpack/v1/adaptor/carray.hpp"
+#include "rpc/msgpack/v1/adaptor/carray.hpp"
 
 #endif // MSGPACK_TYPE_CARRAY_HPP

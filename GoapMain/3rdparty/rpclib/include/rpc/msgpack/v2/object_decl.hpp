@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V2_OBJECT_DECL_HPP
 #define MSGPACK_V2_OBJECT_DECL_HPP
 
-#include "msgpack/v1/object_decl.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/v1/object_decl.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -44,6 +44,6 @@ using v1::operator!=;
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_OBJECT_DECL_HPP

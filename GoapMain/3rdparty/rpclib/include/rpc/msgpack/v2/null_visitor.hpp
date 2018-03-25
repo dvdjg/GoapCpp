@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V2_NULL_VISITOR_HPP
 #define MSGPACK_V2_NULL_VISITOR_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/cpp_config.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/cpp_config.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -32,7 +32,10 @@ struct null_visitor {
     bool visit_negative_integer(int64_t /*v*/) {
         return true;
     }
-    bool visit_float(double /*v*/) {
+    bool visit_float32(float /*v*/) {
+        return true;
+    }
+    bool visit_float64(double /*v*/) {
         return true;
     }
     bool visit_str(const char* /*v*/, uint32_t /*size*/) {
@@ -89,6 +92,6 @@ struct null_visitor {
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_NULL_VISITOR_HPP

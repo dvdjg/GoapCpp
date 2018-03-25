@@ -10,9 +10,9 @@
 #ifndef MSGPACK_V1_PARSE_RETURN_HPP
 #define MSGPACK_V1_PARSE_RETURN_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -31,6 +31,6 @@ typedef enum {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_PARSE_RETURN_HPP

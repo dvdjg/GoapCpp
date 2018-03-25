@@ -12,9 +12,9 @@
 
 #if defined(MSGPACK_USE_BOOST)
 
-#include "msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp"
+#include "rpc/msgpack/v1/adaptor/boost/msgpack_variant_decl.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -36,7 +36,7 @@ using v1::type::operator==;
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_USE_BOOST
 #endif // MSGPACK_V2_TYPE_BOOST_MSGPACK_VARIANT_DECL_HPP

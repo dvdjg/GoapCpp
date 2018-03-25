@@ -12,13 +12,13 @@
 
 #if __cplusplus >= 201703
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 
 #include <string_view>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -28,16 +28,16 @@ namespace adaptor {
 
 template <>
 struct convert<std::string_view> {
-    msgpack::object const& operator()(msgpack::object const& o, std::string_view& v) const {
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, std::string_view& v) const {
         switch (o.type) {
-        case msgpack::type::BIN:
+        case clmdep_msgpack::type::BIN:
             v = std::string_view(o.via.bin.ptr, o.via.bin.size);
             break;
-        case msgpack::type::STR:
+        case clmdep_msgpack::type::STR:
             v = std::string_view(o.via.str.ptr, o.via.str.size);
             break;
         default:
-            throw msgpack::type_error();
+            throw clmdep_msgpack::type_error();
             break;
         }
         return o;
@@ -47,7 +47,7 @@ struct convert<std::string_view> {
 template <>
 struct pack<std::string_view> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::string_view& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const std::string_view& v) const {
         uint32_t size = checked_get_container_size(v.size());
         o.pack_str(size);
         o.pack_str_body(v.data(), size);
@@ -57,9 +57,9 @@ struct pack<std::string_view> {
 
 template <>
 struct object<std::string_view> {
-    void operator()(msgpack::object& o, const std::string_view& v) const {
+    void operator()(clmdep_msgpack::object& o, const std::string_view& v) const {
         uint32_t size = checked_get_container_size(v.size());
-        o.type = msgpack::type::STR;
+        o.type = clmdep_msgpack::type::STR;
         o.via.str.ptr = v.data();
         o.via.str.size = size;
     }
@@ -67,8 +67,8 @@ struct object<std::string_view> {
 
 template <>
 struct object_with_zone<std::string_view> {
-    void operator()(msgpack::object::with_zone& o, const std::string_view& v) const {
-        static_cast<msgpack::object&>(o) << v;
+    void operator()(clmdep_msgpack::object::with_zone& o, const std::string_view& v) const {
+        static_cast<clmdep_msgpack::object&>(o) << v;
     }
 };
 
@@ -79,7 +79,7 @@ struct object_with_zone<std::string_view> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // __cplusplus >= 201703
 

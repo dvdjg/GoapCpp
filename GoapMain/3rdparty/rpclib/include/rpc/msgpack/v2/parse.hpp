@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V2_PARSE_HPP
 #define MSGPACK_V2_PARSE_HPP
 
-#include "msgpack/unpack_decl.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
+#include "rpc/msgpack/unpack_decl.hpp"
+#include "rpc/msgpack/v2/create_object_visitor.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -218,7 +218,7 @@ inline void check_ext_size(std::size_t /*size*/) {
 
 template <>
 inline void check_ext_size<4>(std::size_t size) {
-    if (size == 0xffffffff) throw msgpack::ext_size_overflow("ext size overflow");
+    if (size == 0xffffffff) throw clmdep_msgpack::ext_size_overflow("ext size overflow");
 }
 
 template <typename VisitorHolder>
@@ -231,7 +231,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
     const char* const pe = data + len;
     const char* n = MSGPACK_NULLPTR;
 
-    msgpack::object obj;
+    clmdep_msgpack::object obj;
 
     if(m_current == pe) {
         off = m_current - m_start;
@@ -339,7 +339,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
             case MSGPACK_CS_FLOAT: {
                 union { uint32_t i; float f; } mem;
                 load<uint32_t>(mem.i, n);
-                bool visret = holder().visitor().visit_float(mem.f);
+                bool visret = holder().visitor().visit_float32(mem.f);
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
@@ -352,7 +352,7 @@ inline parse_return context<VisitorHolder>::execute(const char* data, std::size_
                 // https://github.com/msgpack/msgpack-perl/pull/1
                 mem.i = (mem.i & 0xFFFFFFFFUL) << 32UL | (mem.i >> 32UL);
 #endif
-                bool visret = holder().visitor().visit_float(mem.f);
+                bool visret = holder().visitor().visit_float64(mem.f);
                 parse_return upr = after_visit_proc(visret, off);
                 if (upr != PARSE_CONTINUE) return upr;
             } break;
@@ -622,10 +622,10 @@ public:
     /// Constructor
     /**
      * @param referenced If the unpacked object contains reference of the buffer, then set as true, otherwise false.
-     * @param f A judging function that msgpack::object refer to the buffer.
+     * @param f A judging function that clmdep_msgpack::object refer to the buffer.
      * @param user_data This parameter is passed to f.
      * @param initial_buffer_size The memory size to allocate when unpacker is constructed.
-     * @param limit The size limit information of msgpack::object.
+     * @param limit The size limit information of clmdep_msgpack::object.
      *
      */
     parser(ReferencedBufferHook& hook,
@@ -666,7 +666,7 @@ public:
      */
     std::size_t buffer_capacity() const;
 
-    /// Notify a buffer consumed information to msgpack::unpacker.
+    /// Notify a buffer consumed information to clmdep_msgpack::unpacker.
     /**
      * @param size The size of memory that you consumed.
      *
@@ -678,13 +678,13 @@ public:
      */
     void buffer_consumed(std::size_t size);
 
-    /// Unpack one msgpack::object.
+    /// Unpack one clmdep_msgpack::object.
     /**
      *
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
@@ -1055,7 +1055,7 @@ parse_imp(const char* data, size_t len, size_t& off, Visitor& v) {
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_V2_PARSE_HPP

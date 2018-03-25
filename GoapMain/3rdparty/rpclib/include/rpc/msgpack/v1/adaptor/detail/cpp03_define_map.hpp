@@ -10,14 +10,14 @@
 #ifndef MSGPACK_V1_CPP03_DEFINE_MAP_HPP
 #define MSGPACK_V1_CPP03_DEFINE_MAP_HPP
 
-#include "msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp"
-#include "msgpack/adaptor/msgpack_tuple.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/v1/adaptor/detail/cpp03_define_map_decl.hpp"
+#include "rpc/msgpack/adaptor/msgpack_tuple.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
 #include <map>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
 /// @endcond
@@ -31,13 +31,13 @@ struct define_map<> {
     {
         pk.pack_map(0);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone&) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone&) const
     {
-        o->type = msgpack::type::MAP;
+        o->type = clmdep_msgpack::type::MAP;
         o->via.map.ptr = MSGPACK_NULLPTR;
         o->via.map.size = 0;
     }
@@ -57,13 +57,13 @@ struct define_map<A0, A1> {
         pk.pack(a0);
         pk.pack(a1);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -73,21 +73,21 @@ struct define_map<A0, A1> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*1));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*1, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 1;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
     }
     
@@ -109,13 +109,13 @@ struct define_map<A0, A1, A2, A3> {
         pk.pack(a2);
         pk.pack(a3);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -125,31 +125,31 @@ struct define_map<A0, A1, A2, A3> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*2));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*2, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 2;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
     }
     
@@ -175,13 +175,13 @@ struct define_map<A0, A1, A2, A3, A4, A5> {
         pk.pack(a4);
         pk.pack(a5);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -191,41 +191,41 @@ struct define_map<A0, A1, A2, A3, A4, A5> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*3));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*3, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 3;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
     }
     
@@ -255,13 +255,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7> {
         pk.pack(a6);
         pk.pack(a7);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -271,51 +271,51 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*4));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*4, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 4;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
     }
     
@@ -349,13 +349,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
         pk.pack(a8);
         pk.pack(a9);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -365,61 +365,61 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*5));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*5, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 5;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
     }
     
@@ -457,13 +457,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
         pk.pack(a10);
         pk.pack(a11);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -473,71 +473,71 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*6));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*6, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 6;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
     }
     
@@ -579,13 +579,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
         pk.pack(a12);
         pk.pack(a13);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -595,81 +595,81 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13> {
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*7));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*7, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 7;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
     }
     
@@ -715,13 +715,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a14);
         pk.pack(a15);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -731,91 +731,91 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*8));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*8, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 8;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
     }
     
@@ -865,13 +865,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a16);
         pk.pack(a17);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -881,101 +881,101 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*9));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*9, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 9;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
     }
     
@@ -1029,13 +1029,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a18);
         pk.pack(a19);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -1045,111 +1045,111 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*10));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*10, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 10;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
     }
     
@@ -1207,13 +1207,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a20);
         pk.pack(a21);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -1223,121 +1223,121 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*11));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*11, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 11;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
     }
     
@@ -1399,13 +1399,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a22);
         pk.pack(a23);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -1415,131 +1415,131 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a22);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a22);
             if (it != kvmap.end()) {
                 it->second->convert(a23);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*12));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*12, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 12;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
-        o->via.map.ptr[11].key = msgpack::object(a22, z);
-        o->via.map.ptr[11].val = msgpack::object(a23, z);
+        o->via.map.ptr[11].key = clmdep_msgpack::object(a22, z);
+        o->via.map.ptr[11].val = clmdep_msgpack::object(a23, z);
         
     }
     
@@ -1605,13 +1605,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a24);
         pk.pack(a25);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -1621,141 +1621,141 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a22);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a22);
             if (it != kvmap.end()) {
                 it->second->convert(a23);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a24);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a24);
             if (it != kvmap.end()) {
                 it->second->convert(a25);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*13));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*13, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 13;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
-        o->via.map.ptr[11].key = msgpack::object(a22, z);
-        o->via.map.ptr[11].val = msgpack::object(a23, z);
+        o->via.map.ptr[11].key = clmdep_msgpack::object(a22, z);
+        o->via.map.ptr[11].val = clmdep_msgpack::object(a23, z);
         
-        o->via.map.ptr[12].key = msgpack::object(a24, z);
-        o->via.map.ptr[12].val = msgpack::object(a25, z);
+        o->via.map.ptr[12].key = clmdep_msgpack::object(a24, z);
+        o->via.map.ptr[12].val = clmdep_msgpack::object(a25, z);
         
     }
     
@@ -1825,13 +1825,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a26);
         pk.pack(a27);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -1841,151 +1841,151 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a22);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a22);
             if (it != kvmap.end()) {
                 it->second->convert(a23);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a24);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a24);
             if (it != kvmap.end()) {
                 it->second->convert(a25);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a26);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a26);
             if (it != kvmap.end()) {
                 it->second->convert(a27);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*14));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*14, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 14;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
-        o->via.map.ptr[11].key = msgpack::object(a22, z);
-        o->via.map.ptr[11].val = msgpack::object(a23, z);
+        o->via.map.ptr[11].key = clmdep_msgpack::object(a22, z);
+        o->via.map.ptr[11].val = clmdep_msgpack::object(a23, z);
         
-        o->via.map.ptr[12].key = msgpack::object(a24, z);
-        o->via.map.ptr[12].val = msgpack::object(a25, z);
+        o->via.map.ptr[12].key = clmdep_msgpack::object(a24, z);
+        o->via.map.ptr[12].val = clmdep_msgpack::object(a25, z);
         
-        o->via.map.ptr[13].key = msgpack::object(a26, z);
-        o->via.map.ptr[13].val = msgpack::object(a27, z);
+        o->via.map.ptr[13].key = clmdep_msgpack::object(a26, z);
+        o->via.map.ptr[13].val = clmdep_msgpack::object(a27, z);
         
     }
     
@@ -2059,13 +2059,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a28);
         pk.pack(a29);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -2075,161 +2075,161 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a22);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a22);
             if (it != kvmap.end()) {
                 it->second->convert(a23);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a24);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a24);
             if (it != kvmap.end()) {
                 it->second->convert(a25);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a26);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a26);
             if (it != kvmap.end()) {
                 it->second->convert(a27);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a28);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a28);
             if (it != kvmap.end()) {
                 it->second->convert(a29);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*15));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*15, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 15;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
-        o->via.map.ptr[11].key = msgpack::object(a22, z);
-        o->via.map.ptr[11].val = msgpack::object(a23, z);
+        o->via.map.ptr[11].key = clmdep_msgpack::object(a22, z);
+        o->via.map.ptr[11].val = clmdep_msgpack::object(a23, z);
         
-        o->via.map.ptr[12].key = msgpack::object(a24, z);
-        o->via.map.ptr[12].val = msgpack::object(a25, z);
+        o->via.map.ptr[12].key = clmdep_msgpack::object(a24, z);
+        o->via.map.ptr[12].val = clmdep_msgpack::object(a25, z);
         
-        o->via.map.ptr[13].key = msgpack::object(a26, z);
-        o->via.map.ptr[13].val = msgpack::object(a27, z);
+        o->via.map.ptr[13].key = clmdep_msgpack::object(a26, z);
+        o->via.map.ptr[13].val = clmdep_msgpack::object(a27, z);
         
-        o->via.map.ptr[14].key = msgpack::object(a28, z);
-        o->via.map.ptr[14].val = msgpack::object(a29, z);
+        o->via.map.ptr[14].key = clmdep_msgpack::object(a28, z);
+        o->via.map.ptr[14].val = clmdep_msgpack::object(a29, z);
         
     }
     
@@ -2307,13 +2307,13 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         pk.pack(a30);
         pk.pack(a31);
     }
-    void msgpack_unpack(msgpack::object const& o) const
+    void msgpack_unpack(clmdep_msgpack::object const& o) const
     {
-        if(o.type != msgpack::type::MAP) { throw msgpack::type_error(); }
-        std::map<std::string, msgpack::object const*> kvmap;
+        if(o.type != clmdep_msgpack::type::MAP) { throw clmdep_msgpack::type_error(); }
+        std::map<std::string, clmdep_msgpack::object const*> kvmap;
         for (uint32_t i = 0; i < o.via.map.size; ++i) {
             kvmap.insert(
-                std::map<std::string, msgpack::object const*>::value_type(
+                std::map<std::string, clmdep_msgpack::object const*>::value_type(
                     std::string(
                         o.via.map.ptr[i].key.via.str.ptr,
                         o.via.map.ptr[i].key.via.str.size),
@@ -2323,171 +2323,171 @@ struct define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a0);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a0);
             if (it != kvmap.end()) {
                 it->second->convert(a1);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a2);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a2);
             if (it != kvmap.end()) {
                 it->second->convert(a3);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a4);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a4);
             if (it != kvmap.end()) {
                 it->second->convert(a5);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a6);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a6);
             if (it != kvmap.end()) {
                 it->second->convert(a7);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a8);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a8);
             if (it != kvmap.end()) {
                 it->second->convert(a9);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a10);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a10);
             if (it != kvmap.end()) {
                 it->second->convert(a11);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a12);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a12);
             if (it != kvmap.end()) {
                 it->second->convert(a13);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a14);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a14);
             if (it != kvmap.end()) {
                 it->second->convert(a15);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a16);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a16);
             if (it != kvmap.end()) {
                 it->second->convert(a17);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a18);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a18);
             if (it != kvmap.end()) {
                 it->second->convert(a19);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a20);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a20);
             if (it != kvmap.end()) {
                 it->second->convert(a21);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a22);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a22);
             if (it != kvmap.end()) {
                 it->second->convert(a23);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a24);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a24);
             if (it != kvmap.end()) {
                 it->second->convert(a25);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a26);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a26);
             if (it != kvmap.end()) {
                 it->second->convert(a27);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a28);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a28);
             if (it != kvmap.end()) {
                 it->second->convert(a29);
             }
         }
         
         {
-            std::map<std::string, msgpack::object const*>::const_iterator it = kvmap.find(a30);
+            std::map<std::string, clmdep_msgpack::object const*>::const_iterator it = kvmap.find(a30);
             if (it != kvmap.end()) {
                 it->second->convert(a31);
             }
         }
         
     }
-    void msgpack_object(msgpack::object* o, msgpack::zone& z) const
+    void msgpack_object(clmdep_msgpack::object* o, clmdep_msgpack::zone& z) const
     {
-        o->type = msgpack::type::MAP;
-        o->via.map.ptr = static_cast<msgpack::object_kv*>(z.allocate_align(sizeof(msgpack::object_kv)*16));
+        o->type = clmdep_msgpack::type::MAP;
+        o->via.map.ptr = static_cast<clmdep_msgpack::object_kv*>(z.allocate_align(sizeof(clmdep_msgpack::object_kv)*16, MSGPACK_ZONE_ALIGNOF(clmdep_msgpack::object_kv)));
         o->via.map.size = 16;
         
-        o->via.map.ptr[0].key = msgpack::object(a0, z);
-        o->via.map.ptr[0].val = msgpack::object(a1, z);
+        o->via.map.ptr[0].key = clmdep_msgpack::object(a0, z);
+        o->via.map.ptr[0].val = clmdep_msgpack::object(a1, z);
         
-        o->via.map.ptr[1].key = msgpack::object(a2, z);
-        o->via.map.ptr[1].val = msgpack::object(a3, z);
+        o->via.map.ptr[1].key = clmdep_msgpack::object(a2, z);
+        o->via.map.ptr[1].val = clmdep_msgpack::object(a3, z);
         
-        o->via.map.ptr[2].key = msgpack::object(a4, z);
-        o->via.map.ptr[2].val = msgpack::object(a5, z);
+        o->via.map.ptr[2].key = clmdep_msgpack::object(a4, z);
+        o->via.map.ptr[2].val = clmdep_msgpack::object(a5, z);
         
-        o->via.map.ptr[3].key = msgpack::object(a6, z);
-        o->via.map.ptr[3].val = msgpack::object(a7, z);
+        o->via.map.ptr[3].key = clmdep_msgpack::object(a6, z);
+        o->via.map.ptr[3].val = clmdep_msgpack::object(a7, z);
         
-        o->via.map.ptr[4].key = msgpack::object(a8, z);
-        o->via.map.ptr[4].val = msgpack::object(a9, z);
+        o->via.map.ptr[4].key = clmdep_msgpack::object(a8, z);
+        o->via.map.ptr[4].val = clmdep_msgpack::object(a9, z);
         
-        o->via.map.ptr[5].key = msgpack::object(a10, z);
-        o->via.map.ptr[5].val = msgpack::object(a11, z);
+        o->via.map.ptr[5].key = clmdep_msgpack::object(a10, z);
+        o->via.map.ptr[5].val = clmdep_msgpack::object(a11, z);
         
-        o->via.map.ptr[6].key = msgpack::object(a12, z);
-        o->via.map.ptr[6].val = msgpack::object(a13, z);
+        o->via.map.ptr[6].key = clmdep_msgpack::object(a12, z);
+        o->via.map.ptr[6].val = clmdep_msgpack::object(a13, z);
         
-        o->via.map.ptr[7].key = msgpack::object(a14, z);
-        o->via.map.ptr[7].val = msgpack::object(a15, z);
+        o->via.map.ptr[7].key = clmdep_msgpack::object(a14, z);
+        o->via.map.ptr[7].val = clmdep_msgpack::object(a15, z);
         
-        o->via.map.ptr[8].key = msgpack::object(a16, z);
-        o->via.map.ptr[8].val = msgpack::object(a17, z);
+        o->via.map.ptr[8].key = clmdep_msgpack::object(a16, z);
+        o->via.map.ptr[8].val = clmdep_msgpack::object(a17, z);
         
-        o->via.map.ptr[9].key = msgpack::object(a18, z);
-        o->via.map.ptr[9].val = msgpack::object(a19, z);
+        o->via.map.ptr[9].key = clmdep_msgpack::object(a18, z);
+        o->via.map.ptr[9].val = clmdep_msgpack::object(a19, z);
         
-        o->via.map.ptr[10].key = msgpack::object(a20, z);
-        o->via.map.ptr[10].val = msgpack::object(a21, z);
+        o->via.map.ptr[10].key = clmdep_msgpack::object(a20, z);
+        o->via.map.ptr[10].val = clmdep_msgpack::object(a21, z);
         
-        o->via.map.ptr[11].key = msgpack::object(a22, z);
-        o->via.map.ptr[11].val = msgpack::object(a23, z);
+        o->via.map.ptr[11].key = clmdep_msgpack::object(a22, z);
+        o->via.map.ptr[11].val = clmdep_msgpack::object(a23, z);
         
-        o->via.map.ptr[12].key = msgpack::object(a24, z);
-        o->via.map.ptr[12].val = msgpack::object(a25, z);
+        o->via.map.ptr[12].key = clmdep_msgpack::object(a24, z);
+        o->via.map.ptr[12].val = clmdep_msgpack::object(a25, z);
         
-        o->via.map.ptr[13].key = msgpack::object(a26, z);
-        o->via.map.ptr[13].val = msgpack::object(a27, z);
+        o->via.map.ptr[13].key = clmdep_msgpack::object(a26, z);
+        o->via.map.ptr[13].val = clmdep_msgpack::object(a27, z);
         
-        o->via.map.ptr[14].key = msgpack::object(a28, z);
-        o->via.map.ptr[14].val = msgpack::object(a29, z);
+        o->via.map.ptr[14].key = clmdep_msgpack::object(a28, z);
+        o->via.map.ptr[14].val = clmdep_msgpack::object(a29, z);
         
-        o->via.map.ptr[15].key = msgpack::object(a30, z);
-        o->via.map.ptr[15].val = msgpack::object(a31, z);
+        o->via.map.ptr[15].key = clmdep_msgpack::object(a30, z);
+        o->via.map.ptr[15].val = clmdep_msgpack::object(a31, z);
         
     }
     
@@ -2732,6 +2732,6 @@ inline define_map<A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A1
 /// @cond
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_CPP03_DEFINE_MAP_HPP

@@ -10,14 +10,14 @@
 #ifndef MSGPACK_V1_PACK_HPP
 #define MSGPACK_V1_PACK_HPP
 
-#include "msgpack/v1/pack_decl.hpp"
+#include "rpc/msgpack/v1/pack_decl.hpp"
 
 #include <stdexcept>
 #include <limits>
 #include <cstring>
 #include <climits>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -1597,6 +1597,6 @@ inline void packer<Stream>::pack_imp_int64(T d)
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_PACK_HPP

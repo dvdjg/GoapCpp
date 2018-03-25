@@ -10,7 +10,7 @@
 #ifndef MSGPACK_SYSDEP_H
 #define MSGPACK_SYSDEP_H
 
-#include <msgpack/predef.h>
+#include <rpc/msgpack/predef.h>
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -54,9 +54,9 @@
 #elif defined(__GNUC__) && ((__GNUC__*10 + __GNUC_MINOR__) < 41)
 
 #   if defined(__cplusplus)
-#       define _msgpack_atomic_counter_header "msgpack/gcc_atomic.hpp"
+#       define _msgpack_atomic_counter_header "rpc/msgpack/gcc_atomic.hpp"
 #   else
-#       define _msgpack_atomic_counter_header "msgpack/gcc_atomic.h"
+#       define _msgpack_atomic_counter_header "rpc/msgpack/gcc_atomic.h"
 #   endif
 
 #else

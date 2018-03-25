@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V1_TYPE_ARRAY_REF_DECL_HPP
 #define MSGPACK_V1_TYPE_ARRAY_REF_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -25,15 +25,15 @@ template <typename T>
 struct array_ref;
 
 template <typename T>
-typename msgpack::enable_if<
-    !msgpack::is_array<T const>::value,
+typename clmdep_msgpack::enable_if<
+    !clmdep_msgpack::is_array<T const>::value,
     array_ref<T const>
 >::type
 make_array_ref(T const& t);
 
 template <typename T>
-typename msgpack::enable_if<
-    !msgpack::is_array<T>::value,
+typename clmdep_msgpack::enable_if<
+    !clmdep_msgpack::is_array<T>::value,
     array_ref<T>
 >::type
 make_array_ref(T& t);
@@ -50,6 +50,6 @@ array_ref<T[N]> make_array_ref(T(&t)[N]);
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_ARRAY_REF_DECL_HPP

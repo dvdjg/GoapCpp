@@ -11,10 +11,10 @@
 #ifndef MSGPACK_V2_OBJECT_FWD_HPP
 #define MSGPACK_V2_OBJECT_FWD_HPP
 
-#include "msgpack/v2/object_fwd_decl.hpp"
-#include "msgpack/object_fwd.hpp"
+#include "rpc/msgpack/v2/object_fwd_decl.hpp"
+#include "rpc/msgpack/object_fwd.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -26,7 +26,7 @@ struct object : v1::object {
     /// Construct object from T
     /**
      * If `v` is the type that is corresponding to MessegePack format str, bin, ext, array, or map,
-     * you need to call `object(const T& v, msgpack::zone& z)` instead of this constructor.
+     * you need to call `object(const T& v, clmdep_msgpack::zone& z)` instead of this constructor.
      *
      * @tparam T The type of `v`.
      * @param v The value you want to convert.
@@ -46,17 +46,12 @@ struct object : v1::object {
      * @param z The zone that is used by the object.
      */
     template <typename T>
-    object(const T& v, msgpack::zone& z):v1::object(v, z) {}
-
-    ~object()
-    {
-        // djg
-    }
+    object(const T& v, clmdep_msgpack::zone& z):v1::object(v, z) {}
 
 public:
     /// Convert the object
     /**
-     * If the object can't be converted to T, msgpack::type_error would be thrown.
+     * If the object can't be converted to T, clmdep_msgpack::type_error would be thrown.
      * @tparam T The type of v.
      * @param v The value you want to get. `v` is output parameter. `v` is overwritten by converted value from the object.
      * @return The reference of `v`.
@@ -88,7 +83,7 @@ private:
         typename std::enable_if<
             // check v2 specialization
             std::is_same<
-                decltype(adaptor::as<U>()(std::declval<msgpack::object>())),
+                decltype(adaptor::as<U>()(std::declval<clmdep_msgpack::object>())),
                 U
             >::value
             ||
@@ -109,6 +104,6 @@ public:
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_OBJECT_FWD_HPP

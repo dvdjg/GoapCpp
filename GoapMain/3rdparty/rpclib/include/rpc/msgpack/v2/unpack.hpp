@@ -10,23 +10,24 @@
 #ifndef MSGPACK_V2_UNPACK_HPP
 #define MSGPACK_V2_UNPACK_HPP
 
-#include "msgpack/unpack_decl.hpp"
-#include "msgpack/v2/create_object_visitor.hpp"
-#include "msgpack/v2/parse.hpp"
+#include "rpc/msgpack/unpack_decl.hpp"
+#include "rpc/msgpack/v2/create_object_visitor.hpp"
+#include "rpc/msgpack/v2/parse.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
 /// @endcond
 
+
 struct zone_push_finalizer {
-    zone_push_finalizer(msgpack::zone& z):m_z(&z) {}
-    void set_zone(msgpack::zone& z) { m_z = &z; }
+    zone_push_finalizer(clmdep_msgpack::zone& z):m_z(&z) {}
+    void set_zone(clmdep_msgpack::zone& z) { m_z = &z; }
     void operator()(char* buffer) {
         m_z->push_finalizer(&detail::decr_count, buffer);
     }
-    msgpack::zone* m_z;
+    clmdep_msgpack::zone* m_z;
 };
 
 class unpacker : public parser<unpacker, zone_push_finalizer>,
@@ -39,54 +40,54 @@ public:
              unpack_limit const& limit = unpack_limit())
         :parser_t(m_finalizer, initial_buffer_size),
          detail::create_object_visitor(f, user_data, limit),
-         m_z(new msgpack::zone),
+         m_z(new clmdep_msgpack::zone),
          m_finalizer(*m_z) {
         set_zone(*m_z);
         set_referenced(false);
     }
 
     detail::create_object_visitor& visitor() { return *this; }
-    /// Unpack one msgpack::object.
+    /// Unpack one clmdep_msgpack::object.
     /**
      *
      * @param result The object that contains unpacked data.
      * @param referenced If the unpacked object contains reference of the buffer,
      *                   then set as true, otherwise false.
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(msgpack::object_handle& result, bool& referenced);
+    bool next(clmdep_msgpack::object_handle& result, bool& referenced);
 
-    /// Unpack one msgpack::object.
+    /// Unpack one clmdep_msgpack::object.
     /**
      *
      * @param result The object that contains unpacked data.
      *
-     * @return If one msgpack::object is unpacked, then return true, if msgpack::object is incomplete
+     * @return If one clmdep_msgpack::object is unpacked, then return true, if clmdep_msgpack::object is incomplete
      *         and additional data is required, then return false. If data format is invalid, throw
-     *         msgpack::parse_error.
+     *         clmdep_msgpack::parse_error.
      *
      * See:
      * https://github.com/msgpack/msgpack-c/wiki/v1_1_cpp_unpacker#msgpack-controls-a-buffer
      */
-    bool next(msgpack::object_handle& result);
-    msgpack::zone* release_zone();
+    bool next(clmdep_msgpack::object_handle& result);
+    clmdep_msgpack::zone* release_zone();
     void reset_zone();
     bool flush_zone();
 private:
-    static bool default_reference_func(msgpack::type::object_type /*type*/, std::size_t /*len*/, void*) {
+    static bool default_reference_func(clmdep_msgpack::type::object_type /*type*/, std::size_t /*len*/, void*) {
         return true;
     }
-    msgpack::unique_ptr<msgpack::zone> m_z;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> m_z;
     zone_push_finalizer m_finalizer;
 };
 
-inline bool unpacker::next(msgpack::object_handle& result, bool& referenced) {
+inline bool unpacker::next(clmdep_msgpack::object_handle& result, bool& referenced) {
     bool ret = parser_t::next();
     if (ret) {
         referenced = detail::create_object_visitor::referenced();
@@ -96,24 +97,24 @@ inline bool unpacker::next(msgpack::object_handle& result, bool& referenced) {
     }
     else {
         result.zone().reset();
-        result.set(msgpack::object());
+        result.set(clmdep_msgpack::object());
     }
     return ret;
 }
 
-inline bool unpacker::next(msgpack::object_handle& result) {
+inline bool unpacker::next(clmdep_msgpack::object_handle& result) {
     bool referenced;
     return next(result, referenced);
 }
 
-inline msgpack::zone* unpacker::release_zone()
+inline clmdep_msgpack::zone* unpacker::release_zone()
 {
     if(!flush_zone()) {
         return MSGPACK_NULLPTR;
     }
 
-    msgpack::zone* r =  new msgpack::zone;
-    msgpack::zone* old = m_z.release();
+    clmdep_msgpack::zone* r =  new clmdep_msgpack::zone;
+    clmdep_msgpack::zone* old = m_z.release();
     m_z.reset(r);
     set_zone(*m_z);
     m_finalizer.set_zone(*m_z);
@@ -142,14 +143,14 @@ inline bool unpacker::flush_zone()
     return true;
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit
 )
 {
-    msgpack::object obj;
-    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
+    clmdep_msgpack::object obj;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> z(new clmdep_msgpack::zone);
     referenced = false;
     std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
@@ -158,52 +159,52 @@ inline msgpack::object_handle unpack(
     switch(ret) {
     case PARSE_SUCCESS:
         off = noff;
-        return msgpack::object_handle(obj, msgpack::move(z));
+        return clmdep_msgpack::object_handle(obj, clmdep_msgpack::move(z));
     case PARSE_EXTRA_BYTES:
         off = noff;
-        return msgpack::object_handle(obj, msgpack::move(z));
+        return clmdep_msgpack::object_handle(obj, clmdep_msgpack::move(z));
     default:
         break;
     }
-    return msgpack::object_handle();
+    return clmdep_msgpack::object_handle();
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     bool referenced;
-    return msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     std::size_t off = 0;
-    return msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object_handle unpack(
+inline clmdep_msgpack::object_handle unpack(
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
-    return msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(data, len, off, referenced, f, user_data, limit);
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
-    msgpack::object obj;
-    msgpack::unique_ptr<msgpack::zone> z(new msgpack::zone);
+    clmdep_msgpack::object obj;
+    clmdep_msgpack::unique_ptr<clmdep_msgpack::zone> z(new clmdep_msgpack::zone);
     referenced = false;
     std::size_t noff = off;
     parse_return ret = detail::unpack_imp(
@@ -213,12 +214,12 @@ inline void unpack(
     case PARSE_SUCCESS:
         off = noff;
         result.set(obj);
-        result.zone() = msgpack::move(z);
+        result.zone() = clmdep_msgpack::move(z);
         return;
     case PARSE_EXTRA_BYTES:
         off = noff;
         result.set(obj);
-        result.zone() = msgpack::move(z);
+        result.zone() = clmdep_msgpack::move(z);
         return;
     default:
         return;
@@ -226,44 +227,44 @@ inline void unpack(
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, std::size_t& off,
-    msgpack::v2::unpack_reference_func f, void* user_data,
+    clmdep_msgpack::v2::unpack_reference_func f, void* user_data,
             unpack_limit const& limit)
 {
     bool referenced;
-    msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
+    clmdep_msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     std::size_t off = 0;
-    msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
+    clmdep_msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
 }
 
 inline void unpack(
-    msgpack::object_handle& result,
+    clmdep_msgpack::object_handle& result,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
-    msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
+    clmdep_msgpack::v2::unpack(result, data, len, off, referenced, f, user_data, limit);
 }
 
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
-    msgpack::object obj;
+    clmdep_msgpack::object obj;
     std::size_t noff = off;
     referenced = false;
     parse_return ret = detail::unpack_imp(
@@ -282,42 +283,42 @@ inline msgpack::object unpack(
     return obj;
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, std::size_t& off,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     bool referenced;
-    return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len, bool& referenced,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     std::size_t off = 0;
-    return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
-inline msgpack::object unpack(
-    msgpack::zone& z,
+inline clmdep_msgpack::object unpack(
+    clmdep_msgpack::zone& z,
     const char* data, std::size_t len,
     unpack_reference_func f, void* user_data,
     unpack_limit const& limit)
 {
     bool referenced;
     std::size_t off = 0;
-    return msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
+    return clmdep_msgpack::v2::unpack(z, data, len, off, referenced, f, user_data, limit);
 }
 
 namespace detail {
 
 inline parse_return
 unpack_imp(const char* data, std::size_t len, std::size_t& off,
-           msgpack::zone& result_zone, msgpack::object& result, bool& referenced,
+           clmdep_msgpack::zone& result_zone, clmdep_msgpack::object& result, bool& referenced,
            unpack_reference_func f = MSGPACK_NULLPTR, void* user_data = MSGPACK_NULLPTR,
            unpack_limit const& limit = unpack_limit())
 {
@@ -338,7 +339,7 @@ unpack_imp(const char* data, std::size_t len, std::size_t& off,
 }  // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_V2_UNPACK_HPP

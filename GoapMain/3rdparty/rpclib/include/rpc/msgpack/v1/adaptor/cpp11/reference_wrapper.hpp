@@ -11,14 +11,14 @@
 #ifndef MSGPACK_V1_TYPE_CPP11_REFERENCE_WRAPPER_HPP
 #define MSGPACK_V1_TYPE_CPP11_REFERENCE_WRAPPER_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
-#include "msgpack/adaptor/check_container_size.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/adaptor/check_container_size.hpp"
 
 #include <memory>
 #include <type_traits>
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -28,8 +28,8 @@ namespace adaptor {
 
 template <typename T>
 struct convert<std::reference_wrapper<T>> {
-    msgpack::object const& operator()(msgpack::object const& o, std::reference_wrapper<T>& v) const {
-        msgpack::adaptor::convert<T>()(o, v.get());
+    clmdep_msgpack::object const& operator()(clmdep_msgpack::object const& o, std::reference_wrapper<T>& v) const {
+        clmdep_msgpack::adaptor::convert<T>()(o, v.get());
         return o;
     }
 };
@@ -37,7 +37,7 @@ struct convert<std::reference_wrapper<T>> {
 template <typename T>
 struct pack<std::reference_wrapper<T>> {
     template <typename Stream>
-    msgpack::packer<Stream>& operator()(msgpack::packer<Stream>& o, const std::reference_wrapper<T>& v) const {
+    clmdep_msgpack::packer<Stream>& operator()(clmdep_msgpack::packer<Stream>& o, const std::reference_wrapper<T>& v) const {
         o.pack(v.get());
         return o;
     }
@@ -45,15 +45,15 @@ struct pack<std::reference_wrapper<T>> {
 
 template <typename T>
 struct object<std::reference_wrapper<T> > {
-    void operator()(msgpack::object& o, const std::reference_wrapper<T>& v) const {
-        msgpack::adaptor::object<typename std::remove_const<T>::type>()(o, v.get());
+    void operator()(clmdep_msgpack::object& o, const std::reference_wrapper<T>& v) const {
+        clmdep_msgpack::adaptor::object<typename std::remove_const<T>::type>()(o, v.get());
     }
 };
 
 template <typename T>
 struct object_with_zone<std::reference_wrapper<T>> {
-    void operator()(msgpack::object::with_zone& o, const std::reference_wrapper<T>& v) const {
-        msgpack::adaptor::object_with_zone<typename std::remove_const<T>::type>()(o, v.get());
+    void operator()(clmdep_msgpack::object::with_zone& o, const std::reference_wrapper<T>& v) const {
+        clmdep_msgpack::adaptor::object_with_zone<typename std::remove_const<T>::type>()(o, v.get());
     }
 };
 
@@ -63,6 +63,6 @@ struct object_with_zone<std::reference_wrapper<T>> {
 } // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V1_TYPE_CPP11_REFERENCE_WRAPPER_HPP

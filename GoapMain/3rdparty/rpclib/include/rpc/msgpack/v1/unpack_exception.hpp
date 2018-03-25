@@ -10,13 +10,13 @@
 #ifndef MSGPACK_V1_UNPACK_EXCEPTION_HPP
 #define MSGPACK_V1_UNPACK_EXCEPTION_HPP
 
-#include "msgpack/versioning.hpp"
+#include "rpc/msgpack/versioning.hpp"
 
 #include <string>
 #include <stdexcept>
 
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v1) {
@@ -116,7 +116,7 @@ struct depth_size_overflow : public size_overflow {
 }  // MSGPACK_API_VERSION_NAMESPACE(v1)
 /// @endcond
 
-}  // namespace msgpack
+}  // namespace clmdep_msgpack
 
 
 #endif // MSGPACK_V1_UNPACK_EXCEPTION_HPP

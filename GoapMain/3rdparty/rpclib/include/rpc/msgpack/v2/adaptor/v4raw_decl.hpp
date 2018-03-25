@@ -10,10 +10,10 @@
 #ifndef MSGPACK_V2_TYPE_V4RAW_DECL_HPP
 #define MSGPACK_V2_TYPE_V4RAW_DECL_HPP
 
-#include "msgpack/versioning.hpp"
-#include "msgpack/adaptor/adaptor_base.hpp"
+#include "rpc/msgpack/versioning.hpp"
+#include "rpc/msgpack/adaptor/adaptor_base.hpp"
 
-namespace msgpack {
+namespace clmdep_msgpack {
 
 /// @cond
 MSGPACK_API_VERSION_NAMESPACE(v2) {
@@ -29,6 +29,6 @@ using v1::type::v4raw_ref;
 } // MSGPACK_API_VERSION_NAMESPACE(v2)
 /// @endcond
 
-} // namespace msgpack
+} // namespace clmdep_msgpack
 
 #endif // MSGPACK_V2_TYPE_V4RAW_DECL_HPP
