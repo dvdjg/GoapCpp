@@ -3,6 +3,7 @@ QT -= gui
 
 TARGET = GoapApp
 CONFIG += console
+CONFIG += static
 CONFIG -= app_bundle
 
 TEMPLATE = app

@@ -6,7 +6,8 @@ SUBDIRS += \
     DataTest \
     ArrayFireTest \
     BotanTest \
-    RpcTest
+    RpcTest \
+    RpcExamples
 
 #    RpcTest \
 #    MsgPackTest \
