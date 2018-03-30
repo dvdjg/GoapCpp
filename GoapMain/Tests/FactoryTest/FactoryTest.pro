@@ -26,12 +26,7 @@ LIBS += \
     -lGoapLib$$SUFFIX
 
 unix {
-QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp
-QMAKE_CFLAGS += -pthread -fno-strict-aliasing -fopenmp
-QMAKE_LFLAGS += -pthread -fopenmp
 } else:win32-msvc* {
-QMAKE_CXXFLAGS += -openmp
-QMAKE_CFLAGS += -openmp
 }
 
 LIBS += \

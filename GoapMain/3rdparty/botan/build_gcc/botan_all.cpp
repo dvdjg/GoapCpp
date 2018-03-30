@@ -8,6 +8,9 @@
 #include "botan_all.h"
 #include "botan_all_internal.h"
 
+#ifdef BOTAN_TARGET_OS_IS_MINGW
+#include <winsock2.h>
+#endif
 /*
 * Adler32
 * (C) 1999-2007 Jack Lloyd
@@ -6563,111 +6566,111 @@ void Blowfish::clear()
 */
 
 
-#define BZ_NO_STDIO
-#include <bzlib.h>
+//#define BZ_NO_STDIO
+//#include <bzlib.h>
 
-namespace Botan {
+//namespace Botan {
 
-namespace {
+//namespace {
 
-class Bzip2_Stream : public Zlib_Style_Stream<bz_stream, char>
-   {
-   public:
-      Bzip2_Stream()
-         {
-         streamp()->opaque = alloc();
-         streamp()->bzalloc = Compression_Alloc_Info::malloc<int>;
-         streamp()->bzfree = Compression_Alloc_Info::free;
-         }
+//class Bzip2_Stream : public Zlib_Style_Stream<bz_stream, char>
+//   {
+//   public:
+//      Bzip2_Stream()
+//         {
+//         streamp()->opaque = alloc();
+//         streamp()->bzalloc = Compression_Alloc_Info::malloc<int>;
+//         streamp()->bzfree = Compression_Alloc_Info::free;
+//         }
 
-      uint32_t run_flag() const override { return BZ_RUN; }
-      uint32_t flush_flag() const override { return BZ_FLUSH; }
-      uint32_t finish_flag() const override { return BZ_FINISH; }
-   };
+//      uint32_t run_flag() const override { return BZ_RUN; }
+//      uint32_t flush_flag() const override { return BZ_FLUSH; }
+//      uint32_t finish_flag() const override { return BZ_FINISH; }
+//   };
 
-class Bzip2_Compression_Stream : public Bzip2_Stream
-   {
-   public:
-      explicit Bzip2_Compression_Stream(size_t block_size)
-         {
-         /*
-         * Defaults to 900k blocks as the computation cost of
-         * compression is not overly affected by the size, though
-         * more memory is required.
-         */
-         if(block_size == 0 || block_size >= 9)
-            block_size = 9;
+//class Bzip2_Compression_Stream : public Bzip2_Stream
+//   {
+//   public:
+//      explicit Bzip2_Compression_Stream(size_t block_size)
+//         {
+//         /*
+//         * Defaults to 900k blocks as the computation cost of
+//         * compression is not overly affected by the size, though
+//         * more memory is required.
+//         */
+//         if(block_size == 0 || block_size >= 9)
+//            block_size = 9;
 
-         int rc = BZ2_bzCompressInit(streamp(), block_size, 0, 0);
+//         int rc = BZ2_bzCompressInit(streamp(), block_size, 0, 0);
 
-         if(rc == BZ_MEM_ERROR)
-            throw Exception("bzip memory allocation failure");
-         else if(rc != BZ_OK)
-            throw Exception("bzip compress initialization failed");
-         }
+//         if(rc == BZ_MEM_ERROR)
+//            throw Exception("bzip memory allocation failure");
+//         else if(rc != BZ_OK)
+//            throw Exception("bzip compress initialization failed");
+//         }
 
-      ~Bzip2_Compression_Stream()
-         {
-         BZ2_bzCompressEnd(streamp());
-         }
+//      ~Bzip2_Compression_Stream()
+//         {
+//         BZ2_bzCompressEnd(streamp());
+//         }
 
-      bool run(uint32_t flags) override
-         {
-         int rc = BZ2_bzCompress(streamp(), flags);
+//      bool run(uint32_t flags) override
+//         {
+//         int rc = BZ2_bzCompress(streamp(), flags);
 
-         if(rc == BZ_MEM_ERROR)
-            throw Exception("bzip memory allocation failure");
-         else if(rc < 0)
-            throw Exception("bzip compress error " + std::to_string(-rc));
+//         if(rc == BZ_MEM_ERROR)
+//            throw Exception("bzip memory allocation failure");
+//         else if(rc < 0)
+//            throw Exception("bzip compress error " + std::to_string(-rc));
 
-         return (rc == BZ_STREAM_END);
-         }
-   };
+//         return (rc == BZ_STREAM_END);
+//         }
+//   };
 
-class Bzip2_Decompression_Stream : public Bzip2_Stream
-   {
-   public:
-      Bzip2_Decompression_Stream()
-         {
-         int rc = BZ2_bzDecompressInit(streamp(), 0, 0);
+//class Bzip2_Decompression_Stream : public Bzip2_Stream
+//   {
+//   public:
+//      Bzip2_Decompression_Stream()
+//         {
+//         int rc = BZ2_bzDecompressInit(streamp(), 0, 0);
 
-         if(rc == BZ_MEM_ERROR)
-            throw Exception("bzip memory allocation failure");
-         else if(rc != BZ_OK)
-            throw Exception("bzip decompress initialization failed");
-         }
+//         if(rc == BZ_MEM_ERROR)
+//            throw Exception("bzip memory allocation failure");
+//         else if(rc != BZ_OK)
+//            throw Exception("bzip decompress initialization failed");
+//         }
 
-      ~Bzip2_Decompression_Stream()
-         {
-         BZ2_bzDecompressEnd(streamp());
-         }
+//      ~Bzip2_Decompression_Stream()
+//         {
+//         BZ2_bzDecompressEnd(streamp());
+//         }
 
-      bool run(uint32_t) override
-         {
-         int rc = BZ2_bzDecompress(streamp());
+//      bool run(uint32_t) override
+//         {
+//         int rc = BZ2_bzDecompress(streamp());
 
-         if(rc == BZ_MEM_ERROR)
-            throw Exception("bzip memory allocation failure");
-         else if(rc != BZ_OK && rc != BZ_STREAM_END)
-            throw Exception("bzip decompress error " + std::to_string(-rc));
+//         if(rc == BZ_MEM_ERROR)
+//            throw Exception("bzip memory allocation failure");
+//         else if(rc != BZ_OK && rc != BZ_STREAM_END)
+//            throw Exception("bzip decompress error " + std::to_string(-rc));
 
-         return (rc == BZ_STREAM_END);
-         }
-   };
+//         return (rc == BZ_STREAM_END);
+//         }
+//   };
 
-}
+//}
 
-Compression_Stream* Bzip2_Compression::make_stream(size_t comp_level) const
-   {
-   return new Bzip2_Compression_Stream(comp_level);
-   }
+//Compression_Stream* Bzip2_Compression::make_stream(size_t comp_level) const
+//   {
+//   return new Bzip2_Compression_Stream(comp_level);
+//   }
 
-Compression_Stream* Bzip2_Decompression::make_stream() const
-   {
-   return new Bzip2_Decompression_Stream;
-   }
+//Compression_Stream* Bzip2_Decompression::make_stream() const
+//   {
+//   return new Bzip2_Decompression_Stream;
+//   }
 
-}
+//}
 /*
 * Camellia
 * (C) 2012 Jack Lloyd
@@ -13103,7 +13106,7 @@ void DESX::clear()
 
 
 #include <sys/types.h>
-#include <sys/select.h>
+//#include <sys/select.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>

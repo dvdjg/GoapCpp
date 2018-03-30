@@ -113,7 +113,8 @@ HEADERS += \
     delta/delta_common.h \
     delta/delta_decoder.h \
     delta/delta_encoder.h \
-    delta/delta_private.h
+    delta/delta_private.h \
+    api/lzma.h
 
 SOURCES += \
     lzma/fastpos_table.c \

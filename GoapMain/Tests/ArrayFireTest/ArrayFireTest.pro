@@ -27,28 +27,27 @@ DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
-win32-msvc* {
+win32-* {
     INCLUDEPATH += \
         "F:/Program Files/ArrayFire/v3/include"
     LIBS += \
         -L"F:/Program Files/ArrayFire/v3/lib" \
         -laf
 }
-
+win32-g++:LIBS += "F:/Program Files/ArrayFire/v3/lib/af.lib"
 LIBS += \
     -lGoapLib$$SUFFIX \
-    -lsqlite$$SUFFIX \
-    -lbotan$$SUFFIX \
-    -lz$$SUFFIX
+    -lz$$SUFFIX \
+    -llzma$$SUFFIX
+
+#    -lsqlite$$SUFFIX \
+#    -lbotan$$SUFFIX \
 
 unix {
-QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
-QMAKE_CFLAGS += -pthread -fno-strict-aliasing
-QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -lbz2 -llzma -ldl
-LIBS += -lboost_system -lboost_filesystem
+    LIBS += -lbz2 -ldl
 }
 
 LIBS += \

@@ -3,8 +3,6 @@ QT       -= core gui
 TARGET = sqlite
 TEMPLATE = lib
 CONFIG += staticlib
-CONFIG += c++14
-
 
 !include(../../common.pri) {
     error(Could not find the common.pri file!)
@@ -12,7 +10,7 @@ CONFIG += c++14
 
 DEFINES += HAVE_STDINT_H HAVE_INTTYPES_H HAVE_UTIME HAVE_GETHOSTUUID
 
-unix:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
+*-g++:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
 win32-msvc*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
 
 LIBS += -lbotan$$SUFFIX -llzma
@@ -23,7 +21,8 @@ SOURCES += \
 
 HEADERS += \
     sqlite3.h \
-    sqlite3ext.h
+    sqlite3ext.h \
+    codec.h
 
 unix {
     target.path = /usr/lib

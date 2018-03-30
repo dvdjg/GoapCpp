@@ -44,11 +44,11 @@ SPEC=$$basename(QMAKESPEC)
 SPEC=$$replace(SPEC, win32, windows)-$$QMAKE_TARGET.arch
 
 LIBDIR=$$top_srcdir/lib
-static:DEFINES += STATIC
 staticlib {
-    DEFINES += STATIC
+    DEFINES += STATIC LZMA_API_STATIC
     DESTDIRCOMMON=$$LIBDIR
 } else {
+    static:DEFINES += STATIC LZMA_API_STATIC
     # DESTDIRCOMMON and dynamic libs goes to bin
     DESTDIRCOMMON=$$top_srcdir/bin
 }
@@ -56,6 +56,7 @@ staticlib {
 DESTDIR=$$DESTDIRCOMMON
 
 LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
+
 
 win32-msvc* {
     LIBPRE=
@@ -65,11 +66,30 @@ win32-msvc* {
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
     LIBS += \
-        -LF:/Programa/boost_1_66_0/stage/lib
-}
-unix {
+        -LF:/Programa/boost_1_66_0/stage/lib \
+         -lUser32 -lAdvapi32 -lws2_32
+    QMAKE_CXXFLAGS +=  -openmp
+    QMAKE_CFLAGS += -openmp
+} else:win32-g++ {
+    LIBPRE=lib
+    LIBPOST=.a
+    INCLUDEPATH += \
+        F:/Programa/boost_1_66_0 \
+        "D:/OneDrive/Programa/googletest/googletest/include" \
+        "D:/OneDrive/Programa/googletest/googlemock/include"
+    LIBS += \
+        -LF:/Programa/boost_1_66_0/stage/lib \
+         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 -lws2_32
+    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp
+    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp
+    QMAKE_LFLAGS  += -pthread -fopenmp
+} else:unix {
     LIBPRE=lib
     LIBPOST=.a
     INCLUDEPATH += /opt/arrayfire-3/include
-    LIBS += -L /opt/arrayfire-3/lib -laf
+    LIBS += -L /opt/arrayfire-3/lib -laf \
+        -lboost_system -lboost_filesystem
+    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp
+    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp
+    QMAKE_LFLAGS  += -pthread -fopenmp
 }

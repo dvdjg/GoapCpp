@@ -9,11 +9,11 @@ CONFIG -= qt app_bundle
     error(Could not find the common.pri file!)
 }
 
-!include(../../3rdparty/rpclib/rpclib.pri) {
+!include($$top_srcdir/3rdparty/rpclib/rpclib.pri) {
     error(Could not find the rpclib.pri file!)
 }
 
-!include(../../3rdparty/dependencies/dependencies.pri) {
+!include($$top_srcdir/3rdparty/dependencies/dependencies.pri) {
     error(Could not find the dependencies.pri file!)
 }
 
@@ -46,11 +46,7 @@ LIBS += \
     -lgmock-gtest$$SUFFIX
 
 unix {
-QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
-QMAKE_CFLAGS += -pthread -fno-strict-aliasing
-QMAKE_LFLAGS += -pthread -fopenmp
 } else:win32-msvc* {
 LIBS += \
-    -lUser32 -lAdvapi32
 }
 

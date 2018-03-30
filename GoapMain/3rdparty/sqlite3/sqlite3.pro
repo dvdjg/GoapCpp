@@ -13,23 +13,24 @@ SOURCES += \
     shell.c
 
 INCLUDEPATH += $$top_srcdir/3rdparty/sqlite
-DEPENDPATH += $$INCLUDEPATH
+DEPENDPATH += $$INCLUDEPATH \
+     $$top_srcdir/3rdparty/botan
 
+PRE_TARGETDEPS += \
+    $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
 
 LIBS += \
     -lsqlite$$SUFFIX \
     -lbotan$$SUFFIX \
-    -lz$$SUFFIX
+    -lz$$SUFFIX \
+    -llzma$$SUFFIX
 
 unix {
-QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing -fopenmp
-QMAKE_CFLAGS += -pthread -fno-strict-aliasing -fopenmp
-QMAKE_LFLAGS += -pthread -fopenmp
-LIBS +=  -lboost_system -lboost_filesystem
-LIBS += -lbz2 -llzma -ldl
+    LIBS += -lbz2 -ldl
+} else:*-g++ {
 } else:win32-msvc* {
-LIBS += -lUser32 -lAdvapi32
-QMAKE_CXXFLAGS += -openmp
-QMAKE_CFLAGS += -openmp
 }
 

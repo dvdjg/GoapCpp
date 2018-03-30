@@ -83,7 +83,7 @@
 #define BOTAN_TARGET_OS_HAS_THREADS
 #define BOTAN_TARGET_OS_HAS_VIRTUAL_LOCK
 
-#define BOTAN_TARGET_ARCH_IS_X86_64
+//#define BOTAN_TARGET_ARCH_IS_X86_64
 #define BOTAN_TARGET_SUPPORTS_AESNI
 #define BOTAN_TARGET_SUPPORTS_AVX2
 #define BOTAN_TARGET_SUPPORTS_BMI2
@@ -99,7 +99,7 @@
 #define BOTAN_TARGET_CPU_HAS_NATIVE_64BIT
 #define BOTAN_TARGET_UNALIGNED_MEMORY_ACCESS_OK 1
 
-#define BOTAN_BUILD_COMPILER_IS_MSVC
+//#define BOTAN_BUILD_COMPILER_IS_MSVC
 
 /*
 * Module availability definitions
@@ -203,6 +203,7 @@
 #define BOTAN_HAS_KEYPAIR_TESTING 20131128
 #define BOTAN_HAS_LION 20131128
 #define BOTAN_HAS_LOCKING_ALLOCATOR 20131128
+#define BOTAN_HAS_LZMA 20160412
 #define BOTAN_HAS_MAC 20150626
 #define BOTAN_HAS_MCEIES 20150706
 #define BOTAN_HAS_MCELIECE 20150922
@@ -625,6 +626,11 @@ Each read generates 32 bits of output
   #define BOTAN_PARALLEL_SYNC BOTAN_FORCE_SEMICOLON
 #endif
 
+#endif
+
+// DJG
+#ifdef BOTAN_TARGET_OS_IS_WINDOWS
+#include <winsock2.h>
 #endif
 
 namespace Botan {
@@ -18504,6 +18510,34 @@ signature_consistency_check(RandomNumberGenerator& rng,
    }
 
 }
+
+}
+
+
+namespace Botan {
+
+/**
+* LZMA Compression
+*/
+class BOTAN_DLL LZMA_Compression final : public Stream_Compression
+   {
+   public:
+      std::string name() const override { return "LZMA_Compression"; }
+
+   private:
+      Compression_Stream* make_stream(size_t level) const override;
+   };
+
+/**
+* LZMA Deccompression
+*/
+class BOTAN_DLL LZMA_Decompression final : public Stream_Decompression
+   {
+   public:
+      std::string name() const override { return "LZMA_Decompression"; }
+   private:
+      Compression_Stream* make_stream() const override;
+   };
 
 }
 

@@ -23,25 +23,23 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
+POSTLIBS = $$LIBS
 LIBS += \
-    -lGoapLib$$SUFFIX \
     -lsqlite$$SUFFIX \
     -lbotan$$SUFFIX \
-    -lz$$SUFFIX
+    -llzma$$SUFFIX \
+    -lz$$SUFFIX \
+    -lgmock-gtest$$SUFFIX \
+    $$POSTLIBS
+
+*win32*:LIBS += -lSecur32 -lCrypt32
 
 unix {
-QMAKE_CXXFLAGS += -pthread -fno-strict-aliasing
-QMAKE_CFLAGS += -pthread -fno-strict-aliasing
-QMAKE_LFLAGS += -pthread -fopenmp
-LIBS += -lbz2 -llzma -ldl
-LIBS +=  -lboost_system -lboost_filesystem
+    LIBS += -lbz2 -ldl
 } else:win32-msvc* {
-LIBS += \
-    -lUser32 -lAdvapi32
 }
 
-LIBS += \
-    -lgmock-gtest$$SUFFIX

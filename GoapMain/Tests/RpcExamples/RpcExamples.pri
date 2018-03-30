@@ -9,11 +9,11 @@ TEMPLATE = app
     error(Could not find the common.pri file!)
 }
 
-!include(../../3rdparty/rpclib/rpclib.pri) {
+!include($$top_srcdir/3rdparty/rpclib/rpclib.pri) {
     error(Could not find the rpclib.pri file!)
 }
 
-!include(../../3rdparty/dependencies/dependencies.pri) {
+!include($$top_srcdir/3rdparty/dependencies/dependencies.pri) {
     error(Could not find the dependencies.pri file!)
 }
 
