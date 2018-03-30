@@ -28,6 +28,12 @@ LIBS += \
     -lz$$SUFFIX \
     -llzma$$SUFFIX
 
+app.depends = \
+    sqlite$$SUFFIX \
+    botan$$SUFFIX \
+    z$$SUFFIX \
+    lzma$$SUFFIX
+
 unix {
     LIBS += -lbz2 -ldl
 } else:*-g++ {
