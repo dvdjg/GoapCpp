@@ -7,6 +7,9 @@
 #include <math.h>
 #include "half.h"
 
+namespace basicmath
+{
+
 // linear interpolate x in an array
 // inline
 float interp1(float x, const float a[], int n);
@@ -23,14 +26,14 @@ void interp2array(const float a[], int n, float b[], int m);
 
 // linear interpolate x in an array
 // inline
-float interp1hf(float x, const half a[], int n);
+float interp1(float x, const half a[], int n);
 // linear interpolate array a[] -> array b[]
-void inter1parrayhf(const half a[], int n, half b[], int m);
+void inter1parray(const half a[], int n, half b[], int m);
 //..............................................................................
 // quadratic interpolate x in an array
-float interp2hf(float x, const half a[], int n);
+float interp2(float x, const half a[], int n);
 // quadratic interpolate array a[] -> array b[]
-void interp2arrayhf(const half a[], int n, half b[], int m);
+void interp2array(const half a[], int n, half b[], int m);
 
 
 
@@ -39,14 +42,14 @@ void interp2arrayhf(const half a[], int n, half b[], int m);
 // inline
 half interp1(half x, const half a[], int n);
 // linear interpolate array a[] -> array b[]
-void inter1parray(const half a[], int n, half b[], int m);
+void inter1parrayh(const half a[], int n, half b[], int m);
 //..............................................................................
 // parabola through 3 points, -1 < x < 1
 half parabolah(half x, half f_1, half f0, half f1);
 // quadratic interpolate x in an array
 half interp2(half x, const half a[], int n);
 // quadratic interpolate array a[] -> array b[]
-void interp2array(const half a[], int n, half b[], int m);
+void interp2arrayh(const half a[], int n, half b[], int m);
 
 
 // http://stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
@@ -155,4 +158,5 @@ CosineDistance<OutputType, InputIterator> fnCosineDistance(InputIterator aBegin,
     return CosineDistance<OutputType, InputIterator>(aBegin, bBegin, n);
 }
 
+}
 #endif // BASICMATH_H

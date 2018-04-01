@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "basicmath.h"
 
+namespace basicmath
+{
 // linear interpolate x in an array
 // inline
 float interp1( float x, const float a[], int n )
@@ -15,7 +17,7 @@ float interp1( float x, const float a[], int n )
     return a[j] + (x - j) * (a[j+1] - a[j]);
 }
 
-float interp1hf( float x, const half a[], int n )
+float interp1( float x, const half a[], int n )
 {
     if( x <= 0 )  return a[0];
     if( x >= n - 1 )  return a[n-1];
@@ -32,11 +34,11 @@ void inter1parray( const float a[], int n, float b[], int m )
     }
 }
 
-void inter1parrayhf( const half a[], int n, half b[], int m )
+void inter1parray( const half a[], int n, half b[], int m )
 {
     float step = float( n - 1 ) / (m - 1);
     for( int j = 0; j < m; j ++ ){
-        b[j] = interp1hf( j*step, a, n );
+        b[j] = interp1( j*step, a, n );
     }
 }
 
@@ -61,10 +63,10 @@ float interp2( float x, const float a[], int n )
     return parabola( t, (a[j-1] + a[j]) / 2, a[j], (a[j] + a[j+1]) / 2 );
 }
 
-float interp2hf( float x, const half a[], int n )
+float interp2( float x, const half a[], int n )
 {
     if( x <= .5  ||  x >= n - 1.5 )
-        return interp1hf( x, a, n );
+        return interp1( x, a, n );
     int j = int( x + .5 );
     float t = 2 * (x - j);  // -1 .. 1
     return parabola( t, static_cast<float>(a[j-1] + a[j]) / 2, a[j], static_cast<float>(a[j] + a[j+1]) / 2 );
@@ -80,11 +82,11 @@ void interp2array( const float a[], int n, float b[], int m )
 }
 
 
-void interp2arrayhf( const half a[], int n, half b[], int m )
+void interp2array( const half a[], int n, half b[], int m )
 {
     float step = float( n - 1 ) / (m - 1);
     for( int j = 0; j < m; j ++ ){
-        b[j] = interp2hf( j*step, a, n );
+        b[j] = interp2( j*step, a, n );
     }
 }
 
@@ -100,7 +102,7 @@ half interp1( half x, const half a[], int n )
 }
 
     // linear interpolate array a[] -> array b[]
-void inter1parray( const half a[], int n, half b[], int m )
+void inter1parrayh( const half a[], int n, half b[], int m )
 {
     half step = half( n - 1 ) / (m - 1);
     for( int j = 0; j < m; j ++ ){
@@ -130,7 +132,7 @@ half interp2( half x, const half a[], int n )
 }
 
     // quadratic interpolate array a[] -> array b[]
-void interp2array( const half a[], int n, half b[], int m )
+void interp2arrayh( const half a[], int n, half b[], int m )
 {
     half step = half( n - 1 ) / (m - 1);
     for( int j = 0; j < m; j ++ ){
@@ -138,15 +140,26 @@ void interp2array( const half a[], int n, half b[], int m )
     }
 }
 
-std::size_t hash(const half * vec, std::size_t size)
+std::size_t hash(const unsigned short * vec, std::size_t size)
 {
   std::size_t seed = size;
   for(auto it = vec; it != vec+size; ++it) {
-    seed ^= it->bits() + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    seed ^= *it + 0x9e3779b9 + (seed << 6) + (seed >> 2);
   }
   return seed;
 }
 
+std::size_t hash(const half * vec, std::size_t size)
+{
+  const unsigned short * vecs = reinterpret_cast<const unsigned short *>(vec);
+  return hash(vecs, size);
+}
+
+std::size_t hash(const float * vec, std::size_t size)
+{
+  const unsigned short * vecs = reinterpret_cast<const unsigned short *>(vec);
+  return hash(vecs, size*2);
+}
 
 template<typename OutputType = float, typename InputIterator = half*>
 OutputType t_cosine_distance(InputIterator aBegin,
@@ -194,4 +207,6 @@ float cosine_distance(const half *a, const half *b, size_t n)
 {
     float dist = t_cosine_distance<float>(a, b, a+n);
     return dist; // 0 means are equal, 2 means are different
+}
+
 }

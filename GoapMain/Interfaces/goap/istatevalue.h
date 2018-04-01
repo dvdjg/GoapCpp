@@ -3,15 +3,23 @@
 #include <memory>
 #include <string>
 #include "common/irefcounter.h"
+#include "explicit_ptr.h"
 #include "half.h"
 
 namespace goap
 {
 class IStateValue;
-typedef std::shared_ptr<IStateValue> PtrIValue;
-typedef std::shared_ptr<const IStateValue> CPtrIValue;
+typedef explicit_ptr<IStateValue> PtrIValue;
+typedef explicit_ptr<const IStateValue> CPtrIValue;
 
-class IStateValue : public IRefCounter
+class IStringValue : public virtual IRefCounter
+{
+public:
+    virtual void fromString(const std::string &str) = 0;
+    virtual std::string toString() const = 0;
+};
+
+class IStateValue : public IStringValue
 {
 public:
     //virtual bool isNumeric() const = 0;
@@ -22,8 +30,7 @@ public:
     virtual void setAt(float idx, float value) = 0;
     virtual void interpolateFrom(const IStateValue *other) = 0;
     virtual float cosineDistance(const IStateValue *other) const = 0;
-    virtual void fromString(const std::u16string &str) = 0;
-    virtual std::u16string toString() const = 0;
+
     virtual std::size_t hash() const;
 
     inline float operator[](float idx) const

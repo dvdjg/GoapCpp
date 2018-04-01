@@ -51,17 +51,17 @@ std::pair<PtrIValue, PtrIValue> State::at(intptr_t idx) const
     return std::make_pair(it->first, it->second);
 }
 
-void State::remove(const std::u16string &str)
+void State::remove(const std::string &str)
 {
     remove(PtrIValue(new StateValue(str)));
 }
 
-void State::setAt(const std::u16string &str, const PtrIValue &value)
+void State::setAt(const std::string &str, const PtrIValue &value)
 {
     setAt(PtrIValue(new StateValue(str)), value);
 }
 
-PtrIValue State::at(const std::u16string &str) const
+PtrIValue State::at(const std::string &str) const
 {
     return at(PtrIValue(new StateValue(str)));
 }

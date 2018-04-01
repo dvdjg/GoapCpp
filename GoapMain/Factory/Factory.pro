@@ -8,11 +8,12 @@ QT       -= core gui
 
 TARGET = Factory
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
+INCLUDEPATH += \
+    F:/Programa/boost_1_66_0
 
 HEADERS += \
     factory.h \
     hasmember.h \
     instancedeleter.h \
-    refcounter.h \
     reuseobjectpool.h
 

@@ -78,7 +78,7 @@ namespace fact
 template<typename T>
 struct SmartPointerChooser
 {
-#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
+#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
     typedef typename std::conditional<has_intrusive_ptr<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
 #else
     typedef std::shared_ptr<T> type;
@@ -334,7 +334,7 @@ inline void copyDefault(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
     left = right;
 }
 
-#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
+#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
 template<typename T>
 inline void copyDefault(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
 {
@@ -349,7 +349,7 @@ inline void copySingleton(std::shared_ptr<T> &left, std::shared_ptr<T> &right)
     left = right;
 }
 
-#if defined(HAS_BOOST_SMART_PTR_INTRUSIVE_PTR)
+#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
 template<typename T>
 inline void copySingleton(boost::intrusive_ptr<T> &left, std::shared_ptr<T> &right)
 {

@@ -23,6 +23,8 @@ SOURCES += goaplibrary.cpp \
     state.cpp
 
 HEADERS += goaplibrary.h \
+    explicit_ptr.h \
+    refcounter.h \
     statevalue.h \
     basicmath.h \
     memory.h \

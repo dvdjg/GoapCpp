@@ -9,7 +9,7 @@ QT       -= core gui
 TARGET = Interfaces
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
 
-INCLUDEPATH=
+INCLUDEPATH=../GoapLibrary ../Factory
 
 HEADERS += \
     common/iroot.h \
