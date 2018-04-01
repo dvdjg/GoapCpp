@@ -10,20 +10,33 @@ CONFIG -= qt
 }
 
 SOURCES += \
+    factory_registrations.cpp \
+    tst_goap.cpp \
     tst_factory_all.cpp \
     tst_factory_nocount.cpp \
     main.cpp \
     tst_signals.cpp
 
-INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp
+INCLUDEPATH += \
+    $$top_srcdir/3rdparty/gmock-gtest \
+    $$top_srcdir/Factory \
+    $$top_srcdir/Interfaces \
+    $$top_srcdir/GoapLibrary \
+    $$top_srcdir/3rdparty/half \
+    $$top_srcdir/3rdparty/sqlite_modern_cpp
+
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}half$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 LIBS += \
-    -lGoapLib$$SUFFIX
+    -lhalf$$SUFFIX \
+    -lGoapLibrary$$SUFFIX
+
+DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
 
 unix {
 } else:win32-msvc* {

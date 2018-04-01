@@ -3,10 +3,9 @@
 #include <functional>
 #include <future>
 #include <mutex>
-#include <boost/intrusive_ptr.hpp>
+#include "refcounter.h"
 #include "factory.h"
 #include "irefcounter.h"
-#include "refcounter.h"
 #include "reuseobjectpool.h"
 
 

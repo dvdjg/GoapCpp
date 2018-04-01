@@ -11,7 +11,9 @@
 #include <mutex>
 #include "hasmember.h"
 #include "instancedeleter.h"
-
+#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
+#include <boost/intrusive_ptr.hpp>
+#endif
 
 namespace goap
 {

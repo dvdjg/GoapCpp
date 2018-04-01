@@ -6,8 +6,8 @@ SUBDIRS += \
     Interfaces \
     GoapLibrary \
     GoapApp \
-    GoapLib \
     DistributedPersistence \
     Tests
 
+#    GoapLib \
 

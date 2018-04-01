@@ -31,7 +31,7 @@ public:
     virtual void interpolateFrom(const IStateValue *other) = 0;
     virtual float cosineDistance(const IStateValue *other) const = 0;
 
-    virtual std::size_t hash() const;
+    virtual std::size_t hash() const = 0;
 
     inline float operator[](float idx) const
     {
