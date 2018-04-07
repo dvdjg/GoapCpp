@@ -29,7 +29,7 @@ public:
     std::string toString() const override;
     std::size_t hash() const override;
 
-    PtrIValue clone() const override;
+    PtrIStateValue clone() const override;
 };
 }
 #endif // STATEVALUE_H

@@ -1,5 +1,5 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef GOAPMEMORY_H
+#define GOAPMEMORY_H
 
 #include "refcounter.h"
 #include "goap/imemory.h"

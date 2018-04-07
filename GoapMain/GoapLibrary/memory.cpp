@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "goapmemory.h"
 namespace goap
 {
 

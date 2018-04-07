@@ -2,6 +2,7 @@
 #define EXPLICIT_PTR_H
 
 #include <boost/intrusive_ptr.hpp>
+#include <memory>
 #include "hasmember.h"
 
 namespace goap

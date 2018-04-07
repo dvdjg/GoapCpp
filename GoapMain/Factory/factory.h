@@ -205,6 +205,12 @@ public:
     typename SmartPointerChooser<Interface>::type
     create(Key const &key, Args && ... args) const;
 
+    template<typename Interface = Base>
+    typename SmartPointerChooser<Interface>::type
+    create() const {
+        return create<Interface>({});
+    }
+
     template<typename Interface = Base, typename ... Args>
     std::map<Key, typename SmartPointerChooser<Interface>::type>
     createAll(Args && ... args) const;

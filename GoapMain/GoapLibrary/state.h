@@ -13,24 +13,24 @@ class State : public virtual IState
     IMPLEMENT_REFCOUNTER()
 
 protected:
-    std::unordered_map<PtrIValue, PtrIValue> data;
+    std::unordered_map<PtrIStateValue, PtrIStateValue> data;
     float coste = 0;
 
 public:
     State();
 
-    void remove(const PtrIValue &key) override;
-    PtrIValue at(const PtrIValue &key) const override;
-    void setAt(const PtrIValue &key, const PtrIValue &value) override;
+    void remove(const PtrIStateValue &key) override;
+    PtrIStateValue at(const PtrIStateValue &key) const override;
+    void setAt(const PtrIStateValue &key, const PtrIStateValue &value) override;
     size_t size() const override;
     void remove(const std::string &str) override;
-    void setAt(const std::string &str, const PtrIValue &value) override;
-    PtrIValue at(const std::string &str) const override;
+    void setAt(const std::string &str, const PtrIStateValue &value) override;
+    PtrIStateValue at(const std::string &str) const override;
     bool equals(const IState *other) const override;
     float cost() const override;
     void setCost(float c) override;
 
-    std::pair<PtrIValue, PtrIValue> at(intptr_t idx) const override;
+    std::pair<PtrIStateValue, PtrIStateValue> at(intptr_t idx) const override;
 };
 
 }

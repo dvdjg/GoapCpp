@@ -27,8 +27,11 @@ HEADERS += goaplibrary.h \
     refcounter.h \
     statevalue.h \
     basicmath.h \
-    memory.h \
-    state.h
+    state.h \
+    imemory.h \
+    imemoryvalue.h \
+    ireadstate.h \
+    goapmemory.h
 
 unix {
     target.path = /usr/lib
