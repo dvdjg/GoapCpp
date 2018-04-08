@@ -54,6 +54,7 @@ void interp2arrayh(const half a[], int n, half b[], int m);
 
 // http://stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
 std::size_t hash(const half *vec, std::size_t size);
+std::size_t hash(const float *vec, std::size_t size);
 
 
 float cosine_distance(const half *a, const half *b, size_t n);

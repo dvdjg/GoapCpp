@@ -21,12 +21,12 @@ HEADERS += \
 unix:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
 win32-msvc*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
 
-INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLib $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
+INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLibrary $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}GoapLib$$SUFFIX$$LIBPOST \
+    $$top_srcdir/lib/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \

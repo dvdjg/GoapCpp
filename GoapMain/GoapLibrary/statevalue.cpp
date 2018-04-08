@@ -6,6 +6,7 @@
 namespace goap
 {
 
+using namespace std;
 using namespace basicmath;
 
 StateValue::StateValue()
@@ -45,7 +46,7 @@ void StateValue::fromString(const std::string &str)
 
 void StateValue::interpolateFrom(const IStateValue *other)
 {
-    auto o = dynamic_cast<const StateValue *>(other);
+    auto o = dynamic_cast<const StateValue *>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
     if (!o)
     {
         throw new std::runtime_error(__func__);
@@ -88,9 +89,9 @@ std::size_t StateValue::hash() const
     return basicmath::hash(&data[0], data.size());
 }
 
-PtrIStateValue StateValue::clone() const
+IClonable *StateValue::clone() const
 {
-    return PtrIStateValue(new StateValue(*this));
+    return new StateValue(*this);
 }
 
 }

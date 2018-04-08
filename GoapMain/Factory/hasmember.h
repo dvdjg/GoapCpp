@@ -32,7 +32,7 @@ namespace goap
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \
     }
 
-#define HAS_GLOBAL(member_type, member_call, templ_postfix) \
+#define HAS_GLOBAL(member_type, global_call, templ_postfix) \
     template <typename T> \
     class has_global_##templ_postfix \
     { \
@@ -40,7 +40,7 @@ namespace goap
         typedef long two; \
         \
         template <typename C> static two test(...); \
-        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(member_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
+        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(global_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
     public: \
         enum { evalue = sizeof(test<T>(0)) == sizeof(char) }; \
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \

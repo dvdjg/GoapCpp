@@ -23,14 +23,10 @@ SOURCES += goaplibrary.cpp \
     state.cpp
 
 HEADERS += goaplibrary.h \
-    explicit_ptr.h \
     refcounter.h \
     statevalue.h \
     basicmath.h \
     state.h \
-    imemory.h \
-    imemoryvalue.h \
-    ireadstate.h \
     goapmemory.h
 
 unix {

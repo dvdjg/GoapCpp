@@ -1,5 +1,6 @@
 #ifndef STATEVALUE_H
 #define STATEVALUE_H
+
 #include <vector>
 #include <memory>
 #include "refcounter.h"
@@ -7,12 +8,13 @@
 
 namespace goap
 {
+
 class StateValue : public virtual IStateValue
 {
     IMPLEMENT_REFCOUNTER()
 
 protected:
-    std::vector<half> data;
+    std::vector<float> data;
 
 public:
     StateValue();
@@ -24,12 +26,16 @@ public:
     float at(float idx) const override;
     void setAt(float idx, float value) override;
     void fromString(const std::string &str) override;
-    void interpolateFrom(const IStateValue * other) override;
-    float cosineDistance(const IStateValue * other) const override;
+    void interpolateFrom(const IStateValue *other) override;
+    float cosineDistance(const IStateValue *other) const override;
     std::string toString() const override;
     std::size_t hash() const override;
 
-    PtrIStateValue clone() const override;
+    IClonable *clone() const override;
 };
+
+typedef boost::intrusive_ptr<StateValue> PtrStateValue;
+typedef boost::intrusive_ptr<const StateValue> CPtrStateValue;
+
 }
 #endif // STATEVALUE_H

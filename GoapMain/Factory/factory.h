@@ -101,6 +101,7 @@ struct factoryCreate<Base, Class, FactoryType::Default>
 {
     typedef std::shared_ptr<Base> smart_pointer;
     inline static void dumbDeleter(Base *) {}
+
     template<typename F, typename C = Class, typename ... CallArgs>
     static typename std::enable_if<has_intrusive_ptr<C>::value, smart_pointer>::type
     getInstance(const F &func, CallArgs && ... args)
@@ -189,13 +190,13 @@ template<typename Base, typename Key = std::string>
 class Factory : public Base
 {
 public:
-    typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
+    //typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
 
-    static factory_pointer &singleton()
+    static Factory<Base, Key> *singleton()
     {
-        static factory_pointer factory{new Factory<Base, Key>};
-        return factory;
+        static Factory<Base, Key> factory;
+        return &factory;
     }
 
     template<typename Interface = Base, typename ... Args>

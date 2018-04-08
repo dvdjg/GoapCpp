@@ -14,6 +14,7 @@ INCLUDEPATH=../GoapLibrary ../Factory
 HEADERS += \
     common/iroot.h \
     common/irefcounter.h \
+    goap/explicit_ptr.h \
     goap/imemory.h \
     goap/imemoryvalue.h \
     goap/ireadstate.h \

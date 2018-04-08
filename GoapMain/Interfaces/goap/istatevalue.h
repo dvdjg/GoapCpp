@@ -1,15 +1,13 @@
 #ifndef ISTATEVALUE_H
 #define ISTATEVALUE_H
-#include <memory>
+
 #include <string>
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
 
 namespace goap
 {
-class IStateValue;
-typedef explicit_ptr<IStateValue> PtrIStateValue;
-typedef explicit_ptr<const IStateValue> CPtrIStateValue;
+//DECLARE_INTRUSIVE_PTR(IStateValue)
 
 class IStringValue : public virtual IRefCounter
 {
@@ -18,11 +16,16 @@ public:
     virtual std::string toString() const = 0;
 };
 
-class IStateValue : public IStringValue
+class IClonable : public virtual IRefCounter
+{
+public:
+    virtual IClonable* clone() const = 0;
+};
+
+class IStateValue : public IStringValue, public IClonable
 {
 public:
     //virtual bool isNumeric() const = 0;
-    virtual PtrIStateValue clone() const = 0;
     virtual std::size_t size() const = 0; ///< From 0 to 1000
     virtual void resize(std::size_t len) = 0;
     virtual float at(float idx = 0) const = 0;
@@ -38,6 +41,9 @@ public:
     }
     //virtual float & operator[](float idx) = 0;
 };
+
+typedef explicit_ptr<IStateValue> PtrIStateValue;
+typedef explicit_ptr<const IStateValue> CPtrIStateValue;
 }
 
 namespace std
