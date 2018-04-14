@@ -1,13 +1,16 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    GlooxTest \
     FactoryTest \
     DataTest \
-    ArrayFireTest \
     BotanTest \
     RpcTest \
     RpcExamples
+
+!win32-g++:SUBDIRS += ArrayFireTest
+
+# Very slow compilation
+#    GlooxTest \
 
 #    RpcTest \
 #    MsgPackTest \

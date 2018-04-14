@@ -30,6 +30,8 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
+POST_LIBS = $$LIBS
+LIBS =
 win32-* {
     INCLUDEPATH += \
         "F:/Program Files/ArrayFire/v3/include"
@@ -52,3 +54,5 @@ unix {
 
 LIBS += \
     -lgmock-gtest$$SUFFIX
+
+LIBS += $$POST_LIBS

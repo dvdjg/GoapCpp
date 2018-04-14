@@ -28,6 +28,10 @@ LIBS += \
     -lz$$SUFFIX \
     -llzma$$SUFFIX
 
+win32-g++:LIBS += \
+         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 \
+         -lUser32 -lAdvapi32 -lws2_32
+
 app.depends = \
     sqlite$$SUFFIX \
     botan$$SUFFIX \

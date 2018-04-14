@@ -3,9 +3,9 @@
 #include <functional>
 #include <future>
 #include <mutex>
+#include "common/irefcounter.h"
 #include "refcounter.h"
 #include "factory.h"
-#include "irefcounter.h"
 #include "reuseobjectpool.h"
 
 
@@ -14,14 +14,14 @@ using namespace goap;
 namespace goap_boost
 {
 
-class IStringData : virtual public IRefCounter
+class IStringData : public IRefCounter
 {
 public:
     virtual const std::string &getData() const = 0;
     virtual void setData(const std::string &getData) = 0;
 };
 
-class IStringDataFromRoot : virtual public IRoot
+class IStringDataFromRoot : public IRoot
 {
 public:
     virtual const std::string &getData() const = 0;
@@ -46,7 +46,7 @@ public:
     };
 */
 
-class NonCounted : virtual public IStringDataFromRoot
+class NonCounted : public IStringDataFromRoot
 {
     std::string _data;
 public:
@@ -82,7 +82,7 @@ NonCounted *createCountedFromRoot(const std::string &str)
 }
 
 
-class Counted : virtual public IStringData
+class Counted : public IStringData
 {
     IMPLEMENT_REFCOUNTER()
 

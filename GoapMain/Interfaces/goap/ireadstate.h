@@ -8,7 +8,7 @@
 namespace goap
 {
 
-class IState : public virtual IRefCounter
+class IState : public IRefCounter
 {
 public:
     virtual void remove(const PtrIStateValue &key) = 0;

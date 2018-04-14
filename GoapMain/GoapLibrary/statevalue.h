@@ -9,7 +9,7 @@
 namespace goap
 {
 
-class StateValue : public virtual IStateValue
+class StateValue : public IStateValue
 {
     IMPLEMENT_REFCOUNTER()
 

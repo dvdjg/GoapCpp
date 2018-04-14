@@ -10,8 +10,8 @@ CONFIG += staticlib
 
 DEFINES += HAVE_STDINT_H HAVE_INTTYPES_H HAVE_UTIME HAVE_GETHOSTUUID
 
-*-g++:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
-win32-msvc*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
+win32-*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
+else:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
 
 LIBS += -lbotan$$SUFFIX -llzma
 

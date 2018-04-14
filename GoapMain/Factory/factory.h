@@ -28,6 +28,8 @@ void static_assert_internal()
 template<typename T, typename ... Args>
 T *defaultDelegate(Args ... args)
 {
+    //static T v(std::forward<Args>(args)...);
+    //return &v;
     return new T(std::forward<Args>(args)...);
 }
 
@@ -390,8 +392,9 @@ Factory<Base, Key>::create(Key const &key, Args &&... args) const
         return ret;
     }
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
-    FactoryType factoryType = pWrapper->getFactoryType();
+    volatile auto pRaw = smartInstance.get();
     auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
+    FactoryType factoryType = pWrapper->getFactoryType();
     if (factoryType == FactoryType::Default)
     {
         copyDefault(ret, ptr);

@@ -10,12 +10,12 @@ CONFIG -= qt
 }
 
 SOURCES += \
-    factory_registrations.cpp \
-    tst_goap.cpp \
     tst_factory_all.cpp \
     tst_factory_nocount.cpp \
     main.cpp \
-    tst_signals.cpp
+    tst_signals.cpp \
+    factory_registrations.cpp \
+    tst_goap.cpp
 
 INCLUDEPATH += \
     $$top_srcdir/3rdparty/gmock-gtest \
@@ -32,17 +32,12 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
+POSTLIBS = $$LIBS
 LIBS += \
+    -lGoapLibrary$$SUFFIX \
     -lhalf$$SUFFIX \
-    -lGoapLibrary$$SUFFIX
+    -lgmock-gtest$$SUFFIX \
+    $$POSTLIBS
 
 DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
 
-unix {
-} else:win32-msvc* {
-}
-
-LIBS += \
-    -lgmock-gtest$$SUFFIX
-
-# win32-msvc*:LIBS += -lbotan$$SUFFIX

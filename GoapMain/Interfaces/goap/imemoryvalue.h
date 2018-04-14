@@ -17,7 +17,7 @@ enum MemoryValueType
     MVAL_PATH
 };
 
-class IMemoryValue : public virtual IRefCounter
+class IMemoryValue : public IRefCounter
 {
 public:
     virtual MemoryValueType getType() const = 0;

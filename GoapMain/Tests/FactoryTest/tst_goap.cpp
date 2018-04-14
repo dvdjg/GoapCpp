@@ -43,15 +43,15 @@ protected:
 
 auto &factory = *Factory<IRoot>::singleton();
 
-void testMe(IRefCounter* p) {
+void testMe(IRefCounter* ) {
 
 }
 
 TEST_F(GoapTest, Intefaces)
 {
-    IStateValue* pSV = static_cast<IStateValue*>(0);
-    IRefCounter* pRC = pSV;
-    testMe(pSV);
+//    IStateValue* pSV = static_cast<IStateValue*>(0);
+//    IRefCounter* pRC = pSV;
+//    testMe(pSV);
     auto bConv1 = std::is_base_of<IRefCounter, IStateValue>::value;
     auto bConv2 = std::is_base_of<IStringValue, IStateValue>::value;
     auto bConv3 = std::is_base_of<IRefCounter, IStringValue>::value;

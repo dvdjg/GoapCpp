@@ -40,13 +40,12 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}dependencies$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
+POSTLIBS = $$LIBS
 LIBS += \
     -lrpc$$SUFFIX \
     -ldependencies$$SUFFIX \
-    -lgmock-gtest$$SUFFIX
+    -lgmock-gtest$$SUFFIX \
+    $$POSTLIBS
+win32-g++:LIBS += -lMswsock
 
-unix {
-} else:win32-msvc* {
-LIBS += \
-}
 

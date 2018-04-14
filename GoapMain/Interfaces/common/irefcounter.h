@@ -1,13 +1,13 @@
 #ifndef IREFCOUNTER_H
 #define IREFCOUNTER_H
 
+#include <utility>
 #include "iroot.h"
-//#include <utility>
 
 
 namespace goap
 {
-class IRefCounter;
+
 /**
     @brief The IRefCounter class
     The object implementing this interface has an atomic reference counter.
@@ -84,13 +84,15 @@ protected:
 //  static B* Check (const volatile B*);
 //  static char Check(const volatile void*);
 
-//  static const bool value = (sizeof(Check(static_cast<Child *>(0))) == sizeof(B*));
+//  static const bool value = (sizeof(Check(static_cast<Child<D> *>(0))) == sizeof(B*));
 //};
 
 using namespace std;
 
+template< class From, class To > using isconvertible = std::is_convertible< From, To >;
+
 template<typename T>
-inline typename std::enable_if <is_base_of<IRefCounter, T>::value, void>::type
+inline typename std::enable_if <isconvertible<T*, IRefCounter*>::value, void>::type
 intrusive_ptr_add_ref(const T *t)
 {
     intrusive_ptr_add_ref(static_cast<const IRefCounter*>(t));
@@ -103,7 +105,7 @@ inline void intrusive_ptr_add_ref(const IRefCounter *t)
 }
 
 template<typename T>
-inline typename std::enable_if <is_base_of<IRefCounter, T>::value, void>::type
+inline typename std::enable_if <isconvertible<T*, IRefCounter*>::value, void>::type
 intrusive_ptr_release(T *t)
 {
     intrusive_ptr_release(static_cast<IRefCounter*>(t));

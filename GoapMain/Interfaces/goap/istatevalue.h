@@ -9,6 +9,12 @@ namespace goap
 {
 //DECLARE_INTRUSIVE_PTR(IStateValue)
 
+class IClonable : public virtual IRefCounter
+{
+public:
+    virtual IClonable* clone() const = 0;
+};
+
 class IStringValue : public virtual IRefCounter
 {
 public:
@@ -16,13 +22,7 @@ public:
     virtual std::string toString() const = 0;
 };
 
-class IClonable : public virtual IRefCounter
-{
-public:
-    virtual IClonable* clone() const = 0;
-};
-
-class IStateValue : public IStringValue, public IClonable
+class IStateValue : public IStringValue, public IClonable, public virtual IRefCounter
 {
 public:
     //virtual bool isNumeric() const = 0;

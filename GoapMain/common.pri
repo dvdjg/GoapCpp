@@ -79,9 +79,10 @@ win32-msvc* {
         "D:/OneDrive/Programa/googletest/googlemock/include"
     LIBS += \
         -LF:/Programa/boost_1_66_0/stage/lib \
-         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 -lws2_32
-    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp
-    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp
+         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 \
+         -lUser32 -lAdvapi32 -lws2_32
+    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
+    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
 } else:unix {
     LIBPRE=lib
@@ -89,7 +90,7 @@ win32-msvc* {
     INCLUDEPATH += /opt/arrayfire-3/include
     LIBS += -L /opt/arrayfire-3/lib -laf \
         -lboost_system -lboost_filesystem
-    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp
-    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp
+    QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
+    QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
 }

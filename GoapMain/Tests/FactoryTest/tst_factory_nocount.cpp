@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "iroot.h"
+#include "common/iroot.h"
 #include "factory.h"
 #include "reuseobjectpool.h"
 
@@ -110,17 +110,18 @@ TEST_F(FactoryNoCountTest, Test1)
     factory.inscribe<FactoryType::Default, IStringDataFromRoot, NonCounted, int>("Delegate");
 
     {
-        auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
+        auto smartCounted1 = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
+        if (smartCounted1) std::cerr << "[         1] " << smartCounted1->getData() << std::endl;
         auto smartCounted2 = factory.create<IStringDataFromRoot>({}, 123);
-
+        if (smartCounted2) std::cerr << "[         2] " << smartCounted2->getData() << std::endl;
         auto smartCounted3 = factory.create<IStringDataFromRoot>("Singleton");
+        if (smartCounted3) std::cerr << "[         3] " << smartCounted3->getData() << std::endl;
         auto smartCounted4 = factory.create<IStringDataFromRoot>("Singleton");
+        if (smartCounted4) std::cerr << "[         4] " << smartCounted4->getData() << std::endl;
         auto smartCounted5 = factory.create<IStringDataFromRoot, const std::string &>("Delegate", "Hi");
+        if (smartCounted5) std::cerr << "[         5] " << smartCounted5->getData() << std::endl;
         auto smartCounted6 = factory.create<IStringDataFromRoot>("Delegate", 12345678);
-        if (smartCounted)
-        {
-            std::cerr << "[          ] " << smartCounted->getData() << std::endl;
-        }
+        if (smartCounted6) std::cerr << "[         6] " << smartCounted6->getData() << std::endl;
     }
 
     typedef RecyclableWrapper<NonCounted> RecyclableNonCounted;
@@ -136,9 +137,9 @@ TEST_F(FactoryNoCountTest, Test1)
         auto fromPool1(RecyclableNonCounted::createFromPool());
         auto fromPool2(RecyclableNonCounted::createFromPool());
         auto fromPool3(RecyclableNonCounted::createFromPool());
-        std::cerr << "[          ] " << fromPool1->getData() << std::endl;
-        std::cerr << "[          ] " << fromPool2->getData() << std::endl;
-        std::cerr << "[          ] " << fromPool3->getData() << std::endl;
+        std::cerr << "[        p1] " << fromPool1->getData() << std::endl;
+        std::cerr << "[        p2] " << fromPool2->getData() << std::endl;
+        std::cerr << "[        p3] " << fromPool3->getData() << std::endl;
     }
     factory.inscribe<FactoryType::Default, IStringDataFromRoot>([]()
     {
@@ -152,7 +153,10 @@ TEST_F(FactoryNoCountTest, Test1)
         fromPool2->setData("FactoryPooledFromRoot2");
         fromPool3->setData("FactoryPooledFromRoot3");
     }
-    auto created = factory.createAll<IStringDataFromRoot, const std::string &>("Datos");
+    auto createdMap = factory.createAll<IStringDataFromRoot, const std::string &>("Datos");
+    for (auto created : createdMap) {
+        std::cerr << "[       Map] " << created.first << " -> " << created.second->getData() << std::endl;
+    }
     std::cerr << "[          ] " << "Cleanup" << std::endl;
     RecyclableNonCounted::getPool()->clear();
     std::cerr << "[          ] " << "RecyclableNonCounted: " << RecyclableNonCounted::getPool()->avoidedAllocations() << std::endl;

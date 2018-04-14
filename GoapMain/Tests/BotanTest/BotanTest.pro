@@ -18,8 +18,8 @@ SOURCES += \
 HEADERS += \
     tests.h
 
-unix:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
-win32-msvc*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
+win32-*:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_msvc
+else:INCLUDEPATH += $$top_srcdir/3rdparty/botan/build_gcc
 
 INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcdir/Interfaces $$top_srcdir/GoapLibrary $$top_srcdir/3rdparty/sqlite_modern_cpp $$top_srcdir/3rdparty/sqlite
 DEPENDPATH += $$INCLUDEPATH
@@ -32,12 +32,16 @@ PRE_TARGETDEPS += \
     $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
     $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
-LIBS += \
+POST_LIBS = $$LIBS
+
+LIBS = \
     -lbotan$$SUFFIX \
     -lsqlite$$SUFFIX \
     -lGoapLib$$SUFFIX \
     -lz$$SUFFIX \
     -llzma$$SUFFIX
+
+LIBS += $$POST_LIBS
 
 unix {
 LIBS += -lbz2 -ldl
