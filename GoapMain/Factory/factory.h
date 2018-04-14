@@ -195,10 +195,10 @@ public:
     //typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
     Factory() {}
 
-    static Factory<Base, Key> *singleton()
+    static Factory<Base, Key> &singleton()
     {
         static Factory<Base, Key> factory;
-        return &factory;
+        return factory;
     }
 
     template<typename Interface = Base, typename ... Args>
@@ -392,7 +392,6 @@ Factory<Base, Key>::create(Key const &key, Args &&... args) const
         return ret;
     }
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
-    volatile auto pRaw = smartInstance.get();
     auto ptr = std::dynamic_pointer_cast<Interface>(smartInstance);
     FactoryType factoryType = pWrapper->getFactoryType();
     if (factoryType == FactoryType::Default)

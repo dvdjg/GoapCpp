@@ -44,9 +44,9 @@ void StateValue::fromString(const std::string &str)
     std::copy(str.begin(), str.end(), std::back_inserter(data));
 }
 
-void StateValue::interpolateFrom(const IStateValue *other)
+void StateValue::interpolateFrom(IStateValue::CPtr other)
 {
-    auto o = dynamic_cast<const StateValue *>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
+    auto o = dynamic_pointer_cast<const StateValue>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
     if (!o)
     {
         throw new std::runtime_error(__func__);
@@ -58,9 +58,9 @@ void StateValue::interpolateFrom(const IStateValue *other)
     }
 }
 
-float StateValue::cosineDistance(const IStateValue *other) const
+float StateValue::cosineDistance(IStateValue::CPtr other) const
 {
-    auto o = dynamic_cast<const StateValue *>(other);
+    auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o)
     {
         throw new std::runtime_error(__func__);
@@ -89,7 +89,7 @@ std::size_t StateValue::hash() const
     return basicmath::hash(&data[0], data.size());
 }
 
-IClonable *StateValue::clone() const
+IClonable::Ptr StateValue::clone() const
 {
     return new StateValue(*this);
 }

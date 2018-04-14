@@ -57,8 +57,7 @@ class FactoryNoCountTest : public ::testing::Test
 {
 
 public:
-    FactoryNoCountTest()
-    {
+    FactoryNoCountTest() {
     }
 protected:
     // Per-test-case set-up.
@@ -88,7 +87,7 @@ using namespace goap_noboost;
 
 TEST_F(FactoryNoCountTest, Test1)
 {
-    auto &factory = *Factory<IRoot>::singleton();
+    Factory<IRoot> factory;
 
     factory.inscribe<FactoryType::Singleton, IStringDataFromRoot>([]()
     {

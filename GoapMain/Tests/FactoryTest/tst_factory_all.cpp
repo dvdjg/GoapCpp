@@ -152,7 +152,7 @@ using namespace goap_boost;
 
 TEST_F(FactoryAllTest, Test1)
 {
-    auto &factory = *Factory<IRoot>::singleton();
+    Factory<IRoot> factory;
 
     auto lstr = [](const std::string & str)
     {
@@ -293,7 +293,7 @@ TEST_F(FactoryAllTest, Test1)
     EXPECT_TRUE(true);
 }
 
-TEST_F(FactoryAllTest, Test2)
+TEST_F(FactoryAllTest, Futures)
 {
     std::mutex mtx;
     std::cout << "Main thread id: " << std::this_thread::get_id()

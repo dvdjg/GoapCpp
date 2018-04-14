@@ -3,8 +3,7 @@
 
 using namespace goap;
 
-void registration()
+void registration(Factory<IRoot> &factory)
 {
-    auto &factory = *Factory<IRoot>::singleton();
     factory.inscribe<FactoryType::Default, IStateValue, StateValue>();
 }

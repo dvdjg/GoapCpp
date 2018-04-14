@@ -16,7 +16,10 @@ class StateValue : public IStateValue
 protected:
     std::vector<float> data;
 
-public:
+public:    
+    typedef explicit_ptr<StateValue> Ptr;
+    typedef explicit_ptr<const StateValue> CPtr;
+
     StateValue();
     StateValue(const StateValue & other);
     StateValue(const std::string &str);
@@ -26,16 +29,13 @@ public:
     float at(float idx) const override;
     void setAt(float idx, float value) override;
     void fromString(const std::string &str) override;
-    void interpolateFrom(const IStateValue *other) override;
-    float cosineDistance(const IStateValue *other) const override;
+    void interpolateFrom(IStateValue::CPtr other) override;
+    float cosineDistance(IStateValue::CPtr other) const override;
     std::string toString() const override;
     std::size_t hash() const override;
 
-    IClonable *clone() const override;
+    IClonable::Ptr clone() const override;
 };
-
-typedef boost::intrusive_ptr<StateValue> PtrStateValue;
-typedef boost::intrusive_ptr<const StateValue> CPtrStateValue;
 
 }
 #endif // STATEVALUE_H

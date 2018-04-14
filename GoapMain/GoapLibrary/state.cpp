@@ -9,17 +9,17 @@ State::State()
 {
 }
 
-void State::remove(const PtrIStateValue &key)
+void State::remove(const IStateValue::Ptr &key)
 {
     data.erase(key);
 }
 
-PtrIStateValue State::at(const PtrIStateValue &key) const
+IStateValue::Ptr State::at(const IStateValue::Ptr &key) const
 {
     return data.at(key);
 }
 
-void State::setAt(const PtrIStateValue &key, const PtrIStateValue &value)
+void State::setAt(const IStateValue::Ptr &key, const IStateValue::Ptr &value)
 {
     data[key] = value;
 }
@@ -45,7 +45,7 @@ void State::setCost(float c)
     coste = c;
 }
 
-std::pair<PtrIStateValue, PtrIStateValue> State::at(intptr_t idx) const
+std::pair<IStateValue::Ptr, IStateValue::Ptr> State::at(intptr_t idx) const
 {
     auto it = std::next(data.begin(), idx);
     return std::make_pair(it->first, it->second);
@@ -53,17 +53,17 @@ std::pair<PtrIStateValue, PtrIStateValue> State::at(intptr_t idx) const
 
 void State::remove(const std::string &str)
 {
-    remove(PtrIStateValue(new StateValue(str)));
+    remove(IStateValue::Ptr(new StateValue(str)));
 }
 
-void State::setAt(const std::string &str, const PtrIStateValue &value)
+void State::setAt(const std::string &str, const IStateValue::Ptr &value)
 {
-    setAt(PtrIStateValue(new StateValue(str)), value);
+    setAt(IStateValue::Ptr(new StateValue(str)), value);
 }
 
-PtrIStateValue State::at(const std::string &str) const
+IStateValue::Ptr State::at(const std::string &str) const
 {
-    return at(PtrIStateValue(new StateValue(str)));
+    return at(IStateValue::Ptr(new StateValue(str)));
 }
 
 }
