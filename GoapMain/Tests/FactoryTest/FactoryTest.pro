@@ -10,11 +10,12 @@ CONFIG -= qt
 }
 
 SOURCES += \
-    tst_factory_all.cpp \
     tst_factory_nocount.cpp \
+    tst_log.cpp \
     main.cpp \
     tst_signals.cpp \
     factory_registrations.cpp \
+    tst_factory_all.cpp \
     tst_goap.cpp
 
 INCLUDEPATH += \
