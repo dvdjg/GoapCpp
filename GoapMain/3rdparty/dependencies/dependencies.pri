@@ -3,7 +3,7 @@ INCLUDEPATH += $$top_srcdir/3rdparty/dependencies/include
 DEFINES += \
     ASIO_STANDALONE
 
-win32-msvc*:DEFINES += \
+win32-*:DEFINES += \
     ASIO_HAS_STD_ADDRESSOF \
     ASIO_HAS_STD_ARRAY \
     ASIO_HAS_CSTDINT \
