@@ -21,7 +21,7 @@ DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR QT_DEPRECATED_WARNINGS _GNU_SOURCE \
 
 DEFINES -= UNICODE _UNICODE
 
-win32-msvc*:DEFINES += \
+win32-*:DEFINES += \
     WIN32_LEAN_AND_MEAN \
     NOMINMAX \
     VC_EXTRALEAN \
@@ -71,7 +71,7 @@ win32-msvc* {
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
-    POST_DESTDIR=g++
+    POST_DESTDIR=mingw
 } else:unix {
     LIBPRE=lib
     LIBPOST=.a
@@ -81,7 +81,7 @@ win32-msvc* {
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
-    POST_DESTDIR=gpp
+    POST_DESTDIR=unix
 }
 
 
