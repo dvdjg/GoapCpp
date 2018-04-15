@@ -14,7 +14,7 @@ INCLUDEPATH += $$top_srcdir/3rdparty/sqlite
 DEPENDPATH += $$top_srcdir/3rdparty/sqlite
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
+    $$LIBDIR/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST
 
 SOURCES +=
 

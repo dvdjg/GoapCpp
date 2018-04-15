@@ -28,9 +28,9 @@ INCLUDEPATH += \
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}half$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
+    $$LIBDIR/$${LIBPRE}half$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 POSTLIBS = $$LIBS
 LIBS += \

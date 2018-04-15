@@ -41,8 +41,8 @@ DEFINES += \
 }
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST
+    $$LIBDIR/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}lzma$$SUFFIX$$LIBPOST
 
 
 SOURCES += \

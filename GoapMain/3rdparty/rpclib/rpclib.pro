@@ -3,7 +3,6 @@ QT       -= core gui
 TARGET = rpc
 TEMPLATE = lib
 CONFIG += staticlib
-CONFIG += c++14
 
 
 !include(../../common.pri) {

@@ -43,20 +43,6 @@ INCLUDEPATH += $$top_srcdir/3rdparty/zlib
 SPEC=$$basename(QMAKESPEC)
 SPEC=$$replace(SPEC, win32, windows)-$$QMAKE_TARGET.arch
 
-LIBDIR=$$top_srcdir/lib
-staticlib {
-    DEFINES += STATIC LZMA_API_STATIC
-    DESTDIRCOMMON=$$LIBDIR
-} else {
-    static:DEFINES += STATIC LZMA_API_STATIC
-    # DESTDIRCOMMON and dynamic libs goes to bin
-    DESTDIRCOMMON=$$top_srcdir/bin
-}
-
-DESTDIR=$$DESTDIRCOMMON
-
-LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
-
 
 win32-msvc* {
     LIBPRE=
@@ -70,6 +56,7 @@ win32-msvc* {
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS +=  -openmp
     QMAKE_CFLAGS += -openmp
+    POST_DESTDIR=msvc
 } else:win32-g++ {
     LIBPRE=lib
     LIBPOST=.a
@@ -84,6 +71,7 @@ win32-msvc* {
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
+    POST_DESTDIR=g++
 } else:unix {
     LIBPRE=lib
     LIBPOST=.a
@@ -93,4 +81,20 @@ win32-msvc* {
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
+    POST_DESTDIR=gpp
 }
+
+
+LIBDIR=$$top_srcdir/lib_$$POST_DESTDIR
+staticlib {
+    DEFINES += STATIC LZMA_API_STATIC
+    DESTDIRCOMMON=$$LIBDIR
+} else {
+    static:DEFINES += STATIC LZMA_API_STATIC
+    # DESTDIRCOMMON and dynamic libs goes to bin
+    DESTDIRCOMMON=$$top_srcdir/bin_$$POST_DESTDIR
+}
+
+LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
+
+DESTDIR=$${DESTDIRCOMMON}

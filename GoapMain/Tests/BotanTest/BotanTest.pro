@@ -25,19 +25,19 @@ INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest $$top_srcdir/Factory $$top_srcd
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}z$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
+    $$LIBDIR/$${LIBPRE}botan$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}GoapLibrary$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}z$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}lzma$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}sqlite$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 POST_LIBS = $$LIBS
 
 LIBS = \
     -lbotan$$SUFFIX \
     -lsqlite$$SUFFIX \
-    -lGoapLib$$SUFFIX \
+    -lGoapLibrary$$SUFFIX \
     -lz$$SUFFIX \
     -llzma$$SUFFIX
 

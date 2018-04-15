@@ -36,9 +36,9 @@ INCLUDEPATH += $$top_srcdir/3rdparty/gmock-gtest
 DEPENDPATH += $$INCLUDEPATH
 
 PRE_TARGETDEPS += \
-    $$top_srcdir/lib/$${LIBPRE}rpc$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}dependencies$$SUFFIX$$LIBPOST \
-    $$top_srcdir/lib/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
+    $$LIBDIR/$${LIBPRE}rpc$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}dependencies$$SUFFIX$$LIBPOST \
+    $$LIBDIR/$${LIBPRE}gmock-gtest$$SUFFIX$$LIBPOST
 
 POSTLIBS = $$LIBS
 LIBS += \

@@ -70,7 +70,7 @@
 #endif
 
 /* Target identification and feature test macros */
-#define BOTAN_TARGET_OS_IS_WINDOWS
+//#define BOTAN_TARGET_OS_IS_WINDOWS
 #define BOTAN_TARGET_OS_TYPE_IS_WINDOWS
 #define BOTAN_TARGET_OS_HAS_CRYPTGENRANDOM
 #define BOTAN_TARGET_OS_HAS_FILESYSTEM
