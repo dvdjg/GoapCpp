@@ -92,6 +92,14 @@ public:
         }
         return *this;
     }
+//    inline LOG_CONF &endl(LOG_CONF &l) {
+//        for(pOstrType fnOstr : afnOstr) {
+//            if(fnOstr != nullptr) {
+//                fnOstr() << std::endl;
+//            }
+//        }
+//        return *this;
+//    }
 
 };
 
@@ -112,6 +120,13 @@ public:
     ~LOG() {
         *this << '\n';
     }
+//    inline LOG &endl(LOG &l) {
+//        if(msglevel >= _logConf.level) {
+//            _logConf << endl;
+//        }
+//         return *this;
+//    }
+
     template<class T>
     LOG &operator<<(const T &msg) {
         if(msglevel >= _logConf.level) {
