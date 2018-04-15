@@ -16,7 +16,8 @@ CONFIG += staticlib
 
 INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half
 
-SOURCES += goaplibrary.cpp \
+SOURCES += \
+    goaplibrary.cpp \
     statevalue.cpp \
     basicmath.cpp \
     memory.cpp \
