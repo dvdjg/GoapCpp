@@ -11,9 +11,7 @@
 #include <mutex>
 #include "hasmember.h"
 #include "instancedeleter.h"
-#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
-#include <boost/intrusive_ptr.hpp>
-#endif
+#include "explicit_ptr.h"
 
 namespace goap
 {
@@ -28,8 +26,6 @@ void static_assert_internal()
 template<typename T, typename ... Args>
 T *defaultDelegate(Args ... args)
 {
-    //static T v(std::forward<Args>(args)...);
-    //return &v;
     return new T(std::forward<Args>(args)...);
 }
 
@@ -74,20 +70,6 @@ enum class FactoryType
 
 namespace fact
 {
-
-/**
-    @brief The SmartPointerChooser<T> struct
-    Choose the most apropriate smartpointer for the type T
-*/
-template<typename T>
-struct SmartPointerChooser
-{
-#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
-    typedef typename std::conditional<has_intrusive_ptr<T>::value, boost::intrusive_ptr<T>, std::shared_ptr<T>>::type type;
-#else
-    typedef std::shared_ptr<T> type;
-#endif
-};
 
 /**
     @brief The factoryCreate struct. A helper to create new instances.
@@ -192,7 +174,7 @@ template<typename Base, typename Key = std::string>
 class Factory : public Base
 {
 public:
-    //typedef typename SmartPointerChooser<Factory<Base, Key>>::type factory_pointer;
+    //typedef explicit_ptr<Factory<Base, Key>> Ptr;
     Factory() {}
 
     static Factory<Base, Key> &singleton()
@@ -205,17 +187,17 @@ public:
     bool isInscribed(Key const &key = {}) const;
 
     template<typename Interface = Base, typename ... Args>
-    typename SmartPointerChooser<Interface>::type
+    explicit_ptr<Interface>
     create(Key const &key, Args && ... args) const;
 
     template<typename Interface = Base>
-    typename SmartPointerChooser<Interface>::type
+    explicit_ptr<Interface>
     create() const {
         return create<Interface>({});
     }
 
     template<typename Interface = Base, typename ... Args>
-    std::map<Key, typename SmartPointerChooser<Interface>::type>
+    std::map<Key, explicit_ptr<Interface>>
     createAll(Args && ... args) const;
 
     template<FactoryType fType = FactoryType::Default, typename Interface = Base, typename Class, typename ... Args>
@@ -311,10 +293,10 @@ Factory<Base, Key>::getWrapperClass(Key const &key) const
 
 template<typename Base, typename Key>
 template<typename Interface, typename ...Args>
-std::map<Key, typename SmartPointerChooser<Interface>::type>
+std::map<Key, explicit_ptr<Interface>>
 Factory<Base, Key>::createAll(Args &&... args) const
 {
-    std::map<Key, typename SmartPointerChooser<Interface>::type> ret;
+    std::map<Key, explicit_ptr<Interface>> ret;
     std::type_index index = getClassTypeIndex<Interface>();
     std::list<Key> keys;
     {
@@ -380,11 +362,10 @@ bool Factory<Base, Key>::isInscribed(Key const &key) const
 
 template<typename Base, typename Key>
 template<typename Interface, typename ... Args>
-typename SmartPointerChooser<Interface>::type
+explicit_ptr<Interface>
 Factory<Base, Key>::create(Key const &key, Args &&... args) const
 {
-    typedef typename SmartPointerChooser<Interface>::type return_type;
-    return_type ret;
+    explicit_ptr<Interface> ret;
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {

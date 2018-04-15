@@ -12,6 +12,7 @@ INCLUDEPATH += \
     F:/Programa/boost_1_66_0
 
 HEADERS += \
+    explicit_ptr.h \
     factory.h \
     hasmember.h \
     instancedeleter.h \

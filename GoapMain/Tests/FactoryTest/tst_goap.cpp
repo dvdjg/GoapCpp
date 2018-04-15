@@ -1,5 +1,5 @@
 #include <gmock/gmock.h>
-#include "goap/explicit_ptr.h"
+#include "explicit_ptr.h"
 
 #include "goap/istatevalue.h"
 #include "factory.h"

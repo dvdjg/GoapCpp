@@ -179,7 +179,7 @@ TEST_F(FactoryAllTest, Test1)
     EXPECT_TRUE(bInscribed);
     Counted counted("Hola");
     {
-        SmartPointerChooser<Counted>::type ptrCounted(new Counted("Hello"));
+        explicit_ptr<Counted> ptrCounted(new Counted("Hello"));
         {
             auto smartCounted1 = factory.create<IStringData, const std::string &>({}, "Hallo");
             auto smartCounted2 = factory.create<IStringData, const std::string &>("Lambda", "Haloha");
