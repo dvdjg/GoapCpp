@@ -388,7 +388,7 @@ Factory<Base, Key>::create(Key const &key, Args &&... args) const
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
-        std::cerr << "Can't find a registered class " << getClassName<Interface>() << " using the supplied arguments." << std::endl;
+        std::cerr << "Can't find a registered " << getClassName<Interface>() << " using the supplied arguments." << std::endl;
         return ret;
     }
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
