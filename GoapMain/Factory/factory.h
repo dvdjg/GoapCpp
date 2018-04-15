@@ -9,6 +9,7 @@
 #include <list>
 #include <iostream>
 #include <mutex>
+#include "log_hook.h"
 #include "hasmember.h"
 #include "instancedeleter.h"
 #include "explicit_ptr.h"
