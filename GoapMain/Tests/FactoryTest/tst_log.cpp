@@ -31,7 +31,7 @@ protected:
     inline virtual int overflow(int c = Traits::eof())
     {
 #ifdef _DEBUG
-        std::cout << "(over)";
+        std::cerr << "(over)" << endl;
 #endif
         // Handle output
         putChars(pbase(), pptr());
@@ -71,8 +71,8 @@ private:
     inline void putChars(const char *begin, const char *end)
     {
 #ifdef _DEBUG
-        std::cout << "(putChars(" << static_cast<const void *>(begin) <<
-                  "," << static_cast<const void *>(end) << "))";
+        std::cerr << "(putChars(" << static_cast<const void *>(begin) <<
+                  "," << static_cast<const void *>(end) << "))" << endl;
 #endif
         //just print to stdout for now
         for (const char *c = begin; c < end; c++)

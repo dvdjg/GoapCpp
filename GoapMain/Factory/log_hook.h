@@ -63,20 +63,76 @@ struct structlog {
 
 extern structlog LOGCFG;
 
+
+class LOG_CONF;
+inline LOG_CONF& logConfSingleton();
+
+class LOG {
+    LOG_CONF &_logConf;
+    loglevel _debugLevel = DEBUG;
+public:
+
+    LOG(loglevel type = DEBUG, LOG_CONF &logConf = logConfSingleton());
+    ~LOG() {
+        *this << '\n';
+    }
+//    inline LOG &endl(LOG &l) {
+//        if(msglevel >= _logConf.level) {
+//            _logConf << endl;
+//        }
+//         return *this;
+//    }
+
+    template<class T>
+    LOG &operator<<(const T &msg) {
+        if(_debugLevel >= _logConf.level) {
+            _logConf << msg;
+        }
+        return *this;
+    }
+public:
+    inline static const char* getLabel(loglevel type) {
+        const char* label;
+        switch(type) {
+            case DEBUG: label = "DEBUG"; break;
+            case INFO:  label = "INFO "; break;
+            case WARN:  label = "WARN "; break;
+            case ERROR: label = "ERROR"; break;
+        }
+        return label;
+    }
+
+    inline loglevel getDebugLevel() const
+    {
+        return _debugLevel;
+    }
+
+    inline void setDebugLevel(const loglevel &debugLevel)
+    {
+        _debugLevel = debugLevel;
+    }
+};
+
+
 class LOG_CONF {
     static ostream& getOstr() {
         return cerr;
     }
 public:
+    static void defaultLogHead(LOG &log) {
+        char result[32];
+        log << nowTime(result) << " ";
+        log << "[" << LOG::getLabel(log.getDebugLevel()) << "] ";
+    }
+
+    typedef void (*pLogHeadType)(LOG &log);
+    loglevel level;
+    pLogHeadType pLogHead;
     typedef ostream& (*pOstrType)();
     pOstrType afnOstr[4] {getOstr, nullptr, nullptr, nullptr};
-    bool headers = true;
-    bool datetime = true;
-    loglevel level;
 
-    LOG_CONF(loglevel lvl = WARN) : level(lvl) {}
+    LOG_CONF(loglevel lvl = WARN, pLogHeadType pLogHead_ = &defaultLogHead) : level(lvl), pLogHead(pLogHead_) {}
     ~LOG_CONF() {}
-
 
     static LOG_CONF& singleton() {
         static LOG_CONF logConf;
@@ -103,50 +159,15 @@ public:
 
 };
 
+inline LOG_CONF& logConfSingleton()
+{
+    return LOG_CONF::singleton();
+}
 
-class LOG {
-    LOG_CONF &_logConf;
-    loglevel msglevel = DEBUG;
-public:
-    LOG(loglevel type = DEBUG, LOG_CONF &logConf = LOG_CONF::singleton()) :_logConf(logConf), msglevel(type) {
-        if(_logConf.datetime) {
-            char result[32];
-            *this << nowTime(result) << " ";
-        }
-        if(_logConf.headers) {
-            *this << "[" << getLabel(type) << "] ";
-        }
-    }
-    ~LOG() {
-        *this << '\n';
-    }
-//    inline LOG &endl(LOG &l) {
-//        if(msglevel >= _logConf.level) {
-//            _logConf << endl;
-//        }
-//         return *this;
-//    }
 
-    template<class T>
-    LOG &operator<<(const T &msg) {
-        if(msglevel >= _logConf.level) {
-            _logConf << msg;
-        }
-        return *this;
-    }
-private:
-    inline const char* getLabel(loglevel type) {
-        const char* label;
-        switch(type) {
-            case DEBUG: label = "DEBUG"; break;
-            case INFO:  label = "INFO "; break;
-            case WARN:  label = "WARN "; break;
-            case ERROR: label = "ERROR"; break;
-        }
-        return label;
-    }
-};
-
+inline LOG::LOG(loglevel type, LOG_CONF &logConf) :_logConf(logConf), _debugLevel(type) {
+    _logConf.pLogHead(*this);
+}
 }
 
 #endif  /* LOG_HOOK_H */
