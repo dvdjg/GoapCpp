@@ -3,48 +3,6 @@
 
 #include <iostream>
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-
-#include <Windows.h>
-#ifdef ERROR
-#undef ERROR
-#endif
-namespace goap
-{
-inline const char* nowTime(char result[])
-{
-    // char result[100];
-    const int MAX_LEN = 32;
-    char buffer[MAX_LEN];
-    if (GetTimeFormatA(LOCALE_USER_DEFAULT, 0, 0, "HH':'mm':'ss", buffer, MAX_LEN) == 0)
-        return "Error in NowTime()";
-
-    result[0] = 0;
-    static DWORD first = GetTickCount();
-    sprintf_s(result, MAX_LEN, "%s.%06ld", buffer, (long)(GetTickCount() - first));
-    return result;
-}
-}
-#else
-
-#include <sys/time.h>
-namespace goap
-{
-inline const char* nowTime(char result[])
-{
-    struct timeval tv;
-    gettimeofday(&tv, 0);
-    char buffer[32];
-    tm r;
-    strftime(buffer, sizeof(buffer), "%X", localtime_r(&tv.tv_sec, &r));
-    result[0] = 0;
-    sprintf(result, "%s.%06ld", buffer, (long)tv.tv_usec);
-    return result;
-}
-}
-#endif //WIN32
-
-
 namespace goap
 {
 using namespace std;
@@ -85,7 +43,7 @@ public:
 
     template<class T>
     LOG &operator<<(const T &msg) {
-        if(_debugLevel >= _logConf.level) {
+        if(_debugLevel >= _logConf._level) {
             _logConf << msg;
         }
         return *this;
@@ -115,23 +73,24 @@ public:
 
 
 class LOG_CONF {
+    typedef void (*pFnLogHeadType)(LOG &log);
+    pFnLogHeadType _pFnLogHead;
+
     static ostream& getOstr() {
         return cerr;
     }
 public:
     static void defaultLogHead(LOG &log) {
         char result[32];
-        log << nowTime(result) << " ";
+        //log << nowTime(result) << " ";
         log << "[" << LOG::getLabel(log.getDebugLevel()) << "] ";
     }
 
-    typedef void (*pLogHeadType)(LOG &log);
-    loglevel level;
-    pLogHeadType pLogHead;
+    loglevel _level;
     typedef ostream& (*pOstrType)();
     pOstrType afnOstr[4] {getOstr, nullptr, nullptr, nullptr};
 
-    LOG_CONF(loglevel lvl = WARN, pLogHeadType pLogHead_ = &defaultLogHead) : level(lvl), pLogHead(pLogHead_) {}
+    LOG_CONF(loglevel lvl = WARN, pFnLogHeadType pLogHead_ = &defaultLogHead) : _level(lvl), _pFnLogHead(pLogHead_) {}
     ~LOG_CONF() {}
 
     static LOG_CONF& singleton() {
@@ -157,6 +116,24 @@ public:
 //        return *this;
 //    }
 
+    void setFnLogHead(pFnLogHeadType pFnLogHead)
+    {
+        _pFnLogHead = pFnLogHead;
+    }
+    pFnLogHeadType& getFnLogHead()
+    {
+        return _pFnLogHead;
+    }
+
+    loglevel getLevel() const
+    {
+        return _level;
+    }
+
+    void setLevel(const loglevel &level)
+    {
+        _level = level;
+    }
 };
 
 inline LOG_CONF& logConfSingleton()
@@ -166,8 +143,13 @@ inline LOG_CONF& logConfSingleton()
 
 
 inline LOG::LOG(loglevel type, LOG_CONF &logConf) :_logConf(logConf), _debugLevel(type) {
-    _logConf.pLogHead(*this);
+    _logConf.getFnLogHead()(*this);
 }
+
+
+
+
+
 }
 
 #endif  /* LOG_HOOK_H */

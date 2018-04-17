@@ -1,5 +1,6 @@
 #include <gmock/gmock.h>
 #include "log_hook.h"
+#include "time_utils.h"
 
 
 using namespace goap;
@@ -108,9 +109,15 @@ public:
     {
     }
 
+    static void defaultLogHead(LOG &log) {
+        char result[32];
+        log << goap::nowTime(result) << " ";
+        log << "[" << LOG::getLabel(log.getDebugLevel()) << "] ";
+    }
 protected:
     static void SetUpTestCase()
     {
+        LOG_CONF::singleton().setFnLogHead(&defaultLogHead);
     }
 
     static void TearDownTestCase()
@@ -126,6 +133,7 @@ protected:
     }
 };
 
+
 TEST_F(LogTest, Basic)
 {
     LOG(DEBUG) << "First DEBUG";
@@ -133,7 +141,7 @@ TEST_F(LogTest, Basic)
     LOG(WARN) << "First WARN";
     LOG(ERROR) << "First ERROR";
 
-    LOG_CONF::singleton().level = DEBUG;
+    LOG_CONF::singleton()._level = DEBUG;
 
     LOG(DEBUG) << "Second DEBUG";
     LOG(INFO) << "Second INFO";
@@ -149,7 +157,7 @@ static ostream& getMyOStream() {
 TEST_F(LogTest, MyOStream)
 {
     ;
-    LOG_CONF::singleton().level = DEBUG;
+    LOG_CONF::singleton()._level = DEBUG;
     LOG_CONF::singleton().afnOstr[1] = getMyOStream;
 
     LOG(DEBUG) << "Third DEBUG";

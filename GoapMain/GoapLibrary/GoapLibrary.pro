@@ -21,14 +21,16 @@ SOURCES += \
     statevalue.cpp \
     basicmath.cpp \
     memory.cpp \
-    state.cpp
+    state.cpp \
+    time_utils.cpp
 
 HEADERS += goaplibrary.h \
     refcounter.h \
     statevalue.h \
     basicmath.h \
     state.h \
-    goapmemory.h
+    goapmemory.h \
+    time_utils.h
 
 unix {
     target.path = /usr/lib
