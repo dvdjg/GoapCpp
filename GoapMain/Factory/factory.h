@@ -3,14 +3,11 @@
 
 #include <typeindex>
 #include <utility>
-#include <memory>
 #include <string>
 #include <map>
 #include <list>
-#include <iostream>
 #include <mutex>
 #include "log_hook.h"
-#include "hasmember.h"
 #include "instancedeleter.h"
 #include "explicit_ptr.h"
 
@@ -265,20 +262,20 @@ Factory<Base, Key>::getWrapperClass(Key const &key) const
     auto it = _map.find(index);
     if (it == _map.end())
     {
-        std::cerr << "Can't find interface \"" << index.name() << "\" in the factory." << std::endl;
+        LOG(ERROR) << "Can't find interface \"" << index.name() << "\" in the factory.";
         return nullptr;
     }
     auto it2 = it->second.find(key);
     if (it2 == it->second.end())
     {
-        std::cerr << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory." << std::endl;
+        LOG(ERROR) << "Can't find key " << key << " inside the interface \"" << index.name() << "\" in the factory.";
         return nullptr;
     }
     std::type_index subindex = getClassTypeIndex<WrapperClass<Base, Args...>>();
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        std::cerr << "Can't find registered constructor arguments in the factory." << std::endl;
+        LOG(ERROR) << "Can't find registered constructor arguments in the factory.";
         return nullptr;
     }
     auto pWrapped = &*it3->second;
@@ -286,7 +283,7 @@ Factory<Base, Key>::getWrapperClass(Key const &key) const
     wrapper_t *pWrapper = dynamic_cast<wrapper_t *>(pWrapped);
     if (!pWrapper)
     {
-        std::cerr << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>() << std::endl;
+        LOG(ERROR) << "Can't cast from " << getClassName<decltype(*pWrapped)>() << " to " << getClassName<wrapper_t>();
     }
     return pWrapper;
 }
@@ -370,7 +367,7 @@ Factory<Base, Key>::create(Key const &key, Args &&... args) const
     WrapperClass<Base, Args...> *pWrapper = getWrapperClass<Interface, Args...>(key);
     if (!pWrapper)
     {
-        std::cerr << "Can't find a registered " << getClassName<Interface>() << " using the supplied arguments." << std::endl;
+        LOG(ERROR) << "Can't find a registered " << getClassName<Interface>() << " using the supplied arguments.";
         return ret;
     }
     auto smartInstance = pWrapper->getInstance(std::forward<Args>(args)...);
@@ -386,7 +383,7 @@ Factory<Base, Key>::create(Key const &key, Args &&... args) const
     }
     if (!ret)
     {
-        std::cerr << "Can't cast from " << getClassName<decltype(*smartInstance)>() << " to " << getClassName<Interface>() << std::endl;
+        LOG(ERROR) << "Can't cast from " << getClassName<decltype(*smartInstance)>() << " to " << getClassName<Interface>();
     }
     return ret;
 }
