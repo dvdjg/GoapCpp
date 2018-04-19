@@ -1,7 +1,7 @@
 #ifndef HASMEMBER_H
 #define HASMEMBER_H
 
-#include <functional>
+#include "utility_simple.h"
 
 namespace goap
 {
@@ -26,7 +26,7 @@ namespace goap
         typedef long two; \
         \
         template <typename C> static two test(...); \
-        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(static_cast<C*>(nullptr)->member_call), member_type>::value>::type *); \
+        template <typename C> static one test(typename enable_if<is_convertible<decltype(static_cast<C*>(nullptr)->member_call), member_type>::value>::type *); \
     public: \
         enum { evalue = sizeof(test<T>(0)) == sizeof(char) }; \
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \
@@ -40,7 +40,7 @@ namespace goap
         typedef long two; \
         \
         template <typename C> static two test(...); \
-        template <typename C> static one test(typename std::enable_if<std::is_convertible<decltype(global_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
+        template <typename C> static one test(typename enable_if<is_convertible<decltype(global_call(static_cast<C*>(nullptr))), member_type>::value>::type *); \
     public: \
         enum { evalue = sizeof(test<T>(0)) == sizeof(char) }; \
         static bool const value = sizeof(test<T>(0)) == sizeof(char); \

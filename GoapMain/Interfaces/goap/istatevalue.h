@@ -4,26 +4,11 @@
 #include <string>
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
+#include "iclonable.h"
+#include "istringvalue.h"
 
 namespace goap
 {
-
-class IClonable : public virtual IRefCounter
-{
-public:
-    typedef explicit_ptr<IClonable> Ptr;
-    typedef explicit_ptr<const IClonable> CPtr;
-    virtual Ptr clone() const = 0;
-};
-
-class IStringValue : public virtual IRefCounter
-{
-public:
-    typedef explicit_ptr<IStringValue> Ptr;
-    typedef explicit_ptr<const IStringValue> CPtr;
-    virtual void fromString(const std::string &str) = 0;
-    virtual std::string toString() const = 0;
-};
 
 class IStateValue : public IStringValue, public IClonable, public virtual IRefCounter
 {

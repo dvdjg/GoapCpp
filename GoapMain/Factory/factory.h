@@ -2,7 +2,6 @@
 #define FACTORY_H
 
 #include <typeindex>
-#include <utility>
 #include <string>
 #include <map>
 #include <list>

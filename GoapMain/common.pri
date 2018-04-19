@@ -98,3 +98,8 @@ staticlib {
 LIBS += -L$$LIBDIR -L$$LIBDIR/$$SPEC -L$$LIBDIR/$$SPEC/$$CONFDIR
 
 DESTDIR=$${DESTDIRCOMMON}
+
+HEADERS += \
+    $$PWD/Interfaces/goap/istringvalue.h \
+    $$PWD/Interfaces/goap/iclonable.h
+
