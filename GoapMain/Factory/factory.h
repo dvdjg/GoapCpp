@@ -173,6 +173,7 @@ class Factory : public Base
 public:
     //typedef explicit_ptr<Factory<Base, Key>> Ptr;
     Factory() {}
+    virtual ~Factory() { clear(); }
 
     static Factory<Base, Key> &singleton()
     {
@@ -220,6 +221,11 @@ public:
     void inscribe(
         Lambda const &lambda,
         Key const &key = Key());
+
+    /**
+     * @brief clear Clears the factory inscribed data
+     */
+    void clear();
 
 private:
     template<FactoryType fType = FactoryType::Default, typename Interface, typename Class, typename ReturnType, typename Lambda, typename... Args>
@@ -467,6 +473,14 @@ void Factory<Base, Key>::inscribe(
 {
     std::function<ReturnType(Args...)> f = lambda;
     inscribe<fType, Interface>(f, key);
+}
+
+template<typename Base, typename Key>
+void Factory<Base, Key>::clear()
+{
+    std::lock_guard<std::mutex> lock(_mutex);
+    _map.clear();
+    LOG(DEBUG) << "Factory is being cleared.";
 }
 
 

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-
+#include "factory.h"
+#include "common/iroot.h"
 
 // DDP
 // https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md
@@ -19,9 +20,12 @@
 // https://github.com/SRombauts/SQLiteCpp
 // http://sqlitewrapper.kompex-online.com/
 
+using namespace goap;
 
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    int ret = RUN_ALL_TESTS();
+    Factory<IRoot>::singleton().clear();
+    return ret;
 }
