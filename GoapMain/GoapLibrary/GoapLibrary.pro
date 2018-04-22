@@ -22,7 +22,9 @@ SOURCES += \
     basicmath.cpp \
     memory.cpp \
     state.cpp \
-    time_utils.cpp
+    time_utils.cpp \
+    basicostream.cpp \
+    basicsinkcollection.cpp
 
 HEADERS += goaplibrary.h \
     refcounter.h \
@@ -30,7 +32,10 @@ HEADERS += goaplibrary.h \
     basicmath.h \
     state.h \
     goapmemory.h \
-    time_utils.h
+    time_utils.h \
+    basicostreamsink.h \
+    basicostream.h \
+    basicsinkcollection.h
 
 unix {
     target.path = /usr/lib
