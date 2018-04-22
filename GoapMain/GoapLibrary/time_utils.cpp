@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "time_utils.h"
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__)) && !defined(COMPILER_MINGW)
 
 #include <Windows.h>
 #ifdef ERROR
@@ -34,7 +34,10 @@ const char* nowTime(char result[])
     gettimeofday(&tv, 0);
     char buffer[32];
     tm r;
-    strftime(buffer, sizeof(buffer), "%X", localtime_r(&tv.tv_sec, &r));
+    //strftime(buffer, sizeof(buffer), "%X", localtime_r(&tv.tv_sec, &r));
+    localtime_s(&r, &tv.tv_sec);
+    //strftime(buffer, sizeof buffer, "%FT%T", &r);
+    strftime(buffer, sizeof buffer, "%X", &r);
     result[0] = 0;
     sprintf(result, "%s.%06ld", buffer, (long)tv.tv_usec);
     return result;

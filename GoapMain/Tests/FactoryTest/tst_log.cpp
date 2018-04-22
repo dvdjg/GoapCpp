@@ -1,14 +1,18 @@
 #include <gmock/gmock.h>
 #include <mutex>
+#include <memory>
+#include "common/iroot.h"
 #include "log_hook.h"
 #include "time_utils.h"
 
 
 using namespace goap;
 
-class IBasicSink
+class IBasicSink : public IRoot
 {
 public:
+    typedef std::shared_ptr<IBasicSink> Ptr;
+
     virtual void write(const char *begin, const char *end) = 0;
     virtual void flush(void) = 0;
     virtual void eof(void) const = 0;
@@ -18,6 +22,8 @@ class BasicOstreamSink : public IBasicSink
 {
     std::basic_ostream< char, std::char_traits< char >> &_ostream;
 public:
+    typedef std::shared_ptr<BasicOstreamSink> Ptr;
+
     BasicOstreamSink(const BasicOstreamSink& o);
     BasicOstreamSink(std::basic_ostream< char, std::char_traits< char >> &ostream = std::cerr);
     virtual ~BasicOstreamSink();
@@ -38,6 +44,7 @@ BasicOstreamSink::BasicOstreamSink(std::basic_ostream<char, std::char_traits<cha
 
 BasicOstreamSink::~BasicOstreamSink()
 {
+    flush();
 }
 
 void BasicOstreamSink::write(const char *begin, const char *end)
@@ -57,7 +64,6 @@ void BasicOstreamSink::eof() const
 
 class BasicStreamBuffer : public std::basic_streambuf<char, std::char_traits<char>>
 {
-
     std::mutex _mutex;
 public:
 
@@ -130,11 +136,6 @@ private:
                   "," << static_cast<const void *>(end) << "))" << endl;
 #endif
         _data.write(begin, end);
-        //just print to stdout for now
-//        for (const char *c = begin; c < end; c++)
-//        {
-//            std::cout << *c;
-//        }
     }
 
 };
@@ -156,7 +157,6 @@ private:
 
 
 
-
 class LogTest : public ::testing::Test
 {
 public:
@@ -167,7 +167,7 @@ public:
     static void defaultLogHead(LOG &log) {
         char result[32];
         log << goap::nowTime(result) << " ";
-        log << "[" << LOG::getLabel(log.getDebugLevel()) << "] ";
+        log << "[" << getLogLevelLabel(log.getDebugLevel()) << "] ";
     }
 protected:
     static void SetUpTestCase()
@@ -195,7 +195,7 @@ TEST_F(LogTest, Basic)
     LOG(WARN) << "First WARN";
     LOG(ERROR) << "First ERROR";
 
-    LOG_CONF::singleton()._level = DEBUG;
+    LOG_CONF::singleton().setLevel(DEBUG);
 
     LOG(DEBUG) << "Second DEBUG";
     LOG(INFO) << "Second INFO";
@@ -210,10 +210,10 @@ static ostream& getBasicOStream() {
 
 TEST_F(LogTest, BasicOStream)
 {
-    LOG_CONF::singleton()._level = DEBUG;
+    LOG_CONF::singleton().setLevel(DEBUG);
     LOG_CONF::singleton().afnOstr[0] = getBasicOStream;
 
-    LOG(DEBUG) << "Third DEBUG";
+    LOG(DEBUG) << "Third DEBUG" << endl;
     LOG(INFO) << "Third INFO";
     LOG(WARN) << "Third WARN";
     LOG(ERROR) << "Third ERROR";

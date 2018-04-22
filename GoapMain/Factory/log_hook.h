@@ -7,12 +7,25 @@ namespace goap
 {
 using namespace std;
 
+class LOG;
+
 enum loglevel {
     DEBUG,
     INFO,
     WARN,
     ERROR
 };
+
+inline const char* getLogLevelLabel(loglevel type) {
+    const char* label;
+    switch(type) {
+        case DEBUG: label = "DEBUG"; break;
+        case INFO:  label = "INFO "; break;
+        case WARN:  label = "WARN "; break;
+        case ERROR: label = "ERROR"; break;
+    }
+    return label;
+}
 
 struct structlog {
     bool headers = false;
@@ -22,71 +35,42 @@ struct structlog {
 extern structlog LOGCFG;
 
 
-class LOG_CONF;
-inline LOG_CONF& logConfSingleton();
-
-class LOG {
-    LOG_CONF &_logConf;
-    loglevel _debugLevel = DEBUG;
-public:
-
-    LOG(loglevel type = DEBUG, LOG_CONF &logConf = logConfSingleton());
-    ~LOG() {
-        *this << '\n';
-    }
-//    inline LOG &endl(LOG &l) {
-//        if(msglevel >= _logConf.level) {
-//            _logConf << endl;
-//        }
-//         return *this;
-//    }
-
-    template<class T>
-    LOG &operator<<(const T &msg) {
-        if(_debugLevel >= _logConf._level) {
-            _logConf << msg;
-        }
-        return *this;
-    }
-public:
-    inline static const char* getLabel(loglevel type) {
-        const char* label;
-        switch(type) {
-            case DEBUG: label = "DEBUG"; break;
-            case INFO:  label = "INFO "; break;
-            case WARN:  label = "WARN "; break;
-            case ERROR: label = "ERROR"; break;
-        }
-        return label;
-    }
-
-    inline loglevel getDebugLevel() const
-    {
-        return _debugLevel;
-    }
-
-    inline void setDebugLevel(const loglevel &debugLevel)
-    {
-        _debugLevel = debugLevel;
-    }
-};
-
-
-class LOG_CONF {
+class LOG_CONF
+{
+    loglevel _level;
     typedef void (*pFnLogHeadType)(LOG &log);
     pFnLogHeadType _pFnLogHead;
 
     static ostream& getOstr() {
         return cerr;
     }
+
 public:
-    static void defaultLogHead(LOG &log) {
-        char result[32];
-        //log << nowTime(result) << " ";
-        log << "[" << LOG::getLabel(log.getDebugLevel()) << "] ";
+
+    void setFnLogHead(pFnLogHeadType pFnLogHead)
+    {
+        _pFnLogHead = pFnLogHead;
     }
 
-    loglevel _level;
+    pFnLogHeadType& getFnLogHead()
+    {
+        return _pFnLogHead;
+    }
+
+    loglevel getLevel() const
+    {
+        return _level;
+    }
+
+    void setLevel(const loglevel &level)
+    {
+        _level = level;
+    }
+
+    friend LOG_CONF &endl(LOG_CONF &l);
+    friend LOG_CONF &flush(LOG_CONF &l);
+    static void defaultLogHead(LOG &log);
+
     typedef ostream& (*pOstrType)();
     pOstrType afnOstr[4] {getOstr, nullptr, nullptr, nullptr};
 
@@ -107,34 +91,60 @@ public:
         }
         return *this;
     }
-//    inline LOG_CONF &endl(LOG_CONF &l) {
-//        for(pOstrType fnOstr : afnOstr) {
-//            if(fnOstr != nullptr) {
-//                fnOstr() << std::endl;
-//            }
-//        }
-//        return *this;
-//    }
 
-    void setFnLogHead(pFnLogHeadType pFnLogHead)
-    {
-        _pFnLogHead = pFnLogHead;
-    }
-    pFnLogHeadType& getFnLogHead()
-    {
-        return _pFnLogHead;
-    }
-
-    loglevel getLevel() const
-    {
-        return _level;
-    }
-
-    void setLevel(const loglevel &level)
-    {
-        _level = level;
+    LOG_CONF& operator<<(LOG_CONF& (*_Pfn)(LOG_CONF&))
+    {	// call basic manipulator
+        return ((*_Pfn)(*this));
     }
 };
+
+class LOG_CONF;
+inline LOG_CONF& logConfSingleton();
+
+class LOG {
+    LOG_CONF &_logConf;
+    loglevel _debugLevel = DEBUG;
+public:
+
+    friend LOG &endl(LOG &l);
+    friend LOG &flush(LOG &l);
+    LOG(loglevel type = DEBUG, LOG_CONF &logConf = logConfSingleton());
+
+public:
+
+
+    inline loglevel getDebugLevel() const
+    {
+        return _debugLevel;
+    }
+
+    inline void setDebugLevel(const loglevel &debugLevel)
+    {
+        _debugLevel = debugLevel;
+    }
+
+    LOG_CONF &getLogConf() const
+    {
+        return _logConf;
+    }
+    template<class T>
+    LOG &operator<<(const T &msg) {
+        if(_debugLevel >= _logConf.getLevel()) {
+            _logConf << msg;
+        }
+        return *this;
+    }
+    LOG& operator<<(LOG& (*_Pfn)(LOG&))
+    {	// call basic manipulator
+        return ((*_Pfn)(*this));
+    }
+
+    ~LOG();
+};
+
+inline void LOG_CONF::defaultLogHead(LOG &log) {
+    log << "[" << getLogLevelLabel(log.getDebugLevel()) << "] ";
+}
 
 inline LOG_CONF& logConfSingleton()
 {
@@ -147,8 +157,45 @@ inline LOG::LOG(loglevel type, LOG_CONF &logConf) :_logConf(logConf), _debugLeve
 }
 
 
+inline LOG_CONF &endl(LOG_CONF &l) {
+    for(LOG_CONF::pOstrType fnOstr : l.afnOstr) {
+        if(fnOstr != nullptr) {
+            fnOstr() << std::endl;
+        }
+    }
+    return l;
+}
+
+inline LOG_CONF &flush(LOG_CONF &l) {
+    for(LOG_CONF::pOstrType fnOstr : l.afnOstr) {
+        if(fnOstr != nullptr) {
+            fnOstr() << std::flush;
+        }
+    }
+    return l;
+}
+
+inline LOG &endl(LOG &l) {
+    if(l.getDebugLevel() >= l.getLogConf().getLevel()) {
+        l.getLogConf() << endl;
+    }
+    return l;
+}
 
 
+
+inline LOG &flush(LOG &l) {
+    if(l.getDebugLevel() >= l.getLogConf().getLevel()) {
+        l.getLogConf() << flush;
+    }
+    return l;
+}
+
+
+
+inline LOG::~LOG() {
+    *this << endl;
+}
 
 }
 

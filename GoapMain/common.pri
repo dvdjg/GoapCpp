@@ -57,6 +57,7 @@ win32-msvc* {
     QMAKE_CXXFLAGS +=  -openmp
     QMAKE_CFLAGS += -openmp
     POST_DESTDIR=msvc
+    DEFINES += COMPILER_MSVC
 } else:win32-g++ {
     LIBPRE=lib
     LIBPOST=.a
@@ -72,6 +73,7 @@ win32-msvc* {
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
     POST_DESTDIR=mingw
+    DEFINES += COMPILER_MINGW
 } else:unix {
     LIBPRE=lib
     LIBPOST=.a
@@ -82,6 +84,7 @@ win32-msvc* {
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_LFLAGS  += -pthread -fopenmp
     POST_DESTDIR=unix
+    DEFINES += COMPILER_GCC
 }
 
 
