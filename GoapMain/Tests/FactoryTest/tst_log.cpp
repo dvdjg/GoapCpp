@@ -1,22 +1,11 @@
 #include <gmock/gmock.h>
 #include <mutex>
-#include <memory>
-#include "common/iroot.h"
+#include "goap/ibasicsink.h"
 #include "log_hook.h"
 #include "time_utils.h"
 
 
 using namespace goap;
-
-class IBasicSink : public IRoot
-{
-public:
-    typedef std::shared_ptr<IBasicSink> Ptr;
-
-    virtual void write(const char *begin, const char *end) = 0;
-    virtual void flush(void) = 0;
-    virtual void eof(void) const = 0;
-};
 
 class BasicOstreamSink : public IBasicSink
 {
@@ -67,7 +56,7 @@ class BasicStreamBuffer : public std::basic_streambuf<char, std::char_traits<cha
     std::mutex _mutex;
 public:
 
-    BasicStreamBuffer(const BasicOstreamSink &data) :
+    BasicStreamBuffer(IBasicSink::Ptr data) :
         _data(data)
     {
         setp(_buf, _buf + BUF_SIZE);
@@ -99,7 +88,7 @@ protected:
             // Handle the one character that didn't fit to buffer
             write(&c2, &c2 + 1);
         } else {
-            _data.eof();
+            _data->eof();
         }
         // This tells that buffer is empty again
         setp(_buf, _buf + BUF_SIZE);
@@ -114,7 +103,7 @@ protected:
         // Handle output
         std::lock_guard<std::mutex> lock(_mutex);
         write(pbase(), pptr());
-        _data.flush();
+        _data->flush();
         // This tells that buffer is empty again
         setp(_buf, _buf + BUF_SIZE);
         return 0;
@@ -126,7 +115,7 @@ private:
     static const size_t BUF_SIZE = 128;
     char _buf[BUF_SIZE];
 
-    BasicOstreamSink _data;
+    IBasicSink::Ptr _data;
 
     // In this function, the characters are parsed.
     inline void write(const char *begin, const char *end)
@@ -135,7 +124,7 @@ private:
         std::cerr << "(putChars(" << static_cast<const void *>(begin) <<
                   "," << static_cast<const void *>(end) << "))" << endl;
 #endif
-        _data.write(begin, end);
+        _data->write(begin, end);
     }
 
 };
@@ -145,9 +134,14 @@ class BasicOStream : public std::basic_ostream< char, std::char_traits< char >>
 
 public:
 
-    BasicOStream(const BasicOstreamSink &data = {}) :
+    BasicOStream(IBasicSink::Ptr data) :
         std::basic_ostream< char, std::char_traits< char >>(&_buf),
                 _buf(data)
+    {
+    }
+    BasicOStream() :
+        std::basic_ostream< char, std::char_traits< char >>(&_buf),
+                _buf(IBasicSink::Ptr(new BasicOstreamSink()))
     {
     }
 private:

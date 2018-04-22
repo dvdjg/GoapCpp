@@ -19,7 +19,9 @@ HEADERS += \
     goap/imemory.h \
     goap/imemoryvalue.h \
     goap/ireadstate.h \
-    goap/istatevalue.h
+    goap/istatevalue.h \
+    goap/ibasicsink.h
+
 
 unix {
     target.path = /usr/lib
