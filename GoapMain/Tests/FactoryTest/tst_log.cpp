@@ -1,24 +1,75 @@
 #include <gmock/gmock.h>
+#include <mutex>
 #include "log_hook.h"
 #include "time_utils.h"
 
 
 using namespace goap;
 
-class MyData
+class IBasicSink
 {
-    //example data class, not used
+public:
+    virtual void write(const char *begin, const char *end) = 0;
+    virtual void flush(void) = 0;
+    virtual void eof(void) const = 0;
 };
 
-class MyBuffer : public std::basic_streambuf<char, std::char_traits<char>>
+class BasicOstreamSink : public IBasicSink
+{
+    std::basic_ostream< char, std::char_traits< char >> &_ostream;
+public:
+    BasicOstreamSink(const BasicOstreamSink& o);
+    BasicOstreamSink(std::basic_ostream< char, std::char_traits< char >> &ostream = std::cerr);
+    virtual ~BasicOstreamSink();
+
+    // IBasicSink interface
+    void write(const char *begin, const char *end) override;
+    void flush() override;
+    void eof() const override;
+};
+
+BasicOstreamSink::BasicOstreamSink(const BasicOstreamSink &o) : _ostream(o._ostream)
+{
+}
+
+BasicOstreamSink::BasicOstreamSink(std::basic_ostream<char, std::char_traits<char> > &ostream) : _ostream(ostream)
+{
+}
+
+BasicOstreamSink::~BasicOstreamSink()
+{
+}
+
+void BasicOstreamSink::write(const char *begin, const char *end)
+{
+    _ostream.write(begin, end - begin);
+}
+
+void BasicOstreamSink::flush()
+{
+    _ostream.flush();
+}
+
+void BasicOstreamSink::eof() const
+{
+    _ostream.eof();
+}
+
+class BasicStreamBuffer : public std::basic_streambuf<char, std::char_traits<char>>
 {
 
+    std::mutex _mutex;
 public:
 
-    inline MyBuffer(MyData data) :
-        data(data)
+    BasicStreamBuffer(const BasicOstreamSink &data) :
+        _data(data)
     {
-        setp(buf, buf + BUF_SIZE);
+        setp(_buf, _buf + BUF_SIZE);
+    }
+
+    ~BasicStreamBuffer()
+    {
+        sync();
     }
 
 protected:
@@ -35,15 +86,17 @@ protected:
         std::cerr << "(over)" << endl;
 #endif
         // Handle output
-        putChars(pbase(), pptr());
-        if (c != Traits::eof())
-        {
+        std::lock_guard<std::mutex> lock(_mutex);
+        write(pbase(), pptr());
+        if (c != Traits::eof()) {
             char c2 = c;
             // Handle the one character that didn't fit to buffer
-            putChars(&c2, &c2 + 1);
+            write(&c2, &c2 + 1);
+        } else {
+            _data.eof();
         }
         // This tells that buffer is empty again
-        setp(buf, buf + BUF_SIZE);
+        setp(_buf, _buf + BUF_SIZE);
 
         return c;
     }
@@ -53,50 +106,52 @@ protected:
     inline virtual int sync(void)
     {
         // Handle output
-        putChars(pbase(), pptr());
+        std::lock_guard<std::mutex> lock(_mutex);
+        write(pbase(), pptr());
+        _data.flush();
         // This tells that buffer is empty again
-        setp(buf, buf + BUF_SIZE);
+        setp(_buf, _buf + BUF_SIZE);
         return 0;
     }
 
 private:
 
     // Work in buffer mode. It is also possible to work without buffer.
-    static const size_t BUF_SIZE = 64;
-    char buf[BUF_SIZE];
+    static const size_t BUF_SIZE = 128;
+    char _buf[BUF_SIZE];
 
-    // This is the example userdata
-    MyData data;
+    BasicOstreamSink _data;
 
     // In this function, the characters are parsed.
-    inline void putChars(const char *begin, const char *end)
+    inline void write(const char *begin, const char *end)
     {
 #ifdef _DEBUG
         std::cerr << "(putChars(" << static_cast<const void *>(begin) <<
                   "," << static_cast<const void *>(end) << "))" << endl;
 #endif
+        _data.write(begin, end);
         //just print to stdout for now
-        for (const char *c = begin; c < end; c++)
-        {
-            std::cout << *c;
-        }
+//        for (const char *c = begin; c < end; c++)
+//        {
+//            std::cout << *c;
+//        }
     }
 
 };
 
-class MyOStream : public std::basic_ostream< char, std::char_traits< char >>
+class BasicOStream : public std::basic_ostream< char, std::char_traits< char >>
 {
 
 public:
 
-    inline MyOStream(MyData data = {}) :
-        std::basic_ostream< char, std::char_traits< char >>(&buf),
-                buf(data)
+    BasicOStream(const BasicOstreamSink &data = {}) :
+        std::basic_ostream< char, std::char_traits< char >>(&_buf),
+                _buf(data)
     {
     }
 private:
 
-    MyBuffer buf;
+    BasicStreamBuffer _buf;
 };
 
 
@@ -124,7 +179,6 @@ protected:
     {
     }
 
-
     virtual void SetUp()
     {
     }
@@ -149,16 +203,15 @@ TEST_F(LogTest, Basic)
     LOG(ERROR) << "Second ERROR";
 }
 
-static ostream& getMyOStream() {
-    static MyOStream myOStream;
+static ostream& getBasicOStream() {
+    static BasicOStream myOStream;
     return myOStream;
 }
 
-TEST_F(LogTest, MyOStream)
+TEST_F(LogTest, BasicOStream)
 {
-    ;
     LOG_CONF::singleton()._level = DEBUG;
-    LOG_CONF::singleton().afnOstr[1] = getMyOStream;
+    LOG_CONF::singleton().afnOstr[0] = getBasicOStream;
 
     LOG(DEBUG) << "Third DEBUG";
     LOG(INFO) << "Third INFO";
