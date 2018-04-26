@@ -2,6 +2,7 @@
 #define IBASICSINK_H
 
 #include <memory>
+#include <ostream>
 #include <string>
 #include "common/iroot.h"
 
@@ -24,6 +25,7 @@ public:
     typedef std::shared_ptr<IBasicSinkCollection> Ptr;
 
     virtual void addSink(const std::string& name, IBasicSink::Ptr sink) = 0;
+    virtual void addSink(const std::string& name, const std::ostream &o) = 0;
     virtual void removeSink(const std::string& name) = 0;
 };
 }

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "factory.h"
 #include "common/iroot.h"
+#include "goaplibinscribe.h"
 
 // DDP
 // https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md
@@ -25,6 +26,9 @@ using namespace goap;
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
+
+    goapLibInscribe();
+
     int ret = RUN_ALL_TESTS();
     Factory<IRoot>::singleton().clear();
     return ret;

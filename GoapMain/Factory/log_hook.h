@@ -71,9 +71,10 @@ public:
     friend LOG_CONF &flush(LOG_CONF &l);
     static void defaultLogHead(LOG &log);
 
-    typedef ostream& (*pOstrType)();
-    pOstrType afnOstr[4] {getOstr, nullptr, nullptr, nullptr};
-
+    typedef ostream& (*fnOstrType)();
+    void setOstrFunciton(fnOstrType fn) {
+        _afnOstr[0] = fn;
+    }
     LOG_CONF(loglevel lvl = WARN, pFnLogHeadType pLogHead_ = &defaultLogHead) : _level(lvl), _pFnLogHead(pLogHead_) {}
     ~LOG_CONF() {}
 
@@ -84,7 +85,7 @@ public:
 
     template<class T>
     LOG_CONF &operator<<(const T &msg) {
-        for(pOstrType fnOstr : afnOstr) {
+        for(fnOstrType fnOstr : _afnOstr) {
             if(fnOstr != nullptr) {
                 fnOstr() << msg;
             }
@@ -92,10 +93,13 @@ public:
         return *this;
     }
 
-    LOG_CONF& operator<<(LOG_CONF& (*_Pfn)(LOG_CONF&))
+    LOG_CONF& operator<<(LOG_CONF& (*pfn)(LOG_CONF&))
     {	// call basic manipulator
-        return ((*_Pfn)(*this));
+        return (*pfn)(*this);
     }
+
+private:
+    fnOstrType _afnOstr[1] {getOstr};
 };
 
 class LOG_CONF;
@@ -134,9 +138,9 @@ public:
         }
         return *this;
     }
-    LOG& operator<<(LOG& (*_Pfn)(LOG&))
+    LOG& operator<<(LOG& (*pfn)(LOG&))
     {	// call basic manipulator
-        return ((*_Pfn)(*this));
+        return (*pfn)(*this);
     }
 
     ~LOG();
@@ -158,7 +162,7 @@ inline LOG::LOG(loglevel type, LOG_CONF &logConf) :_logConf(logConf), _debugLeve
 
 
 inline LOG_CONF &endl(LOG_CONF &l) {
-    for(LOG_CONF::pOstrType fnOstr : l.afnOstr) {
+    for(LOG_CONF::fnOstrType fnOstr : l._afnOstr) {
         if(fnOstr != nullptr) {
             fnOstr() << std::endl;
         }
@@ -167,7 +171,7 @@ inline LOG_CONF &endl(LOG_CONF &l) {
 }
 
 inline LOG_CONF &flush(LOG_CONF &l) {
-    for(LOG_CONF::pOstrType fnOstr : l.afnOstr) {
+    for(LOG_CONF::fnOstrType fnOstr : l._afnOstr) {
         if(fnOstr != nullptr) {
             fnOstr() << std::flush;
         }

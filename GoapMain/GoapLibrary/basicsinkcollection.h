@@ -16,8 +16,11 @@ public:
     typedef std::shared_ptr<BasicSinkCollection> Ptr;
 
     BasicSinkCollection();
+    BasicSinkCollection(const std::string& name, IBasicSink::Ptr sink);
+    BasicSinkCollection(const std::string& name, const std::ostream &o);
 
     void addSink(const std::string& name, IBasicSink::Ptr sink) override;
+    void addSink(const std::string& name, const std::ostream &o) override;
     void removeSink(const std::string& name) override;
 
     // IBasicSink interface

@@ -4,6 +4,7 @@
 #include "log_hook.h"
 #include "basicostream.h"
 #include "time_utils.h"
+#include "factory.h"
 
 using namespace goap;
 
@@ -61,10 +62,27 @@ static ostream& getBasicOStream() {
 TEST_F(LogTest, BasicOStream)
 {
     LOG_CONF::singleton().setLevel(DEBUG);
-    LOG_CONF::singleton().afnOstr[0] = getBasicOStream;
+    LOG_CONF::singleton().setOstrFunciton(getBasicOStream);
 
-    LOG(DEBUG) << "Third DEBUG" << endl;
+    LOG(DEBUG) << "Third DEBUG";
     LOG(INFO) << "Third INFO";
     LOG(WARN) << "Third WARN";
     LOG(ERROR) << "Third ERROR";
+}
+
+static ostream& getAdvancedOStream() {
+    static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, const std::ostream &>("Collection", std::string("Main"), std::cerr));
+    return myOStream;
+}
+
+TEST_F(LogTest, AdvancedOStream)
+{
+    auto p = Factory<IRoot>::singleton().create<IBasicSink, const std::string &, const std::ostream &>("Collection", std::string("Main"), std::cerr);
+    LOG_CONF::singleton().setLevel(DEBUG);
+    LOG_CONF::singleton().setOstrFunciton(getAdvancedOStream);
+
+    LOG(DEBUG) << "Fourth DEBUG";
+    LOG(INFO) << "Fourth INFO";
+    LOG(WARN) << "Fourth WARN";
+    LOG(ERROR) << "Fourth ERROR";
 }

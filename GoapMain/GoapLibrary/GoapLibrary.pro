@@ -24,7 +24,8 @@ SOURCES += \
     state.cpp \
     time_utils.cpp \
     basicostream.cpp \
-    basicsinkcollection.cpp
+    basicsinkcollection.cpp \
+    goaplibinscribe.cpp
 
 HEADERS += goaplibrary.h \
     refcounter.h \
@@ -35,7 +36,8 @@ HEADERS += goaplibrary.h \
     time_utils.h \
     basicostreamsink.h \
     basicostream.h \
-    basicsinkcollection.h
+    basicsinkcollection.h \
+    goaplibinscribe.h
 
 unix {
     target.path = /usr/lib

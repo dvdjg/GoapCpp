@@ -480,7 +480,6 @@ void Factory<Base, Key>::clear()
 {
     std::lock_guard<std::mutex> lock(_mutex);
     _map.clear();
-    LOG(DEBUG) << "Factory is being cleared.";
 }
 
 
