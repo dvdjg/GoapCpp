@@ -34,7 +34,9 @@ struct structlog {
 
 extern structlog LOGCFG;
 
-
+/**
+ * @brief Configurations for LOGs
+ */
 class LOG_CONF
 {
     loglevel _level;
