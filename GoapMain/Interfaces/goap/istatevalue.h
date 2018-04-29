@@ -21,8 +21,8 @@ public:
     virtual void resize(std::size_t len) = 0;
     virtual float at(float idx = 0) const = 0;
     virtual void setAt(float idx, float value) = 0;
-    virtual void interpolateFrom(CPtr other) = 0;
-    virtual float cosineDistance(CPtr other) const = 0;
+    virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
+    virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
 
     virtual std::size_t hash() const = 0;
 

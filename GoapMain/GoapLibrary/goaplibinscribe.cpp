@@ -8,6 +8,7 @@
 #include "basicsinkcollection.h"
 #include "basicostreamsink.h"
 #include "statevalue.h"
+#include "scopetime.h"
 
 using namespace goap;
 
@@ -32,6 +33,10 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const std::string &>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const std::string &, std::ostream &>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const char *, std::ostream &>(discr);
     ++ret;
 
     return ret;

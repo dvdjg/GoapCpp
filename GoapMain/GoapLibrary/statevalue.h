@@ -29,8 +29,8 @@ public:
     float at(float idx) const override;
     void setAt(float idx, float value) override;
     void fromString(const std::string &str) override;
-    void interpolateFrom(IStateValue::CPtr other) override;
-    float cosineDistance(IStateValue::CPtr other) const override;
+    void interpolateFrom(const IStateValue::CPtr &other) override;
+    float cosineDistance(const IStateValue::CPtr &other) const override;
     std::string toString() const override;
     std::size_t hash() const override;
 

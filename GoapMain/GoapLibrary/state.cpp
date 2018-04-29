@@ -5,6 +5,8 @@
 namespace goap
 {
 
+using namespace std;
+
 State::State()
 {
 }
@@ -29,10 +31,10 @@ size_t State::size() const
     return data.size();
 }
 
-bool State::equals(const IState *other) const
+bool State::equals(const IState::CPtr &other) const
 {
-    auto o = dynamic_cast<const State*>(other);
-    return data == o->data;
+    auto o = dynamic_pointer_cast<const State>(other);
+    return o && data == o->data;
 }
 
 float State::cost() const

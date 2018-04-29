@@ -2,6 +2,8 @@
 #include "explicit_ptr.h"
 
 #include "goap/istatevalue.h"
+#include "goap/iscopetimer.h"
+
 #include "factory.h"
 
 
@@ -56,6 +58,8 @@ TEST_F(GoapTest, Intefaces)
 
 TEST_F(GoapTest, Test1)
 {
+    auto scopeTimer = factory().create<IScopeTime, const std::string &, std::ostream &>({}, "Test1", std::cerr);
+    ASSERT_TRUE(scopeTimer);
     auto smartCounted1 = factory().create<IStateValue>();
 
     smartCounted1->resize(10);

@@ -1,7 +1,7 @@
 #ifndef IMEMORYVALUE_H
 #define IMEMORYVALUE_H
 
-#include "irefcounter.h"
+#include "common/irefcounter.h"
 
 namespace goap
 {

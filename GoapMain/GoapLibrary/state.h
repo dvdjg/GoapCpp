@@ -26,7 +26,7 @@ public:
     void remove(const std::string &str) override;
     void setAt(const std::string &str, const IStateValue::Ptr &value) override;
     IStateValue::Ptr at(const std::string &str) const override;
-    bool equals(const IState *other) const override;
+    bool equals(const IState::CPtr &other) const override;
     float cost() const override;
     void setCost(float c) override;
 

@@ -7,7 +7,7 @@
 #include "refcounter.h"
 #include "factory.h"
 #include "reuseobjectpool.h"
-
+#include "scopetime.h"
 
 using namespace goap;
 
@@ -115,29 +115,6 @@ Counted *createCounted(const std::string &str)
     return new Counted(str);
 }
 
-class ScopeTime
-{
-    const char *_szMessage;
-    std::string _strMessage;
-    std::ostream & _ostream;
-    typedef std::chrono::steady_clock::time_point time_point;
-    time_point _start;
-public:
-    ScopeTime(const std::string &strMessage = {}, std::ostream & o = std::cerr) : _szMessage(""), _strMessage(strMessage), _ostream(o)
-    {
-        _start = std::chrono::steady_clock::now();
-    }
-    ScopeTime(const char * szMessage, std::ostream & o = std::cerr) : _szMessage(szMessage), _ostream(o)
-    {
-        _start = std::chrono::steady_clock::now();
-    }
-    ~ScopeTime()
-    {
-        time_point end = std::chrono::steady_clock::now();
-        auto diff = end - _start;
-        _ostream << _szMessage << _strMessage << std::chrono::duration <double, std::micro> (diff).count() << " us" << std::endl;
-    }
-};
 
 class FactoryAllTest : public ::testing::Test
 {
@@ -231,6 +208,7 @@ TEST_F(FactoryAllTest, Test1)
         return new NonCounted(number);
     });
     {
+        ScopeTime scope(R"(smartCounted)");
         auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
         auto smartCounted2 = factory.create<IStringDataFromRoot>({}, 123);
         auto smartCounted3 = factory.create<IStringDataFromRoot>("Singleton");
@@ -243,6 +221,7 @@ TEST_F(FactoryAllTest, Test1)
 
     typedef RecyclableWrapper<Counted> RecyclableCounted;
     {
+        ScopeTime scope(R"(RecyclableCounted::createFromPool())");
         auto fromPool1(RecyclableCounted::createFromPool());
         auto fromPool2(RecyclableCounted::createFromPool());
         auto fromPool3(RecyclableCounted::createFromPool());

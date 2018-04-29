@@ -44,7 +44,7 @@ void StateValue::fromString(const std::string &str)
     std::copy(str.begin(), str.end(), std::back_inserter(data));
 }
 
-void StateValue::interpolateFrom(IStateValue::CPtr other)
+void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
     if (!o)
@@ -58,7 +58,7 @@ void StateValue::interpolateFrom(IStateValue::CPtr other)
     }
 }
 
-float StateValue::cosineDistance(IStateValue::CPtr other) const
+float StateValue::cosineDistance(const IStateValue::CPtr &other) const
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o)
