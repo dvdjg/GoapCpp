@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    GoapTest \
     FactoryTest \
     DataTest \
     BotanTest \

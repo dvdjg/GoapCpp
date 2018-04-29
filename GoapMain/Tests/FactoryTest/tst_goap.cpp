@@ -10,10 +10,10 @@
 using namespace goap;
 void registration(Factory<IRoot> &factory);
 
-class GoapTest : public ::testing::Test
+class FactoryGoapTest : public ::testing::Test
 {
 public:
-    GoapTest()
+    FactoryGoapTest()
     {
     }
 
@@ -38,7 +38,7 @@ protected:
     }
 };
 
-TEST_F(GoapTest, Intefaces)
+TEST_F(FactoryGoapTest, Intefaces)
 {
     auto bConv1 = std::is_base_of<IRefCounter, IStateValue>::value;
     auto bConv2 = std::is_base_of<IStringValue, IStateValue>::value;
@@ -56,11 +56,12 @@ TEST_F(GoapTest, Intefaces)
     EXPECT_TRUE(bIStateValue);
 }
 
-TEST_F(GoapTest, Test1)
+TEST_F(FactoryGoapTest, Test1)
 {
     auto scopeTimer = factory().create<IScopeTime, const std::string &, std::ostream &>({}, "Test1", std::cerr);
     ASSERT_TRUE(scopeTimer);
     auto smartCounted1 = factory().create<IStateValue>();
+    ASSERT_TRUE(smartCounted1);
 
     smartCounted1->resize(10);
     smartCounted1->setAt(0, 0.0);
