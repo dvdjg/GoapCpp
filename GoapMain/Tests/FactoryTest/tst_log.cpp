@@ -119,7 +119,7 @@ public:
     }
 };
 
-static ostream& getAdvancedOStream(IBasicSink::Ptr ptrSink) {
+static ostream& getAdvancedOStream2() {
     static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, std::ostream &>("Collection", "Main", std::cerr));
     return myOStream;
 }
@@ -127,7 +127,7 @@ static ostream& getAdvancedOStream(IBasicSink::Ptr ptrSink) {
 TEST_F(LogTest, AdvancedOStreamOps)
 {
     LOG_CONF::singleton().setLevel(INFO);
-    LOG_CONF::singleton().setOstrFunciton(getAdvancedOStream);
+    LOG_CONF::singleton().setOstrFunciton(getAdvancedOStream2);
 
     LOG(DEBUG) << "Fourth DEBUG";
     LOG(INFO) << "Fourth INFO";

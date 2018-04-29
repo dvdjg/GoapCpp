@@ -12,7 +12,7 @@ class NewPtr : public explicit_ptr<I>
 {
 public:
     template <typename ... Args>
-    NewPtr(Args &&... args) : explicit_ptr<I>(Factory<P>::singleton().create<I, Args...>({}, std::forward<Args>(args)...))
+    NewPtr(Args &&... args) : explicit_ptr<I>(Factory<P>::singleton().template create<I, Args...>({}, std::forward<Args>(args)...))
     {
     }
 };
