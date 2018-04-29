@@ -17,6 +17,11 @@ StateValue::StateValue(const StateValue &other) : data(other.data)
 {
 }
 
+StateValue::StateValue(const IStateValue::CPtr &other)
+{
+    assign(other);
+}
+
 StateValue::StateValue(const std::string &str)
 {
     fromString(str);
@@ -32,10 +37,19 @@ void StateValue::resize(std::size_t len)
     data.resize(len);
 }
 
-float StateValue::at(float idx) const
+float StateValue::atF(float idx) const
 {
     float ret = interp2(idx, &data[0], static_cast<int>(data.size()));
     return ret;
+}
+
+float StateValue::at(size_t idx) const
+{
+    if (idx >= data.size())
+    {
+        throw new std::runtime_error(__func__);
+    }
+    return data[idx];
 }
 
 void StateValue::fromString(const std::string &str)
@@ -78,10 +92,18 @@ std::string StateValue::toString() const
     return ret;
 }
 
-void StateValue::setAt(float idx, float value)
+void StateValue::setAtF(float idx, float value)
 {
     size_t i = size_t(idx);
+    if (i >= data.size())
+    {
+        throw new std::runtime_error(__func__);
+    }
     data[i] = value;
+}
+void StateValue::setAt(size_t idx, float value)
+{
+    data[idx] = value;
 }
 
 std::size_t StateValue::hash() const
@@ -94,4 +116,13 @@ IClonable::Ptr StateValue::clone() const
     return new StateValue(*this);
 }
 
+void StateValue::assign(const IStateValue::CPtr &other)
+{
+    data.resize(other->size());
+    for (size_t i = 0; i < other->size(); ++i) {
+        data[i] = other->at(i);
+    }
 }
+
+}
+

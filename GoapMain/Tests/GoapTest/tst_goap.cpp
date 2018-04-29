@@ -31,10 +31,10 @@ protected:
 };
 
 template <typename I>
-class HideFactory : public explicit_ptr<I>
+class NewPtr : public explicit_ptr<I>
 {
 public:
-    HideFactory() : explicit_ptr<I>(Factory<IRoot>::singleton().create<I>())
+    NewPtr() : explicit_ptr<I>(Factory<IRoot>::singleton().create<I>())
     {
     }
 };
@@ -47,7 +47,7 @@ TEST_F(GoapTest, Test1)
     ASSERT_TRUE(ptrState);
 
     ptrState->resize(10);
-    ptrState->setAt(0, 0.0);
+    ptrState->setAt(0, 0.0f);
     ptrState->setAt(1, 1.0);
     ptrState->setAt(2, 2.0);
 
@@ -56,7 +56,7 @@ TEST_F(GoapTest, Test1)
 
 TEST_F(GoapTest, TestHide)
 {
-    HideFactory<IStateValue> ptrState;
+    NewPtr<IStateValue> ptrState;
     ASSERT_TRUE(ptrState);
 
     ptrState->resize(10);

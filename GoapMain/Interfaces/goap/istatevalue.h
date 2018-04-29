@@ -19,14 +19,21 @@ public:
     //virtual bool isNumeric() const = 0;
     virtual std::size_t size() const = 0; ///< From 0 to 1000
     virtual void resize(std::size_t len) = 0;
-    virtual float at(float idx = 0) const = 0;
-    virtual void setAt(float idx, float value) = 0;
+    virtual float atF(float idx) const = 0;
+    virtual void setAtF(float idx, float value) = 0;
+    virtual float at(size_t idx) const = 0;
+    virtual void setAt(size_t idx, float value) = 0;
+    virtual void assign(const IStateValue::CPtr &other) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
 
     virtual std::size_t hash() const = 0;
 
     inline float operator[](float idx) const
+    {
+        return atF(idx);
+    }
+    inline float operator[](size_t idx) const
     {
         return at(idx);
     }
