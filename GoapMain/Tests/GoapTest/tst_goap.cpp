@@ -18,7 +18,7 @@ public:
 
     Factory<IRoot>& factory() {
         return Factory<IRoot>::singleton();
-}
+    }
 
 protected:
     static void SetUpTestCase() {
@@ -34,7 +34,7 @@ protected:
 
 TEST_F(GoapTest, Test1)
 {
-    auto scopeTimer = factory().create<IScopeTime, const std::string &, std::ostream &>({}, "Test1", std::cerr);
+    auto scopeTimer = NewPtr<IScopeTime>((const std::string &) "Test", (std::ostream &)std::cerr);
     ASSERT_TRUE(scopeTimer);
     auto ptrState = factory().create<IStateValue>();
     ASSERT_TRUE(ptrState);

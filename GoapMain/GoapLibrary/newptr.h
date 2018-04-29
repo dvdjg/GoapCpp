@@ -3,17 +3,16 @@
 
 #include "factory.h"
 #include "common/iroot.h"
-#include "explicit_ptr.h"
 
 namespace goap
 {
 
-template <typename I>
+template <typename I, typename P = IRoot>
 class NewPtr : public explicit_ptr<I>
 {
 public:
     template <typename ... Args>
-    NewPtr(Args &&... args) : explicit_ptr<I>(Factory<IRoot>::singleton().create<I, Args...>({}, std::forward<Args>(args)...))
+    NewPtr(Args &&... args) : explicit_ptr<I>(Factory<P>::singleton().create<I, Args...>({}, std::forward<Args>(args)...))
     {
     }
 };
