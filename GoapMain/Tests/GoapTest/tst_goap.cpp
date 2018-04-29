@@ -30,6 +30,14 @@ protected:
     }
 };
 
+template <typename I>
+class HideFactory : public explicit_ptr<I>
+{
+public:
+    HideFactory() : explicit_ptr<I>(Factory<IRoot>::singleton().create<I>())
+    {
+    }
+};
 
 TEST_F(GoapTest, Test1)
 {
@@ -46,5 +54,16 @@ TEST_F(GoapTest, Test1)
     EXPECT_EQ(1.0, ptrState->at(1));
 }
 
+TEST_F(GoapTest, TestHide)
+{
+    HideFactory<IStateValue> ptrState;
+    ASSERT_TRUE(ptrState);
 
+    ptrState->resize(10);
+    ptrState->setAt(0, 0.0);
+    ptrState->setAt(1, 1.0);
+    ptrState->setAt(2, 2.0);
+
+    EXPECT_EQ(1.0, ptrState->at(1));
+}
 
