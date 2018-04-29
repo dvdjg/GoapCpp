@@ -5,6 +5,7 @@
 #include "goap/iscopetimer.h"
 
 #include "factory.h"
+#include "newptr.h"
 
 
 using namespace goap;
@@ -30,14 +31,6 @@ protected:
     }
 };
 
-template <typename I>
-class NewPtr : public explicit_ptr<I>
-{
-public:
-    NewPtr() : explicit_ptr<I>(Factory<IRoot>::singleton().create<I>())
-    {
-    }
-};
 
 TEST_F(GoapTest, Test1)
 {
@@ -56,7 +49,7 @@ TEST_F(GoapTest, Test1)
 
 TEST_F(GoapTest, TestHide)
 {
-    NewPtr<IStateValue> ptrState;
+    NewPtr<IStateValue> ptrState(static_cast<const std::string &>("Lo qué"));
     ASSERT_TRUE(ptrState);
 
     ptrState->resize(10);

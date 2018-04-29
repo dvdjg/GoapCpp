@@ -34,9 +34,13 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const std::string &>(discr);
     ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const char *>(discr);
+    ++ret;
     factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const std::string &, std::ostream &>(discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const char *, std::ostream &>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const char *>(discr);
     ++ret;
 
     return ret;
