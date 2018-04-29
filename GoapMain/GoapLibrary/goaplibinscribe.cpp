@@ -18,13 +18,13 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSinkCollection, BasicSinkCollection, const std::string &, IBasicSink::Ptr>(discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IBasicSinkCollection, BasicSinkCollection, const std::string &, const std::ostream &>(discr);
+    factory.inscribe<FactoryType::Default, IBasicSinkCollection, BasicSinkCollection, const std::string &, std::ostream &>(discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSink, BasicSinkCollection>(discr+"Collection");
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSink, BasicSinkCollection, const std::string &, IBasicSink::Ptr>(discr+"Collection");
     ++ret;
-    factory.inscribe<FactoryType::Default, IBasicSink, BasicSinkCollection, const std::string &, const std::ostream &>(discr+"Collection");
+    factory.inscribe<FactoryType::Default, IBasicSink, BasicSinkCollection, const std::string &, std::ostream &>(discr+"Collection");
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
     ++ret;

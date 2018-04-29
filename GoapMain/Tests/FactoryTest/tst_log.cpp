@@ -71,13 +71,13 @@ TEST_F(LogTest, BasicOStream)
 }
 
 static ostream& getAdvancedOStream() {
-    static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, const std::ostream &>("Collection", "Main", std::cerr));
+    static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, std::ostream &>("Collection", "Main", std::cerr));
     return myOStream;
 }
 
 TEST_F(LogTest, CreateInstance)
 {
-    auto p = Factory<IRoot>::singleton().create<IBasicSink, const std::string &, const std::ostream &>("Collection", "Main", std::cerr);
+    auto p = Factory<IRoot>::singleton().create<IBasicSink, const std::string &, std::ostream &>("Collection", "Main", std::cerr);
     EXPECT_NE(nullptr, p);
 }
 
@@ -120,7 +120,7 @@ public:
 };
 
 static ostream& getAdvancedOStream(IBasicSink::Ptr ptrSink) {
-    static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, const std::ostream &>("Collection", "Main", std::cerr));
+    static BasicOStream myOStream(Factory<IRoot>::singleton().create<IBasicSink, const std::string &, std::ostream &>("Collection", "Main", std::cerr));
     return myOStream;
 }
 

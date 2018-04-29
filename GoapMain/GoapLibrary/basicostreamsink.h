@@ -9,7 +9,7 @@ namespace goap
 
 class BasicOstreamSink : public IBasicSink
 {
-    std::basic_ostream< char, std::char_traits< char >> &_ostream;
+    std::ostream &_ostream;
 public:
     typedef std::shared_ptr<BasicOstreamSink> Ptr;
 
