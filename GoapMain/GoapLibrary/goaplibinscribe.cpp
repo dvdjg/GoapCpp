@@ -32,6 +32,8 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr);
     ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const IStateValue::CPtr &>(discr);
+    ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const std::string &>(discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const char *>(discr);

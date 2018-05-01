@@ -41,7 +41,7 @@ protected:
     virtual void suicide() = 0;
 
     friend void intrusive_ptr_add_ref(const IRefCounter *t);
-    friend void intrusive_ptr_release(IRefCounter *t);
+    friend void intrusive_ptr_release(const IRefCounter *t);
 };
 
 template<typename T>
@@ -58,16 +58,17 @@ inline void intrusive_ptr_add_ref(const IRefCounter *t)
 
 template<typename T>
 inline typename enable_if <is_convertible<T*, IRefCounter*>::value, void>::type
-intrusive_ptr_release(T *t)
+intrusive_ptr_release(const T *t)
 {
-    intrusive_ptr_release(static_cast<IRefCounter*>(t));
+    intrusive_ptr_release(static_cast<const IRefCounter*>(t));
 }
 
-inline void intrusive_ptr_release(IRefCounter *t)
+inline void intrusive_ptr_release(const IRefCounter *t)
 {
     if (t->releaseRef() == 0)
     {
-        t->suicide();
+        // Ouch! A deletion from a const pointer...
+        const_cast<IRefCounter*>(t)->suicide();
     }
 }
 }

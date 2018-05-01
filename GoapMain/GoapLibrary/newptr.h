@@ -7,13 +7,29 @@
 namespace goap
 {
 
-template <typename I, typename P = IRoot>
+template <typename I, typename P = IRoot, typename Key = std::string>
 class NewPtr : public explicit_ptr<I>
 {
 public:
     template <typename ... Args>
-    NewPtr(Args &&... args) : explicit_ptr<I>(Factory<P>::singleton().template create<I, Args...>({}, std::forward<Args>(args)...))
+    NewPtr(const Key & discr, Args &&... args) : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I, Args...>(discr, std::forward<Args>(args)...))
     {
+    }
+    NewPtr() : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I>({}))
+    {
+    }
+//    NewPtr(const NewPtr<I, P, Key> & other) : explicit_ptr<I>(other)
+//    {
+//    }
+    NewPtr(const explicit_ptr<I> & other) : explicit_ptr<I>(other)
+    {
+    }
+
+    explicit_ptr<I> getPtr() {
+        return *this;
+    }
+    explicit_ptr<const I> getCPtr() {
+        return explicit_ptr<I>(*this);
     }
 };
 

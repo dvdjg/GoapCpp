@@ -16,6 +16,12 @@ public:
     typedef explicit_ptr<IStateValue> Ptr;
     typedef explicit_ptr<const IStateValue> CPtr;
 
+    inline static bool floatEqual(float x, float y)
+    {
+        float diff = std::abs(x - y);
+        return diff <= FLT_EPSILON * std::abs(x + y) * 2 || diff < FLT_MIN;
+    }
+
     //virtual bool isNumeric() const = 0;
     virtual std::size_t size() const = 0; ///< From 0 to 1000
     virtual void resize(std::size_t len) = 0;
@@ -26,6 +32,19 @@ public:
     virtual void assign(const IStateValue::CPtr &other) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
+    virtual bool equal(const IStateValue::CPtr &other) const
+    {
+        bool ret(other);
+        if (ret)
+        {
+            std::size_t thisSize = size();
+            ret = thisSize == other->size();
+            for (std::size_t i = 0; ret && i < thisSize; ++i) {
+                ret = floatEqual(at(i), other->at(i));
+            }
+        }
+        return ret;
+    }
 
     virtual std::size_t hash() const = 0;
 
@@ -47,6 +66,14 @@ namespace std
 using namespace goap;
 
 template <>
+struct hash<IStateValue::CPtr>
+{
+    std::size_t operator()(const IStateValue::CPtr &k) const
+    {
+        return k->hash();
+    }
+};
+template <>
 struct hash<IStateValue::Ptr>
 {
     std::size_t operator()(const IStateValue::Ptr &k) const
@@ -56,20 +83,11 @@ struct hash<IStateValue::Ptr>
 };
 
 template<>
-struct equal_to<IStateValue::Ptr>
+struct equal_to<IStateValue::CPtr>
 {
-    bool operator()(const IStateValue::Ptr &data1, const IStateValue::Ptr &data2) const
+    bool operator()(const IStateValue::CPtr &data1, const IStateValue::CPtr &data2) const
     {
-        bool ret = !data1 && !data2;
-        if (!ret)
-        {
-            ret = data1 && data2 && data1->size() == data2->size();
-            if (ret)
-            {
-
-            }
-        }
-        return ret;
+        return data1->equal(data2);
     }
 };
 }
