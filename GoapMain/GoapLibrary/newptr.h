@@ -18,9 +18,6 @@ public:
     NewPtr() : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I>({}))
     {
     }
-//    NewPtr(const NewPtr<I, P, Key> & other) : explicit_ptr<I>(other)
-//    {
-//    }
     NewPtr(const explicit_ptr<I> & other) : explicit_ptr<I>(other)
     {
     }

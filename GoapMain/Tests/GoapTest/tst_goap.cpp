@@ -31,10 +31,9 @@ protected:
     }
 };
 
-
 TEST_F(GoapTest, Test1)
 {
-    auto scopeTimer = NewPtr<IScopeTime>({}, (const std::string &) "Test", (std::ostream &)std::cerr);
+    auto scopeTimer = NewPtr<IScopeTime>({}, (const std::string &) "GoapTest, Test1: ", true);
     ASSERT_TRUE(scopeTimer);
     NewPtr<IStateValue> ptrState;
     ASSERT_TRUE(ptrState);

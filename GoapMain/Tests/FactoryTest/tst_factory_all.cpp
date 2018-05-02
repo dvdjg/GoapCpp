@@ -7,7 +7,7 @@
 #include "refcounter.h"
 #include "factory.h"
 #include "reuseobjectpool.h"
-#include "scopetime.h"
+#include "scopetimeostream.h"
 
 using namespace goap;
 
@@ -179,7 +179,7 @@ TEST_F(FactoryAllTest, Test1)
     EXPECT_TRUE(bInscribed);
     Counted counted("Hola");
     {
-        ScopeTime scope(R"(Counted counted("Hola");)");
+        ScopeTimeOstream<std::cerr> scope(R"(Counted counted("Hola");)");
         explicit_ptr<Counted> ptrCounted(new Counted("Hello"));
         {
             auto smartCounted1 = factory.create<IStringData, const std::string &>({}, "Hallo");
@@ -208,7 +208,7 @@ TEST_F(FactoryAllTest, Test1)
         return new NonCounted(number);
     });
     {
-        ScopeTime scope(R"(smartCounted)");
+        ScopeTimeOstream<std::cerr> scope(R"(smartCounted)");
         auto smartCounted = factory.create<IStringDataFromRoot, const std::string &>({}, "Bye");
         auto smartCounted2 = factory.create<IStringDataFromRoot>({}, 123);
         auto smartCounted3 = factory.create<IStringDataFromRoot>("Singleton");
@@ -221,7 +221,7 @@ TEST_F(FactoryAllTest, Test1)
 
     typedef RecyclableWrapper<Counted> RecyclableCounted;
     {
-        ScopeTime scope(R"(RecyclableCounted::createFromPool())");
+        ScopeTimeOstream<std::cerr> scope(R"(RecyclableCounted::createFromPool())");
         auto fromPool1(RecyclableCounted::createFromPool());
         auto fromPool2(RecyclableCounted::createFromPool());
         auto fromPool3(RecyclableCounted::createFromPool());

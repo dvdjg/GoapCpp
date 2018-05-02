@@ -39,7 +39,8 @@ HEADERS += goaplibrary.h \
     basicsinkcollection.h \
     goaplibinscribe.h \
     scopetime.h \
-    newptr.h
+    newptr.h \
+    scopetimeostream.h
 
 unix {
     target.path = /usr/lib

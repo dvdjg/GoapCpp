@@ -1,8 +1,6 @@
 #ifndef SCOPETIME_H
 #define SCOPETIME_H
 
-#include <string>
-#include <iostream>
 #include <chrono>
 #include "goap/iscopetimer.h"
 
@@ -12,37 +10,50 @@ namespace goap
 class ScopeTime : public IScopeTime
 {
     const char *_szMessage;
-    std::string _strMessage;
-    std::ostream & _ostream;
+    bool _bOutOfScope;
     typedef std::chrono::steady_clock::time_point time_point;
     time_point _start;
-
 public:
-    ScopeTime(const std::string &strMessage = {}, std::ostream & o = std::cerr) : _szMessage(""), _strMessage(strMessage), _ostream(o)
+    typedef std::ratio<3600, 1> hour;
+
+    ScopeTime(const char *szMessage, pfn_time pfnTime = nullptr, bool bOutOfScope = true) : _szMessage(szMessage), _bOutOfScope(bOutOfScope), _pfnTime(pfnTime)
     {
         _start = std::chrono::steady_clock::now();
     }
-    ScopeTime(const char * szMessage, std::ostream & o = std::cerr) : _szMessage(szMessage), _ostream(o)
+    void showSpanTime() override
     {
-        _start = std::chrono::steady_clock::now();
+        double dblTime = 0;
+        const char *szUnits = "";
+        time_point end = std::chrono::steady_clock::now();
+        auto diff = end - _start;
+        auto count = diff.count();
+        if(count < 10000LL) {
+            dblTime = std::chrono::duration <double, std::nano> (diff).count();
+            szUnits = "ns";
+        } else if(count < 10000000LL) {
+            dblTime = std::chrono::duration <double, std::micro> (diff).count();
+            szUnits = "us";
+        } else if(count < 10000000000LL) {
+            dblTime = std::chrono::duration <double, std::milli> (diff).count();
+            szUnits = "ms";
+        } else if(count < 36000000000000LL){
+            dblTime = std::chrono::duration <double> (diff).count();
+            szUnits = "s";
+        }else {
+            dblTime = std::chrono::duration <double, hour> (diff).count();
+            szUnits = "h";
+        }
+
+        _pfnTime(_szMessage, dblTime, szUnits);
     }
     virtual ~ScopeTime()
     {
-        time_point end = std::chrono::steady_clock::now();
-        auto diff = end - _start;
-        _ostream << _szMessage << _strMessage << ' ';
-        auto count = diff.count();
-        if(count < 10000LL) {
-            _ostream << std::chrono::duration <double, std::nano> (diff).count() << " ns";
-        } else if(count < 10000000LL) {
-            _ostream << std::chrono::duration <double, std::micro> (diff).count() << " us";
-        } else if(count < 10000000000LL) {
-            _ostream << std::chrono::duration <double, std::milli> (diff).count() << " ms";
-        } else {
-            _ostream << std::chrono::duration <double> (diff).count() << " s";
+        if(_bOutOfScope) {
+            showSpanTime();
         }
-        _ostream << std::endl;
     }
+protected:
+    pfn_time _pfnTime;
 };
 
 }

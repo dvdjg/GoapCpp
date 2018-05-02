@@ -68,7 +68,7 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
     resize(o->size());
     if (size() > 0)
     {
-        interp2array(&o->data[0], o->size(), &data[0], size());
+        interp2array(&o->data[0], o->size(), &data[0], static_cast<int>(size()));
     }
 }
 
