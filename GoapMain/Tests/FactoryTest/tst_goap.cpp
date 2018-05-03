@@ -58,7 +58,7 @@ TEST_F(FactoryGoapTest, Intefaces)
 
 TEST_F(FactoryGoapTest, Test1)
 {
-    auto scopeTimer = factory().create<IScopeTime, const std::string &>({}, "FactoryGoapTest.Test1", true);
+    auto scopeTimer = factory().create<IScopeTime>({}, static_cast<const char *>("FactoryGoapTest.Test1"), true);
     ASSERT_TRUE(scopeTimer);
     auto smartCounted1 = factory().create<IStateValue>();
     ASSERT_TRUE(smartCounted1);

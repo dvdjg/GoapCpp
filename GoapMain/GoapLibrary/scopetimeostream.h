@@ -16,8 +16,10 @@ public:
     static void fnOstr(const char *szMessage, double time, const char *szUnits) {
         os << szMessage << time << ' ' << szUnits << std::endl;
     }
-
-    ScopeTimeOstream(const std::string &strMessage = {}, bool bOutOfScope = true) : ScopeTime(strMessage.c_str(), &fnOstr, bOutOfScope)
+    ScopeTimeOstream(const char *szMessage = nullptr, bool bOutOfScope = true) : ScopeTime(szMessage, &fnOstr, bOutOfScope)
+    {
+    }
+    ScopeTimeOstream(const std::string &strMessage, bool bOutOfScope = true) : ScopeTime(strMessage.c_str(), &fnOstr, bOutOfScope)
     {
     }
 };

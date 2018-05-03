@@ -33,7 +33,7 @@ protected:
 
 TEST_F(GoapTest, Test1)
 {
-    auto scopeTimer = NewPtr<IScopeTime>({}, (const std::string &) "GoapTest, Test1: ", true);
+    auto scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapTest, Test1: ", true);
     ASSERT_TRUE(scopeTimer);
     NewPtr<IStateValue> ptrState;
     ASSERT_TRUE(ptrState);
@@ -63,8 +63,8 @@ TEST_F(GoapTest, TestHide)
 
     auto f6 = ptrState->at(6);
     EXPECT_EQ("é"[1], f6);
-
 }
+
 TEST_F(GoapTest, TestHide2)
 {
     NewPtr<IStateValue> ptrState({}, static_cast<const char *>("Lo qué"));
@@ -82,7 +82,6 @@ TEST_F(GoapTest, TestHide2)
 
     auto f6 = ptrState->at(6);
     EXPECT_EQ("é"[1], f6);
-
 }
 
 TEST_F(GoapTest, Assign)

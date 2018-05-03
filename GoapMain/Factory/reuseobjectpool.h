@@ -3,7 +3,7 @@
 
 #include <mutex>
 #include <queue>
-#include <memory>
+#include "explicit_ptr.h"
 #include "instancedeleter.h"
 
 namespace goap
@@ -122,11 +122,7 @@ class RecyclableWrapper : public P
 {
 public:
     typedef ReuseObjectPool<RecyclableWrapper<P>> pool_type;
-#if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
-    typedef typename std::conditional<has_intrusive_ptr<RecyclableWrapper<P>>::value, boost::intrusive_ptr<RecyclableWrapper<P>>, std::shared_ptr<RecyclableWrapper<P>>>::type smart_pointer;
-#else
-    typedef std::shared_ptr<RecyclableWrapper<P>> smart_pointer;
-#endif
+    explicit_ptr<RecyclableWrapper<P>> smart_pointer;
 
     RecyclableWrapper() : P() {}
     virtual void suicide()

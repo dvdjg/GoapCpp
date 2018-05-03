@@ -2,13 +2,14 @@
 #define GOAPLIBINSCRIBE_CPP
 
 #include <string>
-#include "goaplibinscribe.h"
 #include "factory.h"
+#include "reuseobjectpool.h"
 #include "common/iroot.h"
 #include "basicsinkcollection.h"
 #include "basicostreamsink.h"
 #include "statevalue.h"
 #include "scopetimeostream.h"
+#include "goaplibinscribe.h"
 
 using namespace goap;
 
@@ -28,7 +29,8 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateValue, StateValue>(discr);
+
+    factory.inscribe<FactoryType::Default, IStateValue>([](){ return RecyclableWrapper<StateValue>::createFromPoolRaw(); }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr);
     ++ret;
@@ -38,11 +40,27 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const char *>(discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTimeOstream<std::cerr>, const std::string &, bool>(discr);
+    factory.inscribe<FactoryType::Default, IScopeTime>([](const char *szMessage = nullptr, bool bOutOfScope = true) {
+        auto ret = RecyclableWrapper<ScopeTimeOstream<std::cerr>>::createFromPoolRaw();
+        ret->setMessage(szMessage);
+        ret->setMessageOnDelete(bOutOfScope);
+        return ret;
+    }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTimeOstream<std::cout>, const std::string &, bool>(discr+" cout");
+    factory.inscribe<FactoryType::Default, IScopeTime>([](const char *szMessage = nullptr, bool bOutOfScope = true) {
+        auto ret = RecyclableWrapper<ScopeTimeOstream<std::cout>>::createFromPoolRaw();
+        ret->setMessage(szMessage);
+        ret->setMessageOnDelete(bOutOfScope);
+        return ret;
+    }, discr+".cout");
     ++ret;
-    factory.inscribe<FactoryType::Default, IScopeTime, ScopeTime, const char *, IScopeTime::pfn_time, bool>(discr);
+    factory.inscribe<FactoryType::Default, IScopeTime>([](const char *szMessage = nullptr, IScopeTime::pfn_time pfnTime = nullptr, bool bOutOfScope = true) {
+        auto ret = RecyclableWrapper<ScopeTime>::createFromPoolRaw();
+        ret->setMessage(szMessage);
+        ret->setPfnTime(pfnTime);
+        ret->setMessageOnDelete(bOutOfScope);
+        return ret;
+    }, discr+".cout");
     ++ret;
 
     return ret;
