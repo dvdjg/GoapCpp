@@ -35,9 +35,11 @@ public:
     void interpolateFrom(const IStateValue::CPtr &other) override;
     float cosineDistance(const IStateValue::CPtr &other) const override;
     void assign(const IStateValue::CPtr &other) override;
+    void assign(const std::string &other) override;
     std::string toString() const override;
     std::size_t hash() const override;
 
+    void clear() override;
     IClonable::Ptr clone() const override;
 
 };

@@ -43,6 +43,7 @@ public:
     virtual float at(size_t idx) const = 0;
     virtual void setAt(size_t idx, float value) = 0;
     virtual void assign(const IStateValue::CPtr &other) = 0;
+    virtual void assign(const std::string &other) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
     virtual bool equal(const IStateValue::CPtr &other) const
@@ -59,6 +60,7 @@ public:
         return ret;
     }
 
+    virtual void clear() = 0;
     virtual std::size_t hash() const = 0;
 
     inline float operator[](float idx) const

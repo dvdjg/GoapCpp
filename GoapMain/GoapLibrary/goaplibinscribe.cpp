@@ -32,13 +32,34 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
 
     factory.inscribe<FactoryType::Default, IStateValue>([](){ return RecyclableWrapper<StateValue>::createFromPoolRaw(); }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr);
+    factory.inscribe<FactoryType::Default, IStateValue>([](const IStateValue::CPtr &cptr){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->assign(cptr);
+        return ptr;
+    }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const IStateValue::CPtr &>(discr);
+    factory.inscribe<FactoryType::Default, IStateValue>([](const std::string &str){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->fromString(str);
+        return ptr;
+    }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const std::string &>(discr);
+    factory.inscribe<FactoryType::Default, IStateValue>([](const char *sz){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->fromString(sz);
+        return ptr;
+    }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const char *>(discr);
+
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue>(discr+"Default");
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr+"Default");
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const IStateValue::CPtr &>(discr+"Default");
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const std::string &>(discr+"Default");
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue, StateValue, const char *>(discr+"Default");
     ++ret;
     factory.inscribe<FactoryType::Default, IScopeTime>([](const char *szMessage = nullptr, bool bOutOfScope = true) {
         auto ret = RecyclableWrapper<ScopeTimeOstream<std::cerr>>::createFromPoolRaw();
@@ -52,7 +73,7 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         ret->setMessage(szMessage);
         ret->setMessageOnDelete(bOutOfScope);
         return ret;
-    }, discr+".cout");
+    }, discr+"Cout");
     ++ret;
     factory.inscribe<FactoryType::Default, IScopeTime>([](const char *szMessage = nullptr, IScopeTime::pfn_time pfnTime = nullptr, bool bOutOfScope = true) {
         auto ret = RecyclableWrapper<ScopeTime>::createFromPoolRaw();
@@ -60,7 +81,7 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         ret->setPfnTime(pfnTime);
         ret->setMessageOnDelete(bOutOfScope);
         return ret;
-    }, discr+".cout");
+    }, discr+"Cout");
     ++ret;
 
     return ret;

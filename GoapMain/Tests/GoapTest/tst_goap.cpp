@@ -33,11 +33,12 @@ protected:
 
 TEST_F(GoapTest, Test1)
 {
-    auto scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapTest, Test1: ", true);
+    auto scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapTest, Test1 A: ", true);
     ASSERT_TRUE(scopeTimer);
     NewPtr<IStateValue> ptrState;
     ASSERT_TRUE(ptrState);
-
+    scopeTimer.reset();
+    scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapTest, Test1: B", true);
     ptrState->resize(10);
     ptrState->setAt(0, 0.0f);
     ptrState->setAt(1, 1.0);

@@ -58,6 +58,11 @@ void StateValue::fromString(const std::string &str)
     std::copy(str.begin(), str.end(), std::back_inserter(data));
 }
 
+void StateValue::assign(const std::string &str)
+{
+    fromString(str);
+}
+
 void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
@@ -109,6 +114,11 @@ void StateValue::setAt(size_t idx, float value)
 std::size_t StateValue::hash() const
 {
     return basicmath::hash(&data[0], data.size());
+}
+
+void StateValue::clear()
+{
+    data.resize(0);
 }
 
 IClonable::Ptr StateValue::clone() const
