@@ -48,11 +48,11 @@ win32-msvc* {
     LIBPRE=
     LIBPOST=.lib
     INCLUDEPATH += \
-        F:/Programa/boost_1_66_0 \
+        D:\Programa\boost_1_71_0 \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
     LIBS += \
-        -LF:/Programa/boost_1_66_0/stage/lib \
+        -LD:\Programa\boost_1_71_0/stage/lib \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS +=  -openmp
     QMAKE_CFLAGS += -openmp
@@ -62,11 +62,11 @@ win32-msvc* {
     LIBPRE=lib
     LIBPOST=.a
     INCLUDEPATH += \
-        F:/Programa/boost_1_66_0 \
+        D:\Programa\boost_1_71_0 \
         "D:/OneDrive/Programa/googletest/googletest/include" \
         "D:/OneDrive/Programa/googletest/googlemock/include"
     LIBS += \
-        -LF:/Programa/boost_1_66_0/stage/lib \
+        -LD:\Programa\boost_1_71_0/stage/lib \
          -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment

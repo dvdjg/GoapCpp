@@ -34,12 +34,12 @@ POST_LIBS = $$LIBS
 LIBS =
 win32-* {
     INCLUDEPATH += \
-        "F:/Program Files/ArrayFire/v3/include"
+        "D:/Program Files/ArrayFire/v3/include"
     LIBS += \
-        -L"F:/Program Files/ArrayFire/v3/lib" \
+        -L"D:/Program Files/ArrayFire/v3/lib" \
         -laf
 }
-win32-g++:LIBS += "F:/Program Files/ArrayFire/v3/lib/af.lib"
+win32-g++:LIBS += "D:/Program Files/ArrayFire/v3/lib/af.lib"
 LIBS += \
     -lGoapLibrary$$SUFFIX \
     -lz$$SUFFIX \

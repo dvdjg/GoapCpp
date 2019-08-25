@@ -10,6 +10,8 @@ SUBDIRS += \
     gloox \
     sqlite \
     sqlite3 \
-    sqlite_modern_cpp \
-    rpclib
+    sqlite_modern_cpp
+
+
+ #   rpclib
 

@@ -4,9 +4,10 @@ SUBDIRS += \
     GoapTest \
     FactoryTest \
     DataTest \
-    BotanTest \
-    RpcTest \
-    RpcExamples
+    BotanTest
+
+#    RpcTest \
+#    RpcExamples
 
 !win32-g++:SUBDIRS += ArrayFireTest
 
