@@ -1,6 +1,6 @@
 build
-GoapMain/lib
-GoapMain/bin
+GoapMain/lib*
+GoapMain/bin*
 *.orig
 *.user
 *.inc

@@ -83,13 +83,9 @@ public:
     {}
     static void SetUpTestCase()
     {
-        error_log(
-            [&](errors::constraint e)
-        {
+        error_log([&](errors::constraint e) {
             cerr << "Wrong error detected! " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
-        },
-        [&](errors::constraint_primarykey e)
-        {
+        }, [&](errors::constraint_primarykey e) {
             cerr << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
             error_detected = true;
         }
