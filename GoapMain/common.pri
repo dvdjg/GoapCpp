@@ -67,7 +67,7 @@ win32-msvc* {
         "D:/OneDrive/Programa/googletest/googlemock/include"
     LIBS += \
         -LD:\Programa\boost_1_71_0/stage/lib \
-         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 \
+         -lboost_system-mgw73-mt-x64-1_71 -lboost_filesystem-mgw73-mt-x64-1_71 \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment
     QMAKE_CFLAGS  += -pthread -fno-strict-aliasing -fopenmp -Wno-comment

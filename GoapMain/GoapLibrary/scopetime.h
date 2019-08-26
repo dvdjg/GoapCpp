@@ -1,6 +1,7 @@
 #ifndef SCOPETIME_H
 #define SCOPETIME_H
 
+#include <string.h>
 #include <chrono>
 #include "goap/iscopetimer.h"
 
@@ -24,9 +25,10 @@ public:
 
     void setMessage(const char *szMessage)
     {
-        *_szMessage = 0;
         if(szMessage != nullptr) {
+            *_szMessage = 0;
             strncpy(_szMessage, szMessage, sizeof(_szMessage));
+            _szMessage[sizeof(_szMessage)-1] = 0;
         }
     }
 
@@ -59,7 +61,7 @@ public:
 
         _pfnTime(_szMessage, dblTime, szUnits);
     }
-    virtual ~ScopeTime()
+    ~ScopeTime() override
     {
         if(_bMessageOnDelete) {
             showSpanTime();

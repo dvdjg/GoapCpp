@@ -31,11 +31,13 @@ namespace goap
 const char* nowTime(char result[])
 {
     struct timeval tv;
-    gettimeofday(&tv, 0);
+    gettimeofday(&tv, nullptr);
     char buffer[32];
     tm r;
     //strftime(buffer, sizeof(buffer), "%X", localtime_r(&tv.tv_sec, &r));
-    localtime_s(&r, &tv.tv_sec);
+    time_t sec;
+    localtime_s(&r, &sec);
+    tv.tv_sec = sec;
     //strftime(buffer, sizeof buffer, "%FT%T", &r);
     strftime(buffer, sizeof buffer, "%X", &r);
     result[0] = 0;

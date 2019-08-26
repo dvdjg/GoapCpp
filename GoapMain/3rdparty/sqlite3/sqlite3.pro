@@ -29,7 +29,7 @@ LIBS += \
     -llzma$$SUFFIX
 
 win32-g++:LIBS += \
-         -lboost_system-mgw53-mt-x32-1_66 -lboost_filesystem-mgw53-mt-x32-1_66 \
+         -lboost_system-mgw73-mt-x64-1_71 -lboost_filesystem-mgw73-mt-x64-1_71 \
          -lUser32 -lAdvapi32 -lws2_32
 
 app.depends = \
