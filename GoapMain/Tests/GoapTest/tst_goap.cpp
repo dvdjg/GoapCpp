@@ -43,8 +43,12 @@ TEST_F(GoapTest, Test1)
     ptrState->setAt(0, 0.0f);
     ptrState->setAt(1, 1.0);
     ptrState->setAt(2, 2.0);
+    ptrState->setAt(3, 9.0);
+    ptrState->setAt(10, 90.0);
 
     EXPECT_EQ(1.0, ptrState->at(1));
+    EXPECT_EQ(90.0, ptrState->at(10));
+    EXPECT_FLOAT_EQ(1.5, ptrState->atF(1.5)) << "La interpolación no coincide.";
 }
 
 TEST_F(GoapTest, TestHide)

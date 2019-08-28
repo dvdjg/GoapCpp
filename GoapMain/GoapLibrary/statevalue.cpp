@@ -39,17 +39,21 @@ void StateValue::resize(std::size_t len)
 
 float StateValue::atF(float idx) const
 {
+    if (data.size() == 0) {
+        return 0.f;
+    }
     float ret = interp2(idx, &data[0], static_cast<int>(data.size()));
     return ret;
 }
 
 float StateValue::at(size_t idx) const
 {
-    if (idx >= data.size())
-    {
-        throw new std::runtime_error(__func__);
+    if (data.size() == 0) {
+        return 0.f;
+    } else if (idx >= data.size()) {
+        idx = data.size()-1;
     }
-    return data[idx];
+    return data.at(idx);
 }
 
 void StateValue::fromString(const std::string &str)
@@ -99,16 +103,22 @@ std::string StateValue::toString() const
 
 void StateValue::setAtF(float idx, float value)
 {
-    size_t i = size_t(idx);
-    if (i >= data.size())
-    {
+//    size_t i = size_t(idx);
+//    if (i >= data.size())
+//    {
+//        throw new std::runtime_error(__func__);
+//    }
+//    data[i] = value;
+    auto i = std::llround(idx);
+    if (idx < 0) {
         throw new std::runtime_error(__func__);
     }
-    data[i] = value;
+    setAt(size_t(i), value);
 }
 void StateValue::setAt(size_t idx, float value)
 {
-    data[idx] = value;
+
+    data.insert(data.begin() + static_cast<ssize_t>(idx), value);
 }
 
 std::size_t StateValue::hash() const

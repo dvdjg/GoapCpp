@@ -91,8 +91,9 @@ int goapLibInscribe(const std::string &discr) {
     return goapLibInscribeExplicit(Factory<IRoot>::singleton(), discr);
 }
 
+extern "C" {
 int goapLibInscribe(const char *szDiscr) {
     return goapLibInscribeExplicit(Factory<IRoot>::singleton(), (szDiscr == nullptr) ? std::string() : szDiscr);
 }
-
+}
 #endif // GOAPLIBINSCRIBE_CPP
