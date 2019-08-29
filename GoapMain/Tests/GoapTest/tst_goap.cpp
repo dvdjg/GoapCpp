@@ -31,7 +31,7 @@ protected:
     }
 };
 
-TEST_F(GoapTest, Test1)
+TEST_F(GoapTest, TestSetAt)
 {
     auto scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapTest, Test1 A: ", true);
     ASSERT_TRUE(scopeTimer);
@@ -44,11 +44,33 @@ TEST_F(GoapTest, Test1)
     ptrState->setAt(1, 1.0);
     ptrState->setAt(2, 2.0);
     ptrState->setAt(3, 9.0);
-    ptrState->setAt(10, 90.0);
 
     EXPECT_EQ(1.0, ptrState->at(1));
-    EXPECT_EQ(90.0, ptrState->at(10));
+    EXPECT_EQ(0.0, ptrState->at(10));
     EXPECT_FLOAT_EQ(1.5, ptrState->atF(1.5)) << "La interpolación no coincide.";
+}
+
+TEST_F(GoapTest, TestSetAtF)
+{
+    NewPtr<IStateValue> ptrState;
+    EXPECT_EQ(0, ptrState->size());
+    ptrState->resize(10);
+    ptrState->setAt(1, 12.0); // Auto grow
+    ptrState->setAt(2, 11.0);
+    ptrState->setAtF(2, 13.0);
+    EXPECT_EQ(13.0, ptrState->at(2));
+    EXPECT_FLOAT_EQ(12.5, ptrState->atF(1.5)) << "La interpolación no coincide.";
+}
+
+
+TEST_F(GoapTest, TestinterpolateF)
+{
+    auto init = {1.f, 2.f, 4.f, 8.f};
+    NewPtr<IStateValue> ptrState({}, init); // <std::string, std::initializer_list<float>>
+    NewPtr<IStateValue> ptrStateOther;
+    ptrStateOther->assign({3.f, 6.f, 12.f, 24.f});
+    ptrState->interpolateFrom(ptrStateOther);
+    EXPECT_EQ(4, ptrState->at(1));
 }
 
 TEST_F(GoapTest, TestHide)

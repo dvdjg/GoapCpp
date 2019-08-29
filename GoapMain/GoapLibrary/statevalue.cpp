@@ -27,6 +27,10 @@ StateValue::StateValue(const std::string &str)
     fromString(str);
 }
 
+StateValue::StateValue( std::initializer_list<float> list) : data(list)
+{
+}
+
 std::size_t StateValue::size() const
 {
     return data.size();
@@ -65,6 +69,11 @@ void StateValue::fromString(const std::string &str)
 void StateValue::assign(const std::string &str)
 {
     fromString(str);
+}
+
+void StateValue::assign(const std::initializer_list<float> &list)
+{
+    data.assign(list);
 }
 
 void StateValue::interpolateFrom(const IStateValue::CPtr &other)
@@ -117,8 +126,8 @@ void StateValue::setAtF(float idx, float value)
 }
 void StateValue::setAt(size_t idx, float value)
 {
-
-    data.insert(data.begin() + static_cast<ssize_t>(idx), value);
+    //data.insert(data.begin() + static_cast<ssize_t>(idx), value);
+    data.at(idx) = value;
 }
 
 std::size_t StateValue::hash() const

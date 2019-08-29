@@ -50,6 +50,18 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ptr;
     }, discr);
     ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue>([](const std::initializer_list<float> &list){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->assign(list);
+        return ptr;
+    }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue>([](std::initializer_list<float> &list){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->assign(list);
+        return ptr;
+    }, discr);
+    ++ret;
 
     factory.inscribe<FactoryType::Default, IStateValue, StateValue>(discr+"Default");
     ++ret;

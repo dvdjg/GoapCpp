@@ -16,7 +16,7 @@ class StateValue : public IStateValue
 protected:
     std::vector<float> data;
 
-public:    
+public:
     typedef explicit_ptr<StateValue> Ptr;
     typedef explicit_ptr<const StateValue> CPtr;
 
@@ -24,6 +24,7 @@ public:
     StateValue(const StateValue & other);
     StateValue(const IStateValue::CPtr &other);
     StateValue(const std::string &str);
+    StateValue( std::initializer_list<float> list);
 
     std::size_t size() const override;
     void resize(std::size_t len) override;
@@ -36,6 +37,7 @@ public:
     float cosineDistance(const IStateValue::CPtr &other) const override;
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
+    void assign(const std::initializer_list<float> &list) override;
     std::string toString() const override;
     std::size_t hash() const override;
 
