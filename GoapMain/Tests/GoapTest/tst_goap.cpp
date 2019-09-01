@@ -65,12 +65,38 @@ TEST_F(GoapTest, TestSetAtF)
 
 TEST_F(GoapTest, TestinterpolateF)
 {
-    auto init = {1.f, 2.f, 4.f, 8.f};
-    NewPtr<IStateValue> ptrState({}, init); // <std::string, std::initializer_list<float>>
+    //auto init = {1.f, 2.f, 4.f, 8.f};
+    //NewPtr<IStateValue> ptrState({}, init); // <std::string, std::initializer_list<float>>
     NewPtr<IStateValue> ptrStateOther;
-    ptrStateOther->assign({3.f, 6.f, 12.f, 24.f});
+    NewPtr<IStateValue> ptrState;
+    ptrStateOther->assign({3.f, 6.f, 12.f, 24.f}); //  --> {3.f, x, 6.f, x, 12.f, x, 24.f}
+    ptrState->resize(7);
     ptrState->interpolateFrom(ptrStateOther);
-    EXPECT_EQ(4, ptrState->at(1));
+    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
+    EXPECT_EQ(3.f, ptrState->at(0));
+    EXPECT_EQ(4.5f, ptrState->at(1));
+    EXPECT_EQ(6.f, ptrState->at(2));
+    EXPECT_EQ(9.f, ptrState->at(3));
+    EXPECT_EQ(12.f, ptrState->at(4));
+    EXPECT_EQ(18.f, ptrState->at(5));
+    EXPECT_EQ(24.f, ptrState->at(6));
+}
+
+TEST_F(GoapTest, TestinterpolateF_2)
+{
+    auto init = {3.f, 6.f, 12.f, 24.f};
+    NewPtr<IStateValue> ptrStateOther({}, init);
+    NewPtr<IStateValue> ptrState;
+    ptrState->resize(4*12-1);
+    ptrState->interpolateFrom(ptrStateOther);
+    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
+    EXPECT_EQ(3.f, ptrState->at(0));
+    //EXPECT_EQ(4.5f, ptrState->at(1));
+    //EXPECT_EQ(6.f, ptrState->at(2));
+    //EXPECT_EQ(9.f, ptrState->at(3));
+    //EXPECT_EQ(12.f, ptrState->at(4));
+    //EXPECT_EQ(18.f, ptrState->at(5));
+    EXPECT_EQ(24.f, ptrState->at(46));
 }
 
 TEST_F(GoapTest, TestHide)

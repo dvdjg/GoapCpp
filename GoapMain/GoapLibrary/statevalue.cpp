@@ -27,7 +27,7 @@ StateValue::StateValue(const std::string &str)
     fromString(str);
 }
 
-StateValue::StateValue( std::initializer_list<float> list) : data(list)
+StateValue::StateValue(std::initializer_list<float> list) : data(list)
 {
 }
 
@@ -83,8 +83,8 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
     {
         throw new std::runtime_error(__func__);
     }
-    resize(o->size());
-    if (size() > 0)
+
+    if (size() > 0 && &o->data[0] != &data[0])
     {
         interp2array(&o->data[0], o->size(), &data[0], static_cast<int>(size()));
     }
@@ -106,7 +106,17 @@ float StateValue::cosineDistance(const IStateValue::CPtr &other) const
 
 std::string StateValue::toString() const
 {
-    std::string ret(data.begin(), data.end());
+    std::string ret{"["};
+
+    for(auto &it : data) {
+        ret += std::to_string(it);
+        ret += ", ";
+    }
+    if (ret.size() > 2) {
+        ret.pop_back();
+        ret.pop_back();
+    }
+    ret += ']';
     return ret;
 }
 

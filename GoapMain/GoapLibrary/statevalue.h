@@ -24,7 +24,7 @@ public:
     StateValue(const StateValue & other);
     StateValue(const IStateValue::CPtr &other);
     StateValue(const std::string &str);
-    StateValue( std::initializer_list<float> list);
+    StateValue(std::initializer_list<float> list);
 
     std::size_t size() const override;
     void resize(std::size_t len) override;
