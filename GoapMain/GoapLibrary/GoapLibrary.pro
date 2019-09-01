@@ -28,6 +28,7 @@ SOURCES += \
     goaplibinscribe.cpp
 
 HEADERS += goaplibrary.h \
+    cosinedistance.h \
     refcounter.h \
     statevalue.h \
     basicmath.h \

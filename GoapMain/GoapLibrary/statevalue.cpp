@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "statevalue.h"
 #include "basicmath.h"
+#include "cosinedistance.h"
 
 namespace goap
 {
