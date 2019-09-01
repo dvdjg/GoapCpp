@@ -145,8 +145,9 @@ protected:
         }
         _aModule = sqrt(fa);
         _bModule = sqrt(fb);
+        OutputType fDen = _aModule * _bModule;
         // 1 means are equal, 0 means are different, -1 are opposite
-        _distance = temp / (_aModule * _bModule);
+        _distance = (fDen == 0) ? 0 : temp / fDen;
     }
 
 };

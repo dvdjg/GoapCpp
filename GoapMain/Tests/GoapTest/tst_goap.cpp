@@ -63,7 +63,7 @@ TEST_F(GoapTest, TestSetAtF)
 }
 
 
-TEST_F(GoapTest, TestinterpolateF)
+TEST_F(GoapTest, TestInterpolateF)
 {
     //auto init = {1.f, 2.f, 4.f, 8.f};
     //NewPtr<IStateValue> ptrState({}, init); // <std::string, std::initializer_list<float>>
@@ -73,30 +73,41 @@ TEST_F(GoapTest, TestinterpolateF)
     ptrState->resize(7);
     ptrState->interpolateFrom(ptrStateOther);
     std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
-    EXPECT_EQ(3.f, ptrState->at(0));
-    EXPECT_EQ(4.5f, ptrState->at(1));
-    EXPECT_EQ(6.f, ptrState->at(2));
-    EXPECT_EQ(9.f, ptrState->at(3));
-    EXPECT_EQ(12.f, ptrState->at(4));
-    EXPECT_EQ(18.f, ptrState->at(5));
-    EXPECT_EQ(24.f, ptrState->at(6));
+    EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
+    EXPECT_FLOAT_EQ(4.5f, ptrState->at(1));
+    EXPECT_FLOAT_EQ(6.f, ptrState->at(2));
+    EXPECT_FLOAT_EQ(9.f, ptrState->at(3));
+    EXPECT_FLOAT_EQ(12.f, ptrState->at(4));
+    EXPECT_FLOAT_EQ(18.f, ptrState->at(5));
+    EXPECT_FLOAT_EQ(24.f, ptrState->at(6));
 }
 
-TEST_F(GoapTest, TestinterpolateF_2)
+TEST_F(GoapTest, TestInterpolateF_2)
 {
     auto init = {3.f, 6.f, 12.f, 24.f};
     NewPtr<IStateValue> ptrStateOther({}, init);
     NewPtr<IStateValue> ptrState;
-    ptrState->resize(4*12-1);
+    ptrState->resize(47);
     ptrState->interpolateFrom(ptrStateOther);
     std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
-    EXPECT_EQ(3.f, ptrState->at(0));
-    //EXPECT_EQ(4.5f, ptrState->at(1));
-    //EXPECT_EQ(6.f, ptrState->at(2));
-    //EXPECT_EQ(9.f, ptrState->at(3));
-    //EXPECT_EQ(12.f, ptrState->at(4));
-    //EXPECT_EQ(18.f, ptrState->at(5));
-    EXPECT_EQ(24.f, ptrState->at(46));
+    EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
+    EXPECT_FLOAT_EQ(24.f, ptrState->at(46));
+}
+
+TEST_F(GoapTest, TestCosineDistance)
+{
+    NewPtr<IStateValue> ptrStateOther;
+    NewPtr<IStateValue> ptrState;
+
+    ptrState->assign({1.f, 0.f, 0.f});
+    ptrStateOther->assign({0.f, 1.f, 0.f});
+    float fDistance = ptrState->cosineDistance(ptrStateOther);
+    EXPECT_FLOAT_EQ(-0.5f, fDistance);
+
+    ptrState->assign({1.f, 1.f, 0.f});
+    ptrStateOther->assign({0.f, 1.f, 1.f});
+    float fDistance2 = ptrState->cosineDistance(ptrStateOther);
+    EXPECT_FLOAT_EQ(-0.5f, fDistance2);
 }
 
 TEST_F(GoapTest, TestHide)
