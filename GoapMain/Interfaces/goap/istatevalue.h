@@ -48,19 +48,8 @@ public:
     virtual void assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
-    virtual bool equal(const IStateValue::CPtr &other) const
-    {
-        bool ret(other);
-        if (ret)
-        {
-            std::size_t thisSize = size();
-            ret = thisSize == other->size();
-            for (std::size_t i = 0; ret && i < thisSize; ++i) {
-                ret = floatEqual(at(i), other->at(i));
-            }
-        }
-        return ret;
-    }
+    virtual bool equal(const IStateValue::CPtr &other) const = 0;
+    virtual std::string toCharacterString() const = 0;
 
     virtual void clear() = 0;
     virtual std::size_t hash() const = 0;
@@ -73,6 +62,7 @@ public:
     {
         return at(idx);
     }
+
     //virtual float & operator[](float idx) = 0;
 };
 

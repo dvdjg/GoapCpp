@@ -72,7 +72,7 @@ TEST_F(GoapTest, TestInterpolateF)
     ptrStateOther->assign({3.f, 6.f, 12.f, 24.f}); //  --> {3.f, x, 6.f, x, 12.f, x, 24.f}
     ptrState->resize(7);
     ptrState->interpolateFrom(ptrStateOther);
-    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
+    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString() << std::endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(4.5f, ptrState->at(1));
     EXPECT_FLOAT_EQ(6.f, ptrState->at(2));
@@ -89,7 +89,7 @@ TEST_F(GoapTest, TestInterpolateF_2)
     NewPtr<IStateValue> ptrState;
     ptrState->resize(47);
     ptrState->interpolateFrom(ptrStateOther);
-    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString();
+    std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString() << std::endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(24.f, ptrState->at(46));
 }
@@ -108,6 +108,18 @@ TEST_F(GoapTest, TestCosineDistance)
     ptrStateOther->assign({0.f, 1.f, 1.f});
     float fDistance2 = ptrState->cosineDistance(ptrStateOther);
     EXPECT_FLOAT_EQ(-0.5f, fDistance2);
+}
+
+TEST_F(GoapTest, TestEquals)
+{
+    NewPtr<IStateValue> ptrStateOther;
+    NewPtr<IStateValue> ptrState;
+
+    ptrState->assign({1.f, 0.f, 0.f});
+    ptrStateOther->assign({0.f, 1.f, 0.f});
+    EXPECT_FALSE(ptrState->equal(ptrStateOther));
+    ptrStateOther->assign(ptrState);
+    EXPECT_TRUE(ptrState->equal(ptrStateOther));
 }
 
 TEST_F(GoapTest, TestHide)
@@ -150,7 +162,8 @@ TEST_F(GoapTest, TestHide2)
 
 TEST_F(GoapTest, Assign)
 {
-    NewPtr<IStateValue> ptrStateSrc({}, static_cast<const char *>("Mama mía"));
+    const char *szMessage = "Mama mía";
+    NewPtr<IStateValue> ptrStateSrc({}, szMessage);
     ASSERT_TRUE(ptrStateSrc);
     NewPtr<IStateValue> ptrStateDst1(ptrStateSrc.getPtr());
     ASSERT_TRUE(ptrStateDst1);
@@ -159,5 +172,10 @@ TEST_F(GoapTest, Assign)
 
     EXPECT_TRUE(ptrStateSrc->equal(ptrStateDst1.getCPtr()));
     EXPECT_TRUE(ptrStateSrc->equal(ptrStateDst2.getCPtr()));
+
+    std::string strMessage = ptrStateSrc->toCharacterString();
+    EXPECT_TRUE(strMessage == szMessage);
+
+    std::cout << "Contains: " << strMessage << std::endl;
 }
 

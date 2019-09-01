@@ -120,6 +120,15 @@ std::string StateValue::toString() const
     return ret;
 }
 
+std::string StateValue::toCharacterString() const
+{
+    std::string ret;
+    for(auto &it : data) {
+        ret += static_cast<char>(it);
+    }
+    return ret;
+}
+
 void StateValue::setAtF(float idx, float value)
 {
 //    size_t i = size_t(idx);
@@ -163,5 +172,18 @@ void StateValue::assign(const IStateValue::CPtr &other)
     }
 }
 
+bool StateValue::equal(const IStateValue::CPtr &other) const
+{
+    bool ret(other);
+    if (ret)
+    {
+        std::size_t thisSize = size();
+        ret = thisSize == other->size();
+        for (std::size_t i = 0; ret && i < thisSize; ++i) {
+            ret = floatEqual(at(i), other->at(i));
+        }
+    }
+    return ret;
+}
 }
 

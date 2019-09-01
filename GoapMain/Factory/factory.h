@@ -6,6 +6,7 @@
 #include <map>
 #include <list>
 #include <mutex>
+#include <functional>
 #include "log_hook.h"
 #include "instancedeleter.h"
 #include "explicit_ptr.h"
@@ -280,7 +281,7 @@ Factory<Base, Key>::getWrapperClass(Key const &key) const
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        LOG(ERROR) << "Can't find registered constructor arguments in the factory.";
+        LOG(ERROR) << "Can't find registered constructor arguments in the factory for \"" << subindex.name() << "\".";
         return nullptr;
     }
     auto pWrapped = &*it3->second;

@@ -38,12 +38,13 @@ public:
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;
+    bool equal(const IStateValue::CPtr &other) const override;
     std::string toString() const override;
+    std::string toCharacterString() const override;
     std::size_t hash() const override;
 
     void clear() override;
     IClonable::Ptr clone() const override;
-
 };
 
 }
