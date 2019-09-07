@@ -28,10 +28,12 @@ public:
 
     std::size_t size() const override;
     void resize(std::size_t len) override;
-    float atF(float idx) const override;
-    void setAtF(float idx, float value) override;
+    float at(float idx) const override;
+    void setAt(float idx, float value) override;
     float at(size_t idx) const override;
     void setAt(size_t idx, float value) override;
+    float at(int idx) const override;
+    void setAt(int idx, float value) override;
     void fromString(const std::string &str) override;
     void interpolateFrom(const IStateValue::CPtr &other) override;
     float cosineDistance(const IStateValue::CPtr &other) const override;

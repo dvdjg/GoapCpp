@@ -39,10 +39,12 @@ public:
     //virtual bool isNumeric() const = 0;
     virtual std::size_t size() const = 0; ///< From 0 to 1000
     virtual void resize(std::size_t len) = 0;
-    virtual float atF(float idx) const = 0;
-    virtual void setAtF(float idx, float value) = 0;
+    virtual float at(float idx) const = 0;
+    virtual void setAt(float idx, float value) = 0;
     virtual float at(size_t idx) const = 0;
     virtual void setAt(size_t idx, float value) = 0;
+    virtual float at(int idx) const = 0;
+    virtual void setAt(int idx, float value) = 0;
     virtual void assign(const IStateValue::CPtr &other) = 0;
     virtual void assign(const std::string &other) = 0;
     virtual void assign(const std::initializer_list<float> &list) = 0;
@@ -56,15 +58,23 @@ public:
 
     inline float operator[](float idx) const
     {
-        return atF(idx);
+        return at(idx);
     }
     inline float operator[](size_t idx) const
     {
         return at(idx);
     }
-
-    //virtual float & operator[](float idx) = 0;
 };
+
+inline bool operator ==(const IStateValue& a, const IStateValue& b)
+{
+    return a.equal(IStateValue::CPtr(&b));
+}
+
+inline bool operator !=(const IStateValue& a, const IStateValue& b)
+{
+    return !a.equal(IStateValue::CPtr(&b));
+}
 
 }
 

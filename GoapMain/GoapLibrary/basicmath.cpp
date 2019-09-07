@@ -56,18 +56,18 @@ float parabola( float x, float f_1, float f0, float f1 )
 // quadratic interpolate x in an array
 float interp2( float x, const float a[], int n )
 {
-    if( x <= .5  ||  x >= n - 1.5 )
+    if( x <= .5f  ||  x >= n - 1.5f )
         return interp1( x, a, n );
-    int j = int( x + .5 );
-    float t = 2 * (x - j);  // -1 .. 1
+    int j = int( x + .5f );
+    float t = 2.f * (x - j);  // -1 .. 1
     return parabola( t, (a[j-1] + a[j]) / 2, a[j], (a[j] + a[j+1]) / 2 );
 }
 
 float interp2( float x, const half a[], int n )
 {
-    if( x <= .5  ||  x >= n - 1.5 )
+    if( x <= .5f  ||  x >= n - 1.5f )
         return interp1( x, a, n );
-    int j = int( x + .5 );
+    int j = int( x + .5f );
     float t = 2 * (x - j);  // -1 .. 1
     return parabola( t, static_cast<float>(a[j-1] + a[j]) / 2, a[j], static_cast<float>(a[j] + a[j+1]) / 2 );
 }

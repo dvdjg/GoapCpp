@@ -42,7 +42,7 @@ void StateValue::resize(std::size_t len)
     data.resize(len);
 }
 
-float StateValue::atF(float idx) const
+float StateValue::at(float idx) const
 {
     if (data.size() == 0) {
         return 0.f;
@@ -59,6 +59,14 @@ float StateValue::at(size_t idx) const
         idx = data.size()-1;
     }
     return data.at(idx);
+}
+
+float StateValue::at(int idx) const
+{
+    if (idx < 0) {
+        idx = 0;
+    }
+    return this->at(size_t(idx));
 }
 
 void StateValue::fromString(const std::string &str)
@@ -130,16 +138,17 @@ std::string StateValue::toCharacterString() const
     return ret;
 }
 
-void StateValue::setAtF(float idx, float value)
+void StateValue::setAt(int idx, float value)
 {
-//    size_t i = size_t(idx);
-//    if (i >= data.size())
-//    {
-//        throw new std::runtime_error(__func__);
-//    }
-//    data[i] = value;
-    auto i = std::llround(idx);
     if (idx < 0) {
+        throw new std::runtime_error(__func__);
+    }
+    setAt(size_t(idx), value);
+}
+void StateValue::setAt(float idx, float value)
+{
+    auto i = std::llround(idx);
+    if (i < 0) {
         throw new std::runtime_error(__func__);
     }
     setAt(size_t(i), value);

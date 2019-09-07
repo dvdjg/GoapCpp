@@ -43,11 +43,11 @@ TEST_F(GoapTest, TestSetAt)
     ptrState->setAt(0, 0.0f);
     ptrState->setAt(1, 1.0);
     ptrState->setAt(2, 2.0);
-    ptrState->setAt(3, 9.0);
+    ptrState->setAt(3ULL, 9.0);
 
     EXPECT_EQ(1.0, ptrState->at(1));
     EXPECT_EQ(0.0, ptrState->at(10));
-    EXPECT_FLOAT_EQ(1.5, ptrState->atF(1.5)) << "La interpolación no coincide.";
+    EXPECT_FLOAT_EQ(1.5, ptrState->at(1.5f)) << "La interpolación no coincide.";
 }
 
 TEST_F(GoapTest, TestSetAtF)
@@ -57,9 +57,9 @@ TEST_F(GoapTest, TestSetAtF)
     ptrState->resize(10);
     ptrState->setAt(1, 12.0); // Auto grow
     ptrState->setAt(2, 11.0);
-    ptrState->setAtF(2, 13.0);
+    ptrState->setAt(2, 13.0);
     EXPECT_EQ(13.0, ptrState->at(2));
-    EXPECT_FLOAT_EQ(12.5, ptrState->atF(1.5)) << "La interpolación no coincide.";
+    EXPECT_FLOAT_EQ(12.5, ptrState->at(1.5f)) << "La interpolación no coincide.";
 }
 
 
@@ -92,6 +92,10 @@ TEST_F(GoapTest, TestInterpolateF_2)
     std::cout << ptrStateOther->toString() << " converted to " << ptrState->toString() << std::endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(24.f, ptrState->at(46));
+    ptrState->setAt(45, 0.f);
+    EXPECT_FLOAT_EQ(12.f, ptrState->at(45.5f));
+    ptrState->setAt(45, 23.f);
+    EXPECT_FLOAT_EQ(23.5f, ptrState->at(45.5f));
 }
 
 TEST_F(GoapTest, TestCosineDistance)
@@ -125,7 +129,11 @@ TEST_F(GoapTest, TestEquals)
 TEST_F(GoapTest, TestHide)
 {
     NewPtr<IStateValue> ptrState({}, static_cast<const std::string &>("Lo qué"));
+    NewPtr<IStateValue> ptrStateBis({}, "Lo qué");
     ASSERT_TRUE(ptrState);
+    ASSERT_TRUE(ptrStateBis);
+
+    ASSERT_EQ(*ptrState, *ptrStateBis);
 
     auto size = ptrState->size();
     EXPECT_EQ(7, size);
