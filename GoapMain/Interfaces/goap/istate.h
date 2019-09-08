@@ -39,8 +39,9 @@ inline bool operator ==(const IState& a, const IState& b)
 
 inline bool operator !=(const IState& a, const IState& b)
 {
-    return !a.equal(IState::CPtr(&b));
+    return !(a == b);
 }
+
 }
 
 #endif // IREADSTATE_H

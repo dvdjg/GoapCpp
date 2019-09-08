@@ -39,8 +39,20 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ptr;
     }, discr);
     ++ret;
+    factory.inscribe<FactoryType::Default, IState>([](const State &cptr){
+        auto ptr = RecyclableWrapper<State>::createFromPoolRaw();
+        ptr->assign(cptr);
+        return ptr;
+    }, discr);
+    ++ret;
 
     factory.inscribe<FactoryType::Default, IStateValue>([](){ return RecyclableWrapper<StateValue>::createFromPoolRaw(); }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue>([](const StateValue &cptr){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->assign(cptr);
+        return ptr;
+    }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const IStateValue::CPtr &cptr){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();

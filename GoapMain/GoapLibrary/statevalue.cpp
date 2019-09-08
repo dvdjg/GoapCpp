@@ -4,6 +4,8 @@
 #include "basicmath.h"
 #include "cosinedistance.h"
 
+#include "newptr.h"
+
 namespace goap
 {
 
@@ -172,7 +174,14 @@ void StateValue::clear()
 
 IClonable::Ptr StateValue::clone() const
 {
-    return new StateValue(*this);
+    auto ptr = NewPtr<IStateValue>({}, *this);
+    return std::move(ptr);
+    //return new StateValue(*this);
+}
+
+void StateValue::assign(const StateValue &other)
+{
+    data = other.data;
 }
 
 void StateValue::assign(const IStateValue::CPtr &other)
@@ -181,7 +190,7 @@ void StateValue::assign(const IStateValue::CPtr &other)
     if (!o) {
         data = o->data;
     } else {
-        data.resize(other->size());
+        data.resize(std::size_t(other->size()));
         for (int_type i = 0; i < int_type(other->size()); ++i) {
             data.at(std::size_t(i)) = other->at(i);
         }

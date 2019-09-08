@@ -34,6 +34,7 @@ public:
     float cost() const override;
     void setCost(float c) override;
     void assign(const IState::CPtr &other) override;
+    void assign(const State &other);
 
     pair_value at(intptr_t idx) const override;
 

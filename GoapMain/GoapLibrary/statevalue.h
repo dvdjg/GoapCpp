@@ -37,6 +37,7 @@ public:
     void fromString(const std::string &str) override;
     void interpolateFrom(const IStateValue::CPtr &other) override;
     float cosineDistance(const IStateValue::CPtr &other) const override;
+    void assign(const StateValue &other);
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;

@@ -29,7 +29,7 @@ protected:
 
 TEST_F(GoapIStateTest, TestSetAt)
 {
-    auto scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateTest, Test1 A: ", true);
+    auto scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateTest, TestSetAt: ", true);
     ASSERT_TRUE(scopeTimer);
     NewPtr<IState> ptrState;
     ASSERT_TRUE(ptrState);
@@ -44,28 +44,44 @@ TEST_F(GoapIStateTest, TestSetAt)
     auto lstTres = {3.f, 6.f};
     auto szTres = "Tres";
     ptrState->setAt(szTres, lstTres);
-    auto atTres = ptrState->at("Tres");
+    auto atTres = ptrState->at(szTres);
     ASSERT_NE(*atUno, *atTres);
     ASSERT_EQ(3, ptrState->size());
 
-    //auto lstValues
     int iTest = 0;
     for (IState::index_type i = 0; i < ptrState->size(); ++i) {
         auto pair = ptrState->at(i);
         std::cout << pair.first->toDebugString() << " : " << pair.second->toDebugString() << std::endl;
-        if (*pair.first == szTres) {
+        if (*pair.first == szTres && *pair.second == lstTres) {
             ++iTest;
         }
     }
     ASSERT_EQ(1, iTest);
 
-    //ptrState->resize(10);
-    //ptrState->setAt(0, 0.0f);
-    //ptrState->setAt(1, 1.0);
-    //ptrState->setAt(2, 2.0);
-    //ptrState->setAt(3, 9.0);
-    //
-    //EXPECT_EQ(1.0, ptrState->at(1));
-    //EXPECT_EQ(0.0, ptrState->at(10));
-    //EXPECT_FLOAT_EQ(1.5, ptrState->at(1.5f)) << "La interpolación no coincide.";
+    ptrState->remove(szTres);
+    iTest = 0;
+    for (IState::index_type i = 0; i < ptrState->size(); ++i) {
+        auto pair = ptrState->at(i);
+        std::cout << pair.first->toDebugString() << " : " << pair.second->toDebugString() << std::endl;
+        if (*pair.first == szTres && *pair.second == lstTres) {
+            ++iTest;
+        }
+    }
+    ASSERT_EQ(0, iTest);
+}
+
+
+TEST_F(GoapIStateTest, TestClone)
+{
+    NewPtr<IState> ptrState;
+    ASSERT_TRUE(ptrState);
+    ptrState->setCost(23);
+    ptrState->setAt("Uno", {1, 2});
+    ptrState->setAt("Dos", {6.6f, 2.4f, 9});
+    //std::shared_ptr<IClonable> shCl;
+    //auto ptr = std::dynamic_pointer_cast<IState>(shCl);
+
+    auto ptrCloned = dynamic_pointer_cast<IState>(ptrState->clone());
+    ASSERT_TRUE(ptrCloned);
+    ASSERT_EQ(*ptrCloned, *ptrState);
 }

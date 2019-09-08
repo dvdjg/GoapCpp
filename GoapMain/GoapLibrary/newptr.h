@@ -26,6 +26,10 @@ public:
     NewPtr() : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I>({}))
     {
     }
+    //template<typename T>
+    //NewPtr(const explicit_ptr<T> & other) : explicit_ptr<I>(other)
+    //{
+    //}
     NewPtr(const explicit_ptr<I> & other) : explicit_ptr<I>(other)
     {
     }
@@ -37,6 +41,8 @@ public:
         return explicit_ptr<I>(*this);
     }
 };
+
+
 
 }
 

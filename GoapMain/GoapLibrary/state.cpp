@@ -24,12 +24,17 @@ State::State(const IState::CPtr &other)
     assign(other);
 }
 
+void State::assign(const State &o)
+{
+    data = o.data;
+    coste = o.coste;
+}
+
 void State::assign(const IState::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const State>(other);
     if (o) {
-        data = o->data;
-        coste = o->coste;
+        assign(*o);
     } else {
         throw new std::runtime_error(__func__);
     }
@@ -104,7 +109,7 @@ void State::setCost(float c)
 IClonable::Ptr State::clone() const
 {
     auto ptr = NewPtr<IState>({}, *this);
-    return std::move(ptr); //new State(*this);
+    return std::move(ptr);
 }
 
 void State::fromString(const string &)
