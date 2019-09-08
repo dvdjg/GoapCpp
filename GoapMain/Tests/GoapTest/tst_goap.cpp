@@ -1,4 +1,5 @@
 #include <gmock/gmock.h>
+#include <list>
 #include "explicit_ptr.h"
 
 #include "goap/istate.h"
@@ -6,8 +7,8 @@
 
 #include "newptr.h"
 
-
 using namespace goap;
+using namespace std;
 
 class GoapIStateTest : public ::testing::Test
 {
@@ -39,6 +40,24 @@ TEST_F(GoapIStateTest, TestSetAt)
     auto atDos = ptrState->at("Dos");
     ASSERT_TRUE(atUno->equal(atDos));
     ASSERT_EQ(*atUno, *atDos);
+
+    auto lstTres = {3.f, 6.f};
+    auto szTres = "Tres";
+    ptrState->setAt(szTres, lstTres);
+    auto atTres = ptrState->at("Tres");
+    ASSERT_NE(*atUno, *atTres);
+    ASSERT_EQ(3, ptrState->size());
+
+    //auto lstValues
+    int iTest = 0;
+    for (IState::index_type i = 0; i < ptrState->size(); ++i) {
+        auto pair = ptrState->at(i);
+        std::cout << pair.first->toDebugString() << " : " << pair.second->toDebugString() << std::endl;
+        if (*pair.first == szTres) {
+            ++iTest;
+        }
+    }
+    ASSERT_EQ(1, iTest);
 
     //ptrState->resize(10);
     //ptrState->setAt(0, 0.0f);

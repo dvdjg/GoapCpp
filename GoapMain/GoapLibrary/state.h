@@ -28,14 +28,14 @@ public:
     void setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
     void setAt(const std::string &str, const IStateValue::Ptr &value) override;
     void setAt(const std::string &str, std::initializer_list<float> list) override;
-    size_t size() const override;
+    intptr_t size() const override;
     void remove(const std::string &str) override;
     bool equal(const IState::CPtr &other) const override;
     float cost() const override;
     void setCost(float c) override;
     void assign(const IState::CPtr &other) override;
 
-    PairIStateValue at(intptr_t idx) const override;
+    pair_value at(intptr_t idx) const override;
 
     // IClonable interface
 public:

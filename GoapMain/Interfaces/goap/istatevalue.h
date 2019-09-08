@@ -28,7 +28,6 @@ class IStateValue : public IStringValue, public IClonable, public virtual IRefCo
 public:
     typedef float value_type;
     typedef intptr_t index_type;
-    typedef std::size_t size_type;
     typedef explicit_ptr<IStateValue> Ptr;
     typedef explicit_ptr<const IStateValue> CPtr;
 
@@ -39,20 +38,20 @@ public:
     }
 
     //virtual bool isNumeric() const = 0;
-    virtual std::size_t size() const = 0; ///< From 0 to 1000
-    virtual void resize(std::size_t len) = 0;
+    virtual intptr_t size() const = 0; ///< From 0 to 1000
+    virtual void resize(intptr_t len) = 0;
     virtual float at(float idx) const = 0;
     virtual float at(intptr_t idx) const = 0;
     virtual void setAt(float idx, float value) = 0;
     virtual void setAt(intptr_t idx, float value) = 0;
-    //virtual float at(size_t idx) const = 0;
-    //virtual void setAt(size_t idx, float value) = 0;
     virtual void assign(const IStateValue::CPtr &other) = 0;
     virtual void assign(const std::string &other) = 0;
     virtual void assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
     virtual bool equal(const IStateValue::CPtr &other) const = 0;
+    virtual bool equal(const std::string &other) const = 0;
+    virtual bool equal(const std::initializer_list<float> &list) const = 0;
 
     virtual void clear() = 0;
     virtual std::size_t hash() const = 0;
@@ -100,9 +99,30 @@ inline bool operator ==(const IStateValue& a, const IStateValue& b)
     return a.equal(IStateValue::CPtr(&b));
 }
 
+inline bool operator ==(const IStateValue& a, const std::string &other)
+{
+    return a.equal(other);
+}
+
+inline bool operator ==(const IStateValue& a, const std::initializer_list<float> &other)
+{
+    return a.equal(other);
+}
+
+
 inline bool operator !=(const IStateValue& a, const IStateValue& b)
 {
-    return !a.equal(IStateValue::CPtr(&b));
+    return !(a == b);
+}
+
+inline bool operator !=(const IStateValue& a, const std::string& b)
+{
+    return !(a == b);
+}
+
+inline bool operator !=(const IStateValue& a, const std::initializer_list<float>& b)
+{
+    return !(a == b);
 }
 
 }

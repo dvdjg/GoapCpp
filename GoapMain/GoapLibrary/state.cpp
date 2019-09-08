@@ -50,7 +50,7 @@ IStateValue::Ptr State::at(const IStateValue::CPtr &key) const
     return data.at(key);
 }
 
-IState::PairIStateValue State::at(intptr_t idx) const
+IState::pair_value State::at(intptr_t idx) const
 {
     if (idx < 0 || idx >= intptr_t(data.size())) {
         throw new std::runtime_error(__func__);
@@ -80,9 +80,9 @@ void State::setAt(const std::string &str, std::initializer_list<float> list)
     setAt(NewPtr<IStateValue>({}, str), val);
 }
 
-size_t State::size() const
+intptr_t State::size() const
 {
-    return data.size();
+    return intptr_t(data.size());
 }
 
 bool State::equal(const IState::CPtr &other) const

@@ -32,14 +32,14 @@ StateValue::StateValue(std::initializer_list<float> list) : data(list)
 {
 }
 
-std::size_t StateValue::size() const
+intptr_t StateValue::size() const
 {
-    return data.size();
+    return intptr_t(data.size());
 }
 
-void StateValue::resize(std::size_t len)
+void StateValue::resize(intptr_t len)
 {
-    data.resize(len);
+    data.resize(std::size_t(len));
 }
 
 float StateValue::at(float idx) const
@@ -53,7 +53,7 @@ float StateValue::at(float idx) const
 
 float StateValue::at(intptr_t idx) const
 {
-    if (data.size() == 0) {
+    if (data.size() == 0) { // || idx >= intptr_t(data.size()) || idx < 0) {
         return 0.f;
     } else if (idx >= intptr_t(data.size())) {
         idx = intptr_t(data.size()-1);
@@ -90,13 +90,11 @@ void StateValue::assign(const std::initializer_list<float> &list)
 void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other); // dynamic_pointer_cast<const StateValue>(other); // dynamic_cast<const StateValue *>(other);
-    if (!o)
-    {
+    if (!o) {
         throw new std::runtime_error(__func__);
     }
 
-    if (size() > 0 && &o->data[0] != &data[0])
-    {
+    if (size() > 0 && &o->data[0] != &data[0]) {
         interp2array(&o->data[0], int_type(o->size()), &data[0], int_type(size()));
     }
 }
@@ -104,8 +102,7 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 float StateValue::cosineDistance(const IStateValue::CPtr &other) const
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
-    if (!o)
-    {
+    if (!o) {
         throw new std::runtime_error(__func__);
     }
     size_t min = std::min(data.size(), o->data.size());
@@ -196,7 +193,7 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
     bool ret(other);
     if (ret)
     {
-        std::size_t thisSize = size();
+        auto thisSize = size();
         ret = thisSize == other->size();
         for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
             ret = floatEqual(at(i), other->at(i));
@@ -204,5 +201,32 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
     }
     return ret;
 }
+
+
+bool StateValue::equal(const std::string &other) const
+{
+    bool ret(true);
+    auto thisSize = size();
+    ret = thisSize == int_type(other.size());
+    for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
+        ret = floatEqual(at(i), other.at(std::size_t(i)));
+    }
+    return ret;
+}
+
+
+bool StateValue::equal(const std::initializer_list<float> &other) const
+{
+    bool ret(true);
+    auto thisSize = size();
+    ret = thisSize == int_type(other.size());
+    auto beg = other.begin();
+    for (int_type i = 0; ret && i < int_type(thisSize); ++i, ++beg) {
+        ret = floatEqual(at(i), *beg);
+    }
+    return ret;
+}
+
+
 }
 

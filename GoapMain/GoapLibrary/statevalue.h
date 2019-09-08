@@ -26,8 +26,8 @@ public:
     StateValue(const std::string &str);
     StateValue(std::initializer_list<float> list);
 
-    std::size_t size() const override;
-    void resize(std::size_t len) override;
+    intptr_t size() const override;
+    void resize(intptr_t len) override;
     float at(float idx) const override;
     void setAt(float idx, float value) override;
     //float at(size_t idx) const override;
@@ -41,6 +41,8 @@ public:
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;
     bool equal(const IStateValue::CPtr &other) const override;
+    bool equal(const std::string &other) const override;
+    bool equal(const std::initializer_list<float> &other) const override;
     std::string toDebugString() const override;
     std::string toString() const override;
     std::size_t hash() const override;
