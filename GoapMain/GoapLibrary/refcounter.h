@@ -14,6 +14,14 @@
     inline int addRef() const { return ++_refcount; } \
     inline int releaseRef() const { return --_refcount; }
 
+#define IMPLEMENT_REFCOUNTER_FUNCTIONS_OVERRIDE(_refcount) \
+    protected: \
+    inline void suicide() override { instanceDeleter(this); } \
+    inline int loadRef() const override { return _refcount.load(std::memory_order_relaxed); } \
+    inline void storeRef(int newValue) const override { _refcount.store(newValue, std::memory_order_relaxed); } \
+    inline int addRef() const override { return ++_refcount; } \
+    inline int releaseRef() const override { return --_refcount; }
+
 #define IMPLEMENT_REFCOUNTER() \
     private: \
     mutable std::atomic<int> _refcount{0}; \

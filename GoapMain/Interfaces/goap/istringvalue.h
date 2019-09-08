@@ -13,6 +13,7 @@ public:
     typedef explicit_ptr<IStringValue> Ptr;
     typedef explicit_ptr<const IStringValue> CPtr;
     virtual void fromString(const std::string &str) = 0;
+    virtual std::string toDebugString() const = 0;
     virtual std::string toString() const = 0;
 };
 

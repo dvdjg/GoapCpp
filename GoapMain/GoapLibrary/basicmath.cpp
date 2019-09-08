@@ -9,35 +9,35 @@ namespace basicmath
 {
 // linear interpolate x in an array
 // inline
-float interp1( float x, const float a[], int n )
+float interp1( float x, const float a[], int_type n )
 {
     if( x <= 0 )  return a[0];
     if( x >= n - 1 )  return a[n-1];
-    int j = int(x);
+    int_type j = int_type(x);
     return a[j] + (x - j) * (a[j+1] - a[j]);
 }
 
-float interp1( float x, const half a[], int n )
+float interp1( float x, const half a[], int_type n )
 {
     if( x <= 0 )  return a[0];
     if( x >= n - 1 )  return a[n-1];
-    int j = int(x);
+    int_type j = int_type(x);
     return static_cast<float>(a[j]) + (x - j) * static_cast<float>(a[j+1] - a[j]);
 }
 
 // linear interpolate array a[] -> array b[]
-void inter1parray( const float a[], int n, float b[], int m )
+void inter1parray( const float a[], int_type n, float b[], int_type m )
 {
     float step = float( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp1( j*step, a, n );
     }
 }
 
-void inter1parray( const half a[], int n, half b[], int m )
+void inter1parray( const half a[], int_type n, half b[], int_type m )
 {
     float step = float( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp1( j*step, a, n );
     }
 }
@@ -54,38 +54,38 @@ float parabola( float x, float f_1, float f0, float f1 )
 }
 
 // quadratic interpolate x in an array
-float interp2( float x, const float a[], int n )
+float interp2( float x, const float a[], int_type n )
 {
     if( x <= .5f  ||  x >= n - 1.5f )
         return interp1( x, a, n );
-    int j = int( x + .5f );
+    int_type j = int_type( x + .5f );
     float t = 2.f * (x - j);  // -1 .. 1
     return parabola( t, (a[j-1] + a[j]) / 2, a[j], (a[j] + a[j+1]) / 2 );
 }
 
-float interp2( float x, const half a[], int n )
+float interp2( float x, const half a[], int_type n )
 {
     if( x <= .5f  ||  x >= n - 1.5f )
         return interp1( x, a, n );
-    int j = int( x + .5f );
+    int_type j = int_type( x + .5f );
     float t = 2 * (x - j);  // -1 .. 1
     return parabola( t, static_cast<float>(a[j-1] + a[j]) / 2, a[j], static_cast<float>(a[j] + a[j+1]) / 2 );
 }
 
 // quadratic interpolate array a[] -> array b[]
-void interp2array( const float a[], int n, float b[], int m )
+void interp2array( const float a[], int_type n, float b[], int_type m )
 {
     float step = float( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp2( j*step, a, n );
     }
 }
 
 
-void interp2array( const half a[], int n, half b[], int m )
+void interp2array( const half a[], int_type n, half b[], int_type m )
 {
     float step = float( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp2( j*step, a, n );
     }
 }
@@ -93,19 +93,19 @@ void interp2array( const half a[], int n, half b[], int m )
 
 // linear interpolate x in an array
 // inline
-half interp1( half x, const half a[], int n )
+half interp1( half x, const half a[], int_type n )
 {
     if( x <= 0 )  return a[0];
     if( x >= n - 1 )  return a[n-1];
-    int j = int(x);
+    int_type j = int_type(x);
     return a[j] + (x - j) * (a[j+1] - a[j]);
 }
 
     // linear interpolate array a[] -> array b[]
-void inter1parrayh( const half a[], int n, half b[], int m )
+void inter1parrayh( const half a[], int_type n, half b[], int_type m )
 {
     half step = half( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp1( j*step, a, n );
     }
 }
@@ -122,20 +122,20 @@ half parabolah( half x, half f_1, half f0, half f1 )
 }
 
     // quadratic interpolate x in an array
-half interp2( half x, const half a[], int n )
+half interp2( half x, const half a[], int_type n )
 {
     if( x <= .5f  ||  x >= n - 1.5f )
         return interp1( x, a, n );
-    int j = int( x + .5f );
+    int_type j = int_type( x + .5f );
     half t = 2.f * (x - j);  // -1 .. 1
     return parabolah( t, (a[j-1] + a[j]) / 2.f, a[j], (a[j] + a[j+1]) / 2.f );
 }
 
     // quadratic interpolate array a[] -> array b[]
-void interp2arrayh( const half a[], int n, half b[], int m )
+void interp2arrayh( const half a[], int_type n, half b[], int_type m )
 {
     half step = half( n - 1 ) / (m - 1);
-    for( int j = 0; j < m; j ++ ){
+    for( int_type j = 0; j < m; j ++ ){
         b[j] = interp2( j*step, a, n );
     }
 }

@@ -15,10 +15,10 @@ HEADERS += \
     common/iroot.h \
     common/irefcounter.h \
     goap/iclonable.h \
+    goap/istate.h \
     goap/istringvalue.h \
     goap/imemory.h \
     goap/imemoryvalue.h \
-    goap/ireadstate.h \
     goap/istatevalue.h \
     goap/ibasicsink.h
 

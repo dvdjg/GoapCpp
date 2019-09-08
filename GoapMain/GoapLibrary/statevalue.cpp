@@ -51,23 +51,25 @@ float StateValue::at(float idx) const
     return ret;
 }
 
-float StateValue::at(size_t idx) const
+float StateValue::at(intptr_t idx) const
 {
     if (data.size() == 0) {
         return 0.f;
-    } else if (idx >= data.size()) {
-        idx = data.size()-1;
-    }
-    return data.at(idx);
-}
-
-float StateValue::at(int idx) const
-{
-    if (idx < 0) {
+    } else if (idx >= intptr_t(data.size())) {
+        idx = intptr_t(data.size()-1);
+    } else if (idx < 0) {
         idx = 0;
     }
-    return this->at(size_t(idx));
+    return data.at(std::size_t(idx));
 }
+
+//float StateValue::at(int idx) const
+//{
+//    if (idx < 0) {
+//        idx = 0;
+//    }
+//    return this->at(size_t(idx));
+//}
 
 void StateValue::fromString(const std::string &str)
 {
@@ -95,7 +97,7 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 
     if (size() > 0 && &o->data[0] != &data[0])
     {
-        interp2array(&o->data[0], o->size(), &data[0], static_cast<int>(size()));
+        interp2array(&o->data[0], int_type(o->size()), &data[0], int_type(size()));
     }
 }
 
@@ -113,7 +115,7 @@ float StateValue::cosineDistance(const IStateValue::CPtr &other) const
     return dist.distance();
 }
 
-std::string StateValue::toString() const
+std::string StateValue::toDebugString() const
 {
     std::string ret{"["};
 
@@ -129,7 +131,7 @@ std::string StateValue::toString() const
     return ret;
 }
 
-std::string StateValue::toCharacterString() const
+std::string StateValue::toString() const
 {
     std::string ret;
     for(auto &it : data) {
@@ -138,26 +140,28 @@ std::string StateValue::toCharacterString() const
     return ret;
 }
 
-void StateValue::setAt(int idx, float value)
+void StateValue::setAt(intptr_t idx, float value)
 {
     if (idx < 0) {
         throw new std::runtime_error(__func__);
     }
-    setAt(size_t(idx), value);
+    data.at(std::size_t(idx)) = value;
 }
+
 void StateValue::setAt(float idx, float value)
 {
     auto i = std::llround(idx);
     if (i < 0) {
         throw new std::runtime_error(__func__);
     }
-    setAt(size_t(i), value);
+    setAt(intptr_t(i), value);
 }
-void StateValue::setAt(size_t idx, float value)
-{
-    //data.insert(data.begin() + static_cast<ssize_t>(idx), value);
-    data.at(idx) = value;
-}
+
+//void StateValue::setAt(size_t idx, float value)
+//{
+//    //data.insert(data.begin() + static_cast<ssize_t>(idx), value);
+//    data.at(idx) = value;
+//}
 
 std::size_t StateValue::hash() const
 {
@@ -176,9 +180,14 @@ IClonable::Ptr StateValue::clone() const
 
 void StateValue::assign(const IStateValue::CPtr &other)
 {
-    data.resize(other->size());
-    for (size_t i = 0; i < other->size(); ++i) {
-        data[i] = other->at(i);
+    auto o = dynamic_pointer_cast<const StateValue>(other);
+    if (!o) {
+        data = o->data;
+    } else {
+        data.resize(other->size());
+        for (int_type i = 0; i < int_type(other->size()); ++i) {
+            data.at(std::size_t(i)) = other->at(i);
+        }
     }
 }
 
@@ -189,7 +198,7 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
     {
         std::size_t thisSize = size();
         ret = thisSize == other->size();
-        for (std::size_t i = 0; ret && i < thisSize; ++i) {
+        for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
             ret = floatEqual(at(i), other->at(i));
         }
     }

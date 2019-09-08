@@ -15,8 +15,8 @@ public:
     NewPtr(const Key & discr, Args &&... args) : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I, Args...>(discr, std::forward<Args>(args)...))
     {
     }
-    template <size_t N>
-    NewPtr(const Key & discr, const char (&args)[N]) : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I, const char *>(discr, std::forward<const char *>(args)))
+    template <size_t N, typename ... Args>
+    NewPtr(const Key & discr, const char (&sz)[N], Args &&... args) : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I, const char *, Args...>(discr, std::forward<const char *>(sz), std::forward<Args>(args)...))
     {
     }
     NewPtr() : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I>({}))

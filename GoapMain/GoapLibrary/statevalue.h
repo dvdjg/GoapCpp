@@ -30,10 +30,10 @@ public:
     void resize(std::size_t len) override;
     float at(float idx) const override;
     void setAt(float idx, float value) override;
-    float at(size_t idx) const override;
-    void setAt(size_t idx, float value) override;
-    float at(int idx) const override;
-    void setAt(int idx, float value) override;
+    //float at(size_t idx) const override;
+    //void setAt(size_t idx, float value) override;
+    float at(intptr_t idx) const override;
+    void setAt(intptr_t idx, float value) override;
     void fromString(const std::string &str) override;
     void interpolateFrom(const IStateValue::CPtr &other) override;
     float cosineDistance(const IStateValue::CPtr &other) const override;
@@ -41,8 +41,8 @@ public:
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;
     bool equal(const IStateValue::CPtr &other) const override;
+    std::string toDebugString() const override;
     std::string toString() const override;
-    std::string toCharacterString() const override;
     std::size_t hash() const override;
 
     void clear() override;

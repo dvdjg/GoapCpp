@@ -11,7 +11,8 @@ CONFIG -= qt
 
 SOURCES += \
     main.cpp \
-    tst_goap.cpp
+    tst_goap.cpp \
+    tst_goap_istatevalue.cpp
 
 INCLUDEPATH += \
     $$top_srcdir/3rdparty/gmock-gtest \

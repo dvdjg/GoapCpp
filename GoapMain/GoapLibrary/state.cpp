@@ -2,28 +2,76 @@
 #include "state.h"
 #include "statevalue.h"
 
+#include "newptr.h"
+
 namespace goap
 {
 
 using namespace std;
 
+//std::string State::g_strStateValueRegistration;
+
 State::State()
 {
 }
 
-void State::remove(const IStateValue::Ptr &key)
+State::State(const State &other) : data(other.data), coste(other.coste)
+{
+}
+
+State::State(const IState::CPtr &other)
+{
+    assign(other);
+}
+
+void State::assign(const IState::CPtr &other)
+{
+    auto o = dynamic_pointer_cast<const State>(other);
+    if (o) {
+        data = o->data;
+        coste = o->coste;
+    } else {
+        throw new std::runtime_error(__func__);
+    }
+}
+
+void State::remove(const IStateValue::CPtr &key)
 {
     data.erase(key);
 }
 
-IStateValue::Ptr State::at(const IStateValue::Ptr &key) const
+void State::remove(const std::string &str)
+{
+    remove(NewPtr<IStateValue>({}, str)); // IStateValue::CPtr(new StateValue(str))
+}
+
+IStateValue::Ptr State::at(const IStateValue::CPtr &key) const
 {
     return data.at(key);
 }
 
-void State::setAt(const IStateValue::Ptr &key, const IStateValue::Ptr &value)
+IState::PairIStateValue State::at(intptr_t idx) const
+{
+    if (idx < 0 || idx >= intptr_t(data.size())) {
+        throw new std::runtime_error(__func__);
+    }
+    auto it = std::next(data.begin(), idx);
+    return std::make_pair(it->first, it->second);
+}
+
+IStateValue::Ptr State::at(const std::string &str) const
+{
+    return at(NewPtr<IStateValue>({}, str));
+}
+
+void State::setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value)
 {
     data[key] = value;
+}
+
+void State::setAt(const std::string &str, const IStateValue::Ptr &value)
+{
+    setAt(NewPtr<IStateValue>({}, str), value);
 }
 
 size_t State::size() const
@@ -31,7 +79,7 @@ size_t State::size() const
     return data.size();
 }
 
-bool State::equals(const IState::CPtr &other) const
+bool State::equal(const IState::CPtr &other) const
 {
     auto o = dynamic_pointer_cast<const State>(other);
     return o && data == o->data;
@@ -47,25 +95,24 @@ void State::setCost(float c)
     coste = c;
 }
 
-std::pair<IStateValue::Ptr, IStateValue::Ptr> State::at(intptr_t idx) const
+IClonable::Ptr State::clone() const
 {
-    auto it = std::next(data.begin(), idx);
-    return std::make_pair(it->first, it->second);
+    auto ptr = NewPtr<IState>({}, *this);
+    return std::move(ptr); //new State(*this);
 }
 
-void State::remove(const std::string &str)
+void State::fromString(const string &)
 {
-    remove(IStateValue::Ptr(new StateValue(str)));
 }
 
-void State::setAt(const std::string &str, const IStateValue::Ptr &value)
+string State::toDebugString() const
 {
-    setAt(IStateValue::Ptr(new StateValue(str)), value);
+    return {};
 }
 
-IStateValue::Ptr State::at(const std::string &str) const
+string State::toString() const
 {
-    return at(IStateValue::Ptr(new StateValue(str)));
+    return {};
 }
 
 }
