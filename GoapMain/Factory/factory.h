@@ -281,7 +281,7 @@ Factory<Base, Key>::getWrapperClass(Key const &key) const
     auto it3 = it2->second.find(subindex);
     if (it3 == it2->second.end())
     {
-        LOG(ERROR) << "Can't find registered constructor arguments in the factory for \"" << subindex.name() << "\".";
+        LOG(ERROR) << "Can't find registered constructor arguments in the factory for \"" << subindex.name() << "\" within the interface \"" << index.name() << "\".";
         return nullptr;
     }
     auto pWrapped = &*it3->second;

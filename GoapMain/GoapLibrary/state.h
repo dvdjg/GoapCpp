@@ -24,11 +24,12 @@ public:
 
     void remove(const IStateValue::CPtr &key) override;
     IStateValue::Ptr at(const IStateValue::CPtr &key) const override;
+    IStateValue::Ptr at(const std::string &str) const override;
     void setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
+    void setAt(const std::string &str, const IStateValue::Ptr &value) override;
+    void setAt(const std::string &str, std::initializer_list<float> list) override;
     size_t size() const override;
     void remove(const std::string &str) override;
-    void setAt(const std::string &str, const IStateValue::Ptr &value) override;
-    IStateValue::Ptr at(const std::string &str) const override;
     bool equal(const IState::CPtr &other) const override;
     float cost() const override;
     void setCost(float c) override;

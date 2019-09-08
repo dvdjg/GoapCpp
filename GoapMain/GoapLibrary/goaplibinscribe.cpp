@@ -8,6 +8,7 @@
 #include "basicsinkcollection.h"
 #include "basicostreamsink.h"
 #include "statevalue.h"
+#include "state.h"
 #include "scopetimeostream.h"
 #include "goaplibinscribe.h"
 
@@ -28,6 +29,15 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IBasicSink, BasicSinkCollection, const std::string &, std::ostream &>(discr+"Collection");
     ++ret;
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
+    ++ret;
+
+    factory.inscribe<FactoryType::Default, IState>([](){ return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IState>([](const IState::CPtr &cptr){
+        auto ptr = RecyclableWrapper<State>::createFromPoolRaw();
+        ptr->assign(cptr);
+        return ptr;
+    }, discr);
     ++ret;
 
     factory.inscribe<FactoryType::Default, IStateValue>([](){ return RecyclableWrapper<StateValue>::createFromPoolRaw(); }, discr);
@@ -57,6 +67,12 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const std::initializer_list<float> &list){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        ptr->assign(list);
+        return ptr;
+    }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateValue>([](std::initializer_list<float> const list){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
         ptr->assign(list);
         return ptr;

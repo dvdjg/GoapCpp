@@ -21,6 +21,7 @@ public:
     virtual void remove(const std::string &str) = 0;
     virtual void remove(const IStateValue::CPtr &key) = 0;
     virtual void setAt(const std::string &str, const IStateValue::Ptr &value) = 0;
+    virtual void setAt(const std::string &str, std::initializer_list<float> list) = 0;
     virtual void setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
     virtual IStateValue::Ptr at(const IStateValue::CPtr &key) const = 0;
     virtual IStateValue::Ptr at(const std::string &str) const = 0;

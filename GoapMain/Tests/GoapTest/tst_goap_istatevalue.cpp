@@ -28,12 +28,12 @@ protected:
 
 TEST_F(GoapIStateValueTest, TestSetAt)
 {
-    auto scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapIStateValueTest, Test1 A: ", true);
+    auto scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateValueTest, Test1 A: ", true);
     ASSERT_TRUE(scopeTimer);
     NewPtr<IStateValue> ptrState;
     ASSERT_TRUE(ptrState);
     scopeTimer.reset();
-    scopeTimer = NewPtr<IScopeTime>({}, (const char *) "GoapIStateValueTest, Test1: B", true);
+    scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateValueTest, Test1: B", true);
     ptrState->resize(10);
     ptrState->setAt(0, 0.0f);
     ptrState->setAt(1, 1.0);
@@ -48,7 +48,7 @@ TEST_F(GoapIStateValueTest, TestSetAt)
 TEST_F(GoapIStateValueTest, TestSetAtF)
 {
     NewPtr<IStateValue> ptrState;
-    EXPECT_EQ(0, ptrState->size());
+    EXPECT_TRUE(0 == ptrState->size());
     ptrState->resize(10);
     ptrState->setAt(1, 12.0); // Auto grow
     ptrState->setAt(2, 11.0);
@@ -96,9 +96,8 @@ TEST_F(GoapIStateValueTest, TestInterpolateF_2)
 TEST_F(GoapIStateValueTest, TestCosineDistance)
 {
     NewPtr<IStateValue> ptrStateOther;
-    NewPtr<IStateValue> ptrState;
+    NewPtr<IStateValue> ptrState({1.f, 0.f, 0.f});
 
-    ptrState->assign({1.f, 0.f, 0.f});
     ptrStateOther->assign({0.f, 1.f, 0.f});
     float fDistance = ptrState->cosineDistance(ptrStateOther);
     EXPECT_FLOAT_EQ(-0.5f, fDistance);

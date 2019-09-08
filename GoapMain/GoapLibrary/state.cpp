@@ -61,7 +61,7 @@ IState::PairIStateValue State::at(intptr_t idx) const
 
 IStateValue::Ptr State::at(const std::string &str) const
 {
-    return at(NewPtr<IStateValue>({}, str));
+    return data.at(NewPtr<IStateValue>({}, str));
 }
 
 void State::setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value)
@@ -72,6 +72,12 @@ void State::setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value)
 void State::setAt(const std::string &str, const IStateValue::Ptr &value)
 {
     setAt(NewPtr<IStateValue>({}, str), value);
+}
+
+void State::setAt(const std::string &str, std::initializer_list<float> list)
+{
+    NewPtr<IStateValue> val({}, list);
+    setAt(NewPtr<IStateValue>({}, str), val);
 }
 
 size_t State::size() const
