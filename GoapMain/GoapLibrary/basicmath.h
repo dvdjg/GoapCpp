@@ -7,10 +7,25 @@
 #include <math.h>
 #include "half.h"
 
+#ifdef FLT_EPSILON
+#define GOAP_FLT_EPSILON FLT_EPSILON
+#else
+#define GOAP_FLT_EPSILON      1.192092896e-07F        // smallest such that 1.0+FLT_EPSILON != 1.0
+#endif
+
+#ifdef FLT_MIN
+#define GOAP_FLT_MIN FLT_MIN
+#else
+#define GOAP_FLT_MIN          1.175494351e-38F        // min normalized positive value
+#endif
+
+
 namespace basicmath
 {
 typedef intptr_t int_type;
 
+
+bool floatEqual(float x, float y);
 
 // linear interpolate x in an array
 // inline

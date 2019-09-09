@@ -183,10 +183,10 @@ TEST_F(GoapIStateValueTest, Assign)
 
 TEST_F(GoapIStateValueTest, TestClone)
 {
-
     NewPtr<IStateValue> ptrState({1.f, 0.5f, 0.f, 9.f, 98.f});
 
     auto ptrCloned = dynamic_pointer_cast<IStateValue>(ptrState->clone());
     ASSERT_TRUE(ptrCloned);
     ASSERT_EQ(*ptrCloned, *ptrState);
+    ASSERT_EQ(9.f, ptrCloned->at(3));
 }

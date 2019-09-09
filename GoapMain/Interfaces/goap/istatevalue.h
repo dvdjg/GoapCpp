@@ -8,18 +8,6 @@
 #include "iclonable.h"
 #include "istringvalue.h"
 
-#ifdef FLT_EPSILON
-#define GOAP_FLT_EPSILON FLT_EPSILON
-#else
-#define GOAP_FLT_EPSILON      1.192092896e-07F        // smallest such that 1.0+FLT_EPSILON != 1.0
-#endif
-
-#ifdef FLT_MIN
-#define GOAP_FLT_MIN FLT_MIN
-#else
-#define GOAP_FLT_MIN          1.175494351e-38F        // min normalized positive value
-#endif
-
 namespace goap
 {
 
@@ -30,12 +18,6 @@ public:
     typedef intptr_t index_type;
     typedef explicit_ptr<IStateValue> Ptr;
     typedef explicit_ptr<const IStateValue> CPtr;
-
-    inline static bool floatEqual(float x, float y)
-    {
-        float diff = std::abs(x - y);
-        return diff <= GOAP_FLT_EPSILON * std::abs(x + y) * 2 || diff < GOAP_FLT_MIN;
-    }
 
     //virtual bool isNumeric() const = 0;
     virtual intptr_t size() const = 0; ///< From 0 to 1000

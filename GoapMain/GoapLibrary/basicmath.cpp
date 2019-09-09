@@ -7,6 +7,12 @@
 
 namespace basicmath
 {
+bool floatEqual(float x, float y)
+{
+    float diff = std::abs(x - y);
+    return diff <= GOAP_FLT_EPSILON * std::abs(x + y) * 2 || diff < GOAP_FLT_MIN;
+}
+
 // linear interpolate x in an array
 // inline
 float interp1( float x, const float a[], int_type n )

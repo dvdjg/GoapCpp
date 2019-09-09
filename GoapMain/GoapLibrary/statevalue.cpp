@@ -205,7 +205,7 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
         auto thisSize = size();
         ret = thisSize == other->size();
         for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
-            ret = floatEqual(at(i), other->at(i));
+            ret = basicmath::floatEqual(at(i), other->at(i));
         }
     }
     return ret;
@@ -218,7 +218,7 @@ bool StateValue::equal(const std::string &other) const
     auto thisSize = size();
     ret = thisSize == int_type(other.size());
     for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
-        ret = floatEqual(at(i), other.at(std::size_t(i)));
+        ret = basicmath::floatEqual(at(i), other.at(std::size_t(i)));
     }
     return ret;
 }
@@ -231,7 +231,7 @@ bool StateValue::equal(const std::initializer_list<float> &other) const
     ret = thisSize == int_type(other.size());
     auto beg = other.begin();
     for (int_type i = 0; ret && i < int_type(thisSize); ++i, ++beg) {
-        ret = floatEqual(at(i), *beg);
+        ret = basicmath::floatEqual(at(i), *beg);
     }
     return ret;
 }

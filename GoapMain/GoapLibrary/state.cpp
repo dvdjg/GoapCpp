@@ -1,4 +1,5 @@
 #include <iterator>
+#include "basicmath.h"
 #include "state.h"
 #include "statevalue.h"
 
@@ -92,8 +93,8 @@ intptr_t State::size() const
 
 bool State::equal(const IState::CPtr &other) const
 {
-    auto o = dynamic_pointer_cast<const State>(other);
-    return o && data == o->data;
+    auto o = dynamic_cast<const State*>(other.get());
+    return o && basicmath::floatEqual(coste, o->coste) && data == o->data;
 }
 
 float State::cost() const
