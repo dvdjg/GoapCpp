@@ -14,6 +14,7 @@ INCLUDEPATH=../GoapLibrary ../Factory
 HEADERS += \
     common/iroot.h \
     common/irefcounter.h \
+    goap/iplanningaction.h \
     goap/iclonable.h \
     goap/istate.h \
     goap/istringvalue.h \
