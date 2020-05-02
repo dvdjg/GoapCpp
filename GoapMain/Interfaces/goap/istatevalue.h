@@ -14,6 +14,9 @@ namespace goap
 class IStateValue : public IStringValue, public IClonable, public virtual IRefCounter
 {
 public:
+    using IStringValue::assign;
+    using IStringValue::equal;
+
     typedef float value_type;
     typedef intptr_t index_type;
     typedef explicit_ptr<IStateValue> Ptr;
@@ -27,12 +30,10 @@ public:
     virtual void setAt(float idx, float value) = 0;
     virtual void setAt(intptr_t idx, float value) = 0;
     virtual void assign(const IStateValue::CPtr &other) = 0;
-    virtual void assign(const std::string &other) = 0;
     virtual void assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
     virtual bool equal(const IStateValue::CPtr &other) const = 0;
-    virtual bool equal(const std::string &other) const = 0;
     virtual bool equal(const std::initializer_list<float> &list) const = 0;
 
     virtual void clear() = 0;

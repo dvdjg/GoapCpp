@@ -122,7 +122,7 @@ std::string StateValue::toDebugString() const
         ret += std::to_string(it);
         ret += ", ";
     }
-    if (ret.size() > 2) {
+    if (ret.size() >= 2) {
         ret.pop_back();
         ret.pop_back();
     }

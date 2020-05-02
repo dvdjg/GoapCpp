@@ -10,8 +10,6 @@ namespace goap
 
 using namespace std;
 
-//std::string State::g_strStateValueRegistration;
-
 State::State()
 {
 }
@@ -25,10 +23,21 @@ State::State(const IState::CPtr &other)
     assign(other);
 }
 
+State::State(std::initializer_list<data_type::value_type> list) : data(list)
+{
+
+}
+
 void State::assign(const State &o)
 {
     data = o.data;
     coste = o.coste;
+
+    data_type dt({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
+                  {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
+    State st({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
+              {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
+
 }
 
 void State::assign(const IState::CPtr &other)
@@ -113,18 +122,42 @@ IClonable::Ptr State::clone() const
     return std::move(ptr);
 }
 
-void State::fromString(const string &)
-{
-}
-
 string State::toDebugString() const
 {
-    return {};
+    string ret{"{"};
+    ret += "coste:";
+    ret += std::to_string(coste);
+    ret += ", ";
+
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        ret += it->first->toString();
+        ret += ":";
+        ret += it->second->toDebugString();
+        ret += ", ";
+    }
+    ret.pop_back();
+    ret.pop_back();
+    ret += '}';
+    return ret;
 }
 
 string State::toString() const
 {
-    return {};
+    string ret{"{"};
+    ret += "coste:";
+    ret += std::to_string(coste);
+    ret += ", ";
+
+    for (auto it = data.cbegin(); it != data.cend(); ++it) {
+        ret += it->first->toString();
+        ret += " : ";
+        ret += it->second->toString();
+        ret += ", ";
+    }
+    ret.pop_back();
+    ret.pop_back();
+    ret += '}';
+    return ret;
 }
 
 }

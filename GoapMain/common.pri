@@ -43,14 +43,15 @@ INCLUDEPATH += $$top_srcdir/3rdparty/zlib
 SPEC=$$basename(QMAKESPEC)
 SPEC=$$replace(SPEC, win32, windows)-$$QMAKE_TARGET.arch
 
-
+#       "D:/OneDrive/Programa/googletest/googletest/include" \
+#       "D:/OneDrive/Programa/googletest/googlemock/include"
+#       "F:/Programa/googletest/googletest/include" \
+#       "F:/Programa/googletest/googlemock/include"
 win32-msvc* {
     LIBPRE=
     LIBPOST=.lib
     INCLUDEPATH += \
-        D:\Programa\boost_1_71_0 \
-        "D:/OneDrive/Programa/googletest/googletest/include" \
-        "D:/OneDrive/Programa/googletest/googlemock/include"
+        D:\Programa\boost_1_71_0
     LIBS += \
         -LD:\Programa\boost_1_71_0/stage/lib \
          -lUser32 -lAdvapi32 -lws2_32
@@ -62,11 +63,9 @@ win32-msvc* {
     LIBPRE=lib
     LIBPOST=.a
     INCLUDEPATH += \
-        D:\Programa\boost_1_71_0 \
-        "D:/OneDrive/Programa/googletest/googletest/include" \
-        "D:/OneDrive/Programa/googletest/googlemock/include"
+        F:\Programa\boost_1_71_0
     LIBS += \
-        -LD:\Programa\boost_1_71_0/stage/lib \
+        -LF:\Programa\boost_1_71_0/stage/lib \
          -lboost_system-mgw73-mt-x64-1_71 -lboost_filesystem-mgw73-mt-x64-1_71 \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment

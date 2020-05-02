@@ -60,8 +60,6 @@ TEST_F(GoapIStateValueTest, TestSetAtF)
 
 TEST_F(GoapIStateValueTest, TestInterpolateF)
 {
-    //auto init = {1.f, 2.f, 4.f, 8.f};
-    //NewPtr<IStateValue> ptrState({}, init); // <std::string, std::initializer_list<float>>
     NewPtr<IStateValue> ptrStateOther;
     NewPtr<IStateValue> ptrState;
     ptrStateOther->assign({3.f, 6.f, 12.f, 24.f}); //  --> {3.f, x, 6.f, x, 12.f, x, 24.f}

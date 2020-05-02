@@ -8,9 +8,10 @@
 namespace goap
 {
 
-class IState : public IStringValue, public IClonable, public virtual IRefCounter
+class IState : public IStringPrintable, public IClonable, public virtual IRefCounter
 {
 public:
+
     typedef float value_type;
     typedef intptr_t index_type;
     typedef explicit_ptr<IState> Ptr;

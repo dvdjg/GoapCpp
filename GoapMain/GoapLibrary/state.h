@@ -12,15 +12,17 @@ class State : public virtual IState
 {
     IMPLEMENT_REFCOUNTER()
 
+public:
+    typedef std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
+    data_type data;
 protected:
-    std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data;
     float coste = 0;
 
 public:
     State();
     State(const State &other);
-    State(const IState::CPtr &other);
-    //static std::string g_strStateValueRegistration;
+    State(const IState::CPtr &other);    
+    State(std::initializer_list<data_type::value_type> list);
 
     void remove(const IStateValue::CPtr &key) override;
     IStateValue::Ptr at(const IStateValue::CPtr &key) const override;
@@ -42,9 +44,8 @@ public:
 public:
     IClonable::Ptr clone() const override;
 
-    // IStringValue interface
+    // IStringPrintable interface
 public:
-    void fromString(const std::string &str) override;
     std::string toDebugString() const override;
     std::string toString() const override;
 };

@@ -1,5 +1,6 @@
 #include <gmock/gmock.h>
 #include <list>
+#include <unordered_map>
 #include "explicit_ptr.h"
 
 #include "goap/istate.h"
@@ -89,4 +90,20 @@ TEST_F(GoapIStateTest, TestClone)
     NewPtr<IState> ptrOther(ptrState->clone());
 
     ASSERT_EQ(*ptrOther, *ptrState);
+
+    std::cout << ptrOther->toString();
+    std::cout << ptrOther->toDebugString();
 }
+
+TEST_F(GoapIStateTest, TestCreate)
+{
+    typedef std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
+    std::initializer_list<data_type::value_type> dt({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
+                  {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
+    NewPtr<IState> ptrState(dt);
+
+    std::cout << ptrState->toDebugString();
+    //NewPtr<IState> ptrState({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
+    //          {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
+}
+

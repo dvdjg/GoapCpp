@@ -84,9 +84,9 @@ public:
     static void SetUpTestCase()
     {
         error_log([&](errors::constraint e) {
-            cerr << "Wrong error detected! " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+            cerr << "DataTest::SetUpTestCase() - Wrong error detected! " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
         }, [&](errors::constraint_primarykey e) {
-            cerr << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+            cerr << "DataTest::SetUpTestCase() - " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
             error_detected = true;
         }
         );
@@ -124,6 +124,7 @@ bool DataTest::error_detected = false;
 
 TEST_F(DataTest, error_log)
 {
+    bool expception_thrown = false;
     db << "CREATE TABLE person (id integer primary key not null, name TEXT);";
 
     try
@@ -135,8 +136,9 @@ TEST_F(DataTest, error_log)
     catch (errors::constraint e)
     {
         cerr << "Catched error.- " << e.get_code() << '/' << e.get_extended_code() << ": " << e.what() << endl;
+        expception_thrown = true;
     }
-    EXPECT_TRUE(error_detected);
+    EXPECT_TRUE(expception_thrown);
 }
 
 TEST_F(DataTest, blob_example)
