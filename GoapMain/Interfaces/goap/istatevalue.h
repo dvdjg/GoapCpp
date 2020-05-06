@@ -1,5 +1,5 @@
-#ifndef ISTATEVALUE_H
-#define ISTATEVALUE_H
+#ifndef GOAP_ISTATEVALUE_H
+#define GOAP_ISTATEVALUE_H
 
 #include <cmath>
 #include <string>
@@ -32,79 +32,68 @@ public:
     virtual void assign(const IStateValue::CPtr &other) = 0;
     virtual void assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
-    virtual float cosineDistance(const IStateValue::CPtr &other) const = 0;
+    virtual float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const = 0;
     virtual bool equal(const IStateValue::CPtr &other) const = 0;
     virtual bool equal(const std::initializer_list<float> &list) const = 0;
 
     virtual void clear() = 0;
     virtual std::size_t hash() const = 0;
 
-    inline float at(int idx) const
-    {
+    inline float at(int idx) const {
         return at(intptr_t(idx));
     }
 
-    inline void setAt(int idx, float value)
-    {
+    inline void setAt(int idx, float value) {
         setAt(intptr_t(idx), value);
     }
 
-    inline float at(unsigned idx) const
-    {
+    inline float at(unsigned idx) const {
         return at(intptr_t(idx));
     }
 
-    inline void setAt(unsigned idx, float value)
-    {
+    inline void setAt(unsigned idx, float value) {
         setAt(intptr_t(idx), value);
     }
 
-    inline float operator[](float idx) const
-    {
+    inline float operator[](float idx) const {
         return at(idx);
     }
-    inline float operator[](intptr_t idx) const
-    {
+
+    inline float operator[](intptr_t idx) const {
         return at(idx);
     }
-    inline float operator[](int idx) const
-    {
+
+    inline float operator[](int idx) const {
         return at(idx);
     }
-    inline float operator[](unsigned idx) const
-    {
+
+    inline float operator[](unsigned idx) const {
         return at(idx);
     }
 };
 
-inline bool operator ==(const IStateValue& a, const IStateValue& b)
-{
+inline bool operator ==(const IStateValue& a, const IStateValue& b) {
     return a.equal(IStateValue::CPtr(&b));
 }
 
-inline bool operator ==(const IStateValue& a, const std::string &other)
-{
+inline bool operator ==(const IStateValue& a, const std::string &other) {
     return a.equal(other);
 }
 
-inline bool operator ==(const IStateValue& a, const std::initializer_list<float> &other)
-{
+inline bool operator ==(const IStateValue& a, const std::initializer_list<float> &other) {
     return a.equal(other);
 }
 
 
-inline bool operator !=(const IStateValue& a, const IStateValue& b)
-{
+inline bool operator !=(const IStateValue& a, const IStateValue& b) {
     return !(a == b);
 }
 
-inline bool operator !=(const IStateValue& a, const std::string& b)
-{
+inline bool operator !=(const IStateValue& a, const std::string& b) {
     return !(a == b);
 }
 
-inline bool operator !=(const IStateValue& a, const std::initializer_list<float>& b)
-{
+inline bool operator !=(const IStateValue& a, const std::initializer_list<float>& b) {
     return !(a == b);
 }
 
@@ -117,16 +106,15 @@ using namespace goap;
 template <>
 struct hash<IStateValue::CPtr>
 {
-    std::size_t operator()(const IStateValue::CPtr &k) const
-    {
+    std::size_t operator()(const IStateValue::CPtr &k) const {
         return k->hash();
     }
 };
+
 template <>
 struct hash<IStateValue::Ptr>
 {
-    std::size_t operator()(const IStateValue::Ptr &k) const
-    {
+    std::size_t operator()(const IStateValue::Ptr &k) const {
         return k->hash();
     }
 };
@@ -134,13 +122,12 @@ struct hash<IStateValue::Ptr>
 template<>
 struct equal_to<IStateValue::CPtr>
 {
-    bool operator()(const IStateValue::CPtr &data1, const IStateValue::CPtr &data2) const
-    {
+    bool operator()(const IStateValue::CPtr &data1, const IStateValue::CPtr &data2) const {
         return data1->equal(data2);
     }
 };
+
 }
 
 
-#endif // ISTATEVALUE_H
-
+#endif // GOAP_ISTATEVALUE_H

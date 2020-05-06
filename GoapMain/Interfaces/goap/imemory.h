@@ -1,5 +1,5 @@
-#ifndef IMEMORY_H
-#define IMEMORY_H
+#ifndef GOAP_IMEMORY_H
+#define GOAP_IMEMORY_H
 
 #include <memory>
 #include "common/irefcounter.h"
@@ -15,4 +15,4 @@ public:
 
 }
 
-#endif // IMEMORY_H
+#endif // GOAP_IMEMORY_H

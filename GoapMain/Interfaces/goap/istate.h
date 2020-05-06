@@ -1,8 +1,9 @@
-#ifndef IREADSTATE_H
-#define IREADSTATE_H
+#ifndef GOAP_IREADSTATE_H
+#define GOAP_IREADSTATE_H
 
 #include <memory>
 #include "common/irefcounter.h"
+#include "explicit_ptr.h"
 #include "istatevalue.h"
 
 namespace goap
@@ -45,4 +46,4 @@ inline bool operator !=(const IState& a, const IState& b)
 
 }
 
-#endif // IREADSTATE_H
+#endif // GOAP_IREADSTATE_H

@@ -1,5 +1,5 @@
-#ifndef BASICOSTREAMSINK_H
-#define BASICOSTREAMSINK_H
+#ifndef GOAP_BASICOSTREAMSINK_H
+#define GOAP_BASICOSTREAMSINK_H
 
 #include <iostream>
 #include "goap/ibasicsink.h"
@@ -41,4 +41,4 @@ public:
 
 }
 
-#endif // BASICOSTREAMSINK_H
+#endif // GOAP_BASICOSTREAMSINK_H

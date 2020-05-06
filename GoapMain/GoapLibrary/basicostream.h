@@ -1,5 +1,5 @@
-#ifndef BASICOSTREAM_H
-#define BASICOSTREAM_H
+#ifndef GOAP_BASICOSTREAM_H
+#define GOAP_BASICOSTREAM_H
 
 #include <mutex>
 #include <iostream>
@@ -58,4 +58,4 @@ private:
 
 }
 
-#endif // BASICOSTREAM_H
+#endif // GOAP_BASICOSTREAM_H

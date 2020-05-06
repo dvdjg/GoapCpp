@@ -1,29 +1,32 @@
-#ifndef IPLANNINGACTION_H
-#define IPLANNINGACTION_H
+#ifndef GOAP_IPLANNINGACTION_H
+#define GOAP_IPLANNINGACTION_H
 
 #include "common/irefcounter.h"
-#include "explicit_ptr.h"
-#include "iclonable.h"
 #include "istringvalue.h"
-#include "goap/istate.h"
-#include "goap/istringvalue.h"
+#include "istate.h"
 
 namespace goap
 {
 
-class IPlanningAction : public IClonable, public virtual IRefCounter
+class IPlanningAction : public virtual IRefCounter
 {
 public:
-    IStringValue::CPtr name() const = 0;
+    typedef explicit_ptr<IPlanningAction> Ptr;
+    typedef explicit_ptr<const IPlanningAction> CPtr;
+
+    virtual IStringValue::CPtr name() const = 0;
+
     /**
      * Returns true if the action can be executed given this input state.
      */
-    bool canExecute(IState::CPtr state) const = 0;
+    virtual bool canExecute(IState::CPtr state) const = 0;
+
     /**
      * Returns a modified cloned state. The input state is not modified.
      */
-    IState::Ptr execute(state:IReadState) const = 0;
+    virtual IState::Ptr execute(IState::CPtr state) const = 0;
 };
 
+}
 
-#endif // IPLANNINGACTION_H
+#endif // GOAP_IPLANNINGACTION_H

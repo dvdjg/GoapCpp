@@ -10,21 +10,21 @@ BasicSinkCollection::BasicSinkCollection()
 
 BasicSinkCollection::BasicSinkCollection(const std::string &name, IBasicSink::Ptr sink)
 {
-    addSink(name, sink);
+    putSink(name, sink);
 }
 
 BasicSinkCollection::BasicSinkCollection(const std::string &name, std::ostream &o)
 {
-    addSink(name, o);
+    putSink(name, o);
 }
 
-void BasicSinkCollection::addSink(const std::string &name, IBasicSink::Ptr sink)
+void BasicSinkCollection::putSink(const std::string &name, IBasicSink::Ptr sink)
 {
     std::lock_guard<std::mutex> lock(_mutex);
     _sinks[name] = sink;
 }
 
-void BasicSinkCollection::addSink(const std::string &name, std::ostream &o)
+void BasicSinkCollection::putSink(const std::string &name, std::ostream &o)
 {
     std::lock_guard<std::mutex> lock(_mutex);
     _sinks[name] = IBasicSink::Ptr(new BasicOstreamSink(o));

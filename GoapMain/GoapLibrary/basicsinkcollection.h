@@ -1,5 +1,5 @@
-#ifndef BASICSINKCOLLECTION_H
-#define BASICSINKCOLLECTION_H
+#ifndef GOAP_BASICSINKCOLLECTION_H
+#define GOAP_BASICSINKCOLLECTION_H
 
 #include <mutex>
 #include <map>
@@ -19,8 +19,8 @@ public:
     BasicSinkCollection(const std::string& name, IBasicSink::Ptr sink);
     BasicSinkCollection(const std::string& name, std::ostream &o);
 
-    void addSink(const std::string& name, IBasicSink::Ptr sink) override;
-    void addSink(const std::string& name, std::ostream &o) override;
+    void putSink(const std::string& name, IBasicSink::Ptr sink) override;
+    void putSink(const std::string& name, std::ostream &o) override;
     void removeSink(const std::string& name) override;
 
     // IBasicSink interface
@@ -32,4 +32,4 @@ public:
 
 }
 
-#endif // BASICSINKCOLLECTION_H
+#endif // GOAP_BASICSINKCOLLECTION_H

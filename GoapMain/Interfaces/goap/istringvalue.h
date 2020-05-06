@@ -1,5 +1,5 @@
-#ifndef ISTRINGVALUE_H
-#define ISTRINGVALUE_H
+#ifndef GOAP_ISTRINGVALUE_H
+#define GOAP_ISTRINGVALUE_H
 
 #include <string>
 #include "common/irefcounter.h"
@@ -28,4 +28,4 @@ public:
 
 }
 
-#endif // ISTRINGVALUE_H
+#endif // GOAP_ISTRINGVALUE_H

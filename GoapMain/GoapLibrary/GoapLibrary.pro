@@ -18,6 +18,8 @@ INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half
 
 SOURCES += \
     goaplibrary.cpp \
+    path.cpp \
+    planner.cpp \
     statevalue.cpp \
     basicmath.cpp \
     memory.cpp \
@@ -25,6 +27,8 @@ SOURCES += \
     time_utils.cpp \
     basicostream.cpp \
     basicsinkcollection.cpp \
+    numericstatecomparer.cpp \
+    exactstatecomparer.cpp \
     goaplibinscribe.cpp
 
 HEADERS += goaplibrary.h \
@@ -38,9 +42,19 @@ HEADERS += goaplibrary.h \
     basicostreamsink.h \
     basicostream.h \
     basicsinkcollection.h \
+    planningstatemeter.h \
+    functionstatemeter.h \
+    numericstatecomparer.h \
+    exactstatecomparer.h \
+    comparerstatemeter.h \
     goaplibinscribe.h \
     scopetime.h \
     newptr.h \
+    actioninfo.h \
+    path.h \
+    planner.h \
+    planningaction.h \
+    prioritizedqueue.h \
     scopetimeostream.h
 
 unix {

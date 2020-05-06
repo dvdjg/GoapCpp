@@ -1,5 +1,5 @@
-#ifndef REFCOUNTER_H
-#define REFCOUNTER_H
+#ifndef GOAP_REFCOUNTER_H
+#define GOAP_REFCOUNTER_H
 
 #include <boost/intrusive_ptr.hpp>
 #include <atomic>
@@ -46,4 +46,4 @@
     inline int addRef() const { return -1; } \
     inline int releaseRef() const { return -1; }
 
-#endif // REFCOUNTER_H
+#endif // GOAP_REFCOUNTER_H

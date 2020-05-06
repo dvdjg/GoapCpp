@@ -1,5 +1,5 @@
-#ifndef NEWPTR_H
-#define NEWPTR_H
+#ifndef GOAP_NEWPTR_H
+#define GOAP_NEWPTR_H
 
 #include "factory.h"
 #include "common/iroot.h"
@@ -43,8 +43,6 @@ public:
     }
 };
 
-
-
 }
 
-#endif // NEWPTR_H
+#endif // GOAP_NEWPTR_H

@@ -9,8 +9,10 @@
 #include "basicostreamsink.h"
 #include "statevalue.h"
 #include "state.h"
+#include "planningaction.h"
 #include "scopetimeostream.h"
 #include "goaplibinscribe.h"
+#include "path.h"
 
 using namespace goap;
 
@@ -145,7 +147,25 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         ret->setPfnTime(pfnTime);
         ret->setMessageOnDelete(bOutOfScope);
         return ret;
-    }, discr+"Cout");
+    }, discr);
+    ++ret;
+
+    factory.inscribe<FactoryType::Default, IPlanningAction>([](IStringValue::CPtr name, PlanningAction::validator_function_type validator_ = {}, PlanningAction::executor_function_type executor_ = {}) {
+        auto ret = RecyclableWrapper<PlanningAction>::createFromPoolRaw();
+        ret->setName(name);
+        ret->setValidator(validator_);
+        ret->setExecutor(executor_);
+        return ret;
+    }, discr);
+    ++ret;
+
+    factory.inscribe<FactoryType::Default, IPath>([](IPlanningAction::CPtr action_, IPath::Ptr parent_ = {}, float cost_ = 0) {
+        auto ret = RecyclableWrapper<Path>::createFromPoolRaw();
+        ret->setAction(action_);
+        ret->setParent(parent_);
+        ret->setCost(cost_);
+        return ret;
+    }, discr);
     ++ret;
 
     return ret;

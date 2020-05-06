@@ -1,5 +1,5 @@
-#ifndef BASICMATH_H
-#define BASICMATH_H
+#ifndef GOAP_BASICMATH_H
+#define GOAP_BASICMATH_H
 
 // #define __float128 long double
 #define __STRICT_ANSI__
@@ -24,7 +24,7 @@ namespace basicmath
 {
 typedef intptr_t int_type;
 
-
+float floatSimilarity(float x, float y); // 0 < are similar < are different < 1
 bool floatEqual(float x, float y);
 
 // linear interpolate x in an array
@@ -70,7 +70,7 @@ void interp2arrayh(const half a[], int_type n, half b[], int_type m);
 std::size_t hash(const half *vec, std::size_t size);
 std::size_t hash(const float *vec, std::size_t size);
 
-
+// 1 means are same direction, 0 means perpendicular, -1 means are completely opposite direction
 float cosine_distance(const half *a, const half *b, size_t n);
 
 //////////////////////////////////////////////////////////////////////////
@@ -80,4 +80,4 @@ float cosine_distance(const half *a, const half *b, size_t n);
 
 
 }
-#endif // BASICMATH_H
+#endif // GOAP_BASICMATH_H

@@ -1,9 +1,9 @@
-#ifndef TIME_UTILS_H
-#define TIME_UTILS_H
+#ifndef GOAP_TIME_UTILS_H
+#define GOAP_TIME_UTILS_H
 
 namespace goap
 {
 const char* nowTime(char result[]);
 }
 
-#endif // TIME_UTILS_H
+#endif // GOAP_TIME_UTILS_H

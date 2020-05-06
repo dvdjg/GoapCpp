@@ -1,5 +1,5 @@
-#ifndef COSINEDISTANCE_H
-#define COSINEDISTANCE_H
+#ifndef GOAP_COSINEDISTANCE_H
+#define GOAP_COSINEDISTANCE_H
 
 namespace basicmath
 {
@@ -86,7 +86,7 @@ protected:
         _aModule = sqrt(fa);
         _bModule = sqrt(fb);
         OutputType fDen = _aModule * _bModule;
-        // 1 means are equal, 0 means are different, -1 are opposite
+        // 1 means are same direction, 0 means are different, -1 are opposite
         _distance = (fDen == 0) ? 0 : temp / fDen;
     }
 
@@ -102,4 +102,4 @@ CosineDistance<OutputType, InputIterator> fnCosineDistance(InputIterator aBegin,
 
 }
 
-#endif // COSINEDISTANCE_H
+#endif // GOAP_COSINEDISTANCE_H

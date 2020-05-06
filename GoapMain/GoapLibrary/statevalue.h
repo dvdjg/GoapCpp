@@ -1,5 +1,5 @@
-#ifndef STATEVALUE_H
-#define STATEVALUE_H
+#ifndef GOAP_STATEVALUE_H
+#define GOAP_STATEVALUE_H
 
 #include <vector>
 #include <memory>
@@ -14,7 +14,7 @@ class StateValue : public IStateValue
     IMPLEMENT_REFCOUNTER()
 
 protected:
-    std::vector<float> data;
+    std::vector<float> _data;
 
 public:
     typedef explicit_ptr<StateValue> Ptr;
@@ -36,7 +36,7 @@ public:
     void setAt(intptr_t idx, float value) override;
     void fromString(const std::string &str) override;
     void interpolateFrom(const IStateValue::CPtr &other) override;
-    float cosineDistance(const IStateValue::CPtr &other) const override;
+    float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;
     void assign(const StateValue &other);
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
@@ -53,4 +53,4 @@ public:
 };
 
 }
-#endif // STATEVALUE_H
+#endif // GOAP_STATEVALUE_H

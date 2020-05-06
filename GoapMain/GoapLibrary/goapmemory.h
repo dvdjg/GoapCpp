@@ -1,5 +1,5 @@
-#ifndef GOAPMEMORY_H
-#define GOAPMEMORY_H
+#ifndef GOAP_MEMORY_H
+#define GOAP_MEMORY_H
 
 #include "refcounter.h"
 #include "goap/imemory.h"
@@ -24,4 +24,4 @@ public:
 
 }
 
-#endif // MEMORY_H
+#endif // GOAP_MEMORY_H

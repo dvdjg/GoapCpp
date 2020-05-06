@@ -1,5 +1,5 @@
-#ifndef SCOPETIMEOSTREAM_H
-#define SCOPETIMEOSTREAM_H
+#ifndef GOAP_SCOPETIMEOSTREAM_H
+#define GOAP_SCOPETIMEOSTREAM_H
 
 #include <iostream>
 #include <string>
@@ -25,4 +25,4 @@ public:
 };
 
 }
-#endif // SCOPETIMEOSTREAM_H
+#endif // GOAP_SCOPETIMEOSTREAM_H

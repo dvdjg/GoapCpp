@@ -1,5 +1,5 @@
-#ifndef STATE_H
-#define STATE_H
+#ifndef GOAP_STATE_H
+#define GOAP_STATE_H
 
 #include <unordered_map>
 #include "refcounter.h"
@@ -14,15 +14,18 @@ class State : public virtual IState
 
 public:
     typedef std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
-    data_type data;
+
 protected:
-    float coste = 0;
+    data_type _data;
+    float _coste = 0;
 
 public:
     State();
     State(const State &other);
     State(const IState::CPtr &other);    
     State(std::initializer_list<data_type::value_type> list);
+
+    void clear();
 
     void remove(const IStateValue::CPtr &key) override;
     IStateValue::Ptr at(const IStateValue::CPtr &key) const override;
@@ -48,8 +51,10 @@ public:
 public:
     std::string toDebugString() const override;
     std::string toString() const override;
+    float getCoste() const;
+    void setCoste(float value);
 };
 
 }
 
-#endif // STATE_H
+#endif // GOAP_STATE_H

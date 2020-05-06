@@ -1,5 +1,5 @@
-#ifndef SCOPETIME_H
-#define SCOPETIME_H
+#ifndef GOAP_SCOPETIME_H
+#define GOAP_SCOPETIME_H
 
 #include <string.h>
 #include <chrono>
@@ -85,4 +85,4 @@ protected:
 
 }
 
-#endif // SCOPETIME_H
+#endif // GOAP_SCOPETIME_H

@@ -1,6 +1,6 @@
-#ifndef GOAPLIBINSCRIBE_H
-#define GOAPLIBINSCRIBE_H
+#ifndef GOAP_LIBINSCRIBE_H
+#define GOAP_LIBINSCRIBE_H
 
 extern "C" int goapLibInscribe(const char *szDiscr = nullptr);
 
-#endif // GOAPLIBINSCRIBE_H
+#endif // GOAP_LIBINSCRIBE_H

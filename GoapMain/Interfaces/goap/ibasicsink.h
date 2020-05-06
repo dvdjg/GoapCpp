@@ -1,5 +1,5 @@
-#ifndef IBASICSINK_H
-#define IBASICSINK_H
+#ifndef GOAP_IBASICSINK_H
+#define GOAP_IBASICSINK_H
 
 #include <memory>
 #include <ostream>
@@ -24,10 +24,10 @@ class IBasicSinkCollection : public IBasicSink
 public:
     typedef std::shared_ptr<IBasicSinkCollection> Ptr;
 
-    virtual void addSink(const std::string& name, IBasicSink::Ptr sink) = 0;
-    virtual void addSink(const std::string& name, std::ostream &o) = 0;
+    virtual void putSink(const std::string& name, IBasicSink::Ptr sink) = 0;
+    virtual void putSink(const std::string& name, std::ostream &o) = 0;
     virtual void removeSink(const std::string& name) = 0;
 };
 }
 
-#endif // IBASICSINK_H
+#endif // GOAP_IBASICSINK_H

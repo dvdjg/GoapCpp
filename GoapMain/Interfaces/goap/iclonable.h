@@ -1,5 +1,5 @@
-#ifndef ICLONABLE_H
-#define ICLONABLE_H
+#ifndef GOAP_ICLONABLE_H
+#define GOAP_ICLONABLE_H
 
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
@@ -18,4 +18,4 @@ public:
 
 }
 
-#endif // ICLONABLE_H
+#endif // GOAP_ICLONABLE_H

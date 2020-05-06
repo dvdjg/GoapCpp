@@ -7,6 +7,19 @@
 
 namespace basicmath
 {
+float floatSimilarity(float x, float y)
+{
+    float ret = 1;
+    // 0 < are similar < are different < 1
+    float diff = std::abs(x - y);
+    if (diff > GOAP_FLT_EPSILON * std::abs(x + y) * 2 && diff > GOAP_FLT_MIN) {
+        float ax = std::abs(x);
+        float ay = std::abs(y);
+        ret = diff / std::max(ax, ay);
+    }
+    return ret;
+}
+
 bool floatEqual(float x, float y)
 {
     float diff = std::abs(x - y);
@@ -212,7 +225,7 @@ OutputType t_cosine_distance(InputIterator aBegin,
 float cosine_distance(const half *a, const half *b, size_t n)
 {
     float dist = t_cosine_distance<float>(a, b, a+n);
-    return dist; // 0 means are equal, 2 means are different
+    return dist; // 1 means are same direction, 0 means perpendicular, -1 means are completely opposite direction
 }
 
 }
