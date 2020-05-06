@@ -17,6 +17,8 @@ public:
 
     static NumericStateComparer::Ptr singleton();
 
+    NumericStateComparer();
+
     /**
      * Returns true when the state has reach the goal, so the input 'state' satisfies the goal state.
      * state2 is the goal state. Test if the common keys are equal.

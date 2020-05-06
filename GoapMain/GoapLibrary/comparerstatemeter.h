@@ -13,7 +13,7 @@ namespace goap
 * Helper class for measuring the distance from a given state to the goal state.
 * This class must be overrided to implement valid measuring functions.
 */
-class ComparerStateMeter : public virtual PlanningStateMeter
+class ComparerStateMeter : public PlanningStateMeter
 {
     IMPLEMENT_REFCOUNTER_PARENT(PlanningStateMeter)
 
@@ -24,8 +24,14 @@ public:
     typedef explicit_ptr<ComparerStateMeter> Ptr;
     typedef explicit_ptr<const ComparerStateMeter> CPtr;
 
-    ComparerStateMeter(IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {}) : PlanningStateMeter(goalState)
-    {
+    ComparerStateMeter() {
+    }
+
+    ComparerStateMeter(IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {}) : PlanningStateMeter(goalState) {
+        comparer(stateComparer);
+    }
+
+    void comparer(IPlanningStateComparer::Ptr stateComparer = {}) {
         _comparer = stateComparer ? stateComparer : NumericStateComparer::singleton();
     }
 
@@ -44,10 +50,6 @@ public:
         return _comparer;
     }
 
-    void comparer(IPlanningStateComparer::Ptr value)
-    {
-        _comparer = value;
-    }
 };
 
 }

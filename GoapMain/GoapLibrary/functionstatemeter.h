@@ -13,7 +13,7 @@
 namespace goap
 {
 
-class FunctionStateMeter : public virtual PlanningStateMeter
+class FunctionStateMeter : public PlanningStateMeter
 {
     IMPLEMENT_REFCOUNTER_PARENT(PlanningStateMeter)
 
@@ -29,17 +29,11 @@ protected:
     distance_function_type _fnDistance; // Signature: function(state:State, stateMeter:FunctionStateMeter):Number
     enough_function_type _fnEnough; // Signature: function(state:State, stateMeter:FunctionStateMeter):Boolean
     meter_map_data_type _stateMeters;
-    ComparerStateMeter::Ptr _numericStateMeter;
-    ComparerStateMeter::Ptr _exactStateMeter;
+    IPlanningStateMeter::Ptr _numericStateMeter;
+    IPlanningStateMeter::Ptr _exactStateMeter;
 
 public:
-    FunctionStateMeter(IState::CPtr goalState) : PlanningStateMeter(goalState) {
-        _numericStateMeter = new ComparerStateMeter(goalState, NumericStateComparer::singleton());
-        addStateMeter("numeric", _numericStateMeter);
-        _exactStateMeter = new ComparerStateMeter(goalState, ExactStateComparer::singleton());
-        _exactStateMeter->setMonotonic(true);
-        addStateMeter("exact", _exactStateMeter);
-
+    FunctionStateMeter() {
         _fnDistance = [](IState::CPtr state, FunctionStateMeter::CPtr stateMeter) {
             return stateMeter->numericStateMeter()->distance(state);
         };
@@ -48,6 +42,26 @@ public:
         };
     }
 
+    FunctionStateMeter(IState::CPtr goalState_) : FunctionStateMeter() {
+        this->goalState(goalState_);
+    }
+
+    void goalState(IState::CPtr goalState_) override {
+        static const std::string discr(STR_GOAP_COMPARERSTATEMETER);
+        PlanningStateMeter::goalState(goalState_);
+        _numericStateMeter = NewPtr<ComparerStateMeter>(discr, goalState_, NumericStateComparer::singleton());
+        addStateMeter("numeric", _numericStateMeter);
+        _exactStateMeter = NewPtr<ComparerStateMeter>(discr, goalState_, ExactStateComparer::singleton());
+        _exactStateMeter->setMonotonic(true);
+        addStateMeter("exact", _exactStateMeter);
+    }
+
+    void clear() override {
+        _numericStateMeter.reset();
+        _exactStateMeter.reset();
+        _stateMeters.clear();
+        PlanningStateMeter::clear();
+    }
 
     float distance(IState::CPtr state) const override {
         return _fnDistance(state, FunctionStateMeter::CPtr(this));
@@ -89,12 +103,12 @@ public:
         _fnEnough = value;
     }
 
-    ComparerStateMeter::Ptr numericStateMeter() const
+    IPlanningStateMeter::Ptr numericStateMeter() const
     {
         return _numericStateMeter;
     }
 
-    ComparerStateMeter::Ptr exactStateMeter() const
+    IPlanningStateMeter::Ptr exactStateMeter() const
     {
         return _exactStateMeter;
     }

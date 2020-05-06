@@ -11,8 +11,16 @@
 #include "state.h"
 #include "planningaction.h"
 #include "scopetimeostream.h"
-#include "goaplibinscribe.h"
 #include "path.h"
+#include "planner.h"
+#include "prioritizedqueue.h"
+#include "prioritizedstack.h"
+#include "numericstatecomparer.h"
+#include "exactstatecomparer.h"
+#include "comparerstatemeter.h"
+#include "functionstatemeter.h"
+
+#include "goaplibinscribe.h"
 
 using namespace goap;
 
@@ -66,7 +74,9 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
 
-    factory.inscribe<FactoryType::Default, IStateValue>([](){ return RecyclableWrapper<StateValue>::createFromPoolRaw(); }, discr);
+    factory.inscribe<FactoryType::Default, IStateValue>([](){
+        return RecyclableWrapper<StateValue>::createFromPoolRaw();
+    }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const StateValue &cptr){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
@@ -117,6 +127,30 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
 
+    factory.inscribe<FactoryType::Default, IPlanningStateMeter>([](IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {}) {
+        auto ret = RecyclableWrapper<ComparerStateMeter>::createFromPoolRaw();
+        ret->goalState(goalState);
+        ret->comparer(stateComparer);
+        return ret;
+    }, discr+STR_GOAP_COMPARERSTATEMETER);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningStateComparer, NumericStateComparer>(discr+STR_GOAP_NUMERICSTATECOMPARER);
+    ++ret;
+    factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, NumericStateComparer>(discr+STR_GOAP_NUMERICSTATECOMPARER_SINGLETON);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATEMETER);
+    ++ret;
+    factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATEMETER_SINGLETON);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPrioritized, PrioritizedQueue>(discr+STR_GOAP_PRIORITIZED_QUEUE);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPrioritized, PrioritizedStack>(discr+STR_GOAP_PRIORITIZED_STACK);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningStateMeter, PlanningStateMeter>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanner, Planner>(discr);
+    ++ret;
+
     factory.inscribe<FactoryType::Default, IStateValue, StateValue>(discr+"Default");
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue, StateValue, const StateValue &>(discr+"Default");
@@ -161,8 +195,8 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
 
     factory.inscribe<FactoryType::Default, IPath>([](IPlanningAction::CPtr action_, IPath::Ptr parent_ = {}, float cost_ = 0) {
         auto ret = RecyclableWrapper<Path>::createFromPoolRaw();
-        ret->setAction(action_);
-        ret->setParent(parent_);
+        ret->action(action_);
+        ret->parent(parent_);
         ret->setCost(cost_);
         return ret;
     }, discr);

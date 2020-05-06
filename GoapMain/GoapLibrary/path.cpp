@@ -4,6 +4,8 @@
 namespace goap
 {
 
+Path::Path() : _cost(0) {}
+
 Path::Path(IPlanningAction::CPtr action_, IPath::Ptr parent_, float cost_) :
     _action(action_), _parent(parent_), _cost(cost_) {
 }
@@ -20,7 +22,7 @@ IPath::Ptr Path::parent() const {
     return _parent;
 }
 
-void Path::setParent(IPath::Ptr parent_) {
+void Path::parent(IPath::Ptr parent_) {
     _parent = parent_;
 }
 
@@ -40,7 +42,7 @@ IPlanningAction::CPtr Path::action() const {
     return _action;
 }
 
-void Path::setAction(IPlanningAction::CPtr action_) {
+void Path::action(IPlanningAction::CPtr action_) {
     _action = action_;
 }
 
@@ -64,20 +66,20 @@ IState::Ptr Path::executeFromRoot(IState::CPtr initialState) {
 
 size_t Path::getActionCount() {
     size_t nActions = 0;
-    for (Path::CPtr path = this; path; path = path->_parent) {
+    for (IPath::CPtr path = this; path; path = path->parent()) {
         nActions++;
     }
     return nActions;
 }
 
 void Path::getActions(std::list<IPlanningAction::CPtr> &actions) const {
-    for (Path::CPtr path = this; path; path = path->_parent) {
-        actions.push_back(path->_action);
+    for (IPath::CPtr path = this; path; path = path->parent()) {
+        actions.push_back(path->action());
     }
 }
 
 void Path::getStates(IState::CPtr initialState, std::list<IState::CPtr> &states) {
-    for (Path::Ptr path = this; path; path = path->_parent) {
+    for (IPath::Ptr path = this; path; path = path->parent()) {
         states.push_back(path->executeFromRoot(initialState));
     }
 }

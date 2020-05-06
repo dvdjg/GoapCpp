@@ -17,6 +17,10 @@ class Path : public IPath
 {
     IMPLEMENT_REFCOUNTER()
 
+public:
+    typedef explicit_ptr<Path> Ptr;
+    typedef explicit_ptr<const Path> CPtr;
+
 protected:
     IPlanningAction::CPtr _action;
     IPath::Ptr _parent;
@@ -27,16 +31,15 @@ protected:
     IState::Ptr _finalState;
 
 public:
-    typedef explicit_ptr<Path> Ptr;
-    typedef explicit_ptr<const Path> CPtr;
 
+    Path();
     Path(IPlanningAction::CPtr action_, IPath::Ptr parent_ = {}, float cost_ = 0);
 
     void clear();
 
     IPath::Ptr parent() const;
 
-    void setParent(IPath::Ptr parent_);
+    void parent(IPath::Ptr parent_);
 
     float cost() const;
 
@@ -46,7 +49,7 @@ public:
 
     IPlanningAction::CPtr action() const;
 
-    void setAction(IPlanningAction::CPtr action_);
+    void action(IPlanningAction::CPtr action_);
 
     IPath::Ptr addChild(IPlanningAction::Ptr node, float cost_);
 

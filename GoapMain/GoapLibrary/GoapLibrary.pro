@@ -20,6 +20,7 @@ SOURCES += \
     goaplibrary.cpp \
     path.cpp \
     planner.cpp \
+    prioritizedqueue.cpp \
     statevalue.cpp \
     basicmath.cpp \
     memory.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
 
 HEADERS += goaplibrary.h \
     cosinedistance.h \
+    prioritizedstack.h \
     refcounter.h \
     statevalue.h \
     basicmath.h \

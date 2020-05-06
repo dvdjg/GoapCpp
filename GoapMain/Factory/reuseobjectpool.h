@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <queue>
+#include <functional>
 #include "explicit_ptr.h"
 #include "instancedeleter.h"
 

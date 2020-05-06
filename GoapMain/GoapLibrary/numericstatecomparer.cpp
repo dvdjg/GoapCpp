@@ -7,8 +7,11 @@ namespace goap
 
 NumericStateComparer::Ptr NumericStateComparer::singleton()
 {
-    static NewPtr<NumericStateComparer> ptrSingleton;
-    return ptrSingleton;
+    static std::string discr(STR_GOAP_NUMERICSTATECOMPARER_SINGLETON);
+    return NewPtr<NumericStateComparer>(discr);
+}
+
+NumericStateComparer::NumericStateComparer() {
 }
 
 /**

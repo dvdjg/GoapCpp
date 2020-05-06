@@ -5,6 +5,9 @@
 #include "goap/istate.h"
 #include "goap/iplanningstatemeter.h"
 
+#define STR_GOAP_COMPARERSTATEMETER "ComparerStateMeter"
+#define STR_GOAP_FUNCTIONSTATEMETER "FunctionStateMeter"
+
 namespace goap
 {
 /**
@@ -16,20 +19,21 @@ class PlanningStateMeter : public virtual IPlanningStateMeter
     IMPLEMENT_REFCOUNTER()
 
 protected:
-    IState::Ptr _goalState;
+    IState::CPtr _goalState;
     bool _isMonotonic = false;
 
 public:
-    PlanningStateMeter(const PlanningStateMeter& o) : _goalState(o._goalState), _isMonotonic(o._isMonotonic)
-    {
+    PlanningStateMeter(const PlanningStateMeter& o) : _goalState(o._goalState), _isMonotonic(o._isMonotonic) {
     }
 
-    PlanningStateMeter(IState::CPtr goalState)
-    {
-        _goalState = goalState;
+    PlanningStateMeter(IState::CPtr goalState_) {
+        _goalState = goalState_;
     }
 
-    void clear() {
+    PlanningStateMeter() {
+    }
+
+    virtual void clear() {
         _goalState.reset();
         _isMonotonic = false;
     }
@@ -37,32 +41,31 @@ public:
     /**
      * Returns true when the input 'state' satisfies the goal state.
      */
-    bool enough(IState::CPtr state) const override
-    {
+    bool enough(IState::CPtr state) const override {
         return distance(state) == 0;
     }
 
     /**
      * Returns the measure from the input state to the goal state
      */
-    float distance(IState::CPtr state) const override
-    {
+    float distance(IState::CPtr state) const override {
         (void)state;
         return 0;
     }
 
-    IState::CPtr goalState() const override
-    {
+    IState::CPtr goalState() const override {
         return _goalState;
     }
 
-    bool monotonic() const override
-    {
+    virtual void goalState(IState::CPtr goalState) {
+        _goalState = goalState;
+    }
+
+    bool monotonic() const override {
         return _isMonotonic;
     }
 
-    void setMonotonic(bool monotonic)
-    {
+    void setMonotonic(bool monotonic) override {
         _isMonotonic = monotonic;
     }
 };

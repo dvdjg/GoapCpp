@@ -45,7 +45,7 @@ public:
      * Get the actions from the root to this leave.
      * If the 'actions' parameter is given then actions will be unshift to the array.
      */
-    virtual void getActions(std::list<IPlanningAction::CPtr>& actions) const = 0;
+    virtual void getActions(std::list<IPlanningAction::CPtr>& actions_) const = 0;
 
     /**
      * Returns a list with the resulting states of the execution of the stored actions from the

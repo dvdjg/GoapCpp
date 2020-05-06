@@ -1,13 +1,14 @@
 #include "exactstatecomparer.h"
 #include "basicmath.h"
+#include "newptr.h"
 
 namespace goap
 {
 
 ExactStateComparer::Ptr ExactStateComparer::singleton()
 {
-    static Ptr ptrSingleton(new ExactStateComparer());
-    return ptrSingleton;
+    static std::string discr(STR_GOAP_EXACTSTATEMETER_SINGLETON);
+    return NewPtr<ExactStateComparer>(discr);
 }
 
 /**

@@ -4,6 +4,8 @@
 #include "iroot.h"
 #include "utility_simple.h"
 
+#define STR_GOAP_SINGLETON "Singleton"
+
 namespace goap
 {
 
