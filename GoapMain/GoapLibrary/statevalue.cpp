@@ -216,6 +216,10 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
     return ret;
 }
 
+bool StateValue::equal(const IHashable::CPtr &other) const
+{
+    return equal(dynamic_pointer_cast<const IStateValue>(other));
+}
 
 bool StateValue::equal(const std::string &other) const
 {

@@ -36,6 +36,7 @@ HEADERS += goaplibrary.h \
     cosinedistance.h \
     prioritizedstack.h \
     refcounter.h \
+    statesplan.h \
     statevalue.h \
     basicmath.h \
     state.h \

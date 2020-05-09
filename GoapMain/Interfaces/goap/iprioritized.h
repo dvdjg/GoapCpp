@@ -18,9 +18,9 @@ public:
 
     virtual bool empty() = 0; // No const
     virtual std::int64_t size() const = 0;
-    virtual void push(IPath::CPtr path) = 0;
-    virtual void pushLazy(IPath::CPtr path) = 0;
-    virtual IPath::CPtr pop() = 0;
+    virtual void push(IPath::Ptr path) = 0;
+    virtual void pushLazy(IPath::Ptr path) = 0;
+    virtual IPath::Ptr pop() = 0;
     virtual void clear() = 0;
 };
 

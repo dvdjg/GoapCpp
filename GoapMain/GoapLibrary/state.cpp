@@ -10,16 +10,6 @@ namespace goap
 
 using namespace std;
 
-float State::getCoste() const
-{
-    return _coste;
-}
-
-void State::setCoste(float value)
-{
-    _coste = value;
-}
-
 State::State()
 {
 }
@@ -116,6 +106,11 @@ intptr_t State::size() const
     return intptr_t(_data.size());
 }
 
+bool State::equal(const IHashable::CPtr &other) const
+{
+    return equal(dynamic_pointer_cast<const IState>(other));
+}
+
 bool State::equal(const IState::CPtr &other) const
 {
     auto o = dynamic_cast<const State*>(other.get());
@@ -127,7 +122,7 @@ float State::cost() const
     return _coste;
 }
 
-void State::setCost(float c)
+void State::cost(float c)
 {
     _coste = c;
 }
@@ -174,6 +169,17 @@ string State::toString() const
     ret.pop_back();
     ret += '}';
     return ret;
+}
+
+size_t State::hash() const
+{
+    std::size_t h = basicmath::hash(&_coste, 1);
+    for (auto &it : _data) {
+        std::size_t hkey = it.first->hash();
+        std::size_t hvalue = it.second->hash();
+        h = h ^ hkey ^ hvalue;
+    }
+    return h;
 }
 
 }

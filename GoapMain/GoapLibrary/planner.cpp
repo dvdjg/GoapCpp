@@ -1,4 +1,9 @@
 #include "planner.h"
+#include <sstream>
+#include <functional>
+#include "newptr.h"
+#include "statesplan.h"
+#include "log_hook.h"
 
 namespace goap
 {
@@ -6,9 +11,289 @@ namespace goap
 Planner::Planner(){
 }
 
-std::list<IPlanningAction::CPtr> Planner::makePlan(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> actionsArray, std::list<IState::CPtr> states)
-{
-
+Planner::Planner(Planner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_) {
+    _planningMethod = planningMethod_;
+    _planningActions = planningActions_;
 }
+
+const std::list<IPlanningAction::CPtr> &Planner::planningActions() const {
+    return _planningActions;
+}
+
+void Planner::planningActions(const std::list<IPlanningAction::CPtr> &planningActions_) {
+    _planningActions = planningActions_;
+}
+
+Planner::type Planner::planningMethod() {
+    return _planningMethod;
+}
+
+string Planner::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
+{
+    float totalCost = 0;
+    std::stringstream ret;
+    IPlanningAction::CPtr action;
+    if (actionsArray.empty()) {
+        ret << "No plan.";
+    } else {
+        IState::CPtr reachedByPath = initialState;
+        if (reachedByPath) {
+            totalCost += reachedByPath->cost();
+            ret << "0.\"init\" totalCost=" << totalCost << " state=" << reachedByPath << "\n";
+        }
+        int i = 0;
+        for (auto &action : actionsArray) {
+            if (!action) {
+                break;
+            }
+            ret << (i+1) << ".\"" << action << "\" ";
+            if (reachedByPath) {
+                reachedByPath = action->execute(reachedByPath); // Advance the state
+                totalCost += reachedByPath->cost();
+                ret << "totalCost=" << totalCost << " state=" << reachedByPath << "\n";
+            }
+            ++i;
+        }
+    }
+    return ret.str();
+}
+
+IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &actions, IState::CPtr initialState) {
+    IState::Ptr nextState;
+    IState::Ptr initial = dynamic_pointer_cast<IState>(initialState->clone());
+    IState::Ptr reachedByPath = initial;
+    reachedByPath->cost(initialState->cost());
+    try {
+        float accCost = reachedByPath->cost();
+        for(auto& action : actions) {
+            if (!action->canExecute(reachedByPath)) {
+                break; // Do not continue
+            }
+            nextState = action->execute(reachedByPath); // Advance the state
+            //reachedByPath->clear();
+            reachedByPath = nextState;
+            accCost += reachedByPath->cost();
+        }
+        reachedByPath->cost(accCost);
+    } catch (std::exception e) {
+        LOG(ERROR) << "[Planner] Error: Can't executeActions(). " << e.what();
+    }
+    return reachedByPath;
+}
+
+std::list<IPlanningAction::CPtr> Planner::makePlan(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> actionsArray, std::list<IState::CPtr> *pStates) {
+    const bool isMonotonic = planningStateMeter->monotonic();
+    float minDistance = 1;
+    int analyzedPaths = 0;
+    int rejectedPaths = 0;
+    //float pathCost = 0;
+    IPlanningAction::CPtr action;
+    IState::CPtr reachedByPath;
+    IPrioritized::Ptr unvisitedPathes_ = this->unvisitedPathes();
+    states_dictionary_type visitedStates; // std::unordered_map<IState::CPtr, IState::Ptr>
+    visitedStates[initialState] = initialState;
+    IPath::Ptr path;
+
+    auto gather = [&](float pathCost, float minDistance) -> float {
+        IPath::Ptr plan;
+        float min = minDistance;
+        for (auto &action : _planningActions) {
+            try {
+                if (action->canExecute(reachedByPath)) {
+                    IState::Ptr nextState = action->execute(reachedByPath);
+                    float distance = planningStateMeter->distance(nextState);
+                    // Adds a new path leave
+                    if (isMonotonic && min > distance) {
+                        // When monotonic Meters are used, a decreasing in the distance to the goal
+                        // found in a path increases the preference to explore that path.
+                        minDistance = distance;
+                        distance *= nextState->cost();
+                        // Use a very low cost to give more chances for this path to be analyzed
+                        distance = 4*distance - pathCost - 10; // Landmark: Put the distance betwen -10 and -6
+                    } else {
+                        distance *= nextState->cost();
+                    }
+                    plan = NewPtr<IPath>({}, action, path, pathCost + distance);
+                    // Add the path to be analyzed after all the paths of this priority level be processed
+                    unvisitedPathes_->pushLazy(plan);
+                    //nextState.dispose();
+                }
+            } catch (exception e) {
+                LOG(ERROR) << "[Planner] Error: " << e.what();
+            }
+        }
+        if (!plan && path) {
+            // The path has no children so it will not be used anymore
+            //path->clear();
+        }
+        return minDistance;
+    };
+
+    // Gather all the actions that can be reached from the intial state
+    reachedByPath = initialState;
+    minDistance = gather(0, minDistance);
+
+    if (unvisitedPathes_->empty()) {
+        LOG(WARN) << "[MakePlan] There are no paths from the initial state!!!";
+    }
+    bool bReachedGoal = false;
+    // Search all the path forks neccesary to reach the goalState
+    while (!unvisitedPathes_->empty()) {
+        // Takes the path with the lower cost available
+        path = unvisitedPathes_->pop();
+        reachedByPath = path->executeFromRoot(initialState);
+        // If this state was visited in other paths, do not compute it again
+        auto itVisitedState = visitedStates.find(reachedByPath);
+        if (itVisitedState != visitedStates.end()) {
+            //path.dispose();
+            path.reset();
+            ++rejectedPaths;
+            continue;
+        }
+        //IState::CPtr visitedState = itVisitedState->second;
+        // If this path takes us to the goal state, then return it
+        bReachedGoal = planningStateMeter->enough(reachedByPath);
+        if (bReachedGoal) {
+            path->getActions(actionsArray); // Get the planning actions from the intial state
+            if (pStates) {
+                path->getStates(initialState, *pStates);
+            }
+            //path.dispose();
+            break;
+        }
+        // Mark the state as visited so we don't reanalyse it while searching other paths
+        visitedStates[reachedByPath] = reachedByPath;
+        // Continue gathering all the actions that can be reached from current state
+        minDistance = gather(path->cost(), minDistance);
+        ++analyzedPaths;
+    }
+    if (bReachedGoal) {
+        LOG(INFO) << "[MakePlan] OK. analyzedPaths:" << analyzedPaths << ", rejectedPaths:" << rejectedPaths
+                  << ", unvisitedPathes:"<< unvisitedPathes_->size();
+    } else {
+        LOG(WARN) << "[MakePlan] FAIL. analyzedPaths:" << analyzedPaths << ", rejectedPaths:" << rejectedPaths
+                  << ", unvisitedPaths:" << unvisitedPathes_->size();
+        actionsArray.clear();
+    }
+    return actionsArray;
+}
+
+std::list<IPlanningAction::CPtr> Planner::makePlanCached(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> &actionsArray, std::list<IState::CPtr> &states)
+{
+    IState::Ptr goalState = dynamic_pointer_cast<IState>(planningStateMeter->goalState()->clone());
+
+    actionsArray = findPlan(initialState, goalState/*, actionsArray*/);
+    if (actionsArray.empty()) {
+        actionsArray = makePlan(initialState, planningStateMeter, actionsArray, &states);
+        if (!actionsArray.empty()) {
+            // Substitute the reached state for a clean goalState
+            float cost = states.back()->cost();
+            goalState->cost(cost);
+            states.back() = goalState;
+            states.push_front(initialState); // Add the initial state to the list
+            cacheStates(states, actionsArray);
+        }
+    }
+    return actionsArray;
+}
+
+IPrioritized::Ptr Planner::unvisitedPathes() {
+    IPrioritized::Ptr prioritized;
+    static const std::string strDiscrQueue = STR_GOAP_PRIORITIZED_QUEUE;
+    static const std::string strDiscrStack = STR_GOAP_PRIORITIZED_STACK;
+    switch (_planningMethod)
+    {
+    case type::BreadthFirst:
+        prioritized = NewPtr<IPrioritized>(strDiscrQueue);
+        break;
+    case type::DepthFirst:
+        prioritized = NewPtr<IPrioritized>(strDiscrStack);
+        break;
+    }
+    return prioritized;
+}
+
+void Planner::cacheStates(const std::list<IState::CPtr> &states, const std::list<IPlanningAction::CPtr> &plan)
+{
+    IState::CPtr goalState = states.back();
+    auto itLst = _statesCaches.find(goalState);
+    if (itLst == _statesCaches.end()) {
+
+    }
+    std::list<StatesPlan::Ptr> plannings = _statesCaches[goalState];
+    StatesPlan::Ptr statePlan = NewPtr<StatesPlan>();
+    statePlan->states(states);
+    statePlan->plan(plan);
+    plannings.push_back(statePlan);
+}
+
+std::list<IPlanningAction::CPtr> Planner::findPlan(const IState::CPtr &intialState, const IState::CPtr &goalState) {
+    static const std::string strDiscrNumeric = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
+    std::list<IPlanningAction::CPtr> retPlan;
+    size_t nStates;
+    size_t nState;
+    //size_t i;
+    //int offset = -1;
+    StatesPlan::Ptr nearStatePlan;
+    float nearDistance = 1.0;
+    int nearOffset = -1;
+
+    // Search a cached plan for this goal
+    std::list<StatesPlan::Ptr> plannings = _statesCaches[goalState];
+    if (!plannings.empty()) {
+        StatesPlan::lst_states_type::iterator itStates;
+        for (auto &statePlan: plannings) {
+            //auto itStatePlan = plannings.begin();
+            //for (; itStatePlan != plannings.end(); ++itStatePlan) {
+            //auto &statePlan = *itStatePlan;
+            nStates = statePlan->states().size()-1;
+            nState = 0;
+            for (const IState::CPtr &storedState : statePlan->states()) {
+                //for (itStates = statePlan->states().begin(); itStates != statePlan->states().end(); ++itStates) {
+                //    const IState::CPtr &storedState = *itStates;
+                float distance = NewPtr<IPlanningStateComparer>(strDiscrNumeric)->distance(storedState, intialState);
+                if (nearDistance > distance) {
+                    nearDistance = distance;
+                    nearStatePlan = statePlan;
+                    nearOffset = nState;
+                    if (nearDistance <= 0.0) {
+                        break;
+                    }
+                }
+                if (nState < nStates) {
+                    break;
+                }
+                nState++;
+            }
+            if (nearDistance <= 0.0) {
+                break;
+            }
+        }
+        if (nearOffset >= 0) {
+            nStates = nearStatePlan->plan().size();
+            //retPlan.length = nStates - nearOffset;
+            // Copy the necessary portion of actions array
+            //i = 0;
+            for (nState = nearOffset; nState < nStates; nState++ ) {
+                auto it1 = std::next(nearStatePlan->plan().begin(), nState); // TODO: plan() --> vector
+                retPlan.push_back(*it1);
+            }
+            // Test if the found plan is valid
+            IState::Ptr reachedState = executeActions(retPlan, intialState);
+            static const std::string strDiscr = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
+            bool bEnough = NewPtr<IPlanningStateComparer>(strDiscrNumeric)->enough(reachedState, goalState);
+            if (!bEnough) {
+                // This plan is not good enough
+                retPlan.clear();
+            }
+        }
+    }
+    return retPlan;
+}
+
+//std::list<IPlanningAction::CPtr> Planner::makePlan(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> actionsArray, std::list<IState::CPtr> states)
+//{
+
+//}
 
 }

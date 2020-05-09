@@ -78,7 +78,7 @@ TEST_F(GoapIStateTest, TestClone)
 {
     NewPtr<IState> ptrState;
     ASSERT_TRUE(ptrState);
-    ptrState->setCost(23);
+    ptrState->cost(23);
     ptrState->setAt("Uno", {1, 2});
     ptrState->setAt("Dos", {6.6f, 2.4f, 9});
     //std::shared_ptr<IClonable> shCl;

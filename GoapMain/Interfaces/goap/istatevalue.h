@@ -37,7 +37,7 @@ public:
     virtual bool equal(const std::initializer_list<float> &list) const = 0;
 
     virtual void clear() = 0;
-    virtual std::size_t hash() const = 0;
+    //virtual std::size_t hash() const = 0;
 
     inline float at(int idx) const {
         return at(intptr_t(idx));

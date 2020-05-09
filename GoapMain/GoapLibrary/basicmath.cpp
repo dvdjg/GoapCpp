@@ -23,7 +23,7 @@ float floatSimilarity(float x, float y)
 bool floatEqual(float x, float y)
 {
     float diff = std::abs(x - y);
-    return diff <= GOAP_FLT_EPSILON * std::abs(x + y) * 2 || diff < GOAP_FLT_MIN;
+    return diff <= GOAP_FLT_EPSILON * (std::abs(x) + std::abs(y)) * 2 || diff < GOAP_FLT_MIN;
 }
 
 // linear interpolate x in an array

@@ -8,11 +8,11 @@ namespace goap
 
 class PrioritizedStack : public PrioritizedQueue
 {
-    IPath::CPtr pop_queue(lst_path_type &queue) override {
+    IPath::Ptr pop_queue(lst_path_type &queue) override {
         if (queue.empty()) {
             throw new std::runtime_error("[PrioritizedQueue] stack pop error");
         }
-        IPath::CPtr value = queue.back();
+        IPath::Ptr value = queue.back();
         queue.pop_back();
         return value;
     }

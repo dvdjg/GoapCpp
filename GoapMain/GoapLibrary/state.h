@@ -35,9 +35,10 @@ public:
     void setAt(const std::string &str, std::initializer_list<float> list) override;
     intptr_t size() const override;
     void remove(const std::string &str) override;
+    bool equal(const IHashable::CPtr &other) const override;
     bool equal(const IState::CPtr &other) const override;
     float cost() const override;
-    void setCost(float c) override;
+    void cost(float c) override;
     void assign(const IState::CPtr &other) override;
     void assign(const State &other);
 
@@ -51,8 +52,10 @@ public:
 public:
     std::string toDebugString() const override;
     std::string toString() const override;
-    float getCoste() const;
-    void setCoste(float value);
+
+    // IHashable interface
+public:
+    std::size_t hash() const override;
 };
 
 }

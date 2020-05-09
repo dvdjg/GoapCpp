@@ -20,6 +20,7 @@ HEADERS += \
     goap/iplanningstatemeter.h \
     goap/iplanningstatecomparer.h \
     goap/iclonable.h \
+    goap/ihashable.h \
     goap/iprioritized.h \
     goap/istate.h \
     goap/istringvalue.h \

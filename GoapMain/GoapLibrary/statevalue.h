@@ -42,6 +42,7 @@ public:
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;
     bool equal(const IStateValue::CPtr &other) const override;
+    bool equal(const IHashable::CPtr &other) const override;
     bool equal(const std::string &other) const override;
     bool equal(const std::initializer_list<float> &other) const override;
     std::string toDebugString() const override;

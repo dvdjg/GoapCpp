@@ -1,6 +1,7 @@
 #ifndef INSTANCEDELETER_H
 #define INSTANCEDELETER_H
 
+#include <type_traits>
 #include "hasmember.h"
 
 namespace goap

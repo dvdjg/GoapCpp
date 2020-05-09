@@ -19,7 +19,7 @@ public:
             IState::CPtr initialState,
             IPlanningStateMeter::CPtr planningStateMeter,
             std::list<IPlanningAction::CPtr> actionsArray = {},
-            std::list<IState::CPtr> states = {}) = 0;
+            std::list<IState::CPtr>* pStates = nullptr) = 0;
 };
 
 }

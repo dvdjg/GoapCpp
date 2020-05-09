@@ -2,12 +2,12 @@
 #define GOAP_ISTRINGVALUE_H
 
 #include <string>
-#include "common/irefcounter.h"
+#include "goap/ihashable.h"
 #include "explicit_ptr.h"
 
 namespace goap
 {
-class IStringPrintable : public virtual IRefCounter
+class IStringPrintable : public virtual IHashable
 {
 public:
     typedef explicit_ptr<IStringPrintable> Ptr;
