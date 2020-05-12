@@ -23,7 +23,9 @@ public:
     typedef explicit_ptr<const IStringValue> CPtr;
     virtual void fromString(const std::string &str) = 0;
     virtual void assign(const std::string &other) = 0;
+    virtual void assign(const char *other) = 0;
     virtual bool equals(const std::string &other) const = 0;
+    virtual bool equals(const char *other) const = 0;
 };
 
 }

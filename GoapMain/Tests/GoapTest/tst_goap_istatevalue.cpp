@@ -35,10 +35,10 @@ TEST_F(GoapIStateValueTest, TestSetAt)
     scopeTimer.reset();
     scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateValueTest, Test1: B", true);
     ptrState->resize(10);
-    ptrState->setAt(0, 0.0f);
-    ptrState->setAt(1, 1.0);
-    ptrState->setAt(2, 2.0);
-    ptrState->setAt(3, 9.0);
+    ptrState->put(0, 0.0f);
+    ptrState->put(1, 1.0);
+    ptrState->put(2, 2.0);
+    ptrState->put(3, 9.0);
 
     EXPECT_EQ(1.0, ptrState->at(1));
     EXPECT_EQ(0.0, ptrState->at(10));
@@ -50,9 +50,9 @@ TEST_F(GoapIStateValueTest, TestSetAtF)
     NewPtr<IStateValue> ptrState;
     EXPECT_TRUE(0 == ptrState->size());
     ptrState->resize(10);
-    ptrState->setAt(1, 12.0); // Auto grow
-    ptrState->setAt(2, 11.0);
-    ptrState->setAt(2, 13.0);
+    ptrState->put(1, 12.0); // Auto grow
+    ptrState->put(2, 11.0);
+    ptrState->put(2, 13.0);
     EXPECT_EQ(13.0, ptrState->at(2));
     EXPECT_FLOAT_EQ(12.5, ptrState->at(1.5f)) << "La interpolación no coincide.";
 }
@@ -85,9 +85,9 @@ TEST_F(GoapIStateValueTest, TestInterpolateF_2)
     std::cout << ptrStateOther->toDebugString() << " converted to " << ptrState->toDebugString() << std::endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(24.f, ptrState->at(46));
-    ptrState->setAt(45, 0.f);
+    ptrState->put(45, 0.f);
     EXPECT_FLOAT_EQ(12.f, ptrState->at(45.5f));
-    ptrState->setAt(45, 23.f);
+    ptrState->put(45, 23.f);
     EXPECT_FLOAT_EQ(23.5f, ptrState->at(45.5f));
 }
 
@@ -113,9 +113,9 @@ TEST_F(GoapIStateValueTest, TestEquals)
 
     ptrState->assign({1.f, 0.f, 0.f});
     ptrStateOther->assign({0.f, 1.f, 0.f});
-    EXPECT_FALSE(ptrState->equal(ptrStateOther));
+    EXPECT_FALSE(ptrState->equals(ptrStateOther));
     ptrStateOther->assign(ptrState);
-    EXPECT_TRUE(ptrState->equal(ptrStateOther));
+    EXPECT_TRUE(ptrState->equals(ptrStateOther));
 }
 
 TEST_F(GoapIStateValueTest, TestHide)
@@ -170,8 +170,8 @@ TEST_F(GoapIStateValueTest, Assign)
     NewPtr<IStateValue> ptrStateDst2(ptrStateSrc);
     ASSERT_TRUE(ptrStateDst2);
 
-    EXPECT_TRUE(ptrStateSrc->equal(ptrStateDst1.getCPtr()));
-    EXPECT_TRUE(ptrStateSrc->equal(ptrStateDst2.getCPtr()));
+    EXPECT_TRUE(ptrStateSrc->equals(ptrStateDst1.getCPtr()));
+    EXPECT_TRUE(ptrStateSrc->equals(ptrStateDst2.getCPtr()));
 
     std::string strMessage = ptrStateSrc->toString();
     EXPECT_TRUE(strMessage == szMessage);

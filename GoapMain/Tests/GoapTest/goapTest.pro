@@ -1,9 +1,9 @@
 TARGET = tst_goap
 
+QT       -= gui core
 TEMPLATE = app
 CONFIG += console static
-CONFIG -= app_bundle
-CONFIG -= qt
+CONFIG -= qt app_bundle
 
 !include(../../common.pri) {
     error(Could not find the common.pri file!)

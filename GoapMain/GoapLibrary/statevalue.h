@@ -39,10 +39,12 @@ public:
     void assign(const StateValue &other);
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
+    void assign(const char* other) override;
     void assign(const std::initializer_list<float> &list) override;
     bool equals(const IStateValue::CPtr &other) const override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const std::string &other) const override;
+    bool equals(const char *str) const override;
     bool equals(const std::initializer_list<float> &other) const override;
     std::string toDebugString() const override;
     std::string toString() const override;

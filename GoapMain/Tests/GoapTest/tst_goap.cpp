@@ -36,17 +36,17 @@ TEST_F(GoapIStateTest, TestSetAt)
     ASSERT_TRUE(scopeTimer);
     NewPtr<IState> ptrState;
     ASSERT_TRUE(ptrState);
-    ptrState->setAt("Uno", NewPtr<IStateValue>({1.f, 2.f}));
-    ptrState->setAt("Dos", {1.f, 2.f});
+    ptrState->put("Uno", NewPtr<IStateValue>({1.f, 2.f}));
+    ptrState->put("Dos", {1.f, 2.f});
 
     auto atUno = ptrState->at("Uno");
     auto atDos = ptrState->at("Dos");
-    ASSERT_TRUE(atUno->equal(atDos));
+    ASSERT_TRUE(atUno->equals(atDos));
     ASSERT_EQ(*atUno, *atDos);
 
     auto lstTres = {3.f, 6.f};
     auto szTres = "Tres";
-    ptrState->setAt(szTres, lstTres);
+    ptrState->put(szTres, lstTres);
     auto atTres = ptrState->at(szTres);
     ASSERT_NE(*atUno, *atTres);
     ASSERT_EQ(3, ptrState->size());
@@ -55,7 +55,10 @@ TEST_F(GoapIStateTest, TestSetAt)
     for (IState::index_type i = 0; i < ptrState->size(); ++i) {
         auto pair = ptrState->at(i);
         std::cout << pair.first->toDebugString() << " : " << pair.second->toDebugString() << std::endl;
-        if (*pair.first == szTres && *pair.second == lstTres) {
+        auto &f = *pair.first;
+        auto &s = *pair.second;
+        if (f == szTres
+                && s == lstTres) {
             ++iTest;
         }
     }
@@ -79,8 +82,8 @@ TEST_F(GoapIStateTest, TestClone)
     NewPtr<IState> ptrState;
     ASSERT_TRUE(ptrState);
     ptrState->cost(23);
-    ptrState->setAt("Uno", {1, 2});
-    ptrState->setAt("Dos", {6.6f, 2.4f, 9});
+    ptrState->put("Uno", {1, 2});
+    ptrState->put("Dos", {6.6f, 2.4f, 9});
     //std::shared_ptr<IClonable> shCl;
     //auto ptr = std::dynamic_pointer_cast<IState>(shCl);
 

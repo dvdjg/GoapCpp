@@ -26,9 +26,9 @@ public:
      * Returns a modified cloned state. The input state is not modified.
      */
     virtual IState::Ptr execute(IState::CPtr state) const = 0;
-};
 
-static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
+    static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
+};
 
 }
 

@@ -28,8 +28,8 @@ public:
     void clear();
 
     void remove(const IStateValue::CPtr &key) override;
-    const IStateValue& at(const IStateValue::CPtr &key) const override;
-    const IStateValue& at(const std::string &str) const override;
+    IStateValue& atRef(const IStateValue::CPtr &key) const override;
+    IStateValue& atRef(const std::string &str) const override;
     IState::Ptr put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
     IState::Ptr put(const std::string &str, const IStateValue::Ptr &value) override;
     IState::Ptr put(const std::string &str, const std::string &value) override;

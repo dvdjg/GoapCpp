@@ -7,13 +7,12 @@
 QT       -= core gui
 
 TARGET = Interfaces
-#TEMPLATE = subdirs # leave SUBDIRS variable unassigned
+TEMPLATE = subdirs # leave SUBDIRS variable unassigned
+
+DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
 
 INCLUDEPATH=../GoapLibrary ../Factory
-
-!include(../common.pri) {
-    error(Could not find the common.pri file!)
-}
+INCLUDEPATH += F:/Programa/boost_1_71_0
 
 HEADERS += \
     common/iroot.h \

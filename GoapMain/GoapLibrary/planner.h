@@ -102,6 +102,11 @@ public:
             const IState::CPtr &intialState,
             const IState::CPtr &goalState/*,
             std::list<IPlanningAction::CPtr> plan = {}*/);
+
+    // IStringPrintable interface
+public:
+    std::string toDebugString() const override;
+    std::string toString() const override;
 };
 
 }

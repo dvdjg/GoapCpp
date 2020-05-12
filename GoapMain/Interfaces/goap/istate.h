@@ -40,8 +40,10 @@ public:
     virtual IState::Ptr mul(const std::string &str, std::initializer_list<float> list) = 0;
     virtual IState::Ptr mul(const std::string &str, float number) = 0;
     virtual IState::Ptr mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
-    virtual const IStateValue & at(const IStateValue::CPtr &key) const = 0;
-    virtual const IStateValue & at(const std::string &str) const = 0;
+    virtual IStateValue & atRef(const IStateValue::CPtr &key) const = 0;
+    virtual IStateValue & atRef(const std::string &str) const = 0;
+    const IStateValue::Ptr at(const IStateValue::CPtr &key) const { return IStateValue::Ptr(&atRef(key)); }
+    const IStateValue::Ptr at(const std::string &str) const { return IStateValue::Ptr(&atRef(str)); }
     virtual pair_value at(intptr_t idx) const = 0;
     virtual intptr_t size() const = 0;
     virtual void assign(const IState::CPtr &other) = 0;

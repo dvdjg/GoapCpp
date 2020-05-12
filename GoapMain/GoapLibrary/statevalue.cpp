@@ -75,13 +75,21 @@ float StateValue::at(intptr_t idx) const
 
 void StateValue::fromString(const std::string &str)
 {
+    assign(str);
+}
+
+void StateValue::assign(const char* str)
+{
     _data.resize(0);
-    std::copy(str.begin(), str.end(), std::back_inserter(_data));
+    for (const char *it = str; *it; ++it) {
+        _data.push_back(*it);
+    }
 }
 
 void StateValue::assign(const std::string &str)
 {
-    fromString(str);
+    _data.resize(0);
+    std::copy(str.begin(), str.end(), std::back_inserter(_data));
 }
 
 void StateValue::assign(const std::initializer_list<float> &list)
@@ -238,6 +246,17 @@ bool StateValue::equals(const std::string &other) const
     return ret;
 }
 
+bool StateValue::equals(const char *str) const
+{
+    auto it = _data.cbegin();
+    const char *pc = nullptr;
+    for (pc = str; *pc && it != _data.cend(); ++pc, ++it) {
+        if (!basicmath::floatEqual(*it, *pc)) {
+            return false;
+        }
+    }
+    return !*pc && it == _data.cend();
+}
 
 bool StateValue::equals(const std::initializer_list<float> &other) const
 {

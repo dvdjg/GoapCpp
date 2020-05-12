@@ -64,9 +64,9 @@ TEST_F(FactoryGoapTest, Test1)
     ASSERT_TRUE(smartCounted1);
 
     smartCounted1->resize(10);
-    smartCounted1->setAt(0, 0.0);
-    smartCounted1->setAt(1, 1.0);
-    smartCounted1->setAt(2, 2.0);
+    smartCounted1->put(0, 0.0);
+    smartCounted1->put(1, 1.0);
+    smartCounted1->put(2, 2.0);
 
     EXPECT_EQ(1.0, smartCounted1->at(1));
 }

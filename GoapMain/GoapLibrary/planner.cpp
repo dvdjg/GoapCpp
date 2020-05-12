@@ -38,7 +38,7 @@ void Planner::planningMethod(IPlanner::type method)  {
     _planningMethod = method;
 }
 
-string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
+string IPlanningAction::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
 {
     float totalCost = 0;
     std::stringstream ret;
@@ -317,5 +317,14 @@ std::list<IPlanningAction::CPtr> Planner::findPlan(const IState::CPtr &intialSta
 //{
 
 //}
+std::string Planner::toDebugString() const {
+    return {};
+}
+
+std::string Planner::toString() const {
+    return {};
+}
 
 }
+
+

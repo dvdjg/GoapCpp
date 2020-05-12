@@ -25,7 +25,7 @@ float ExactStateComparer::distance(IState::CPtr state1, IState::CPtr state2) con
         auto pair1 = state1->at(i);
         auto key = pair1.first;
         auto value1 = pair1.second;
-        const IStateValue * value2 = &state2->at(key);
+        auto value2 = state2->at(key);
         if (value2 && value1->size() == value2->size()) {
             sameKeyCount++;
             if (value1 != value2) {

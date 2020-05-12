@@ -95,6 +95,10 @@ inline bool operator ==(const IStateValue& a, const std::string &other) {
     return a.equals(other);
 }
 
+inline bool operator ==(const IStateValue& a, const char *other) {
+    return a.equals(other);
+}
+
 inline bool operator ==(const IStateValue& a, const std::initializer_list<float> &other) {
     return a.equals(other);
 }
@@ -116,6 +120,10 @@ inline bool operator !=(const IStateValue& a, const IStateValue& b) {
 }
 
 inline bool operator !=(const IStateValue& a, const std::string& b) {
+    return !(a == b);
+}
+
+inline bool operator !=(const IStateValue& a, const char *b) {
     return !(a == b);
 }
 

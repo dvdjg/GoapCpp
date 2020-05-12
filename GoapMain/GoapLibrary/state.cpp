@@ -96,7 +96,7 @@ void State::remove(const IStateValue::CPtr &key)
 
 void State::remove(const std::string &str)
 {
-    remove(NewPtr<IStateValue>({}, str)); // IStateValue::CPtr(new StateValue(str))
+    remove(NewPtr<IStateValue>({}, str));
 }
 
 IState::pair_value State::at(intptr_t idx) const
@@ -108,7 +108,7 @@ IState::pair_value State::at(intptr_t idx) const
     return std::make_pair(it->first, it->second);
 }
 
-const IStateValue& State::at(const IStateValue::CPtr &key) const
+IStateValue& State::atRef(const IStateValue::CPtr &key) const
 {
     auto it = _data.find(key);
     if (it == _data.end()) {
@@ -117,9 +117,9 @@ const IStateValue& State::at(const IStateValue::CPtr &key) const
     return *it->second;
 }
 
-const IStateValue& State::at(const std::string &str) const
+IStateValue& State::atRef(const std::string &str) const
 {
-    return at(NewPtr<IStateValue>({}, str));
+    return atRef(NewPtr<IStateValue>({}, str));
 }
 
 IState::Ptr State::put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
