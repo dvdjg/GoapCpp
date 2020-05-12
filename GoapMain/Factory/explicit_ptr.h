@@ -1,10 +1,16 @@
 #ifndef EXPLICIT_PTR_H
 #define EXPLICIT_PTR_H
 
+#ifndef HAS_BOOST_SMART_INTRUSIVE_PTR
+#define HAS_BOOST_SMART_INTRUSIVE_PTR
+#endif
+
 #include <memory>
 #if defined(HAS_BOOST_SMART_INTRUSIVE_PTR)
 #include <boost/intrusive_ptr.hpp>
 #include "hasmember.h"
+#else
+#include <shared_ptr.h>
 #endif
 
 namespace goap

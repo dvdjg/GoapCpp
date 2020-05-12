@@ -53,7 +53,7 @@ IPath::Ptr Path::addChild(IPlanningAction::Ptr node, float cost_) {
 
 IState::Ptr Path::executeFromRoot(IState::CPtr initialState) {
     IState::Ptr finalState;
-    if (_initialState && _initialState->equal(initialState)) {
+    if (_initialState && _initialState->equals(initialState)) {
         finalState = _finalState;
     } else {
         IState::CPtr state = (!_parent) ? initialState : _parent->executeFromRoot(initialState);

@@ -30,6 +30,7 @@ SOURCES += \
     basicsinkcollection.cpp \
     numericstatecomparer.cpp \
     exactstatecomparer.cpp \
+    functionstatemeter.cpp \
     goaplibinscribe.cpp
 
 HEADERS += goaplibrary.h \

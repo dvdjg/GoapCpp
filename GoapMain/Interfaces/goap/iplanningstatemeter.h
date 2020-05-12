@@ -5,10 +5,13 @@
 #include "explicit_ptr.h"
 #include "istate.h"
 
+#define STR_GOAP_COMPARERSTATEMETER "ComparerStateMeter"
+#define STR_GOAP_FUNCTIONSTATEMETER "FunctionStateMeter"
+
 namespace goap
 {
 
-class IPlanningStateMeter : public virtual IRefCounter
+class IPlanningStateMeter : public IRefCounter
 {
 public:
     typedef explicit_ptr<IPlanningStateMeter> Ptr;
@@ -36,6 +39,8 @@ public:
     virtual void setMonotonic(bool monotonic) = 0;
 
     virtual IState::CPtr goalState() const = 0;
+
+    virtual void goalState(IState::CPtr goalState) = 0;
 };
 
 }

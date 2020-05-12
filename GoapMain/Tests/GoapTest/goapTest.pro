@@ -10,6 +10,7 @@ CONFIG -= qt
 }
 
 SOURCES += \
+    backing_a_pie.cpp \
     main.cpp \
     tst_goap.cpp \
     tst_goap_istatevalue.cpp
@@ -37,4 +38,7 @@ LIBS += \
     $$POSTLIBS
 
 DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
+
+HEADERS += \
+    backing_a_pie.h
 

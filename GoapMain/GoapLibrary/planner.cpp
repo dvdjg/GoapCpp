@@ -16,6 +16,12 @@ Planner::Planner(Planner::type planningMethod_, const std::list<IPlanningAction:
     _planningActions = planningActions_;
 }
 
+void Planner::clear() {
+    _planningMethod = type::BreadthFirst;
+    _planningActions.clear();
+
+}
+
 const std::list<IPlanningAction::CPtr> &Planner::planningActions() const {
     return _planningActions;
 }
@@ -24,11 +30,15 @@ void Planner::planningActions(const std::list<IPlanningAction::CPtr> &planningAc
     _planningActions = planningActions_;
 }
 
-Planner::type Planner::planningMethod() {
+IPlanner::type Planner::planningMethod() {
     return _planningMethod;
 }
 
-string Planner::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
+void Planner::planningMethod(IPlanner::type method)  {
+    _planningMethod = method;
+}
+
+string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
 {
     float totalCost = 0;
     std::stringstream ret;
@@ -81,7 +91,11 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     return reachedByPath;
 }
 
-std::list<IPlanningAction::CPtr> Planner::makePlan(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> actionsArray, std::list<IState::CPtr> *pStates) {
+std::list<IPlanningAction::CPtr> &Planner::makePlan(
+        IState::CPtr initialState,
+        IPlanningStateMeter::CPtr planningStateMeter,
+        std::list<IPlanningAction::CPtr> &actionsArray,
+        std::list<IState::CPtr> *pStates) {
     const bool isMonotonic = planningStateMeter->monotonic();
     float minDistance = 1;
     int analyzedPaths = 0;
@@ -178,13 +192,21 @@ std::list<IPlanningAction::CPtr> Planner::makePlan(IState::CPtr initialState, IP
     return actionsArray;
 }
 
-std::list<IPlanningAction::CPtr> Planner::makePlanCached(IState::CPtr initialState, IPlanningStateMeter::CPtr planningStateMeter, std::list<IPlanningAction::CPtr> &actionsArray, std::list<IState::CPtr> &states)
+std::list<IPlanningAction::CPtr> &Planner::makePlanCached(
+        IState::CPtr initialState,
+        IPlanningStateMeter::CPtr planningStateMeter,
+        std::list<IPlanningAction::CPtr> &actionsArray,
+        std::list<IState::CPtr> *pStates)
 {
     IState::Ptr goalState = dynamic_pointer_cast<IState>(planningStateMeter->goalState()->clone());
 
     actionsArray = findPlan(initialState, goalState/*, actionsArray*/);
     if (actionsArray.empty()) {
-        actionsArray = makePlan(initialState, planningStateMeter, actionsArray, &states);
+        std::list<IState::CPtr> states;
+        if (!pStates) {
+            pStates = &states;
+        }
+        actionsArray = makePlan(initialState, planningStateMeter, actionsArray, pStates);
         if (!actionsArray.empty()) {
             // Substitute the reached state for a clean goalState
             float cost = states.back()->cost();

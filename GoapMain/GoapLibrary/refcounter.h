@@ -8,19 +8,19 @@
 
 #define IMPLEMENT_REFCOUNTER_FUNCTIONS(_refcount) \
     protected: \
-    inline void suicide() { instanceDeleter(this); } \
-    inline int loadRef() const { return _refcount.load(std::memory_order_relaxed); } \
-    inline void storeRef(int newValue) const { _refcount.store(newValue, std::memory_order_relaxed); } \
-    inline int addRef() const { return ++_refcount; } \
-    inline int releaseRef() const { return --_refcount; }
+    void suicide() { instanceDeleter(this); } \
+    int loadRef() const { return _refcount.load(std::memory_order_relaxed); } \
+    void storeRef(int newValue) const { _refcount.store(newValue, std::memory_order_relaxed); } \
+    int addRef() const { return ++_refcount; } \
+    int releaseRef() const { return --_refcount; }
 
 #define IMPLEMENT_REFCOUNTER_FUNCTIONS_OVERRIDE(_refcount) \
     protected: \
-    inline void suicide() override { instanceDeleter(this); } \
-    inline int loadRef() const override { return _refcount.load(std::memory_order_relaxed); } \
-    inline void storeRef(int newValue) const { _refcount.store(newValue, std::memory_order_relaxed); } \
-    inline int addRef() const override { return ++_refcount; } \
-    inline int releaseRef() const override { return --_refcount; }
+    void suicide() override { instanceDeleter(this); } \
+    int loadRef() const override { return _refcount.load(std::memory_order_relaxed); } \
+    void storeRef(int newValue) const { _refcount.store(newValue, std::memory_order_relaxed); } \
+    int addRef() const override { return ++_refcount; } \
+    int releaseRef() const override { return --_refcount; }
 
 #define IMPLEMENT_REFCOUNTER() \
     private: \
@@ -31,19 +31,19 @@
     Use this macro to bypass the reference counter calls to a parent implementor
 */
 #define IMPLEMENT_REFCOUNTER_PARENT(parent)  \
-    public: \
-    inline void suicide() { parent::suicide(); } \
-    inline int loadRef() const { return parent::loadRef(); } \
-    inline void storeRef(int count) const { parent::storeRef(count); } \
-    inline int addRef() const { return parent::addRef(); } \
-    inline int releaseRef() const { return parent::releaseRef(); }
+    protected: \
+    void suicide() override { parent::suicide(); } \
+    int loadRef() const override { return parent::loadRef(); } \
+    void storeRef(int count) const { parent::storeRef(count); } \
+    int addRef() const override { return parent::addRef(); } \
+    int releaseRef() const override { return parent::releaseRef(); }
 
 #define IMPLEMENT_REFCOUNTER_DUMMY \
-    public: \
-    inline void suicide() { } \
-    inline int loadRef() const { return -1; } \
-    inline void storeRef(int) const {  } \
-    inline int addRef() const { return -1; } \
-    inline int releaseRef() const { return -1; }
+    protected: \
+    void suicide() { } \
+    int loadRef() const { return -1; } \
+    void storeRef(int) const {  } \
+    int addRef() const { return -1; } \
+    int releaseRef() const { return -1; }
 
 #endif // GOAP_REFCOUNTER_H

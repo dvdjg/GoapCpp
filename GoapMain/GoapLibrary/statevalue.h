@@ -29,11 +29,10 @@ public:
     intptr_t size() const override;
     void resize(intptr_t len) override;
     float at(float idx) const override;
-    void setAt(float idx, float value) override;
-    //float at(size_t idx) const override;
-    //void setAt(size_t idx, float value) override;
+    void put(float idx, float value) override;
     float at(intptr_t idx) const override;
-    void setAt(intptr_t idx, float value) override;
+    void put(intptr_t idx, float value) override;
+    void putAll(float value) override;
     void fromString(const std::string &str) override;
     void interpolateFrom(const IStateValue::CPtr &other) override;
     float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;
@@ -41,16 +40,27 @@ public:
     void assign(const IStateValue::CPtr &other) override;
     void assign(const std::string &other) override;
     void assign(const std::initializer_list<float> &list) override;
-    bool equal(const IStateValue::CPtr &other) const override;
-    bool equal(const IHashable::CPtr &other) const override;
-    bool equal(const std::string &other) const override;
-    bool equal(const std::initializer_list<float> &other) const override;
+    bool equals(const IStateValue::CPtr &other) const override;
+    bool equals(const IHashable::CPtr &other) const override;
+    bool equals(const std::string &other) const override;
+    bool equals(const std::initializer_list<float> &other) const override;
     std::string toDebugString() const override;
     std::string toString() const override;
     std::size_t hash() const override;
 
     void clear() override;
     IClonable::Ptr clone() const override;
+
+    // IStateValue interface
+public:
+    void add(const IStateValue::CPtr &other) override;
+    void mul(const IStateValue::CPtr &other) override;
+    void and_logic(const IStateValue::CPtr &other) override;
+    void or_logic(const IStateValue::CPtr &other) override;
+    void add(float other) override;
+    void mul(float other) override;
+    void and_logic(bool other) override;
+    void or_logic(bool other) override;
 };
 
 }

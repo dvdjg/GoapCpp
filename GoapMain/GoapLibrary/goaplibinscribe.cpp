@@ -73,6 +73,12 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ptr;
     }, discr);
     ++ret;
+    factory.inscribe<FactoryType::Default, IState>([](IState::map_string_float_type &map_string_float){
+        auto ptr = RecyclableWrapper<State>::createFromPoolRaw();
+        ptr->assign(map_string_float);
+        return ptr;
+    }, discr);
+    ++ret;
 
     factory.inscribe<FactoryType::Default, IStateValue>([](){
         return RecyclableWrapper<StateValue>::createFromPoolRaw();
@@ -134,6 +140,18 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ret;
     }, discr+STR_GOAP_COMPARERSTATEMETER);
     ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningStateMeter>([](IState::CPtr goalState) {
+        auto ret = RecyclableWrapper<FunctionStateMeter>::createFromPoolRaw();
+        ret->goalState(goalState);
+        return ret;
+    }, discr+STR_GOAP_FUNCTIONSTATEMETER);
+    ++ret;
+    factory.inscribe<FactoryType::Default, FunctionStateMeter>([](IState::CPtr goalState) {
+        auto ret = RecyclableWrapper<FunctionStateMeter>::createFromPoolRaw();
+        ret->goalState(goalState);
+        return ret;
+    }, discr);
+    ++ret;
     factory.inscribe<FactoryType::Default, IPlanningStateComparer, NumericStateComparer>(discr+STR_GOAP_NUMERICSTATECOMPARER);
     ++ret;
     factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, NumericStateComparer>(discr+STR_GOAP_NUMERICSTATECOMPARER_SINGLETON);
@@ -149,6 +167,13 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IPlanningStateMeter, PlanningStateMeter>(discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IPlanner, Planner>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanner>([](IPlanner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_) {
+        auto ret = RecyclableWrapper<Planner>::createFromPoolRaw();
+        ret->planningMethod(planningMethod_);
+        ret->planningActions(planningActions_);
+        return ret;
+    }, discr);
     ++ret;
 
     factory.inscribe<FactoryType::Default, IStateValue, StateValue>(discr+"Default");

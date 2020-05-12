@@ -8,7 +8,7 @@
 namespace goap
 {
 
-class State : public virtual IState
+class State : public IState
 {
     IMPLEMENT_REFCOUNTER()
 
@@ -28,19 +28,34 @@ public:
     void clear();
 
     void remove(const IStateValue::CPtr &key) override;
-    IStateValue::Ptr at(const IStateValue::CPtr &key) const override;
-    IStateValue::Ptr at(const std::string &str) const override;
-    void setAt(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
-    void setAt(const std::string &str, const IStateValue::Ptr &value) override;
-    void setAt(const std::string &str, std::initializer_list<float> list) override;
+    const IStateValue& at(const IStateValue::CPtr &key) const override;
+    const IStateValue& at(const std::string &str) const override;
+    IState::Ptr put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
+    IState::Ptr put(const std::string &str, const IStateValue::Ptr &value) override;
+    IState::Ptr put(const std::string &str, const std::string &value) override;
+    IState::Ptr put(const std::string &str, std::initializer_list<float> list) override;
+    IState::Ptr put(const std::string &str, float number) override;
+    IState::Ptr add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
+    IState::Ptr add(const std::string &str, const IStateValue::Ptr &value) override;
+    IState::Ptr add(const std::string &str, const std::string &value) override;
+    IState::Ptr add(const std::string &str, std::initializer_list<float> list) override;
+    IState::Ptr add(const std::string &str, float number) override;
+    IState::Ptr mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
+    IState::Ptr mul(const std::string &str, const IStateValue::Ptr &value) override;
+    IState::Ptr mul(const std::string &str, const std::string &value) override;
+    IState::Ptr mul(const std::string &str, std::initializer_list<float> list) override;
+    IState::Ptr mul(const std::string &str, float number) override;
     intptr_t size() const override;
     void remove(const std::string &str) override;
-    bool equal(const IHashable::CPtr &other) const override;
-    bool equal(const IState::CPtr &other) const override;
+    bool equals(const IHashable::CPtr &other) const override;
+    bool equals(const IState::CPtr &other) const override;
     float cost() const override;
     void cost(float c) override;
+    IState::Ptr addCost(float c) override;
+    IState::Ptr mulCost(float c) override;
     void assign(const IState::CPtr &other) override;
     void assign(const State &other);
+    void assign(const map_string_float_type &map_string_float) override;
 
     pair_value at(intptr_t idx) const override;
 

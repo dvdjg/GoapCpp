@@ -35,6 +35,8 @@ win32-*:DEFINES += \
 
 DEFINES += HAVE_ZLIB
 INCLUDEPATH += $$top_srcdir/3rdparty/zlib
+INCLUDEPATH += \
+        F:/Programa/boost_1_71_0
 
 *-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 *-g++-32:QMAKE_TARGET.arch = x86
@@ -51,21 +53,21 @@ win32-msvc* {
     LIBPRE=
     LIBPOST=.lib
     INCLUDEPATH += \
-        D:\Programa\boost_1_71_0
+        F:\Programa\boost_1_71_0
     LIBS += \
-        -LD:\Programa\boost_1_71_0/stage/lib \
+        -LF:\Programa\boost_1_71_0\stage\lib \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS +=  -openmp
     QMAKE_CFLAGS += -openmp
     POST_DESTDIR=msvc
     DEFINES += COMPILER_MSVC
-} else:win32-g++ {
+} else:win32-* {
     LIBPRE=lib
     LIBPOST=.a
     INCLUDEPATH += \
-        F:\Programa\boost_1_71_0
+        F:/Programa/boost_1_71_0
     LIBS += \
-        -LF:\Programa\boost_1_71_0/stage/lib \
+        -LF:/Programa/boost_1_71_0/stage/lib \
          -lboost_system-mgw73-mt-x64-1_71 -lboost_filesystem-mgw73-mt-x64-1_71 \
          -lUser32 -lAdvapi32 -lws2_32
     QMAKE_CXXFLAGS+= -pthread -fno-strict-aliasing -fopenmp -Wno-comment

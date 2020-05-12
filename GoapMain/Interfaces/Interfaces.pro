@@ -7,9 +7,13 @@
 QT       -= core gui
 
 TARGET = Interfaces
-TEMPLATE = subdirs # leave SUBDIRS variable unassigned
+#TEMPLATE = subdirs # leave SUBDIRS variable unassigned
 
 INCLUDEPATH=../GoapLibrary ../Factory
+
+!include(../common.pri) {
+    error(Could not find the common.pri file!)
+}
 
 HEADERS += \
     common/iroot.h \
@@ -18,6 +22,7 @@ HEADERS += \
     goap/ipath.h \
     goap/iplanningaction.h \
     goap/iplanningstatemeter.h \
+    goap/ifunctionstatemeter.h \
     goap/iplanningstatecomparer.h \
     goap/iclonable.h \
     goap/ihashable.h \

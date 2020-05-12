@@ -21,10 +21,6 @@ public:
     typedef explicit_ptr<const Planner> CPtr;
     typedef std::unordered_map<IState::CPtr, IState::CPtr> states_dictionary_type;
 
-    enum type {
-        BreadthFirst = 1, // Queue: FIFO
-        DepthFirst = 2    // Stack: LIFO
-    };
 protected:
     type _planningMethod = type::BreadthFirst;
 
@@ -44,15 +40,14 @@ protected:
 public:
     Planner();
 
-    Planner(Planner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_);
+    Planner(IPlanner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_);
+    virtual void clear();
 
     const std::list<IPlanningAction::CPtr>& planningActions() const;
-
     void planningActions(const std::list<IPlanningAction::CPtr> &planningActions_);
 
-    Planner::type planningMethod();
-
-    static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
+    IPlanner::type planningMethod() override;
+    void planningMethod(IPlanner::type method) override;
 
     /**
      * Helper function to compute the reached state resulting of executing all the allowed actions from
@@ -66,21 +61,21 @@ public:
      * Returns the plan: A Vector of IPlanningAction.
      * If no plan is found a null is returned.
      */
-    std::list<IPlanningAction::CPtr> makePlan (
+    std::list<IPlanningAction::CPtr> &makePlan (
             IState::CPtr initialState,
             IPlanningStateMeter::CPtr planningStateMeter,
-            std::list<IPlanningAction::CPtr> actionsArray = {},
+            std::list<IPlanningAction::CPtr> &actionsArray,
             std::list<IState::CPtr>* pStates = nullptr) override;
 
     /**
      * A version of makePlan() with the help of cached plans.
      * @note The found cached plan is not warranted to use the supplied planningStateMeter.
      */
-    std::list<IPlanningAction::CPtr> makePlanCached(
+    std::list<IPlanningAction::CPtr> &makePlanCached(
             IState::CPtr initialState,
             IPlanningStateMeter::CPtr planningStateMeter,
             std::list<IPlanningAction::CPtr> &actionsArray,
-            std::list<IState::CPtr> &states);
+            std::list<IState::CPtr> *pStates) override;
 
 private:
     IPrioritized::Ptr unvisitedPathes();

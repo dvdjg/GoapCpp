@@ -1,6 +1,7 @@
 #ifndef GOAP_IPLANNINGACTION_H
 #define GOAP_IPLANNINGACTION_H
 
+#include <list>
 #include "common/irefcounter.h"
 #include "istringvalue.h"
 #include "istate.h"
@@ -26,6 +27,8 @@ public:
      */
     virtual IState::Ptr execute(IState::CPtr state) const = 0;
 };
+
+static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
 
 }
 

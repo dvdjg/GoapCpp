@@ -144,7 +144,7 @@ std::string StateValue::toString() const
     return ret;
 }
 
-void StateValue::setAt(intptr_t idx, float value)
+void StateValue::put(intptr_t idx, float value)
 {
     if (idx < 0) {
         throw new std::runtime_error(__func__);
@@ -152,13 +152,21 @@ void StateValue::setAt(intptr_t idx, float value)
     _data.at(std::size_t(idx)) = value;
 }
 
-void StateValue::setAt(float idx, float value)
+void StateValue::putAll(float value)
+{
+    auto thisSize = size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        put(i, value);
+    }
+}
+
+void StateValue::put(float idx, float value)
 {
     auto i = std::llround(idx);
     if (i < 0) {
         throw new std::runtime_error(__func__);
     }
-    setAt(intptr_t(i), value);
+    put(intptr_t(i), value);
 }
 
 //void StateValue::setAt(size_t idx, float value)
@@ -181,7 +189,6 @@ IClonable::Ptr StateValue::clone() const
 {
     auto ptr = NewPtr<IStateValue>({}, *this);
     return std::move(ptr);
-    //return new StateValue(*this);
 }
 
 void StateValue::assign(const StateValue &other)
@@ -202,11 +209,10 @@ void StateValue::assign(const IStateValue::CPtr &other)
     }
 }
 
-bool StateValue::equal(const IStateValue::CPtr &other) const
+bool StateValue::equals(const IStateValue::CPtr &other) const
 {
     bool ret(other);
-    if (ret)
-    {
+    if (ret) {
         auto thisSize = size();
         ret = thisSize == other->size();
         for (int_type i = 0; ret && i < int_type(thisSize); ++i) {
@@ -216,12 +222,12 @@ bool StateValue::equal(const IStateValue::CPtr &other) const
     return ret;
 }
 
-bool StateValue::equal(const IHashable::CPtr &other) const
+bool StateValue::equals(const IHashable::CPtr &other) const
 {
-    return equal(dynamic_pointer_cast<const IStateValue>(other));
+    return equals(dynamic_pointer_cast<const IStateValue>(other));
 }
 
-bool StateValue::equal(const std::string &other) const
+bool StateValue::equals(const std::string &other) const
 {
     bool ret(true);
     auto thisSize = size();
@@ -233,7 +239,7 @@ bool StateValue::equal(const std::string &other) const
 }
 
 
-bool StateValue::equal(const std::initializer_list<float> &other) const
+bool StateValue::equals(const std::initializer_list<float> &other) const
 {
     bool ret(true);
     auto thisSize = size();
@@ -245,6 +251,100 @@ bool StateValue::equal(const std::initializer_list<float> &other) const
     return ret;
 }
 
+void StateValue::add(const IStateValue::CPtr &other)
+{
+    auto thisSize = size();
+    auto otherSize = other->size();
+    if (otherSize > thisSize) {
+        resize(otherSize);
+    }
+    for (int_type i = 0; i < otherSize; ++i) {
+        float thisValue = at(i);
+        float otherValue = other->at(i);
+        put(i, thisValue + otherValue);
+    }
+}
+
+void StateValue::mul(const IStateValue::CPtr &other)
+{
+    auto thisSize = size();
+    auto otherSize = other->size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        if (i >= otherSize) {
+            put(i, 0); // Asumir ceros en los valores que faltan
+        } else {
+            float thisValue = at(i);
+            float otherValue = other->at(i);
+            put(i, thisValue * otherValue);
+        }
+    }
+}
+
+void StateValue::and_logic(const IStateValue::CPtr &other)
+{
+    auto thisSize = size();
+    auto otherSize = other->size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        if (i >= otherSize) {
+            put(i, 0); // Asumir ceros en los valores que faltan
+        } else {
+            float thisValue = at(i);
+            float otherValue = other->at(i);
+            put(i, thisValue != 0 && otherValue != 0);
+        }
+    }
+}
+
+void StateValue::or_logic(const IStateValue::CPtr &other)
+{
+    auto thisSize = size();
+    auto otherSize = other->size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        if (i >= otherSize) {
+            break; // Asumir ceros en los valores que faltan
+        } else {
+            float thisValue = at(i);
+            float otherValue = other->at(i);
+            put(i, thisValue != 0 || otherValue != 0);
+        }
+    }
+}
+
+void StateValue::add(float other)
+{
+    auto thisSize = size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        float thisValue = at(i);
+        put(i, thisValue + other);
+    }
+}
+
+void StateValue::mul(float other)
+{
+    auto thisSize = size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        float thisValue = at(i);
+        put(i, thisValue * other);
+    }
+}
+
+void StateValue::and_logic(bool other)
+{
+    auto thisSize = size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        float thisValue = at(i);
+        put(i, thisValue != 0 && other);
+    }
+}
+
+void StateValue::or_logic(bool other)
+{
+    auto thisSize = size();
+    for (int_type i = 0; i < thisSize; ++i) {
+        float thisValue = at(i);
+        put(i, thisValue != 0 || other);
+    }
+}
 
 }
 

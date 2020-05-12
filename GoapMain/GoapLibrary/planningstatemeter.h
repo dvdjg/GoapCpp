@@ -5,16 +5,13 @@
 #include "goap/istate.h"
 #include "goap/iplanningstatemeter.h"
 
-#define STR_GOAP_COMPARERSTATEMETER "ComparerStateMeter"
-#define STR_GOAP_FUNCTIONSTATEMETER "FunctionStateMeter"
-
 namespace goap
 {
 /**
 * Helper class for measuring the distance from a given state to the goal state.
 * This class must be overrided to implement valid measuring functions.
 */
-class PlanningStateMeter : public virtual IPlanningStateMeter
+class PlanningStateMeter : public IPlanningStateMeter
 {
     IMPLEMENT_REFCOUNTER()
 
@@ -57,7 +54,7 @@ public:
         return _goalState;
     }
 
-    virtual void goalState(IState::CPtr goalState) {
+    void goalState(IState::CPtr goalState) override {
         _goalState = goalState;
     }
 

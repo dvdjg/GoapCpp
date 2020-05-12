@@ -14,12 +14,12 @@ public:
     typedef explicit_ptr<const IHashable> CPtr;
 
     virtual std::size_t hash() const = 0;
-    virtual bool equal(const IHashable::CPtr &other) const = 0;
+    virtual bool equals(const IHashable::CPtr &other) const = 0;
 };
 //std::is_base_of
 
 inline bool operator ==(const IHashable& a, const IHashable& b) {
-    return a.equal(IHashable::CPtr(&b));
+    return a.equals(IHashable::CPtr(&b));
 }
 
 inline bool operator !=(const IHashable& a, const IHashable& b) {
@@ -52,7 +52,7 @@ template<>
 struct equal_to<IHashable::CPtr>
 {
     bool operator()(const IHashable::CPtr &data1, const IHashable::CPtr &data2) const {
-        return data1->equal(data2);
+        return data1->equals(data2);
     }
 };
 

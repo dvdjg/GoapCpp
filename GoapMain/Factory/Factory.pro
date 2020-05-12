@@ -10,9 +10,11 @@ TARGET = Factory
 #TEMPLATE = lib
 #CONFIG += staticlib
 
+!include(../common.pri) {
+    error(Could not find the common.pri file!)
+}
+
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
-INCLUDEPATH += \
-    F:/Programa/boost_1_66_0
 
 HEADERS += \
     explicit_ptr.h \
