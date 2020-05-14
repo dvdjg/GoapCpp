@@ -8,7 +8,7 @@ BasicStreamBuffer::BasicStreamBuffer(IBasicSink::Ptr data) :
     _data(data)
 {
     if (!_data) {
-        throw new std::runtime_error("Invalid data Sink");
+        throw std::runtime_error("Invalid data Sink");
     }
     setp(_buf, _buf + BUF_SIZE);
 }
@@ -21,7 +21,7 @@ BasicStreamBuffer::~BasicStreamBuffer()
 void BasicStreamBuffer::setSink(IBasicSink::Ptr data)
 {
     if (!data) {
-        throw new std::runtime_error("Invalid data Sink");
+        throw std::runtime_error("Invalid data Sink");
     }
     std::lock_guard<std::mutex> lock(_mutex);
     write(pbase(), pptr());

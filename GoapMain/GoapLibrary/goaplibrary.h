@@ -6,10 +6,16 @@
 #include "goap/istringvalue.h"
 #include "goap/iplanner.h"
 #include "goap/iplanningstatecomparer.h"
+#include "goap/ipath.h"
 #include "functionstatemeter.h"
 
 namespace goap
 {
+
+extern const std::string NUMERICSTATECOMPARER;
+extern const std::string EXACTSTATEMETER;
+extern const std::string NUMERICSTATECOMPARER_SINGLETON;
+extern const std::string EXACTSTATEMETER_SINGLETON;
 
 class Goap
 {
@@ -31,6 +37,7 @@ public:
     static FunctionStateMeter::Ptr newFunctionStateMeter(IState::CPtr goalState);
 
     static IPlanningStateMeter::Ptr newComparerStateMeter(IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {});
+    static IPath::Ptr newPath(IPlanningAction::CPtr action_, IPath::Ptr parent_ = {}, float cost_ = 0);
 };
 
 }

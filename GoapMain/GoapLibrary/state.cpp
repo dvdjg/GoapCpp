@@ -33,7 +33,7 @@ void State::clear() {
     _coste = 0;
 }
 
-void State::assign(const State &o)
+IState* State::assign(const State &o)
 {
     _data = o._data;
     _coste = o._coste;
@@ -43,16 +43,18 @@ void State::assign(const State &o)
     State st({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
               {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
 */
+    return this;
 }
 
-void State::assign(const IState::CPtr &other)
+IState* State::assign(const IState::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const State>(other);
     if (o) {
         assign(*o);
     } else {
-        throw new std::runtime_error(__func__);
+        throw std::runtime_error(__func__);
     }
+    return this;
 }
 /*
 void State::add(const std::string &key, const IStateValue::CPtr &other)
@@ -89,20 +91,23 @@ bool State::or(const std::string &key, bool other)
     return this;
 }
 */
-void State::remove(const IStateValue::CPtr &key)
+IState* State::remove(const IStateValue::CPtr &key)
 {
     _data.erase(key);
+    return this;
 }
 
-void State::remove(const std::string &str)
+IState* State::remove(const std::string &str)
 {
-    remove(NewPtr<IStateValue>({}, str));
+    return remove(NewPtr<IStateValue>({}, str));
 }
 
 IState::pair_value State::at(intptr_t idx) const
 {
+    static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     if (idx < 0 || idx >= intptr_t(_data.size())) {
-        throw new std::runtime_error(__func__);
+        nullValue->clear();
+        return std::make_pair(nullValue, nullValue);
     }
     auto it = std::next(_data.begin(), idx);
     return std::make_pair(it->first, it->second);
@@ -110,11 +115,14 @@ IState::pair_value State::at(intptr_t idx) const
 
 IStateValue& State::atRef(const IStateValue::CPtr &key) const
 {
+    static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     auto it = _data.find(key);
-    if (it == _data.end()) {
-        throw new std::runtime_error(__func__);
+    if (it == _data.end() || !it->second) {
+        nullValue->clear();
+        return *nullValue;
     }
-    return *it->second;
+    IStateValue& value = *it->second;
+    return value;
 }
 
 IStateValue& State::atRef(const std::string &str) const
@@ -203,11 +211,12 @@ bool State::equals(const IState::CPtr &other) const
     return o && basicmath::floatEqual(_coste, o->_coste) && _data == o->_data;
 }
 
-void State::assign(const IState::map_string_float_type &map_string_float)
+IState* State::assign(const IState::map_string_float_type &map_string_float)
 {
     for (auto pair : map_string_float) {
         put(pair.first, {pair.second});
     }
+    return this;
 }
 
 float State::cost() const
@@ -215,9 +224,10 @@ float State::cost() const
     return _coste;
 }
 
-void State::cost(float c)
+IState* State::cost(float c)
 {
     _coste = c;
+    return this;
 }
 
 IState* State::addCost(float c) {

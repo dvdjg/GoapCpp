@@ -6,18 +6,17 @@ const float backing_a_pie::REF_TEMP = 300;
 
 backing_a_pie::backing_a_pie()
 {
-    _backingHelper = NewPtr<IState>();
-    _backingHelper->assign({{"EggIsOnBowl", 1}, {"ButterIsOnBowl", 1}, {"FlourIsOnBowl", 1}, {"IngredientsAreMixed", 1}, {"PieIsBaked", 1}});
-    _orderHelper = NewPtr<IState>();
-    _orderHelper->assign({{"PieIsComing", 5}});
+    _backingHelper = NewPtr<IState>()->assign(
+        {{"EggIsOnBowl", 1}, {"ButterIsOnBowl", 1}, {"FlourIsOnBowl", 1}, {"IngredientsAreMixed", 1}, {"PieIsBaked", 1}});
+    _orderHelper = NewPtr<IState>()->assign({{"PieIsComing", 5}});
 
     backing_actions();
 }
 
 void backing_a_pie::backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal)
 {
-    _initialState = NewPtr<IState> ({}, initial);
-    _goalState = NewPtr<IState> ({}, goal);
+    _initialState = NewPtr<IState>()->assign(initial);
+    _goalState = NewPtr<IState>()->assign(goal);
 }
 
 void backing_a_pie::run()
@@ -65,21 +64,9 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state)
 
 void backing_a_pie::backing_actions()
 {
-//    auto fn1 = [](IState::CPtr state) -> bool {
-//        const auto&ref = state->atRef("OwenIsOn");
-//        return ref != 1;
-//    };
-//    auto fn2 = [](IState::Ptr  state) -> void {
-//        wait(state->put("OwenIsOn", true));
-//    };
-//    auto action = Goap::newPlanningAction("TurnOnOwen",
-//                                              fn1,
-//                                              fn2);
-//    std::list<IPlanningAction::CPtr> planningActionsA {action};
-
     std::list<IPlanningAction::CPtr> planningActions {
         Goap::newPlanningAction("TurnOnOwen",
-                                [](IState::CPtr state) -> bool { return state->atRef("OwenIsOn") != 1; },
+                                [](IState::CPtr state) -> bool { return state->atRef("OwenIsOn") != true; },
                                 [](IState::Ptr  state) -> void { wait(state->put("OwenIsOn", true));  }),
         Goap::newPlanningAction("TurnOffOwen",
                                 [](IState::CPtr state) -> bool { return state->atRef("OwenIsOn") == true; },
@@ -132,11 +119,11 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan()
             float distance = ret;
             if (state->atRef("PieIsComing") == 0) {
                 // A conditional suggestion
-                distance = NewPtr<IPlanningStateComparer>({STR_GOAP_NUMERICSTATECOMPARER_SINGLETON})->distance(state, _backingHelper) * 0.8 + 0.2;
+                distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _backingHelper) * 0.8 + 0.2;
             }
             if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
-                distance = NewPtr<IPlanningStateComparer>({STR_GOAP_NUMERICSTATECOMPARER_SINGLETON})->distance(state, _orderHelper) * 0.8 + 0.2;
+                distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _orderHelper) * 0.8 + 0.2;
             }
             if (ret > distance)
                 ret = distance;

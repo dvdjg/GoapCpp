@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "exactstatecomparer.h"
 #include "basicmath.h"
 #include "newptr.h"

@@ -47,7 +47,7 @@ void Path::action(IPlanningAction::CPtr action_) {
 }
 
 IPath::Ptr Path::addChild(IPlanningAction::Ptr node, float cost_) {
-    IPath::Ptr p = NewPtr<IPath>({}, node, this, _cost + cost_);
+    IPath::Ptr p = NewPtr<IPath>({}, node, IPath::Ptr(this), _cost + cost_);
     return p;
 }
 

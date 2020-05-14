@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "prioritizedqueue.h"
 
 namespace goap
@@ -8,7 +9,7 @@ bool PrioritizedQueue::empty() {
         return false;
     }
     if (!_lazyArray.empty()) {
-        _min = LLONG_MIN;
+        _min = LLONG_MAX;
         useLazyArray();
         return false;
     }
@@ -50,7 +51,7 @@ IPath::Ptr PrioritizedQueue::pop() {
             _queues.erase(min);
             if (min == _min) {
                 // The min value is invalid, so we need to recompute it
-                _min = LLONG_MIN;
+                _min = LLONG_MAX;
                 for (auto &it : _queues) {
                     if (it.first < _min) {
                         _min = it.first;
@@ -65,12 +66,12 @@ IPath::Ptr PrioritizedQueue::pop() {
 void PrioritizedQueue::clear() {
     _queues.clear();
     _lazyArray.clear();
-    _min = LLONG_MIN;
+    _min = LLONG_MAX;
 }
 
 IPath::Ptr PrioritizedQueue::pop_queue(PrioritizedQueue::lst_path_type &queue) {
     if (queue.empty()) {
-        throw new std::runtime_error("[PrioritizedQueue] queue pop error");
+        throw std::runtime_error("[PrioritizedQueue] queue pop error");
     }
     IPath::Ptr value = queue.front();
     queue.pop_front();

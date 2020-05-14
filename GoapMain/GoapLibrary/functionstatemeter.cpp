@@ -23,9 +23,9 @@ FunctionStateMeter::FunctionStateMeter(IState::CPtr goalState_) : FunctionStateM
 void FunctionStateMeter::goalState(IState::CPtr goalState_) {
     static const std::string discr(STR_GOAP_COMPARERSTATEMETER);
     PlanningStateMeter::goalState(goalState_);
-    _numericStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(std::string{STR_GOAP_NUMERICSTATECOMPARER_SINGLETON}));
+    _numericStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON));
     addStateMeter("numeric", _numericStateMeter);
-    _exactStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(std::string{STR_GOAP_EXACTSTATEMETER_SINGLETON}));
+    _exactStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(EXACTSTATEMETER_SINGLETON));
     _exactStateMeter->setMonotonic(true);
     addStateMeter("exact", _exactStateMeter);
 }

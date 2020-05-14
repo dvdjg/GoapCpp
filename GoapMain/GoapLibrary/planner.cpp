@@ -4,6 +4,7 @@
 #include "newptr.h"
 #include "statesplan.h"
 #include "log_hook.h"
+#include "goaplibrary.h"
 
 namespace goap
 {
@@ -127,7 +128,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                     } else {
                         distance *= nextState->cost();
                     }
-                    plan = NewPtr<IPath>({}, action, path, pathCost + distance);
+                    plan = Goap::newPath(action, path, pathCost + distance);
                     // Add the path to be analyzed after all the paths of this priority level be processed
                     unvisitedPathes_->pushLazy(plan);
                     //nextState.dispose();
@@ -250,7 +251,6 @@ void Planner::cacheStates(const std::list<IState::CPtr> &states, const std::list
 }
 
 std::list<IPlanningAction::CPtr> Planner::findPlan(const IState::CPtr &intialState, const IState::CPtr &goalState) {
-    static const std::string strDiscrNumeric = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
     std::list<IPlanningAction::CPtr> retPlan;
     size_t nStates;
     size_t nState;
@@ -273,7 +273,7 @@ std::list<IPlanningAction::CPtr> Planner::findPlan(const IState::CPtr &intialSta
             for (const IState::CPtr &storedState : statePlan->states()) {
                 //for (itStates = statePlan->states().begin(); itStates != statePlan->states().end(); ++itStates) {
                 //    const IState::CPtr &storedState = *itStates;
-                float distance = NewPtr<IPlanningStateComparer>(strDiscrNumeric)->distance(storedState, intialState);
+                float distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(storedState, intialState);
                 if (nearDistance > distance) {
                     nearDistance = distance;
                     nearStatePlan = statePlan;
@@ -303,7 +303,7 @@ std::list<IPlanningAction::CPtr> Planner::findPlan(const IState::CPtr &intialSta
             // Test if the found plan is valid
             IState::Ptr reachedState = executeActions(retPlan, intialState);
             static const std::string strDiscr = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
-            bool bEnough = NewPtr<IPlanningStateComparer>(strDiscrNumeric)->enough(reachedState, goalState);
+            bool bEnough = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->enough(reachedState, goalState);
             if (!bEnough) {
                 // This plan is not good enough
                 retPlan.clear();

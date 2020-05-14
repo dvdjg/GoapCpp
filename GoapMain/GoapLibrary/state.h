@@ -27,7 +27,7 @@ public:
 
     void clear();
 
-    void remove(const IStateValue::CPtr &key) override;
+    IState* remove(const IStateValue::CPtr &key) override;
     IStateValue& atRef(const IStateValue::CPtr &key) const override;
     IStateValue& atRef(const std::string &str) const override;
     IState* put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
@@ -48,14 +48,14 @@ public:
     IState* addCost(float c) override;
     IState* mulCost(float c) override;
     intptr_t size() const override;
-    void remove(const std::string &str) override;
+    IState* remove(const std::string &str) override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const IState::CPtr &other) const override;
     float cost() const override;
-    void cost(float c) override;
-    void assign(const IState::CPtr &other) override;
-    void assign(const State &other);
-    void assign(const map_string_float_type &map_string_float) override;
+    IState* cost(float c) override;
+    IState* assign(const IState::CPtr &other) override;
+    IState* assign(const State &other);
+    IState* assign(const map_string_float_type &map_string_float) override;
 
     pair_value at(intptr_t idx) const override;
 

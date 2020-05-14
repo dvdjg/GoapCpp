@@ -9,7 +9,7 @@ SUBDIRS += \
 #    RpcTest \
 #    RpcExamples
 
-!win32-g++:SUBDIRS += ArrayFireTest
+# !win32-g++:SUBDIRS += ArrayFireTest
 
 # Very slow compilation
 #    GlooxTest \

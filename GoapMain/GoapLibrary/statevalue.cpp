@@ -96,7 +96,7 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o) {
-        throw new std::runtime_error(__func__);
+        throw std::runtime_error(__func__);
     }
 
     if (size() > 0 && &o->_data[0] != &_data[0]) {
@@ -108,7 +108,7 @@ float StateValue::cosineDistance(const IStateValue::CPtr &other, float *pThisMod
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o) {
-        throw new std::runtime_error(__func__);
+        throw std::runtime_error(__func__);
     }
     size_t min = std::min(_data.size(), o->_data.size());
 
@@ -150,7 +150,7 @@ std::string StateValue::toString() const
 void StateValue::put(intptr_t idx, float value)
 {
     if (idx < 0) {
-        throw new std::runtime_error(__func__);
+        throw std::runtime_error(__func__);
     }
     _data.at(std::size_t(idx)) = value;
 }
@@ -167,7 +167,7 @@ void StateValue::put(float idx, float value)
 {
     auto i = std::llround(idx);
     if (i < 0) {
-        throw new std::runtime_error(__func__);
+        throw std::runtime_error(__func__);
     }
     put(intptr_t(i), value);
 }

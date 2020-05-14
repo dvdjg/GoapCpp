@@ -23,8 +23,8 @@ public:
     typedef intptr_t index_type;
     typedef std::pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
-    virtual void remove(const std::string &str) = 0;
-    virtual void remove(const IStateValue::CPtr &key) = 0;
+    virtual IState* remove(const std::string &str) = 0;
+    virtual IState* remove(const IStateValue::CPtr &key) = 0;
     virtual IState* put(const std::string &str, const std::string &value) = 0;
     virtual IState* put(const std::string &str, const IStateValue::Ptr &value) = 0;
     virtual IState* put(const std::string &str, std::initializer_list<float> list) = 0;
@@ -44,15 +44,15 @@ public:
     virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CPtr &key) const = 0;
     virtual IStateValue & atRef(const std::string &str) const = 0;
-    const IStateValue::Ptr at(const IStateValue::CPtr &key) const { return IStateValue::Ptr(&atRef(key)); }
-    const IStateValue::Ptr at(const std::string &str) const { return IStateValue::Ptr(&atRef(str)); }
+    const IStateValue* at(const IStateValue::CPtr &key) const { return &atRef(key); }
+    const IStateValue* at(const std::string &str) const { return &atRef(str); }
     virtual pair_value at(intptr_t idx) const = 0;
     virtual intptr_t size() const = 0;
-    virtual void assign(const IState::CPtr &other) = 0;
-    virtual void assign(const map_string_float_type &map_string_float) = 0;
+    virtual IState* assign(const IState::CPtr &other) = 0;
+    virtual IState* assign(const map_string_float_type &map_string_float) = 0;
     virtual bool equals(const IState::CPtr &other) const = 0;
     virtual float cost() const = 0;
-    virtual void cost(float c) = 0;
+    virtual IState* cost(float c) = 0;
 };
 
 inline bool operator ==(const IState& a, const IState& b)

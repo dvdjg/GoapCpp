@@ -3,11 +3,16 @@
 #include "comparerstatemeter.h"
 #include "planningaction.h"
 #include "planner.h"
+#include "path.h"
 #include "scopetime.h"
 #include "goaplibrary.h"
 
 namespace goap
 {
+const std::string NUMERICSTATECOMPARER              = STR_GOAP_NUMERICSTATECOMPARER;
+const std::string EXACTSTATEMETER                   = STR_GOAP_EXACTSTATEMETER;
+const std::string NUMERICSTATECOMPARER_SINGLETON    = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
+const std::string EXACTSTATEMETER_SINGLETON         = STR_GOAP_EXACTSTATEMETER_SINGLETON;
 
 Goap::Goap()
 {
@@ -38,6 +43,14 @@ IPlanningStateMeter::Ptr Goap::newComparerStateMeter(IState::CPtr goalState, IPl
     auto ret = RecyclableWrapper<ComparerStateMeter>::createFromPoolRaw();
     ret->goalState(goalState);
     ret->comparer(stateComparer);
+    return ret;
+}
+
+IPath::Ptr Goap::newPath(IPlanningAction::CPtr action_, IPath::Ptr parent_, float cost_) {
+    auto ret = RecyclableWrapper<Path>::createFromPoolRaw();
+    ret->action(action_);
+    ret->parent(parent_);
+    ret->setCost(cost_);
     return ret;
 }
 

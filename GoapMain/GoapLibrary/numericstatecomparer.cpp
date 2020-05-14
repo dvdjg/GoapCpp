@@ -1,14 +1,15 @@
+#include <algorithm>
 #include "numericstatecomparer.h"
 #include "basicmath.h"
 #include "newptr.h"
+#include "goaplibrary.h"
 
 namespace goap
 {
 
 NumericStateComparer::Ptr NumericStateComparer::singleton()
 {
-    static std::string discr(STR_GOAP_NUMERICSTATECOMPARER_SINGLETON);
-    return NewPtr<NumericStateComparer>(discr);
+    return NewPtr<NumericStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
 }
 
 NumericStateComparer::NumericStateComparer() {
