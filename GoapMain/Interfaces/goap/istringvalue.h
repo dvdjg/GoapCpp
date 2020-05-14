@@ -21,9 +21,9 @@ class IStringValue : public virtual  IStringPrintable
 public:
     typedef explicit_ptr<IStringValue> Ptr;
     typedef explicit_ptr<const IStringValue> CPtr;
-    virtual void fromString(const std::string &str) = 0;
-    virtual void assign(const std::string &other) = 0;
-    virtual void assign(const char *other) = 0;
+    virtual IStringValue* fromString(const std::string &str) = 0;
+    virtual IStringValue* assign(const std::string &other) = 0;
+    virtual IStringValue* assign(const char *other) = 0;
     virtual bool equals(const std::string &other) const = 0;
     virtual bool equals(const char *other) const = 0;
 };

@@ -2,6 +2,7 @@
 #define GOAP_IPLANNINGACTION_H
 
 #include <list>
+#include <functional>
 #include "common/irefcounter.h"
 #include "istringvalue.h"
 #include "istate.h"
@@ -12,6 +13,9 @@ namespace goap
 class IPlanningAction : public virtual IRefCounter
 {
 public:
+    typedef std::function<float(IState::CPtr)> validator_function_type;
+    typedef std::function<void(IState::Ptr)> executor_function_type;
+
     typedef explicit_ptr<IPlanningAction> Ptr;
     typedef explicit_ptr<const IPlanningAction> CPtr;
 

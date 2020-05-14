@@ -22,15 +22,26 @@ void static_assert_internal()
 }
 
 template<typename T, typename ... Args>
-T *defaultDelegate(Args ... args)
+typename std::enable_if<has_intrusive_ptr<T>::value, T*>::type
+defaultDelegate(Args ... args)
 {
-    return new T(std::forward<Args>(args)...);
+    T* t = new T(std::forward<Args>(args)...);
+    intrusive_ptr_add_ref(t);
+    return t;
+}
+
+template<typename T, typename ... Args>
+typename std::enable_if<!has_intrusive_ptr<T>::value, T*>::type
+defaultDelegate(Args ... args)
+{
+    T* t = new T(std::forward<Args>(args)...);
+    return t;
 }
 
 template<typename T, typename ... Args>
 T *singletonDelegate(Args ... args)
 {
-    return new T(std::forward<Args>(args)...);
+    return defaultDelegate(std::forward<Args>(args)...);
 }
 
 /**
@@ -89,8 +100,9 @@ struct factoryCreate<Base, Class, FactoryType::Default>
     getInstance(const F &func, CallArgs && ... args)
     {
         auto pInstance = func(std::forward<CallArgs>(args)...);
-        C *p = dynamic_cast<C *>(pInstance);
-        intrusive_ptr_add_ref(p);
+        //C *p =
+        dynamic_cast<C *>(pInstance);
+        //intrusive_ptr_add_ref(p);
         return smart_pointer(pInstance, [](Base * b)
         {
             C *p = dynamic_cast<C *>(b);

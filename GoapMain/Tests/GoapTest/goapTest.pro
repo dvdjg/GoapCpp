@@ -13,6 +13,7 @@ SOURCES += \
     backing_a_pie.cpp \
     main.cpp \
     tst_goap.cpp \
+    tst_goap_istate.cpp \
     tst_goap_istatevalue.cpp
 
 INCLUDEPATH += \

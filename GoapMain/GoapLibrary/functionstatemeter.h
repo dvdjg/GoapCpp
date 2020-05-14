@@ -5,7 +5,6 @@
 #include "goap/istate.h"
 #include "planningstatemeter.h"
 #include "refcounter.h"
-//#include "goap/ifunctionstatemeter.h"
 
 namespace goap
 {

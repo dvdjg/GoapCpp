@@ -26,7 +26,6 @@ using namespace goap;
  */
 class backing_a_pie
 {
-    static float REF_TEMP;
     IPlanner::Ptr _planner;
     IState::CPtr _initialState;
     IState::CPtr _goalState;
@@ -59,6 +58,8 @@ class backing_a_pie
     void backing_actions();
 
 public:
+    static const float REF_TEMP;
+
     backing_a_pie();
 
     void backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal);
@@ -67,6 +68,7 @@ public:
 
     std::list<IPlanningAction::CPtr> MakePlan();
 
+    IState::CPtr initialState() const;
 };
 
 #endif // BACKING_A_PIE_H

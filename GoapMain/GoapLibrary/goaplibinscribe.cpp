@@ -133,6 +133,11 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
 
+    factory.inscribe<FactoryType::Default, IStringValue>([](){
+        auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
+        return ptr;
+    }, discr);
+    ++ret;
     factory.inscribe<FactoryType::Default, IPlanningStateMeter>([](IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {}) {
         auto ret = RecyclableWrapper<ComparerStateMeter>::createFromPoolRaw();
         ret->goalState(goalState);
@@ -209,7 +214,9 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
 
-    factory.inscribe<FactoryType::Default, IPlanningAction>([](IStringValue::CPtr name, PlanningAction::validator_function_type validator_ = {}, PlanningAction::executor_function_type executor_ = {}) {
+    factory.inscribe<FactoryType::Default, IPlanningAction, PlanningAction>(discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningAction>([](IStringValue::CPtr name, IPlanningAction::validator_function_type validator_ = {}, PlanningAction::executor_function_type executor_ = {}) {
         auto ret = RecyclableWrapper<PlanningAction>::createFromPoolRaw();
         ret->setName(name);
         ret->setValidator(validator_);

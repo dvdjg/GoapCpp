@@ -12,7 +12,7 @@
 namespace goap
 {
 
-class IStateValue : public virtual IStringValue, public virtual IClonable, public virtual IHashable
+class IStateValue : public IStringValue, public IClonable, public IHashable, public virtual IRefCounter
 {
 public:
     using IStringValue::assign;
@@ -31,8 +31,8 @@ public:
     virtual void put(float idx, float value) = 0;
     virtual void put(intptr_t idx, float value) = 0;
     virtual void putAll(float value) = 0;
-    virtual void assign(const IStateValue::CPtr &other) = 0;
-    virtual void assign(const std::initializer_list<float> &list) = 0;
+    virtual IStringValue* assign(const IStateValue::CPtr &other) = 0;
+    virtual IStringValue* assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
     virtual float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const = 0;
     virtual bool equals(const IStateValue::CPtr &other) const = 0;
@@ -85,6 +85,10 @@ public:
     inline operator float() const {
         return at(0);
     }
+
+    //inline operator bool() const {
+    //    return at(0) != false;
+    //}
 };
 
 inline bool operator ==(const IStateValue& a, const IStateValue& b) {
@@ -108,7 +112,8 @@ inline bool operator ==(const IStateValue& a, float other) {
 }
 
 inline bool operator ==(const IStateValue& a, bool other) {
-    return a.equals({other ? 1.f : 0.f});
+    bool isFalse = a.equals({0.f});
+    return other ? !isFalse : isFalse;
 }
 
 inline bool operator ==(const IStateValue& a, int other) {

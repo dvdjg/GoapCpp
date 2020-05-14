@@ -65,36 +65,31 @@ float StateValue::at(intptr_t idx) const
     return _data.at(std::size_t(idx));
 }
 
-//float StateValue::at(int idx) const
-//{
-//    if (idx < 0) {
-//        idx = 0;
-//    }
-//    return this->at(size_t(idx));
-//}
-
-void StateValue::fromString(const std::string &str)
+IStringValue* StateValue::fromString(const std::string &str)
 {
-    assign(str);
+    return assign(str);
 }
 
-void StateValue::assign(const char* str)
+IStringValue* StateValue::assign(const char* str)
 {
     _data.resize(0);
     for (const char *it = str; *it; ++it) {
         _data.push_back(*it);
     }
+    return this;
 }
 
-void StateValue::assign(const std::string &str)
+IStringValue* StateValue::assign(const std::string &str)
 {
     _data.resize(0);
     std::copy(str.begin(), str.end(), std::back_inserter(_data));
+    return this;
 }
 
-void StateValue::assign(const std::initializer_list<float> &list)
+IStringValue* StateValue::assign(const std::initializer_list<float> &list)
 {
     _data.assign(list);
+    return this;
 }
 
 void StateValue::interpolateFrom(const IStateValue::CPtr &other)
@@ -199,12 +194,13 @@ IClonable::Ptr StateValue::clone() const
     return std::move(ptr);
 }
 
-void StateValue::assign(const StateValue &other)
+IStringValue* StateValue::assign(const StateValue &other)
 {
     _data = other._data;
+    return this;
 }
 
-void StateValue::assign(const IStateValue::CPtr &other)
+IStringValue* StateValue::assign(const IStateValue::CPtr &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o) {
@@ -215,6 +211,7 @@ void StateValue::assign(const IStateValue::CPtr &other)
             _data.at(std::size_t(i)) = other->at(i);
         }
     }
+    return this;
 }
 
 bool StateValue::equals(const IStateValue::CPtr &other) const

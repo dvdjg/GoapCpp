@@ -31,8 +31,8 @@ class PlanningAction : public virtual IPlanningAction
     IMPLEMENT_REFCOUNTER()
 
 public:
-    typedef std::function<float(IState::CPtr)> validator_function_type;
-    typedef std::function<void(IState::CPtr)> executor_function_type;
+    // typedef std::function<float(IState::CPtr)> validator_function_type;
+    // typedef std::function<void(IState::CPtr)> executor_function_type;
 
 protected:
     IStringValue::CPtr _name;

@@ -20,7 +20,10 @@ public:
     typedef std::function <void(T *)> delete_function_type;
 
     template<typename F, typename D>
-    ReuseObjectPool(F &&func, D &&delete_func, size_type maxSize = 512) : _maxSize(maxSize), _func(std::forward<F>(func)), _delete_func(std::forward<D>(delete_func)) {}
+    ReuseObjectPool(F &&func, D &&delete_func, size_type maxSize = 512) :
+        _maxSize(maxSize),
+        _fnNewInstance(std::forward<F>(func)),
+        _delete_func(std::forward<D>(delete_func)) {}
     virtual ~ReuseObjectPool()
     {
         clear();
@@ -57,7 +60,7 @@ public:
         _maxSize = maxSize;
     }
 
-    T *create()
+    T *createRaw()
     {
         {
             std::lock_guard<std::mutex> lock(_mutex);
@@ -69,7 +72,22 @@ public:
                 return ret;
             }
         }
-        return _func();
+        return _fnNewInstance();
+    }
+
+    template<typename S = T>
+    typename std::enable_if<has_intrusive_ptr<S>::value, S*>::type
+    create() {
+        S* pInstance = createRaw();
+        intrusive_ptr_add_ref(pInstance);
+        return pInstance;
+    }
+
+    template<typename S = T>
+    typename std::enable_if<!has_intrusive_ptr<S>::value, S*>::type
+    create() {
+        S* pInstance = createRaw();
+        return pInstance;
     }
 
     void recycle(T *t)
@@ -114,7 +132,7 @@ private:
     pool_type _pool;
     size_type _maxSize;
     size_type _avoidedAllocations {0};
-    function_type _func;
+    function_type _fnNewInstance;
     delete_function_type _delete_func;
 };
 

@@ -122,67 +122,67 @@ IStateValue& State::atRef(const std::string &str) const
     return atRef(NewPtr<IStateValue>({}, str));
 }
 
-IState::Ptr State::put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+IState* State::put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
     _data[key] = value;
     return this;
 }
 
-IState::Ptr State::put(const std::string &str, const IStateValue::Ptr &value) {
+IState* State::put(const std::string &str, const IStateValue::Ptr &value) {
     return put(NewPtr<IStateValue>({}, str), value);
 }
 
-IState::Ptr State::put(const std::string &str, const std::string &value) {
+IState* State::put(const std::string &str, const std::string &value) {
     return put(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
 }
 
-IState::Ptr State::put(const std::string &str, std::initializer_list<float> list) {
+IState* State::put(const std::string &str, std::initializer_list<float> list) {
     return put(str, NewPtr<IStateValue>({}, list));
 }
 
-IState::Ptr State::put(const string &str, float number) {
+IState* State::put(const string &str, float number) {
     return put(str, {number});
 }
 
 
-IState::Ptr State::add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+IState* State::add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
     *_data[key] += *value;
     return this;
 }
 
-IState::Ptr State::add(const std::string &str, const IStateValue::Ptr &value) {
+IState* State::add(const std::string &str, const IStateValue::Ptr &value) {
     return add(NewPtr<IStateValue>({}, str), value);
 }
 
-IState::Ptr State::add(const std::string &str, const std::string &value) {
+IState* State::add(const std::string &str, const std::string &value) {
     return add(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
 }
 
-IState::Ptr State::add(const std::string &str, std::initializer_list<float> list) {
+IState* State::add(const std::string &str, std::initializer_list<float> list) {
     return add(str, NewPtr<IStateValue>({}, list));
 }
 
-IState::Ptr State::add(const string &str, float number) {
+IState* State::add(const string &str, float number) {
     return add(str, {number});
 }
 
-IState::Ptr State::mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+IState* State::mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
     *_data[key] += *value;
     return this;
 }
 
-IState::Ptr State::mul(const std::string &str, const IStateValue::Ptr &value) {
+IState* State::mul(const std::string &str, const IStateValue::Ptr &value) {
     return mul(NewPtr<IStateValue>({}, str), value);
 }
 
-IState::Ptr State::mul(const std::string &str, const std::string &value) {
+IState* State::mul(const std::string &str, const std::string &value) {
     return mul(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
 }
 
-IState::Ptr State::mul(const std::string &str, std::initializer_list<float> list) {
+IState* State::mul(const std::string &str, std::initializer_list<float> list) {
     return mul(str, NewPtr<IStateValue>({}, list));
 }
 
-IState::Ptr State::mul(const string &str, float number) {
+IState* State::mul(const string &str, float number) {
     return mul(str, {number});
 }
 
@@ -220,12 +220,12 @@ void State::cost(float c)
     _coste = c;
 }
 
-IState::Ptr State::addCost(float c) {
+IState* State::addCost(float c) {
     _coste += c;
     return this;
 }
 
-IState::Ptr State::mulCost(float c) {
+IState* State::mulCost(float c) {
     _coste *= c;
     return this;
 }

@@ -25,21 +25,23 @@ public:
 
     virtual void remove(const std::string &str) = 0;
     virtual void remove(const IStateValue::CPtr &key) = 0;
-    virtual IState::Ptr put(const std::string &str, const std::string &value) = 0;
-    virtual IState::Ptr put(const std::string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState::Ptr put(const std::string &str, std::initializer_list<float> list) = 0;
-    virtual IState::Ptr put(const std::string &str, float number) = 0;
-    virtual IState::Ptr put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
-    virtual IState::Ptr add(const std::string &str, const std::string &value) = 0;
-    virtual IState::Ptr add(const std::string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState::Ptr add(const std::string &str, std::initializer_list<float> list) = 0;
-    virtual IState::Ptr add(const std::string &str, float number) = 0;
-    virtual IState::Ptr add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
-    virtual IState::Ptr mul(const std::string &str, const std::string &value) = 0;
-    virtual IState::Ptr mul(const std::string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState::Ptr mul(const std::string &str, std::initializer_list<float> list) = 0;
-    virtual IState::Ptr mul(const std::string &str, float number) = 0;
-    virtual IState::Ptr mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* put(const std::string &str, const std::string &value) = 0;
+    virtual IState* put(const std::string &str, const IStateValue::Ptr &value) = 0;
+    virtual IState* put(const std::string &str, std::initializer_list<float> list) = 0;
+    virtual IState* put(const std::string &str, float number) = 0;
+    virtual IState* put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* add(const std::string &str, const std::string &value) = 0;
+    virtual IState* add(const std::string &str, const IStateValue::Ptr &value) = 0;
+    virtual IState* add(const std::string &str, std::initializer_list<float> list) = 0;
+    virtual IState* add(const std::string &str, float number) = 0;
+    virtual IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* mul(const std::string &str, const std::string &value) = 0;
+    virtual IState* mul(const std::string &str, const IStateValue::Ptr &value) = 0;
+    virtual IState* mul(const std::string &str, std::initializer_list<float> list) = 0;
+    virtual IState* mul(const std::string &str, float number) = 0;
+    virtual IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* addCost(float c) = 0;
+    virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CPtr &key) const = 0;
     virtual IStateValue & atRef(const std::string &str) const = 0;
     const IStateValue::Ptr at(const IStateValue::CPtr &key) const { return IStateValue::Ptr(&atRef(key)); }
@@ -51,8 +53,6 @@ public:
     virtual bool equals(const IState::CPtr &other) const = 0;
     virtual float cost() const = 0;
     virtual void cost(float c) = 0;
-    virtual IState::Ptr addCost(float c) = 0;
-    virtual IState::Ptr mulCost(float c) = 0;
 };
 
 inline bool operator ==(const IState& a, const IState& b)

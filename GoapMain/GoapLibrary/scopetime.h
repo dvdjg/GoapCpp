@@ -14,17 +14,20 @@ class ScopeTime : public IScopeTime
     bool _bMessageOnDelete;
     typedef std::chrono::steady_clock::time_point time_point;
     time_point _start;
+
 public:
+    typedef explicit_ptr<ScopeTime> Ptr;
+    typedef explicit_ptr<const ScopeTime> CPtr;
+
     typedef std::ratio<3600, 1> hour;
 
-    ScopeTime(const char *szMessage= "", pfn_time pfnTime = nullptr, bool bMessageOnDelete = true) : _bMessageOnDelete(bMessageOnDelete), _pfnTime(pfnTime)
-    {
+    ScopeTime(const char *szMessage= "", pfn_time pfnTime = nullptr, bool bMessageOnDelete = true) : _bMessageOnDelete(bMessageOnDelete), _pfnTime(pfnTime) {
         setMessage(szMessage);
         _start = std::chrono::steady_clock::now();
     }
 
-    void setMessage(const char *szMessage)
-    {
+    void setMessage(const char *szMessage) {
+        *_szMessage = 0;
         if(szMessage != nullptr) {
             *_szMessage = 0;
             strncpy(_szMessage, szMessage, sizeof(_szMessage));
@@ -32,8 +35,7 @@ public:
         }
     }
 
-    void showSpanTime() override
-    {
+    void showSpanTime() override {
         if(_pfnTime == nullptr) {
             return;
         }
@@ -61,20 +63,21 @@ public:
 
         _pfnTime(_szMessage, dblTime, szUnits);
     }
-    ~ScopeTime() override
-    {
+
+    ~ScopeTime() override {
         if(_bMessageOnDelete) {
             showSpanTime();
         }
     }
-    void setMessageOnDelete(bool bMessageOnDelete)
-    {
+
+    void setMessageOnDelete(bool bMessageOnDelete) {
         _bMessageOnDelete = bMessageOnDelete;
     }
-    void setPfnTime(const pfn_time &pfnTime)
-    {
+
+    void setPfnTime(const pfn_time &pfnTime) {
         _pfnTime = pfnTime;
     }
+
 protected:
     pfn_time _pfnTime;
 };

@@ -1,6 +1,7 @@
 #include "functionstatemeter.h"
 #include "comparerstatemeter.h"
 #include "exactstatecomparer.h"
+#include "goaplibrary.h"
 #include "newptr.h"
 
 namespace goap
@@ -22,9 +23,9 @@ FunctionStateMeter::FunctionStateMeter(IState::CPtr goalState_) : FunctionStateM
 void FunctionStateMeter::goalState(IState::CPtr goalState_) {
     static const std::string discr(STR_GOAP_COMPARERSTATEMETER);
     PlanningStateMeter::goalState(goalState_);
-    _numericStateMeter = NewPtr<ComparerStateMeter>(discr, goalState_, NumericStateComparer::singleton());
+    _numericStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(std::string{STR_GOAP_NUMERICSTATECOMPARER_SINGLETON}));
     addStateMeter("numeric", _numericStateMeter);
-    _exactStateMeter = NewPtr<ComparerStateMeter>(discr, goalState_, ExactStateComparer::singleton());
+    _exactStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(std::string{STR_GOAP_EXACTSTATEMETER_SINGLETON}));
     _exactStateMeter->setMonotonic(true);
     addStateMeter("exact", _exactStateMeter);
 }
