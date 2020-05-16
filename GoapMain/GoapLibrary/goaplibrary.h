@@ -7,7 +7,7 @@
 #include "goap/iplanner.h"
 #include "goap/iplanningstatecomparer.h"
 #include "goap/ipath.h"
-#include "functionstatemeter.h"
+#include "goap/ifunctionstatemeter.h"
 
 namespace goap
 {
@@ -34,7 +34,7 @@ public:
             IPlanner::type planningMethod_,
             const std::list<IPlanningAction::CPtr> &planningActions_);
 
-    static FunctionStateMeter::Ptr newFunctionStateMeter(IState::CPtr goalState);
+    static IFunctionStateMeter::Ptr newFunctionStateMeter(IState::CPtr goalState);
 
     static IPlanningStateMeter::Ptr newComparerStateMeter(IState::CPtr goalState, IPlanningStateComparer::Ptr stateComparer = {});
     static IPath::Ptr newPath(IPlanningAction::CPtr action_, IPath::Ptr parent_ = {}, float cost_ = 0);

@@ -30,10 +30,6 @@ class PlanningAction : public virtual IPlanningAction
 {
     IMPLEMENT_REFCOUNTER()
 
-public:
-    // typedef std::function<float(IState::CPtr)> validator_function_type;
-    // typedef std::function<void(IState::CPtr)> executor_function_type;
-
 protected:
     IStringValue::CPtr _name;
     validator_function_type _validator; // State -> bool. Preconditions. The input State is not modified.
@@ -90,7 +86,7 @@ public:
     /**
      * Returns true if the action can be executed given this input state.
      */
-    bool canExecute(IState::CPtr state) const
+    bool canExecute(IState::CPtr state) const override
     {
         return _validator(state);
     }
@@ -98,12 +94,24 @@ public:
     /**
      * Returns a modified cloned state. The input state is not modified.
      */
-    IState::Ptr execute(IState::CPtr state) const
+    IState::Ptr execute(IState::CPtr state) const override
     {
         // The executor evolves input state to a new state, so we need to pass a copy to preserve the original
         IState::Ptr newState = dynamic_pointer_cast<IState>(state->clone());
         _executor(newState); // The input State is modified.
+        LOG(DEBUG) << "Execute\n from " << *state << "\n to " << *newState;
         return newState;
+    }
+
+    // IStringPrintable interface
+public:
+    string toDebugString() const override
+    {
+        return _name->toDebugString();
+    }
+    string toString() const override
+    {
+        return _name->toString();
     }
 };
 

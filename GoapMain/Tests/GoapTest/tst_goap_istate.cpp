@@ -7,8 +7,6 @@
 #include "goap/iscopetimer.h"
 
 #include "newptr.h"
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#pragma clang diagnostic ignored "-Wno-global-constructors"
 
 using namespace goap;
 using namespace std;

@@ -1,6 +1,7 @@
 #include "goaplibrary.h"
 #include "reuseobjectpool.h"
 #include "comparerstatemeter.h"
+#include "functionstatemeter.h"
 #include "planningaction.h"
 #include "planner.h"
 #include "path.h"
@@ -18,7 +19,10 @@ Goap::Goap()
 {
 }
 
-IPlanningAction::Ptr Goap::newPlanningAction(const char *name, IPlanningAction::validator_function_type validator_, IPlanningAction::executor_function_type executor_) {
+IPlanningAction::Ptr Goap::newPlanningAction(
+        const char *name,
+        IPlanningAction::validator_function_type validator_,
+        IPlanningAction::executor_function_type executor_) {
     auto ret = RecyclableWrapper<PlanningAction>::createFromPoolRaw();
     ret->setName(NewPtr<IStringValue>()->assign(name));
     ret->setValidator(validator_);
@@ -33,7 +37,7 @@ IPlanner::Ptr Goap::newPlanner(IPlanner::type planningMethod_, const std::list<I
     return ret;
 }
 
-FunctionStateMeter::Ptr Goap::newFunctionStateMeter(IState::CPtr goalState) {
+IFunctionStateMeter::Ptr Goap::newFunctionStateMeter(IState::CPtr goalState) {
     auto ret = RecyclableWrapper<FunctionStateMeter>::createFromPoolRaw();
     ret->goalState(goalState);
     return ret;

@@ -151,7 +151,7 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ret;
     }, discr+STR_GOAP_FUNCTIONSTATEMETER);
     ++ret;
-    factory.inscribe<FactoryType::Default, FunctionStateMeter>([](IState::CPtr goalState) {
+    factory.inscribe<FactoryType::Default, IFunctionStateMeter>([](IState::CPtr goalState) {
         auto ret = RecyclableWrapper<FunctionStateMeter>::createFromPoolRaw();
         ret->goalState(goalState);
         return ret;

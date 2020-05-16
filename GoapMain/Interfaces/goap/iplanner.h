@@ -2,9 +2,9 @@
 #define GOAP_IPLANNER_H
 
 #include <list>
-#include "common/irefcounter.h"
-#include "iplanningaction.h"
+#include "goap/istringvalue.h"
 #include "goap/iplanningstatemeter.h"
+#include "iplanningaction.h"
 
 namespace goap
 {
@@ -43,6 +43,10 @@ public:
             std::list<IPlanningAction::CPtr> &actionsArray,
             std::list<IState::CPtr> *pStates = nullptr) = 0;
 };
+
+//inline static ostream& operator<<(ostream& os, const IPlanner::CPtr& dt) {
+//    return os << dt->toString();
+//}
 
 }
 

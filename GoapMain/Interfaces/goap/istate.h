@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <map>
+#include <ostream>
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
 #include "ihashable.h"
@@ -54,6 +55,10 @@ public:
     virtual float cost() const = 0;
     virtual IState* cost(float c) = 0;
 };
+
+//inline static ostream& operator<<(ostream& os, const IState::CPtr& dt) {
+//    return os << dt->toString();
+//}
 
 inline bool operator ==(const IState& a, const IState& b)
 {

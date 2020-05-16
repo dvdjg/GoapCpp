@@ -42,12 +42,14 @@ float NumericStateComparer::distance(IState::CPtr state1, IState::CPtr state2) c
     float countDifferent = 0;
     int s2Count = 0;
     int sameKeyCount = 0; // Counts the number of keys that state1 has like state2
+    LOG(DEBUG) << "Distance\n from " << *state1 << "\n to " << *state2;
     for (IState::index_type i = 0; i < state1->size(); ++i) {
         auto pair1 = state1->at(i);
         auto key = pair1.first;
         auto value1 = pair1.second;
         auto value2 = state2->at(key);
-        if (value2) {
+        LOG(DEBUG) << "Compare key=" << *key << ": Value1=" << *value1 << "; Value2=" << *value2;
+        if (value2 && value2->size() > 0) {
             if (value1->size() == 1 && value2->size() == 1) {
                 sameKeyCount++;
                 // Si son números únicos, hacer una comparación sencilla
@@ -66,7 +68,9 @@ float NumericStateComparer::distance(IState::CPtr state1, IState::CPtr state2) c
         ++s2Count;
     }
     countDifferent = s2Count - sameKeyCount;
-    return (percent + countDifferent) / s2Count;
+    float dist = (percent + countDifferent) / s2Count;
+    LOG(DEBUG) << "Distance=" << dist;
+    return dist;
 }
 
 }

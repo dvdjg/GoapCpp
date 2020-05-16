@@ -4,7 +4,7 @@
 namespace goap
 {
 
-Path::Path() : _cost(0) {}
+Path::Path() : _cost(1) {}
 
 Path::Path(IPlanningAction::CPtr action_, IPath::Ptr parent_, float cost_) :
     _action(action_), _parent(parent_), _cost(cost_) {
@@ -13,7 +13,7 @@ Path::Path(IPlanningAction::CPtr action_, IPath::Ptr parent_, float cost_) :
 void Path::clear() {
     _action.reset();
     _parent.reset();
-    _cost = 0;
+    _cost = 1;
     _initialState.reset();
     _finalState.reset();
 }

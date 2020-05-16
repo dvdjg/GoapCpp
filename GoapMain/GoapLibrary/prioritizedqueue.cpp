@@ -83,9 +83,9 @@ int64_t PrioritizedQueue::currentPriority() {
 }
 
 void PrioritizedQueue::useLazyArray() {
-    for (auto it = _lazyArray.front(); !_lazyArray.empty(); _lazyArray.pop_front()) {
+    for (auto path = _lazyArray.front(); !_lazyArray.empty(); _lazyArray.pop_front()) {
         // reinsert all retained data to the processing buffers
-        push(it);
+        push(path);
     }
 }
 

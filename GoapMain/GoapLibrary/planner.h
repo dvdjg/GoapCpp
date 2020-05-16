@@ -98,10 +98,9 @@ public:
      * Finds a plan in the cached data.
      * If the returning vector has a length of 0 elements, no plan has been found in cache.
      */
-    std::list<IPlanningAction::CPtr> findPlan(
-            const IState::CPtr &intialState,
-            const IState::CPtr &goalState/*,
-            std::list<IPlanningAction::CPtr> plan = {}*/);
+    std::list<IPlanningAction::CPtr> &findPlan(const IState::CPtr &intialState,
+            const IState::CPtr &goalState,
+            std::list<IPlanningAction::CPtr> &plan);
 
     // IStringPrintable interface
 public:

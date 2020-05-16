@@ -5,7 +5,7 @@
 #include "goap/iplanner.h"
 #include "goap/istate.h"
 #include "goap/iscopetimer.h"
-#include "functionstatemeter.h"
+#include "goap/ifunctionstatemeter.h"
 #include "goap/iplanningstatecomparer.h"
 #include "newptr.h"
 #include "log_hook.h"
@@ -55,7 +55,7 @@ class backing_a_pie
         remaining actions of the plan, resulting in a baked pie once the final action
         PutBowlOnTable has been executed.
      */
-    void backing_actions();
+    static IPlanner::Ptr backing_actions();
 
 public:
     static const float REF_TEMP;

@@ -3,14 +3,16 @@
 
 #include <list>
 #include <functional>
-#include "common/irefcounter.h"
+#include <ostream>
+#include "goap/istringvalue.h"
 #include "istringvalue.h"
 #include "istate.h"
 
 namespace goap
 {
+using namespace std;
 
-class IPlanningAction : public virtual IRefCounter
+class IPlanningAction : public virtual IStringPrintable
 {
 public:
     typedef std::function<float(IState::CPtr)> validator_function_type;
@@ -33,6 +35,10 @@ public:
 
     static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
 };
+
+//inline static ostream& operator<<(ostream& os, const IPlanningAction::CPtr& dt) {
+//    return os << dt->toString();
+//}
 
 }
 

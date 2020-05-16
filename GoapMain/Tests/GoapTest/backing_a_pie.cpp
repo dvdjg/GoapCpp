@@ -2,38 +2,39 @@
 #include "newptr.h"
 #include "goaplibrary.h"
 
-const float backing_a_pie::REF_TEMP = 300;
+const float backing_a_pie::REF_TEMP = 300; // Kelvin
 
-backing_a_pie::backing_a_pie()
-{
+using namespace goap;
+using namespace std;
+
+backing_a_pie::backing_a_pie() {
     _backingHelper = NewPtr<IState>()->assign(
-        {{"EggIsOnBowl", 1}, {"ButterIsOnBowl", 1}, {"FlourIsOnBowl", 1}, {"IngredientsAreMixed", 1}, {"PieIsBaked", 1}});
+        {{"EggIsOnBowl", true}, {"ButterIsOnBowl", true}, {"FlourIsOnBowl", true}, {"IngredientsAreMixed", true}, {"PieIsBaked", true}});
     _orderHelper = NewPtr<IState>()->assign({{"PieIsComing", 5}});
 
-    backing_actions();
+    _planner = backing_actions();
+    //const IStringPrintable* p = (IPlanner::CPtr::element_type*)0;
+    LOG(DEBUG) << "Planner backed actions:\n" << *_planner;
 }
 
-void backing_a_pie::backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal)
-{
+void backing_a_pie::backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal) {
     _initialState = NewPtr<IState>()->assign(initial);
     _goalState = NewPtr<IState>()->assign(goal);
 }
 
-void backing_a_pie::run()
-{
-    backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", 1}});
+void backing_a_pie::run() {
+    backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", true}});
     std::list<IPlanningAction::CPtr> plan = MakePlan();
 
-    LOG(INFO) << "Plan:\n" << IPlanningAction::planToString(plan, _initialState);
+    LOG(INFO) << "Plan actions:\n" << IPlanningAction::planToString(plan, _initialState);
 }
 
-IState::CPtr backing_a_pie::initialState() const
-{
+IState::CPtr backing_a_pie::initialState() const {
     return _initialState;
 }
 
-IState::Ptr backing_a_pie::wait(IState::Ptr state)
-{
+IState::Ptr backing_a_pie::wait(IState::Ptr state) {
+    LOG(DEBUG) << "Before Waiting:\n " << *state;
     float OwenTemperature = state->atRef("OwenTemperature");
     if (state->atRef("OwenIsOn") == true) {
         if (OwenTemperature < REF_TEMP + 200) {
@@ -49,7 +50,7 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state)
         } else if (OwenTemperature <= BowlTemperature - 10) {
             BowlTemperature -= 10;
         }
-    }else if (BowlTemperature > REF_TEMP) {
+    } else if (BowlTemperature > REF_TEMP) {
         BowlTemperature -= 20;
     }
 
@@ -59,11 +60,11 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state)
     if (state->atRef("PieIsComing") > 0) {
         state->add("PieIsComing", 1);
     }
+    LOG(DEBUG) << "After Waiting:\n " << *state;
     return state;
 }
 
-void backing_a_pie::backing_actions()
-{
+IPlanner::Ptr backing_a_pie::backing_actions() {
     std::list<IPlanningAction::CPtr> planningActions {
         Goap::newPlanningAction("TurnOnOwen",
                                 [](IState::CPtr state) -> bool { return state->atRef("OwenIsOn") != true; },
@@ -84,13 +85,13 @@ void backing_a_pie::backing_actions()
                                 [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && state->atRef("FlourIsOnBowl") != true; },
                                 [](IState::Ptr  state) -> void { wait(state->put("FlourIsOnBowl", true)); }),
         Goap::newPlanningAction("MixBowlIngredients",
-                                [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && /*state->atRef("IngredientsAreMixed") != true &&*/ state->atRef("EggIsOnBowl") == true && state->atRef("ButterIsOnBowl") == true && state->atRef("FlourIsOnBowl") == true; },
+                                [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && state->atRef("IngredientsAreMixed") != true && state->atRef("EggIsOnBowl") == true && state->atRef("ButterIsOnBowl") == true && state->atRef("FlourIsOnBowl") == true; },
                                 [](IState::Ptr  state) -> void { wait(state->put("IngredientsAreMixed", true)); }),
         Goap::newPlanningAction("PutBowlInOwen",
                                 [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") != "Owen" && state->atRef("IngredientsAreMixed") == true && state->atRef("OwenTemperature") >= (REF_TEMP+100); },
                                 [](IState::Ptr  state) -> void { wait(state->put("BowlLocation", "Owen")); }),
         Goap::newPlanningAction("BakePie",
-                                [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Owen" && /*state->atRef("PieIsBaked") != true &&*/ state->atRef("BowlTemperature") >= (REF_TEMP+100); },
+                                [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Owen" && state->atRef("PieIsBaked") != true && state->atRef("BowlTemperature") >= (REF_TEMP+100); },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsBaked", true)); }),
         Goap::newPlanningAction("PieReadyForEat",
                                 [](IState::CPtr state) -> bool { return state->atRef("PieIsBaked") == true && state->atRef("BowlLocation") == "Table" && state->atRef("BowlTemperature") < (REF_TEMP+30); },
@@ -105,19 +106,18 @@ void backing_a_pie::backing_actions()
                                 [](IState::CPtr state) -> bool { (void)state; return true; },
                                 [](IState::Ptr  state) -> void { wait(state->mulCost(0.9)); } )
     };
-    _planner = Goap::newPlanner(IPlanner::BreadthFirst, planningActions);
+    IPlanner::Ptr planner = Goap::newPlanner(IPlanner::BreadthFirst, planningActions);
+    return planner;
 }
 
-std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan()
-{
+std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
     if (!_planningStateMeter || !_planningStateMeter->goalState()->equals(_goalState)) {
         auto functionStateMeter = Goap::newFunctionStateMeter(_goalState);
-        functionStateMeter->fnDistance([=](IState::CPtr state, FunctionStateMeter::CPtr stateMeter)
-        {
+        functionStateMeter->fnDistance([=](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
             float ret = 1;
             ret = stateMeter->numericStateMeter()->distance(state); // Distance to goal
             float distance = ret;
-            if (state->atRef("PieIsComing") == 0) {
+            if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
                 distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _backingHelper) * 0.8 + 0.2;
             }
@@ -137,7 +137,7 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan()
         LOG(DEBUG) << szMessage << ": " << " actions, " << time << " " << szUnits;
     };
     auto scopeTimer = Goap::newScopeTime("MakePlan: ", fn);
-    actionsArray = _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);
+    _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);
     LOG(DEBUG) << actionsArray.size() << ": " << " actions.";
 
     return actionsArray;

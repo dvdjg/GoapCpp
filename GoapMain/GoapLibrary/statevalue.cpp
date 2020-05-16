@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <algorithm>
+#include <sstream>
 #include "statevalue.h"
 #include "basicmath.h"
 #include "cosinedistance.h"
@@ -124,27 +125,31 @@ float StateValue::cosineDistance(const IStateValue::CPtr &other, float *pThisMod
 
 std::string StateValue::toDebugString() const
 {
-    std::string ret{"["};
-
+    std::stringstream ss;
+    ss << "[";
+    const char *sz = "";
     for(auto &it : _data) {
-        ret += std::to_string(it);
-        ret += ", ";
+        ss << sz;
+        ss << std::to_string(it);
+        sz = ", ";
     }
-    if (ret.size() >= 2) {
-        ret.pop_back();
-        ret.pop_back();
-    }
-    ret += ']';
-    return ret;
+    ss << ']' << ends;
+    std::string str = ss.str();
+    return str;
 }
 
 std::string StateValue::toString() const
 {
-    std::string ret;
+    std::stringstream ss;
     for(auto &it : _data) {
-        ret += static_cast<char>(it);
+        float whole, fractional;
+        fractional = std::modf(it, &whole);
+        if ( it < 32 || it >= 255 || fractional > 0) {
+            return toDebugString();
+        }
+        ss << static_cast<char>(it);
     }
-    return ret;
+    return ss.str();
 }
 
 void StateValue::put(intptr_t idx, float value)

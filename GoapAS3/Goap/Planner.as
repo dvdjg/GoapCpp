@@ -293,7 +293,7 @@ package Goap
 			var nStates:int;
 			var nState:int;
 			var i:int;
-			var offset:int = -1;
+			//var offset:int = -1;
 			var nearStatePlan:StatesPlan = null;
 			var nearDistance:Number = 1.0;
 			var nearOffset:int = -1;

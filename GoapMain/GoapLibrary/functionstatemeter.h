@@ -3,25 +3,26 @@
 
 #include <unordered_map>
 #include "goap/istate.h"
+#include "goap/ifunctionstatemeter.h"
 #include "planningstatemeter.h"
 #include "refcounter.h"
 
 namespace goap
 {
 
-class FunctionStateMeter : public virtual PlanningStateMeter // , public virtual IFunctionStateMeter
+class FunctionStateMeter : public virtual IFunctionStateMeter // public virtual PlanningStateMeter
 {
-    IMPLEMENT_REFCOUNTER_PARENT(PlanningStateMeter)
+    IMPLEMENT_REFCOUNTER()
 
 public:
     typedef explicit_ptr<FunctionStateMeter>        Ptr;
     typedef explicit_ptr<const FunctionStateMeter>  CPtr;
 
     typedef std::unordered_map<IStateValue::CPtr, IPlanningStateMeter::CPtr>    meter_map_data_type;
-    typedef std::function<float(IState::CPtr, FunctionStateMeter::CPtr)>        distance_function_type;
-    typedef std::function<bool(IState::CPtr, FunctionStateMeter::CPtr)>         enough_function_type;
 
 protected:
+    IState::CPtr _goalState;
+    bool _isMonotonic = false;
     distance_function_type      _fnDistance;    // Signature: function(state:State, stateMeter:FunctionStateMeter):Number
     enough_function_type        _fnEnough;      // Signature: function(state:State, stateMeter:FunctionStateMeter):Boolean
     meter_map_data_type         _stateMeters;
@@ -35,31 +36,37 @@ public:
 
     void goalState(IState::CPtr goalState_) override;
 
-    void clear() override;
+    IState::CPtr goalState() const override;
+
+    bool monotonic() const override;
+
+    void setMonotonic(bool monotonic) override;
+
+    void clear();
 
     float distance(IState::CPtr state) const override;
 
     bool enough(IState::CPtr state) const override;
 
-    void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter);
+    void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter) override;
 
-    void addStateMeter(IStateValue::CPtr name, IPlanningStateMeter::Ptr stateMeter);
+    void addStateMeter(IStateValue::CPtr name, IPlanningStateMeter::Ptr stateMeter) override;
 
-    IPlanningStateMeter::CPtr getStateMeter(IStateValue::CPtr name);
+    IPlanningStateMeter::CPtr getStateMeter(IStateValue::CPtr name) override;
 
-    IPlanningStateMeter::CPtr getStateMeter(const std::string& name);
+    IPlanningStateMeter::CPtr getStateMeter(const std::string& name) override;
 
-    distance_function_type fnDistance() const;
+    distance_function_type fnDistance() const override;
 
-    void fnDistance(distance_function_type value);
+    void fnDistance(distance_function_type value) override;
 
-    enough_function_type fnEnough() const;
+    enough_function_type fnEnough() const override;
 
-    void fnEnough(enough_function_type value);
+    void fnEnough(enough_function_type value) override;
 
-    IPlanningStateMeter::Ptr numericStateMeter() const;
+    IPlanningStateMeter::Ptr numericStateMeter() const override;
 
-    IPlanningStateMeter::Ptr exactStateMeter() const;
+    IPlanningStateMeter::Ptr exactStateMeter() const override;
 };
 
 }

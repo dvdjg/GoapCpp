@@ -17,7 +17,7 @@ public:
 
 protected:
     data_type _data;
-    float _coste = 0;
+    float _coste = 1;
 
 public:
     State();

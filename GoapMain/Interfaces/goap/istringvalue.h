@@ -2,11 +2,14 @@
 #define GOAP_ISTRINGVALUE_H
 
 #include <string>
+#include <ostream>
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
 
 namespace goap
 {
+using namespace std;
+
 class IStringPrintable : public virtual IRefCounter
 {
 public:
@@ -27,6 +30,17 @@ public:
     virtual bool equals(const std::string &other) const = 0;
     virtual bool equals(const char *other) const = 0;
 };
+
+template<class E, class Y, class T>
+inline static typename enable_if <is_convertible<T*, const IStringPrintable*>::value, std::basic_ostream<E, Y>>::type&
+operator<<(std::basic_ostream<E, Y>& os, const T& dt) {
+    return os << dt.toString();
+}
+
+template<class E, class Y>
+inline static std::basic_ostream<E, Y>& operator<<(std::basic_ostream<E, Y>& os, const IStringPrintable& dt) {
+    return os << dt.toString();
+}
 
 }
 

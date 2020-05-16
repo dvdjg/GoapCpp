@@ -1,4 +1,5 @@
 #include <iterator>
+#include <sstream>
 #include "basicmath.h"
 #include "state.h"
 #include "statevalue.h"
@@ -10,31 +11,25 @@ namespace goap
 
 using namespace std;
 
-State::State()
-{
+State::State() {
 }
 
-State::State(const State &other) : _data(other._data), _coste(other._coste)
-{
+State::State(const State &other) : _data(other._data), _coste(other._coste) {
 }
 
-State::State(const IState::CPtr &other)
-{
+State::State(const IState::CPtr &other) {
     assign(other);
 }
 
-State::State(std::initializer_list<data_type::value_type> list) : _data(list)
-{
-
+State::State(std::initializer_list<data_type::value_type> list) : _data(list) {
 }
 
 void State::clear() {
     _data.clear();
-    _coste = 0;
+    _coste = 1;
 }
 
-IState* State::assign(const State &o)
-{
+IState* State::assign(const State &o) {
     _data = o._data;
     _coste = o._coste;
 /*
@@ -46,8 +41,7 @@ IState* State::assign(const State &o)
     return this;
 }
 
-IState* State::assign(const IState::CPtr &other)
-{
+IState* State::assign(const IState::CPtr &other) {
     auto o = dynamic_pointer_cast<const State>(other);
     if (o) {
         assign(*o);
@@ -91,19 +85,16 @@ bool State::or(const std::string &key, bool other)
     return this;
 }
 */
-IState* State::remove(const IStateValue::CPtr &key)
-{
+IState* State::remove(const IStateValue::CPtr &key) {
     _data.erase(key);
     return this;
 }
 
-IState* State::remove(const std::string &str)
-{
+IState* State::remove(const std::string &str) {
     return remove(NewPtr<IStateValue>({}, str));
 }
 
-IState::pair_value State::at(intptr_t idx) const
-{
+IState::pair_value State::at(intptr_t idx) const {
     static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     if (idx < 0 || idx >= intptr_t(_data.size())) {
         nullValue->clear();
@@ -113,8 +104,7 @@ IState::pair_value State::at(intptr_t idx) const
     return std::make_pair(it->first, it->second);
 }
 
-IStateValue& State::atRef(const IStateValue::CPtr &key) const
-{
+IStateValue& State::atRef(const IStateValue::CPtr &key) const {
     static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     auto it = _data.find(key);
     if (it == _data.end() || !it->second) {
@@ -125,8 +115,7 @@ IStateValue& State::atRef(const IStateValue::CPtr &key) const
     return value;
 }
 
-IStateValue& State::atRef(const std::string &str) const
-{
+IStateValue& State::atRef(const std::string &str) const {
     return atRef(NewPtr<IStateValue>({}, str));
 }
 
@@ -248,40 +237,27 @@ IClonable::Ptr State::clone() const
 
 string State::toDebugString() const
 {
-    string ret{"{"};
-    ret += "coste:";
-    ret += std::to_string(_coste);
-    ret += ", ";
+    stringstream ss;
+    ss << '{';
+    ss << "coste:";
+    ss << std::to_string(_coste);
+    ss << ", ";
 
     for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
-        ret += it->first->toString();
-        ret += ":";
-        ret += it->second->toDebugString();
-        ret += ", ";
+        ss << it->first->toString();
+        ss << " : ";
+        ss << it->second->toString();
+        ss << ", ";
     }
-    ret.pop_back();
-    ret.pop_back();
-    ret += '}';
+    ss.seekp(-2, ss.cur);
+    ss << '}';
+    string ret = ss.str();
     return ret;
 }
 
 string State::toString() const
 {
-    string ret{"{"};
-    ret += "coste:";
-    ret += std::to_string(_coste);
-    ret += ", ";
-
-    for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
-        ret += it->first->toString();
-        ret += " : ";
-        ret += it->second->toString();
-        ret += ", ";
-    }
-    ret.pop_back();
-    ret.pop_back();
-    ret += '}';
-    return ret;
+    return toDebugString();
 }
 
 size_t State::hash() const

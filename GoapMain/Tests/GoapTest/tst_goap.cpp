@@ -25,6 +25,7 @@ protected:
     static void TearDownTestCase() {
     }
     virtual void SetUp() {
+        LOG_CONF::singleton().setLevel(DEBUG);
     }
     virtual void TearDown() {
     }

@@ -8,10 +8,11 @@ namespace goap
 {
 
 FunctionStateMeter::FunctionStateMeter() {
-    _fnDistance = [](IState::CPtr state, FunctionStateMeter::CPtr stateMeter) {
+
+    _fnDistance = [](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
         return stateMeter->numericStateMeter()->distance(state);
     };
-    _fnEnough = [](IState::CPtr state, FunctionStateMeter::CPtr stateMeter) {
+    _fnEnough = [](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
         return stateMeter->numericStateMeter()->enough(state);
     };
 }
@@ -21,8 +22,7 @@ FunctionStateMeter::FunctionStateMeter(IState::CPtr goalState_) : FunctionStateM
 }
 
 void FunctionStateMeter::goalState(IState::CPtr goalState_) {
-    static const std::string discr(STR_GOAP_COMPARERSTATEMETER);
-    PlanningStateMeter::goalState(goalState_);
+    _goalState = goalState_;
     _numericStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON));
     addStateMeter("numeric", _numericStateMeter);
     _exactStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(EXACTSTATEMETER_SINGLETON));
@@ -30,11 +30,24 @@ void FunctionStateMeter::goalState(IState::CPtr goalState_) {
     addStateMeter("exact", _exactStateMeter);
 }
 
+IState::CPtr FunctionStateMeter::goalState() const {
+    return _goalState;
+}
+
+bool FunctionStateMeter::monotonic() const {
+    return _isMonotonic;
+}
+
+void FunctionStateMeter::setMonotonic(bool monotonic) {
+    _isMonotonic = monotonic;
+}
+
 void FunctionStateMeter::clear() {
     _numericStateMeter.reset();
     _exactStateMeter.reset();
     _stateMeters.clear();
-    PlanningStateMeter::clear();
+    _goalState.reset();
+    _isMonotonic = false;
 }
 
 float FunctionStateMeter::distance(IState::CPtr state) const {
