@@ -231,7 +231,14 @@ IState* State::mulCost(float c) {
 
 IClonable::Ptr State::clone() const
 {
-    auto ptr = NewPtr<IState>({}, *this);
+    auto ptr = NewPtr<IState>();
+    ptr->cost(this->cost());
+    for (intptr_t i = 0; i < this->size(); ++i) {
+        auto pair = this->at(i);
+        IStateValue::Ptr key = dynamic_pointer_cast<IStateValue>(pair.first->clone());
+        IStateValue::Ptr value = dynamic_pointer_cast<IStateValue>(pair.second->clone());
+        ptr->put(key, value);
+    }
     return std::move(ptr);
 }
 

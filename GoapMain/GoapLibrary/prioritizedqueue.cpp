@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <sstream>
 #include "prioritizedqueue.h"
 
 namespace goap
@@ -21,7 +22,7 @@ int64_t PrioritizedQueue::size() const {
 }
 
 void PrioritizedQueue::push(IPath::Ptr path) {
-    std::int64_t icost = 10000000.0 * path->cost();
+    std::int64_t icost = 100.0 * path->cost();
     if (_queues.find(icost) == _queues.end()) {
         if (_min > icost) {
             _min = icost;
@@ -42,7 +43,7 @@ IPath::Ptr PrioritizedQueue::pop() {
     // Takes the minimum cost queue
     std::int64_t min = _min;
     auto &queue = _queues[min];
-    IPath::Ptr value = pop_queue(queue);
+    IPath::Ptr value = pop_queue(queue); // As stack or a queue
     if (queue.empty()) {
         // Use the lazy array when current has finished
         useLazyArray();
@@ -52,11 +53,14 @@ IPath::Ptr PrioritizedQueue::pop() {
             if (min == _min) {
                 // The min value is invalid, so we need to recompute it
                 _min = LLONG_MAX;
-                for (auto &it : _queues) {
-                    if (it.first < _min) {
-                        _min = it.first;
-                    }
+                if (!_queues.empty()) {
+                    _min = _queues.cbegin()->first; // The lower key
                 }
+//                for (auto &it : _queues) {
+//                    if (it.first < _min) {
+//                        _min = it.first;
+//                    }
+//                }
             }
         }
     }
@@ -89,4 +93,18 @@ void PrioritizedQueue::useLazyArray() {
     }
 }
 
+string PrioritizedQueue::toDebugString() const
+{
+    stringstream ss;
+    ss << "PrioritizedQueue: { min:" << _min << ", _queues_size:" << _queues.size() << ", lazyArray_size:" << _lazyArray.size() << "}" << endl;
+    return ss.str();
 }
+
+string PrioritizedQueue::toString() const
+{
+    return toDebugString();
+}
+
+}
+
+

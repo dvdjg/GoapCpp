@@ -131,6 +131,7 @@ package Goap
 			var unvisitedPathes:IPrioritized = this.unvisitedPathes;
 			var visitedStates:StatesDictionary = new StatesDictionary;
 			visitedStates.setAt(initialState, initialState);
+			var path:Path;
 			
 			var gather:Function = function (pathCost:Number, minDistance:Number):Number {
 				var plan:Path = null;
@@ -174,7 +175,6 @@ package Goap
 			if (unvisitedPathes.isEmpty) {
 				trace("[MakePlan] There are no paths from the initial state!!!");
 			}
-			var path:Path;
 			var bReachedGoal:Boolean = false;
 			// Search all the path forks neccesary to reach the goalState
 			while (!unvisitedPathes.isEmpty) {

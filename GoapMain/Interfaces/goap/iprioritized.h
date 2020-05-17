@@ -2,6 +2,7 @@
 #define GOAP_IPRIORITIZED_H
 
 #include "common/irefcounter.h"
+#include "goap/istringvalue.h"
 #include "goap/ipath.h"
 
 #define STR_GOAP_PRIORITIZED_QUEUE "queue"
@@ -10,7 +11,7 @@
 namespace goap
 {
 
-class IPrioritized : public virtual IRefCounter
+class IPrioritized : public virtual IStringPrintable
 {
 public:
     typedef explicit_ptr<IPrioritized> Ptr;

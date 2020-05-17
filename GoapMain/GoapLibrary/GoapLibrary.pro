@@ -21,6 +21,7 @@ SOURCES += \
     path.cpp \
     planner.cpp \
     prioritizedqueue.cpp \
+    prioritizedstack.cpp \
     statevalue.cpp \
     basicmath.cpp \
     memory.cpp \

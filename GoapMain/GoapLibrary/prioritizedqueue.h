@@ -52,6 +52,11 @@ protected:
     std::int64_t currentPriority();
 
     void useLazyArray();
+
+    // IStringPrintable interface
+public:
+    string toDebugString() const override;
+    string toString() const override;
 };
 
 }

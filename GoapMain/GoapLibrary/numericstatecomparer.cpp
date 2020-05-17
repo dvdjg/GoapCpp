@@ -18,13 +18,13 @@ NumericStateComparer::NumericStateComparer() {
 /**
  * Returns true when the state has reach the goal, so the input 'state' satisfies the goal state.
  */
-bool NumericStateComparer::enough(IState::CPtr state1, IState::CPtr state2) const
+bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) const
 {
-    for (IState::index_type i = 0; i < state1->size(); ++i) {
-        auto pair1 = state1->at(i);
+    for (IState::index_type i = 0; i < stateDst->size(); ++i) {
+        auto pair1 = stateDst->at(i);
         auto key = pair1.first;
         auto value1 = pair1.second;
-        auto value2 = state2->at(key);
+        auto value2 = stateSrc->at(key);
         if (value1 != value2) {
             return false;
         }
@@ -36,34 +36,34 @@ bool NumericStateComparer::enough(IState::CPtr state1, IState::CPtr state2) cons
  * Returns the measure from the input state to the goal state.
  * It will return lower numbers when it deems that the goal is close so the planner can direct the search.
  */
-float NumericStateComparer::distance(IState::CPtr state1, IState::CPtr state2) const
+float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDst) const
 {
     float percent = 0;
     float countDifferent = 0;
     int s2Count = 0;
-    int sameKeyCount = 0; // Counts the number of keys that state1 has like state2
-    LOG(DEBUG) << "Distance\n from " << *state1 << "\n to " << *state2;
-    for (IState::index_type i = 0; i < state1->size(); ++i) {
-        auto pair1 = state1->at(i);
-        auto key = pair1.first;
-        auto value1 = pair1.second;
-        auto value2 = state2->at(key);
-        LOG(DEBUG) << "Compare key=" << *key << ": Value1=" << *value1 << "; Value2=" << *value2;
-        if (value2 && value2->size() > 0) {
-            if (value1->size() == 1 && value2->size() == 1) {
+    int sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
+    LOG(DEBUG) << "Distance\n from " << *stateSrc << "\n to " << *stateDst;
+    for (IState::index_type i = 0; i < stateDst->size(); ++i) {
+        auto pairDst = stateDst->at(i);
+        auto key = pairDst.first;
+        auto valueDst = pairDst.second;
+        auto valueSrc = stateSrc->at(key);
+        if (valueSrc && valueSrc->size() > 0) {
+            if (valueDst->size() == 1 && valueSrc->size() == 1) {
                 sameKeyCount++;
                 // Si son números únicos, hacer una comparación sencilla
-                float s1k = value1->at(0);
-                float s2k = value2->at(0);
+                float s1k = valueSrc->at(0);
+                float s2k = valueDst->at(0);
                 // 0 < are similar < are different < 1
                 percent += basicmath::floatSimilarity(s1k, s2k);
-            } else if (value1->size() >= 1 && value2->size() >= 1) {
+            } else if (valueDst->size() >= 1 && valueSrc->size() >= 1) {
                 sameKeyCount++;
                 float thisModule, othersModule;
-                float cosDist = value1->cosineDistance(value2, &thisModule, &othersModule);
+                float cosDist = valueSrc->cosineDistance(valueDst, &thisModule, &othersModule);
                 float similiarity = basicmath::floatSimilarity(thisModule, othersModule);
                 percent += std::max(0.f, cosDist * similiarity);
             }
+            LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
         }
         ++s2Count;
     }

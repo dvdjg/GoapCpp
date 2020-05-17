@@ -112,7 +112,7 @@ inline bool operator ==(const IStateValue& a, float other) {
 }
 
 inline bool operator ==(const IStateValue& a, bool other) {
-    bool isFalse = a.equals({0.f});
+    bool isFalse = a.size() == 0 || a.equals({0.f});
     return other ? !isFalse : isFalse;
 }
 

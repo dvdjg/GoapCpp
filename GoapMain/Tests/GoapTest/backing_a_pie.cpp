@@ -23,7 +23,7 @@ void backing_a_pie::backing_plan(IState::map_string_float_type initial, IState::
 }
 
 void backing_a_pie::run() {
-    backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", true}});
+    backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} }, {{"PieIsReadyForEat", true}});
     std::list<IPlanningAction::CPtr> plan = MakePlan();
 
     LOG(INFO) << "Plan actions:\n" << IPlanningAction::planToString(plan, _initialState);
@@ -34,7 +34,7 @@ IState::CPtr backing_a_pie::initialState() const {
 }
 
 IState::Ptr backing_a_pie::wait(IState::Ptr state) {
-    LOG(DEBUG) << "Before Waiting:\n " << *state;
+    //LOG(DEBUG) << "Before Waiting:\n " << *state;
     float OwenTemperature = state->atRef("OwenTemperature");
     if (state->atRef("OwenIsOn") == true) {
         if (OwenTemperature < REF_TEMP + 200) {
@@ -114,20 +114,21 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
     if (!_planningStateMeter || !_planningStateMeter->goalState()->equals(_goalState)) {
         auto functionStateMeter = Goap::newFunctionStateMeter(_goalState);
         functionStateMeter->fnDistance([=](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
-            float ret = 1;
-            ret = stateMeter->numericStateMeter()->distance(state); // Distance to goal
-            float distance = ret;
+            float distanceToGoal = 1;
+            distanceToGoal = stateMeter->numericStateMeter()->distance(state); // Distance to goal
+            float distance = distanceToGoal;
             if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
                 distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _backingHelper) * 0.8 + 0.2;
             }
-            if (state->atRef("OwenTemperature") == REF_TEMP ) {
+            //if (state->atRef("OwenTemperature") == REF_TEMP ) {
+            else {
                 // A conditional suggestion
                 distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _orderHelper) * 0.8 + 0.2;
             }
-            if (ret > distance)
-                ret = distance;
-            return ret;
+            if (distanceToGoal > distance)
+                distanceToGoal = distance;
+            return distanceToGoal;
         });
         _planningStateMeter = functionStateMeter;
     }

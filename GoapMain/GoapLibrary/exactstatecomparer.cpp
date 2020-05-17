@@ -22,12 +22,12 @@ float ExactStateComparer::distance(IState::CPtr state1, IState::CPtr state2) con
     float countDifferent = 0;
     int s2Count = 0;
     int sameKeyCount = 0; // Counts the number of keys that state1 has like state2
-    for (IState::index_type i = 0; i < state1->size(); ++i) {
-        auto pair1 = state1->at(i);
-        auto key = pair1.first;
-        auto value1 = pair1.second;
-        auto value2 = state2->at(key);
-        if (value2 && value1->size() == value2->size()) {
+    for (IState::index_type i = 0; i < state2->size(); ++i) {
+        auto pair2 = state2->at(i);
+        auto key = pair2.first;
+        auto value2 = pair2.second;
+        auto value1 = state1->at(key);
+        if (value1 && value2->size() == value1->size()) {
             sameKeyCount++;
             if (value1 != value2) {
                 percent += 1;

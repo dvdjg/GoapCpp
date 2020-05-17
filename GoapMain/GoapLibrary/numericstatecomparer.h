@@ -32,7 +32,7 @@ public:
      * Both have the same state if state1 has at least the same fields than state2. Anyway, s1 can have more states.
      * Only the common keys are compared.
      */
-    float distance(IState::CPtr state1, IState::CPtr state2) const override;
+    float distance(IState::CPtr stateSrc, IState::CPtr stateDst) const override;
 };
 
 }
