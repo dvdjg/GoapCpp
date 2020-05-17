@@ -42,7 +42,6 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
     float countDifferent = 0;
     int s2Count = 0;
     int sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
-    LOG(DEBUG) << "Distance\n from " << *stateSrc << "\n to " << *stateDst;
     for (IState::index_type i = 0; i < stateDst->size(); ++i) {
         auto pairDst = stateDst->at(i);
         auto key = pairDst.first;
@@ -63,13 +62,14 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
                 float similiarity = basicmath::floatSimilarity(thisModule, othersModule);
                 percent += std::max(0.f, cosDist * similiarity);
             }
-            LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
+            //LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
         }
         ++s2Count;
     }
     countDifferent = s2Count - sameKeyCount;
     float dist = (percent + countDifferent) / s2Count;
-    LOG(DEBUG) << "Distance=" << dist;
+    LOG(DEBUG) << "Distance=" << dist << "\n  from " << *stateSrc << "\n    to " << *stateDst;
+    //LOG(DEBUG) << "Distance=" << dist;
     return dist;
 }
 

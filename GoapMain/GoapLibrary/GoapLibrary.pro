@@ -14,7 +14,7 @@ CONFIG += staticlib
     error(Could not find the common.pri file!)
 }
 
-INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half
+INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half ../3rdparty/termcolor/include
 
 SOURCES += \
     goaplibrary.cpp \

@@ -19,7 +19,6 @@ class Planner : public IPlanner
 public:
     typedef explicit_ptr<Planner> Ptr;
     typedef explicit_ptr<const Planner> CPtr;
-    typedef std::unordered_map<IState::CPtr, IState::CPtr> states_dictionary_type;
 
 protected:
     type _planningMethod = type::BreadthFirst;

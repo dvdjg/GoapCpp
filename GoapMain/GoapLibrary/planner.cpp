@@ -1,5 +1,6 @@
 #include "planner.h"
 #include <sstream>
+#include <unordered_set>
 #include <functional>
 #include "newptr.h"
 #include "statesplan.h"
@@ -65,6 +66,43 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     return reachedByPath;
 }
 
+//float Planner::gather(float pathCost, float minDistance, std::list<IPlanningAction::CPtr> &planningActions, IState::CPtr &stateReachedByPath, IPlanningStateMeter::CPtr &planningStateMeter, IPath::Ptr &path, IPrioritized::Ptr &unvisitedPaths_) {
+//    IPath::Ptr plan;
+//    const bool isMonotonic = planningStateMeter->monotonic();
+//    float min = minDistance;
+//    for (IPlanningAction::CPtr &action : planningActions) {
+//        try {
+//            if (action->canExecute(stateReachedByPath)) {
+//                LOG(DEBUG) << "La accion \"" << *action << "\" puede ejecutar: " << *stateReachedByPath;
+//                IState::Ptr nextState = action->execute(stateReachedByPath);
+//                float distance = planningStateMeter->distance(nextState);
+//                // Adds a new path leave
+//                if (isMonotonic && min > distance) {
+//                    // When monotonic Meters are used, a decreasing in the distance to the goal
+//                    // found in a path increases the preference to explore that path.
+//                    minDistance = distance;
+//                    distance *= nextState->cost();
+//                    // Use a very low cost to give more chances for this path to be analyzed
+//                    distance = 4*distance - pathCost - 10; // Landmark: Put the distance betwen -10 and -6
+//                } else {
+//                    distance *= nextState->cost();
+//                }
+//                plan = Goap::newPath(action, path, pathCost + distance);
+//                // Add the path to be analyzed after all the paths of this priority level be processed
+//                unvisitedPaths_->pushLazy(plan);
+//            }
+//        } catch (exception e) {
+//            LOG(ERROR) << "[Planner] Error: " << e.what();
+//        }
+//    }
+//    if (!plan && path) {
+//        LOG(ERROR) << "[Planner] Discarded path: ";
+//        // The path has no children so it will not be used anymore
+//        path.reset();
+//    }
+//    return minDistance;
+//};
+
 std::list<IPlanningAction::CPtr> &Planner::makePlan(
         IState::CPtr initialState,
         IPlanningStateMeter::CPtr planningStateMeter,
@@ -74,12 +112,12 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     float minDistance = 1;
     int analyzedPaths = 0;
     int rejectedPaths = 0;
-    //float pathCost = 0;
     IPlanningAction::CPtr action;
     IState::CPtr stateReachedByPath;
     IPrioritized::Ptr unvisitedPaths_ = unvisitedPathes();
-    states_dictionary_type visitedStates; // std::unordered_map<IState::CPtr, IState::Ptr>
-    visitedStates[initialState] = initialState;
+
+    std::unordered_set<IState::CPtr> visitedStates; // Should this be a set? std::unordered_map<IState::CPtr, IState::Ptr>
+    visitedStates.insert(initialState);
     IPath::Ptr path; // In the first iteration, pathParent= null is the root
 
     auto gather = [&](float pathCost, float minDistance) -> float {
@@ -88,9 +126,11 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         for (IPlanningAction::CPtr &action : _planningActions) {
             try {
                 if (action->canExecute(stateReachedByPath)) {
-                    LOG(DEBUG) << "La accion \"" << *action << "\" puede ejecutar: " << *stateReachedByPath;
                     IState::Ptr nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
+                    LOG(DEBUG) << "La accion \"" << *action << "\" se puede ejecutar con una distancia=" <<distance
+                               << "\n    desde el estado: " << *stateReachedByPath
+                               << "\n    hasta el estado: " << * nextState;
                     // Adds a new path leave
                     if (isMonotonic && min > distance) {
                         // When monotonic Meters are used, a decreasing in the distance to the goal
@@ -125,19 +165,20 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     if (unvisitedPaths_->empty()) {
         LOG(WARN) << "[MakePlan] There are no paths from the initial state!!!";
     } else {
-        LOG(DEBUG) << "[MakePlan] There are " << unvisitedPaths_->size() << " paths from the initial state:\n " << unvisitedPaths_->toString();
+        LOG(DEBUG) << "[MakePlan] There are " << unvisitedPaths_->size() << " paths\n " << *unvisitedPaths_ << " from the initial state:\n " << *stateReachedByPath;
     }
     bool bReachedGoal = false;
     // Search all the path forks neccesary to reach the goalState
     while (!unvisitedPaths_->empty()) {
         // Takes the path with the lower cost available
         path = unvisitedPaths_->pop();
+        LOG(DEBUG) << "Executing action \"" << *path->action() << "\".";
         stateReachedByPath = path->executeFromRoot(initialState);
         // If this state was visited in other paths, do not compute it again
         auto itVisitedState = visitedStates.find(stateReachedByPath);
         if (itVisitedState != visitedStates.end()) {
             //path.dispose();
-            path.reset();
+            path.reset(); // The state this path advances to, was already visited
             ++rejectedPaths;
             continue;
         }
@@ -154,10 +195,11 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         }
         // Mark the state as visited so we don't reanalyse it while searching other paths
         //itVisitedState->second = stateReachedByPath;
-        visitedStates[stateReachedByPath] = stateReachedByPath;
+        visitedStates.insert(stateReachedByPath);
         // Continue gathering all the actions that can be reached from current state "stateReachedByPath"
-        LOG(DEBUG) << "VisitdStates=" << visitedStates.size() << ". New gather(" << path->cost() << ", " << minDistance << ") from state.-\n " << *stateReachedByPath;
-        minDistance = gather(path->cost(), minDistance);
+        LOG(DEBUG) << "Added for action \"" << *path->action() << "\" a new visited State. Total=" << visitedStates.size()
+                   << ". New gather(" << path->cost() << ", " << minDistance << ") from state.-\n " << *stateReachedByPath;
+        minDistance = gather(path->cost(), minDistance); // Gather paths to unvisitedPaths_
         ++analyzedPaths;
     }
     if (bReachedGoal) {

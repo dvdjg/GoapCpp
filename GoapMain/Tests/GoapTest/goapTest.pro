@@ -22,6 +22,7 @@ INCLUDEPATH += \
     $$top_srcdir/Interfaces \
     $$top_srcdir/GoapLibrary \
     $$top_srcdir/3rdparty/half \
+    $$top_srcdir/3rdparty/termcolor/include \
     $$top_srcdir/3rdparty/sqlite_modern_cpp
 
 DEPENDPATH += $$INCLUDEPATH

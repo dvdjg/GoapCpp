@@ -60,7 +60,7 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state) {
     if (state->atRef("PieIsComing") > 0) {
         state->add("PieIsComing", 1);
     }
-    LOG(DEBUG) << "After Waiting:\n " << *state;
+    //LOG(DEBUG) << "After Waiting:\n " << *state;
     return state;
 }
 
@@ -98,7 +98,7 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)); }),
         Goap::newPlanningAction("OrderPie",
                                 [](IState::CPtr state) -> bool { return state->atRef("Credits") >= 8; },
-                                [](IState::Ptr  state) -> void { wait(state->put("PieIsComing", 1)->add("Credits", -8)->mulCost(13)); }),
+                                [](IState::Ptr  state) -> void { wait(state->put("PieIsComing", 1)->add("Credits", -8)->mulCost(2)); }),
         Goap::newPlanningAction("ReceivePie",
                                 [](IState::CPtr state) -> bool { return state->atRef("PieIsComing") >= 5; },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)->put("PieIsComing", 0)); }),
