@@ -36,9 +36,14 @@ public:
     static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
 };
 
-//inline static ostream& operator<<(ostream& os, const IPlanningAction::CPtr& dt) {
-//    return os << dt->toString();
-//}
+inline static ostream& operator<<(ostream& os, const std::list<IPlanningAction::CPtr>& dt) {
+    const char *sz = "[";
+    for (auto &action : dt) {
+        os << sz << *action;
+        sz = ", ";
+    }
+    return os << "]";
+}
 
 }
 

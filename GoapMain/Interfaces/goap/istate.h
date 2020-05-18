@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <map>
+#include <list>
 #include <ostream>
 #include "common/irefcounter.h"
 #include "explicit_ptr.h"
@@ -56,9 +57,14 @@ public:
     virtual IState* cost(float c) = 0;
 };
 
-//inline static ostream& operator<<(ostream& os, const IState::CPtr& dt) {
-//    return os << dt->toString();
-//}
+inline static ostream& operator<<(ostream& os, const std::list<IState::CPtr>& dt) {
+    const char *sz = "[";
+    for (auto &action : dt) {
+        os << sz << *action;
+        sz = ",\n ";
+    }
+    return os << "]";
+}
 
 inline bool operator ==(const IState& a, const IState& b)
 {

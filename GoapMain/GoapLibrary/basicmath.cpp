@@ -10,21 +10,21 @@ namespace basicmath
 {
 float floatSimilarity(float x, float y)
 {
-    float ret = 1;
     // 0 < are similar < are different < 1
     float diff = std::abs(x - y);
-    if (diff > GOAP_FLT_EPSILON * std::abs(x + y) * 2 && diff > GOAP_FLT_MIN) {
-        float ax = std::abs(x);
-        float ay = std::abs(y);
-        ret = diff / std::max(ax, ay);
-    }
+    float ax = std::abs(x);
+    float ay = std::abs(y);
+    float ret = diff / std::max(ax, ay);
     return ret;
 }
 
 bool floatEqual(float x, float y)
 {
     float diff = std::abs(x - y);
-    return diff <= GOAP_FLT_EPSILON * (std::abs(x) + std::abs(y)) * 2 || diff < GOAP_FLT_MIN;
+    float ax = std::abs(x);
+    float ay = std::abs(y);
+    bool ret = diff <= GOAP_FLT_EPSILON * (ax + ay) * 2 || diff < GOAP_FLT_MIN;
+    return ret;
 }
 
 // linear interpolate x in an array

@@ -68,7 +68,7 @@ public:
      * Get the actions from the root to this leave.
      * If the 'actions' parameter is given then actions will be unshift to the array.
      */
-    void getActions(std::list<IPlanningAction::CPtr>& actions) const override;
+    std::list<IPlanningAction::CPtr> &getActions(std::list<IPlanningAction::CPtr>& actions) const override;
 
     /**
      * Returns a list with the resulting states of the execution of the stored actions from the
@@ -76,7 +76,12 @@ public:
      * This function caches the computed list of states so if it is used the same 'initialState'
      * of a prior call, it will be returned the cached results with no need of executing the actions again.
      */
-    void getStates(IState::CPtr initialState, std::list<IState::CPtr>& states) override;
+    std::list<IState::CPtr> &getStates(IState::CPtr initialState, std::list<IState::CPtr>& states) override;
+
+    // IStringPrintable interface
+public:
+    string toDebugString() const override;
+    string toString() const override;
 };
 
 

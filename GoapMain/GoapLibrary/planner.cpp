@@ -2,6 +2,7 @@
 #include <sstream>
 #include <unordered_set>
 #include <functional>
+#include <termcolor/termcolor.hpp>
 #include "newptr.h"
 #include "statesplan.h"
 #include "log_hook.h"
@@ -9,6 +10,9 @@
 
 namespace goap
 {
+
+
+using namespace termcolor;
 
 Planner::Planner(){
 }
@@ -48,12 +52,12 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     try {
         float accCost = reachedByPath->cost();
         for(auto& action : actions) {
-            LOG(DEBUG) << "With action " << *action << "\n Can execute state " << *reachedByPath;
+            LOG(DEBUG) << "With action " << green << *action << reset << "\n Can execute state " << *reachedByPath;
             if (!action->canExecute(reachedByPath)) {
                 break; // Do not continue
             }
             nextState = action->execute(reachedByPath); // Advance the state
-            LOG(DEBUG) << "With action " << *action << "\n Can reach state " << *nextState;
+            LOG(DEBUG) << "With action " << green << *action << reset << "\n Can reach state " << *nextState;
             //reachedByPath->clear();
             reachedByPath = nextState;
             accCost += reachedByPath->cost();
@@ -128,7 +132,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                 if (action->canExecute(stateReachedByPath)) {
                     IState::Ptr nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
-                    LOG(DEBUG) << "La accion \"" << *action << "\" se puede ejecutar con una distancia=" <<distance
+                    LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
                                << "\n    desde el estado: " << *stateReachedByPath
                                << "\n    hasta el estado: " << * nextState;
                     // Adds a new path leave
@@ -172,17 +176,17 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     while (!unvisitedPaths_->empty()) {
         // Takes the path with the lower cost available
         path = unvisitedPaths_->pop();
-        LOG(DEBUG) << "Executing action \"" << *path->action() << "\".";
+        std::list<IPlanningAction::CPtr> actions;
         stateReachedByPath = path->executeFromRoot(initialState);
+//        LOG(DEBUG) << "Executing " << actions.size() << " actions \"" << green << path->getActions(actions) << reset << "\" from the initial state "
+//                   << "\n    to state " << *stateReachedByPath;
         // If this state was visited in other paths, do not compute it again
         auto itVisitedState = visitedStates.find(stateReachedByPath);
         if (itVisitedState != visitedStates.end()) {
-            //path.dispose();
             path.reset(); // The state this path advances to, was already visited
             ++rejectedPaths;
             continue;
         }
-        //IState::CPtr visitedState = itVisitedState->second;
         // If this path takes us to the goal state, then return it
         bReachedGoal = planningStateMeter->enough(stateReachedByPath);
         if (bReachedGoal) {
@@ -194,11 +198,11 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
             break;
         }
         // Mark the state as visited so we don't reanalyse it while searching other paths
-        //itVisitedState->second = stateReachedByPath;
         visitedStates.insert(stateReachedByPath);
         // Continue gathering all the actions that can be reached from current state "stateReachedByPath"
-        LOG(DEBUG) << "Added for action \"" << *path->action() << "\" a new visited State. Total=" << visitedStates.size()
-                   << ". New gather(" << path->cost() << ", " << minDistance << ") from state.-\n " << *stateReachedByPath;
+        actions.clear(); // ->getActions(actions)
+        LOG(DEBUG) << "Added for action \"" << green << *path << reset << "\" a new visited State. #VisitedStates=" << visitedStates.size()
+                   << ". New gather(" << yellow << "cost=" << path->cost() << ", minDistance=" << minDistance << reset << ")\n to state.- " << *stateReachedByPath;
         minDistance = gather(path->cost(), minDistance); // Gather paths to unvisitedPaths_
         ++analyzedPaths;
     }
@@ -375,7 +379,7 @@ std::string Planner::toDebugString() const {
     ret << "Planner. planningMethod=" << _planningMethod << std::endl;
     int i = 0;
     for (auto &action : _planningActions) {
-        ret << " [" << i << "]. " << *action << std::endl;
+        ret << " [" << i << "]. " << green << *action << reset << std::endl;
         ++i;
     }
     return ret.str();

@@ -19,6 +19,7 @@
 #include "exactstatecomparer.h"
 #include "comparerstatemeter.h"
 #include "functionstatemeter.h"
+#include "statesplan.h"
 
 #include "goaplibinscribe.h"
 
@@ -234,6 +235,11 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     }, discr);
     ++ret;
 
+    factory.inscribe<FactoryType::Default, StatesPlan>([]() {
+        auto ret = RecyclableWrapper<StatesPlan>::createFromPoolRaw();
+        return ret;
+    }, discr);
+    ++ret;
     return ret;
 }
 

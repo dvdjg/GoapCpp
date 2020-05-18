@@ -1,3 +1,4 @@
+#include <sstream>
 #include "path.h"
 #include "newptr.h"
 
@@ -35,7 +36,7 @@ void Path::setCost(float cost_) {
 }
 
 float Path::distance() const {
-    return _parent ? _cost : _cost - _parent->cost();
+    return !_parent ? _cost : _cost - _parent->cost();
 }
 
 IPlanningAction::CPtr Path::action() const {
@@ -72,15 +73,38 @@ size_t Path::getActionCount() {
     return nActions;
 }
 
-void Path::getActions(std::list<IPlanningAction::CPtr> &actions) const {
+std::list<IPlanningAction::CPtr>& Path::getActions(std::list<IPlanningAction::CPtr> &actions) const {
     for (IPath::CPtr path = this; path; path = path->parent()) {
         actions.push_back(path->action());
     }
+    return actions;
 }
 
-void Path::getStates(IState::CPtr initialState, std::list<IState::CPtr> &states) {
+std::list<IState::CPtr> & Path::getStates(IState::CPtr initialState, std::list<IState::CPtr> &states) {
     for (IPath::Ptr path = this; path; path = path->parent()) {
         states.push_back(path->executeFromRoot(initialState));
     }
+    return states;
 }
+
+string Path::toDebugString() const
+{
+    std::stringstream ss;
+    ss << "[";
+    const char *sz = "";
+    for (IPath::CPtr path = this; path; path = path->parent()) {
+        ss << sz << *path->action() << ":" << path->cost();
+        sz = ", ";
+    }
+    ss << "]" << ends;
+    string str = ss.str();
+    return str;
 }
+
+string Path::toString() const
+{
+    return toDebugString();
+}
+
+}
+

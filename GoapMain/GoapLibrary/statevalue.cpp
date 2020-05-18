@@ -126,11 +126,16 @@ float StateValue::cosineDistance(const IStateValue::CPtr &other, float *pThisMod
 std::string StateValue::toDebugString() const
 {
     std::stringstream ss;
-    ss << "[";
+    ss << "["; // << std::defaultfloat
     const char *sz = "";
-    for(auto &it : _data) {
+    for(auto value : _data) {
         ss << sz;
-        ss << std::to_string(it);
+//        float whole, fractional;
+//        fractional = std::modf(value, &whole);
+//        if (fractional == 0) {
+//            ss << (int) whole;
+//        }
+        ss << value;
         sz = ", ";
     }
     ss << ']' << ends;
@@ -141,13 +146,13 @@ std::string StateValue::toDebugString() const
 std::string StateValue::toString() const
 {
     std::stringstream ss;
-    for(auto &it : _data) {
+    for(float value : _data) {
         float whole, fractional;
-        fractional = std::modf(it, &whole);
-        if ( it < 32 || it >= 255 || fractional > 0) {
+        fractional = std::modf(value, &whole);
+        if (value < 32 || value >= 255 || fractional > 0) {
             return toDebugString();
         }
-        ss << static_cast<char>(it);
+        ss << static_cast<char>(value);
     }
     return ss.str();
 }

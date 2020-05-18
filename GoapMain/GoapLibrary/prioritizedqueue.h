@@ -18,7 +18,7 @@ protected:
     typedef std::list<IPath::Ptr> lst_path_type;
     typedef std::map<std::int64_t, lst_path_type> map_lst_path_type;
     map_lst_path_type _queues;
-    std::int64_t _min = LLONG_MIN;
+    std::int64_t _min = LLONG_MAX;
     lst_path_type _lazyArray;
 
 public:

@@ -9,6 +9,10 @@ using namespace std;
 
 class LOG;
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 enum loglevel {
     DEBUG,
     INFO,

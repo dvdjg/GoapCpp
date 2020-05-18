@@ -100,7 +100,7 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
                                 [](IState::CPtr state) -> bool { return state->atRef("Credits") >= 8; },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsComing", 1)->add("Credits", -8)->mulCost(2)); }),
         Goap::newPlanningAction("ReceivePie",
-                                [](IState::CPtr state) -> bool { return state->atRef("PieIsComing") >= 5; },
+                                [](IState::CPtr state) -> bool { return state->atRef("PieIsComing") >= 15; },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)->put("PieIsComing", 0)); }),
         Goap::newPlanningAction("Wait",
                                 [](IState::CPtr state) -> bool { (void)state; return true; },
@@ -111,6 +111,7 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
 }
 
 std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
+    IPlanningStateComparer::Ptr numericalComparer = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
     if (!_planningStateMeter || !_planningStateMeter->goalState()->equals(_goalState)) {
         auto functionStateMeter = Goap::newFunctionStateMeter(_goalState);
         functionStateMeter->fnDistance([=](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
@@ -119,12 +120,10 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
             float distance = distanceToGoal;
             if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
-                distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _backingHelper) * 0.8 + 0.2;
-            }
-            //if (state->atRef("OwenTemperature") == REF_TEMP ) {
-            else {
+                distance = numericalComparer->distance(state, _backingHelper) * 0.8 + 0.2;
+            } else { //if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
-                distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(state, _orderHelper) * 0.8 + 0.2;
+                distance = numericalComparer->distance(state, _orderHelper) * 0.8 + 0.2;
             }
             if (distanceToGoal > distance)
                 distanceToGoal = distance;
@@ -139,7 +138,7 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
     };
     auto scopeTimer = Goap::newScopeTime("MakePlan: ", fn);
     _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);
-    LOG(DEBUG) << actionsArray.size() << ": " << " actions.";
+    LOG(DEBUG) << "Actions: " << actionsArray << ": " << " actions.";
 
     return actionsArray;
 }

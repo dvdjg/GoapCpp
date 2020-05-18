@@ -22,7 +22,8 @@ int64_t PrioritizedQueue::size() const {
 }
 
 void PrioritizedQueue::push(IPath::Ptr path) {
-    std::int64_t icost = 100.0 * path->cost();
+    float pathCost = path->cost();
+    std::int64_t icost = (10.0f * pathCost);
     if (_queues.find(icost) == _queues.end()) {
         if (_min > icost) {
             _min = icost;
@@ -87,9 +88,9 @@ int64_t PrioritizedQueue::currentPriority() {
 }
 
 void PrioritizedQueue::useLazyArray() {
-    for (auto path = _lazyArray.front(); !_lazyArray.empty(); _lazyArray.pop_front()) {
+    for (; !_lazyArray.empty(); _lazyArray.pop_front()) {
         // reinsert all retained data to the processing buffers
-        push(path);
+        push(_lazyArray.front());
     }
 }
 

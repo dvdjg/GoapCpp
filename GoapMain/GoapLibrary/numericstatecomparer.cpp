@@ -23,9 +23,9 @@ bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) 
     for (IState::index_type i = 0; i < stateDst->size(); ++i) {
         auto pair1 = stateDst->at(i);
         auto key = pair1.first;
-        auto value1 = pair1.second;
+        IStateValue::Ptr value1 = pair1.second;
         auto value2 = stateSrc->at(key);
-        if (value1 != value2) {
+        if (*value1 != *value2) {
             return false;
         }
     }

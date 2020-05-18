@@ -245,18 +245,12 @@ IClonable::Ptr State::clone() const
 string State::toDebugString() const
 {
     stringstream ss;
-    ss << '{';
-    ss << "coste:";
-    ss << std::to_string(_coste);
-    ss << ", ";
+    ss << '{' << "coste:" << _coste << ", ";
 
     for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
-        ss << it->first->toString();
-        ss << " : ";
-        ss << it->second->toString();
-        ss << ", ";
+        ss << it->first->toString() << " : " << it->second->toString() << ", ";
     }
-    ss.seekp(-2, ss.cur);
+    ss.seekp(-2, ss.cur); // Remove ", "
     ss << '}';
     string ret = ss.str();
     return ret;

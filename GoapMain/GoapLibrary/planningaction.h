@@ -99,7 +99,7 @@ public:
         // The executor evolves input state to a new state, so we need to pass a copy to preserve the original
         IState::Ptr newState = dynamic_pointer_cast<IState>(state->clone());
         _executor(newState); // The input State is modified.
-        LOG(DEBUG) << "Execute\n from " << *state << "\n to " << *newState;
+        //LOG(DEBUG) << "Execute\n from " << *state << "\n to " << *newState;
         return newState;
     }
 

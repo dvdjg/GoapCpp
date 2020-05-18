@@ -2,7 +2,7 @@
 #define GOAP_IPATH_H
 
 #include <list>
-#include "common/irefcounter.h"
+#include "goap/istringvalue.h"
 #include "goap/istate.h"
 #include "iplanningaction.h"
 
@@ -14,7 +14,7 @@ namespace goap
  * Any other Path has one parent and 0 or more children.
  * The Path holds an Action transforming its input State to an Output State.
  */
-class IPath : public virtual IRefCounter
+class IPath : public virtual IStringPrintable
 {
 public:
     typedef explicit_ptr<IPath> Ptr;
@@ -45,7 +45,7 @@ public:
      * Get the actions from the root to this leave.
      * If the 'actions' parameter is given then actions will be unshift to the array.
      */
-    virtual void getActions(std::list<IPlanningAction::CPtr>& actions_) const = 0;
+    virtual std::list<IPlanningAction::CPtr>& getActions(std::list<IPlanningAction::CPtr>& actions_) const = 0;
 
     /**
      * Returns a list with the resulting states of the execution of the stored actions from the
@@ -53,7 +53,7 @@ public:
      * This function caches the computed list of states so if it is used the same 'initialState'
      * of a prior call, it will be returned the cached results with no need of executing the actions again.
      */
-    virtual void getStates(IState::CPtr initialState, std::list<IState::CPtr>& states) = 0;
+    virtual std::list<IState::CPtr>& getStates(IState::CPtr initialState, std::list<IState::CPtr>& states) = 0;
 };
 
 }
