@@ -26,6 +26,9 @@ public:
     NewPtr() : explicit_ptr<I>(Factory<P, Key>::singleton().template create<I>({}))
     {
     }
+    NewPtr(I*p) : explicit_ptr<I>(p)
+    {
+    }
     template<typename T>
     NewPtr(const T& other) : explicit_ptr<I>(dynamic_pointer_cast<I>(other))
     {
@@ -35,11 +38,11 @@ public:
     {
     }
 
-    explicit_ptr<I> getPtr() {
+    explicit_ptr<I>& getPtr() {
         return *this;
     }
     explicit_ptr<const I> getCPtr() {
-        return explicit_ptr<I>(*this);
+        return *this;
     }
 };
 

@@ -10,6 +10,8 @@ using namespace std;
 backing_a_pie::backing_a_pie() {
     _backingHelper = NewPtr<IState>()->assign(
         {{"EggIsOnBowl", true}, {"ButterIsOnBowl", true}, {"FlourIsOnBowl", true}, {"IngredientsAreMixed", true}, {"PieIsBaked", true}});
+    _restHelper = NewPtr<IState>()->assign(
+        {{"PieIsBaked", true}, {"BowlLocation", "Table"}, {"BowlTemperature",REF_TEMP}});
     _orderHelper = NewPtr<IState>()->assign({{"PieIsComing", 5}});
 
     _planner = backing_actions();
@@ -17,7 +19,7 @@ backing_a_pie::backing_a_pie() {
     LOG(DEBUG) << "Planner backed actions:\n" << *_planner;
 }
 
-void backing_a_pie::backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal) {
+void backing_a_pie::backing_plan(IState::map_value2value_type initial, IState::map_value2value_type goal) {
     _initialState = NewPtr<IState>()->assign(initial);
     _goalState = NewPtr<IState>()->assign(goal);
 }
@@ -38,17 +40,17 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state) {
     float OwenTemperature = state->atRef("OwenTemperature");
     if (state->atRef("OwenIsOn") == true) {
         if (OwenTemperature < REF_TEMP + 200) {
-            OwenTemperature += 40;
+            OwenTemperature += 100;
         }
     } else if (OwenTemperature > REF_TEMP) {
-        OwenTemperature -= 20;
+        OwenTemperature -= 100;
     }
     float BowlTemperature = state->atRef("BowlTemperature");
     if (state->atRef("BowlLocation") == "Owen") {
         if (OwenTemperature > BowlTemperature + 20) {
             BowlTemperature += 20;
         } else if (OwenTemperature <= BowlTemperature - 10) {
-            BowlTemperature -= 10;
+            BowlTemperature -= 20;
         }
     } else if (BowlTemperature > REF_TEMP) {
         BowlTemperature -= 20;
@@ -104,7 +106,7 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)->put("PieIsComing", 0)); }),
         Goap::newPlanningAction("Wait",
                                 [](IState::CPtr state) -> bool { (void)state; return true; },
-                                [](IState::Ptr  state) -> void { wait(state->mulCost(0.9)); } )
+                                [](IState::Ptr  state) -> void { wait(state->mulCost(1.0)); } )
     };
     IPlanner::Ptr planner = Goap::newPlanner(IPlanner::BreadthFirst, planningActions);
     return planner;
@@ -120,7 +122,9 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
             float distance = distanceToGoal;
             if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
-                distance = numericalComparer->distance(state, _backingHelper) * 0.8 + 0.2;
+                float distance1 = numericalComparer->distance(state, _backingHelper) * 0.8 + 0.2;
+                //float distance2 = numericalComparer->distance(state, _restHelper) * 0.8 + 0.2;
+                distance = distance1; // min(distance1, distance2);
             } else { //if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
                 distance = numericalComparer->distance(state, _orderHelper) * 0.8 + 0.2;

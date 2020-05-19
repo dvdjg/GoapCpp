@@ -33,6 +33,7 @@ public:
      */
     virtual IState::Ptr execute(IState::CPtr state) const = 0;
 
+    static ostream & planToOstream(ostream &ss, const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
     static std::string planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState = {});
 };
 

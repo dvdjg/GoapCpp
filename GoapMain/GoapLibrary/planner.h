@@ -105,6 +105,7 @@ public:
 public:
     std::string toDebugString() const override;
     std::string toString() const override;
+    ostream& toOstream(ostream& os) const override;
 };
 
 }

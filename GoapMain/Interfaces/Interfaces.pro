@@ -8,6 +8,16 @@ QT       -= core gui
 
 TARGET = Interfaces
 TEMPLATE = subdirs # leave SUBDIRS variable unassigned
+CONFIG += c++14
+
+CONFIG(debug, debug|release){
+    SUFFIX=d
+    CONFDIR=debug
+    DEFINES += GOAP_DEBUG
+} else {
+    SUFFIX=
+    CONFDIR=release
+}
 
 DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
 

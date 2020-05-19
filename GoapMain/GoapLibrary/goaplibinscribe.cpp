@@ -74,7 +74,7 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         return ptr;
     }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IState>([](IState::map_string_float_type &map_string_float){
+    factory.inscribe<FactoryType::Default, IState>([](IState::map_value2value_type &map_string_float){
         auto ptr = RecyclableWrapper<State>::createFromPoolRaw();
         ptr->assign(map_string_float);
         return ptr;
@@ -99,19 +99,19 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const std::string &str){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
-        ptr->fromString(str);
+        ptr->assign(str);
         return ptr;
     }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const char *sz){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
-        ptr->fromString(sz);
+        ptr->assign(sz);
         return ptr;
     }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValue>([](const char *&sz){
         auto ptr = RecyclableWrapper<StateValue>::createFromPoolRaw();
-        ptr->fromString(sz);
+        ptr->assign(sz);
         return ptr;
     }, discr);
     ++ret;

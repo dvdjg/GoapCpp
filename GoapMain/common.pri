@@ -3,6 +3,7 @@ CONFIG += c++14
 CONFIG(debug, debug|release){
     SUFFIX=d
     CONFDIR=debug
+    DEFINES += GOAP_DEBUG
 } else {
     SUFFIX=
     CONFDIR=release

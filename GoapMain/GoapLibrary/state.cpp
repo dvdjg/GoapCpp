@@ -1,5 +1,6 @@
 #include <iterator>
 #include <sstream>
+#include "termcolor/termcolor.hpp"
 #include "basicmath.h"
 #include "state.h"
 #include "statevalue.h"
@@ -10,6 +11,7 @@ namespace goap
 {
 
 using namespace std;
+using namespace termcolor;
 
 State::State() {
 }
@@ -197,13 +199,22 @@ bool State::equals(const IHashable::CPtr &other) const
 bool State::equals(const IState::CPtr &other) const
 {
     auto o = dynamic_cast<const State*>(other.get());
-    return o && basicmath::floatEqual(_coste, o->_coste) && _data == o->_data;
+    bool ret = o && basicmath::floatEqual(cost(), o->cost()) && _data.size() == o->_data.size();
+    if (ret) {
+        for (auto & it : _data) {
+            auto it2 = o->_data.find(it.first);
+            if (it2 == _data.cend() || !it.second->equals(it2->second)) {
+                return false;
+            }
+        }
+    }
+    return ret;
 }
 
-IState* State::assign(const IState::map_string_float_type &map_string_float)
+IState* State::assign(const IState::map_value2value_type &map_string_float)
 {
     for (auto pair : map_string_float) {
-        put(pair.first, {pair.second});
+        put(pair.first, pair.second);
     }
     return this;
 }
@@ -242,23 +253,27 @@ IClonable::Ptr State::clone() const
     return std::move(ptr);
 }
 
-string State::toDebugString() const
-{
-    stringstream ss;
-    ss << '{' << "coste:" << _coste << ", ";
-
-    for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
-        ss << it->first->toString() << " : " << it->second->toString() << ", ";
-    }
-    ss.seekp(-2, ss.cur); // Remove ", "
-    ss << '}';
-    string ret = ss.str();
-    return ret;
-}
-
 string State::toString() const
 {
     return toDebugString();
+}
+
+string State::toDebugString() const
+{
+    std::stringstream ss;
+    toOstream(ss);
+    string str = ss.str();
+    return str;
+}
+
+ostream &State::toOstream(ostream &ss) const
+{
+    ss << '{' << "coste:" << _coste;
+    for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
+        ss << ", " << green << it->first->toString() << reset << " : " << magenta << it->second->toString() << reset;
+    }
+    ss << '}';
+    return ss;
 }
 
 size_t State::hash() const

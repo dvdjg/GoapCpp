@@ -98,6 +98,7 @@ public:
     {
         // The executor evolves input state to a new state, so we need to pass a copy to preserve the original
         IState::Ptr newState = dynamic_pointer_cast<IState>(state->clone());
+        newState->cost(1); // Default cost
         _executor(newState); // The input State is modified.
         //LOG(DEBUG) << "Execute\n from " << *state << "\n to " << *newState;
         return newState;
@@ -112,6 +113,10 @@ public:
     string toString() const override
     {
         return _name->toString();
+    }
+
+    ostream &toOstream(ostream &ss) const override {
+        return _name->toOstream(ss);
     }
 };
 

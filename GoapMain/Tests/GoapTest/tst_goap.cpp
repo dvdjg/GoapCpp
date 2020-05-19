@@ -84,7 +84,8 @@ TEST_F(GoapTest, TestBackingAPie)
     IState::CPtr initialState = backing.initialState();
     std::list<IPlanningAction::CPtr> plan = backing.MakePlan();
 
-    LOG(INFO) << "Plan:\n" << IPlanningAction::planToString(plan, initialState);
+    LOG(INFO) << "Plan:\n";
+    IPlanningAction::planToOstream(cerr, plan, initialState);
     EXPECT_GT(5, plan.size());
 }
 

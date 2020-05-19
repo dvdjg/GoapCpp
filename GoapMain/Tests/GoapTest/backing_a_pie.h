@@ -31,6 +31,7 @@ class backing_a_pie
     IState::CPtr _goalState;
 
     IState::Ptr _backingHelper; // = State.getNew({EggIsOnBowl:true, ButterIsOnBowl:true, FlourIsOnBowl:true, IngredientsAreMixed:true, PieIsBaked:true});
+    IState::Ptr _restHelper; // = State.getNew({EggIsOnBowl:true, ButterIsOnBowl:true, FlourIsOnBowl:true, IngredientsAreMixed:true, PieIsBaked:true});
     IState::Ptr _orderHelper; // = State.getNew({PieIsComing:5});
     IPlanningStateMeter::CPtr _planningStateMeter;
 
@@ -62,7 +63,7 @@ public:
 
     backing_a_pie();
 
-    void backing_plan(IState::map_string_float_type initial, IState::map_string_float_type goal);
+    void backing_plan(IState::map_value2value_type initial, IState::map_value2value_type goal);
 
     void run();
 

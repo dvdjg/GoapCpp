@@ -17,6 +17,7 @@ public:
     typedef explicit_ptr<const IStringPrintable> CPtr;
     virtual std::string toDebugString() const = 0;
     virtual std::string toString() const = 0;
+    virtual ostream& toOstream(ostream& os) const = 0;
 };
 
 class IStringValue : public virtual  IStringPrintable
@@ -31,15 +32,15 @@ public:
     virtual bool equals(const char *other) const = 0;
 };
 
-template<class E, class Y, class T>
-inline static typename enable_if <is_convertible<T*, const IStringPrintable*>::value, std::basic_ostream<E, Y>>::type&
-operator<<(std::basic_ostream<E, Y>& os, const T& dt) {
-    return os << dt.toString();
-}
+//template<class E, class Y, class T>
+//inline static typename enable_if <is_convertible<T*, const IStringPrintable*>::value, std::basic_ostream<E, Y>>::type&
+//operator<<(std::basic_ostream<E, Y>& os, const T& dt) {
+//    return os << dt.toOstream(os);
+//}
 
 template<class E, class Y>
 inline static std::basic_ostream<E, Y>& operator<<(std::basic_ostream<E, Y>& os, const IStringPrintable& dt) {
-    return os << dt.toString();
+    return dt.toOstream(os);
 }
 
 }

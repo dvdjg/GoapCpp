@@ -540,7 +540,7 @@ namespace termcolor
         inline
         bool is_colorized(std::ostream& stream)
         {
-            return true; // is_atty(stream) || static_cast<bool>(stream.iword(colorize_index));
+            return is_atty(stream) || static_cast<bool>(stream.iword(colorize_index));
         }
 
         //! Test whether a given `std::ostream` object refers to

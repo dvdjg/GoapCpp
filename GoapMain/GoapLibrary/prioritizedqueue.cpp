@@ -57,11 +57,6 @@ IPath::Ptr PrioritizedQueue::pop() {
                 if (!_queues.empty()) {
                     _min = _queues.cbegin()->first; // The lower key
                 }
-//                for (auto &it : _queues) {
-//                    if (it.first < _min) {
-//                        _min = it.first;
-//                    }
-//                }
             }
         }
     }
@@ -94,16 +89,22 @@ void PrioritizedQueue::useLazyArray() {
     }
 }
 
-string PrioritizedQueue::toDebugString() const
-{
-    stringstream ss;
-    ss << "PrioritizedQueue: { min:" << _min << ", _queues_size:" << _queues.size() << ", lazyArray_size:" << _lazyArray.size() << "}" << endl;
-    return ss.str();
-}
-
 string PrioritizedQueue::toString() const
 {
     return toDebugString();
+}
+
+string PrioritizedQueue::toDebugString() const
+{
+    std::stringstream ss;
+    toOstream(ss);
+    string str = ss.str();
+    return str;
+}
+
+ostream &PrioritizedQueue::toOstream(ostream &ss) const
+{
+    return ss << "PrioritizedQueue: { min:" << _min << ", _queues_size:" << _queues.size() << ", lazyArray_size:" << _lazyArray.size() << "}";
 }
 
 }

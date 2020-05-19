@@ -175,6 +175,7 @@ TEST_F(GoapIStateValueTest, Assign)
 
     std::string strMessage = ptrStateSrc->toString();
     EXPECT_TRUE(strMessage == szMessage);
+    EXPECT_EQ(strMessage, szMessage);
 
     std::cout << "Contains: " << strMessage << std::endl;
 }

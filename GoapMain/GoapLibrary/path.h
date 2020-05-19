@@ -82,6 +82,7 @@ public:
 public:
     string toDebugString() const override;
     string toString() const override;
+    ostream& toOstream(ostream& ss) const override;
 };
 
 

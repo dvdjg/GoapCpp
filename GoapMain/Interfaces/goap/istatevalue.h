@@ -18,10 +18,23 @@ public:
     using IStringValue::assign;
     using IStringValue::equals;
 
+    typedef IStateValue class_type;
     typedef float value_type;
     typedef intptr_t index_type;
     typedef explicit_ptr<IStateValue> Ptr;
     typedef explicit_ptr<const IStateValue> CPtr;
+
+    class New : public class_type::Ptr {
+        typedef class_type::Ptr parent;
+    public:
+        New();
+        New(class_type* pVal);
+        New(const parent &other);
+        New(const string &str);
+        New(const char *sz);
+        New(const initializer_list<float>& list);
+        New(float val);
+    };
 
     //virtual bool isNumeric() const = 0;
     virtual intptr_t size() const = 0; ///< From 0 to 1000
@@ -157,7 +170,6 @@ inline IStateValue& operator *=(IStateValue& a, const IStateValue& b) {
     a.mul(IStateValue::CPtr(&b));
     return a;
 }
-
 
 }
 

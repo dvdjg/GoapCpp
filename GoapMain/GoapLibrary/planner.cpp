@@ -201,8 +201,8 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         visitedStates.insert(stateReachedByPath);
         // Continue gathering all the actions that can be reached from current state "stateReachedByPath"
         actions.clear(); // ->getActions(actions)
-        LOG(DEBUG) << "Added for action \"" << green << *path << reset << "\" a new visited State. #VisitedStates=" << visitedStates.size()
-                   << ". New gather(" << yellow << "cost=" << path->cost() << ", minDistance=" << minDistance << reset << ")\n to state.- " << *stateReachedByPath;
+        LOG(DEBUG) << "Added for action (" << yellow << "cost=" << path->cost() << reset << ") " << green << *path << reset << " a new visited State. #VisitedStates=" << visitedStates.size()
+                   << "\n    to state.- " << *stateReachedByPath << "\n    Actions.- " << actionsArray;
         minDistance = gather(path->cost(), minDistance); // Gather paths to unvisitedPaths_
         ++analyzedPaths;
     }
@@ -291,6 +291,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
     float nearDistance = 1.0;
     int nearOffset = -1;
 
+    IPlanningStateComparer::Ptr planningStateComparer = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
     // Search a cached plan for this goal
     std::list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
     if (!plannings.empty()) {
@@ -304,7 +305,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
             for (const IState::CPtr &storedState : statePlan->states()) {
                 //for (itStates = statePlan->states().begin(); itStates != statePlan->states().end(); ++itStates) {
                 //    const IState::CPtr &storedState = *itStates;
-                float distance = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->distance(storedState, intialState);
+                float distance = planningStateComparer->distance(storedState, intialState);
                 if (nearDistance > distance) {
                     nearDistance = distance;
                     nearStatePlan = statePlan;
@@ -334,7 +335,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
             // Test if the found plan is valid
             IState::Ptr reachedState = executeActions(retPlan, intialState);
             static const std::string strDiscr = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
-            bool bEnough = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON)->enough(reachedState, goalState);
+            bool bEnough = planningStateComparer->enough(reachedState, goalState);
             if (!bEnough) {
                 // This plan is not good enough
                 retPlan.clear();
@@ -344,49 +345,63 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
     return retPlan;
 }
 
-string IPlanningAction::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
-{
+ostream & IPlanningAction::planToOstream(ostream &ss, const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState) {
     float totalCost = 0;
-    std::stringstream ret;
     IPlanningAction::CPtr action;
     if (actionsArray.empty()) {
-        ret << "No plan.";
+        ss << "No plan.";
     } else {
         IState::CPtr reachedByPath = initialState;
         if (reachedByPath) {
             totalCost += reachedByPath->cost();
-            ret << "0.\"init\" totalCost=" << totalCost << " state=" << reachedByPath << "\n";
+            ss << "0." << green << "init" << reset << " totalCost=" << totalCost << " state=" << *reachedByPath << "\n";
         }
         int i = 0;
         for (auto &action : actionsArray) {
             if (!action) {
                 break;
             }
-            ret << (i+1) << ".\"" << action << "\" ";
+            ss << (i+1) << ". " << green << *action << reset << " ";
             if (reachedByPath) {
                 reachedByPath = action->execute(reachedByPath); // Advance the state
                 totalCost += reachedByPath->cost();
-                ret << "totalCost=" << totalCost << " state=" << reachedByPath << "\n";
+                ss << "totalCost=" << totalCost << " state=" << *reachedByPath << "\n";
             }
             ++i;
         }
     }
-    return ret.str();
+    return ss;
 }
 
-std::string Planner::toDebugString() const {
-    std::stringstream ret;
-    ret << "Planner. planningMethod=" << _planningMethod << std::endl;
+string IPlanningAction::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
+{
+    std::stringstream ss;
+    planToOstream(ss, actionsArray, initialState);
+    return ss.str();
+}
+
+string Planner::toString() const
+{
+    return toDebugString();
+}
+
+string Planner::toDebugString() const
+{
+    std::stringstream ss;
+    toOstream(ss);
+    string str = ss.str();
+    return str;
+}
+
+ostream &Planner::toOstream(ostream &ss) const
+{
+    ss << "Planner. planningMethod=" << _planningMethod << std::endl;
     int i = 0;
     for (auto &action : _planningActions) {
-        ret << " [" << i << "]. " << green << *action << reset << std::endl;
+        ss << " [" << i << "]. " << green << *action << reset << std::endl;
         ++i;
     }
-    return ret.str();
-}
-
-std::string Planner::toString() const {
-    return toDebugString();
+    return ss << "]";
 }
 
 }

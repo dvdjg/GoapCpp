@@ -82,13 +82,13 @@ TEST_F(GoapIStateTest, TestClone)
     ptrState->cost(23);
     ptrState->put("Uno", {1, 2});
     ptrState->put("Dos", {6.6f, 2.4f, 9});
-    //std::shared_ptr<IClonable> shCl;
-    //auto ptr = std::dynamic_pointer_cast<IState>(shCl);
 
-    auto ptrCloned = dynamic_pointer_cast<IState>(ptrState->clone());
+    IState::Ptr ptrCloned = dynamic_pointer_cast<IState>(ptrState->clone());
     ASSERT_TRUE(ptrCloned);
     ASSERT_EQ(*ptrCloned, *ptrState);
-    ASSERT_EQ(ptrCloned->at(0), ptrState->at(0));
+    auto it1 = ptrCloned->at("Dos");
+    auto it2 = ptrState->at("Dos");
+    ASSERT_EQ(*it1,*it2);
 
     NewPtr<IState> ptrOther(ptrState->clone());
 

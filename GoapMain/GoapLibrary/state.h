@@ -55,7 +55,7 @@ public:
     IState* cost(float c) override;
     IState* assign(const IState::CPtr &other) override;
     IState* assign(const State &other);
-    IState* assign(const map_string_float_type &map_string_float) override;
+    IState* assign(const map_value2value_type &map_string_float) override;
 
     pair_value at(intptr_t idx) const override;
 
@@ -67,6 +67,7 @@ public:
 public:
     std::string toDebugString() const override;
     std::string toString() const override;
+    ostream& toOstream(ostream& os) const override;
 
     // IHashable interface
 public:

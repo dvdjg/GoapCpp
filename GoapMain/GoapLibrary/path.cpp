@@ -87,23 +87,28 @@ std::list<IState::CPtr> & Path::getStates(IState::CPtr initialState, std::list<I
     return states;
 }
 
+string Path::toString() const
+{
+    return toDebugString();
+}
+
 string Path::toDebugString() const
 {
     std::stringstream ss;
-    ss << "[";
-    const char *sz = "";
-    for (IPath::CPtr path = this; path; path = path->parent()) {
-        ss << sz << *path->action() << ":" << path->cost();
-        sz = ", ";
-    }
-    ss << "]" << ends;
+    toOstream(ss);
     string str = ss.str();
     return str;
 }
 
-string Path::toString() const
+ostream &Path::toOstream(ostream &ss) const
 {
-    return toDebugString();
+    ss << "[";
+    const char *sz = "";
+    for (IPath::CPtr path = this; path; path = path->parent()) {
+        ss << sz << *path->action() << ":" << path->distance();
+        sz = ", ";
+    }
+    return ss << "]";
 }
 
 }
