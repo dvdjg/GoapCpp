@@ -75,14 +75,14 @@ size_t Path::getActionCount() {
 
 std::list<IPlanningAction::CPtr>& Path::getActions(std::list<IPlanningAction::CPtr> &actions) const {
     for (IPath::CPtr path = this; path; path = path->parent()) {
-        actions.push_back(path->action());
+        actions.push_front(path->action());
     }
     return actions;
 }
 
 std::list<IState::CPtr> & Path::getStates(IState::CPtr initialState, std::list<IState::CPtr> &states) {
     for (IPath::Ptr path = this; path; path = path->parent()) {
-        states.push_back(path->executeFromRoot(initialState));
+        states.push_front(path->executeFromRoot(initialState));
     }
     return states;
 }

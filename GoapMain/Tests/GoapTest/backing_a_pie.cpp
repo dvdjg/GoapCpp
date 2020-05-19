@@ -15,7 +15,6 @@ backing_a_pie::backing_a_pie() {
     _orderHelper = NewPtr<IState>()->assign({{"PieIsComing", 5}});
 
     _planner = backing_actions();
-    //const IStringPrintable* p = (IPlanner::CPtr::element_type*)0;
     LOG(DEBUG) << "Planner backed actions:\n" << *_planner;
 }
 
@@ -40,20 +39,20 @@ IState::Ptr backing_a_pie::wait(IState::Ptr state) {
     float OwenTemperature = state->atRef("OwenTemperature");
     if (state->atRef("OwenIsOn") == true) {
         if (OwenTemperature < REF_TEMP + 200) {
-            OwenTemperature += 100;
+            OwenTemperature += 40;
         }
     } else if (OwenTemperature > REF_TEMP) {
-        OwenTemperature -= 100;
+        OwenTemperature -= 20;
     }
     float BowlTemperature = state->atRef("BowlTemperature");
     if (state->atRef("BowlLocation") == "Owen") {
         if (OwenTemperature > BowlTemperature + 20) {
             BowlTemperature += 20;
         } else if (OwenTemperature <= BowlTemperature - 10) {
-            BowlTemperature -= 20;
+            BowlTemperature -= 10;
         }
     } else if (BowlTemperature > REF_TEMP) {
-        BowlTemperature -= 20;
+        BowlTemperature -= 10;
     }
 
     state->put("BowlTemperature", BowlTemperature);
@@ -99,14 +98,14 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
                                 [](IState::CPtr state) -> bool { return state->atRef("PieIsBaked") == true && state->atRef("BowlLocation") == "Table" && state->atRef("BowlTemperature") < (REF_TEMP+30); },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)); }),
         Goap::newPlanningAction("OrderPie",
-                                [](IState::CPtr state) -> bool { return state->atRef("Credits") >= 5; },
+                                [](IState::CPtr state) -> bool { return state->atRef("Credits") >= 8; },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsComing", 1)->add("Credits", -8)->mulCost(10)); }),
         Goap::newPlanningAction("ReceivePie",
-                                [](IState::CPtr state) -> bool { return state->atRef("PieIsComing") >= 15; },
+                                [](IState::CPtr state) -> bool { return state->atRef("PieIsComing") >= 5; },
                                 [](IState::Ptr  state) -> void { wait(state->put("PieIsReadyForEat", true)->put("PieIsComing", 0)); }),
         Goap::newPlanningAction("Wait",
                                 [](IState::CPtr state) -> bool { (void)state; return true; },
-                                [](IState::Ptr  state) -> void { wait(state->mulCost(1.0)); } )
+                                [](IState::Ptr  state) -> void { wait(state->mulCost(0.9)); } )
     };
     IPlanner::Ptr planner = Goap::newPlanner(IPlanner::BreadthFirst, planningActions);
     return planner;
@@ -136,11 +135,10 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
         _planningStateMeter = functionStateMeter;
     }
 
-    std::list<IPlanningAction::CPtr> actionsArray;
-    auto fn = [](const char *szMessage, double time, const char *szUnits) {
+    auto scopeTimer = Goap::newScopeTime("MakePlan: ", [](const char *szMessage, double time, const char *szUnits) {
         LOG(DEBUG) << szMessage << ": " << " actions, " << time << " " << szUnits;
-    };
-    auto scopeTimer = Goap::newScopeTime("MakePlan: ", fn);
+    });
+    std::list<IPlanningAction::CPtr> actionsArray;
     _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);
     LOG(DEBUG) << "Actions: " << actionsArray << ": " << " actions.";
 

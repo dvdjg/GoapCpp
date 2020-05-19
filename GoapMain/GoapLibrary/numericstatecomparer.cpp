@@ -68,8 +68,7 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
     }
     countDifferent = s2Count - sameKeyCount;
     float dist = (percent + countDifferent) / s2Count;
-    LOG(DEBUG) << "Distance=" << dist << "\n  from " << *stateSrc << "\n    to " << *stateDst;
-    //LOG(DEBUG) << "Distance=" << dist;
+    //LOG(DEBUG) << "Distance=" << dist << "\n  from " << *stateSrc << "\n    to " << *stateDst;
     return dist;
 }
 

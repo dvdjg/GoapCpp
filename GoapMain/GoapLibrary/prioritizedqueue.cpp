@@ -23,7 +23,7 @@ int64_t PrioritizedQueue::size() const {
 
 void PrioritizedQueue::push(IPath::Ptr path) {
     float pathCost = path->cost();
-    std::int64_t icost = (10.0f * pathCost);
+    std::int64_t icost = (100.0f * pathCost + 0.5f);
     if (_queues.find(icost) == _queues.end()) {
         if (_min > icost) {
             _min = icost;

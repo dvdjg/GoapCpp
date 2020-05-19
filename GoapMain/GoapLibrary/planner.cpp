@@ -132,9 +132,9 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                 if (action->canExecute(stateReachedByPath)) {
                     IState::Ptr nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
-                    LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
+                    LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance/*
                                << "\n    desde el estado: " << *stateReachedByPath
-                               << "\n    hasta el estado: " << * nextState;
+                               << "\n    hasta el estado: " << * nextState*/;
                     // Adds a new path leave
                     if (isMonotonic && min > distance) {
                         // When monotonic Meters are used, a decreasing in the distance to the goal
@@ -200,9 +200,9 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         // Mark the state as visited so we don't reanalyse it while searching other paths
         visitedStates.insert(stateReachedByPath);
         // Continue gathering all the actions that can be reached from current state "stateReachedByPath"
-        actions.clear(); // ->getActions(actions)
-        LOG(DEBUG) << "Added for action (" << yellow << "cost=" << path->cost() << reset << ") " << green << *path << reset << " a new visited State. #VisitedStates=" << visitedStates.size()
-                   << "\n    to state.- " << *stateReachedByPath << "\n    Actions.- " << actionsArray;
+        actions.clear();
+        //LOG(DEBUG) << "Added for action (" << yellow << "cost=" << path->cost() << reset << ") " << *path << " a new visited State. #VisitedStates=" << visitedStates.size()
+        //           << "\n    to state.- " << *stateReachedByPath << "\n    Actions.- " << actionsArray;
         minDistance = gather(path->cost(), minDistance); // Gather paths to unvisitedPaths_
         ++analyzedPaths;
     }
@@ -217,6 +217,10 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     return actionsArray;
 }
 
+/**
+ * A version of makePlan() with the help of cached plans.
+ * @note The found cached plan is not warranted to use the supplied planningStateMeter.
+ */
 std::list<IPlanningAction::CPtr> &Planner::makePlanCached(
         IState::CPtr initialState,
         IPlanningStateMeter::CPtr planningStateMeter,
@@ -235,6 +239,8 @@ std::list<IPlanningAction::CPtr> &Planner::makePlanCached(
             // Substitute the reached state for a clean goalState
             float cost = states.back()->cost();
             goalState->cost(cost);
+            LOG(DEBUG) << "Target Goal State: " << *goalState;
+            LOG(DEBUG) << "Real Goal State: " << *states.back();
             states.back() = goalState;
             states.push_front(initialState); // Add the initial state to the list
             cacheStates(states, actionsArray);
@@ -317,7 +323,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
                 if (nState < nStates) {
                     break;
                 }
-                nState++;
+                ++nState;
             }
             if (nearDistance <= 0.0) {
                 break;
