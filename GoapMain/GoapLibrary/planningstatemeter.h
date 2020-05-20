@@ -62,7 +62,7 @@ public:
         return _isMonotonic;
     }
 
-    void setMonotonic(bool monotonic) override {
+    void monotonic(bool monotonic) override {
         _isMonotonic = monotonic;
     }
 };

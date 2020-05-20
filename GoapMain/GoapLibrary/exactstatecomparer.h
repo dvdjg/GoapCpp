@@ -23,7 +23,7 @@ public:
      * A percentage exact state members count is used to compute de similarities.
      * Both states can be of any type. The != operator is used to find similarities
      */
-    //bool distancePure(IState::CPtr state1, IState::CPtr state2) const;
+    float distancePure(IState::CPtr state1, IState::CPtr state2) const;
 
     /**
      * Gives an idea of how far are two states one to another. If Distance == 0, both are equal

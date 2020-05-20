@@ -32,7 +32,7 @@ public:
         _states = value;
     }
 
-    std::list<IPlanningAction::CPtr> plan() const {
+    const std::list<IPlanningAction::CPtr> &plan() const {
         return _plan;
     }
 

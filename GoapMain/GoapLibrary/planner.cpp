@@ -52,12 +52,12 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     try {
         float accCost = reachedByPath->cost();
         for(auto& action : actions) {
-            LOG(DEBUG) << "With action " << green << *action << reset << "\n Can execute state " << *reachedByPath;
+            //LOG(DEBUG) << "With action " << green << *action << reset << "\n Can execute state " << *reachedByPath;
             if (!action->canExecute(reachedByPath)) {
                 break; // Do not continue
             }
             nextState = action->execute(reachedByPath); // Advance the state
-            LOG(DEBUG) << "With action " << green << *action << reset << "\n Can reach state " << *nextState;
+            //LOG(DEBUG) << "With action " << green << *action << reset << "\n Can reach state " << *nextState;
             //reachedByPath->clear();
             reachedByPath = nextState;
             accCost += reachedByPath->cost();
@@ -69,43 +69,6 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     LOG(DEBUG) << "Reached state: " << *reachedByPath;
     return reachedByPath;
 }
-
-//float Planner::gather(float pathCost, float minDistance, std::list<IPlanningAction::CPtr> &planningActions, IState::CPtr &stateReachedByPath, IPlanningStateMeter::CPtr &planningStateMeter, IPath::Ptr &path, IPrioritized::Ptr &unvisitedPaths_) {
-//    IPath::Ptr plan;
-//    const bool isMonotonic = planningStateMeter->monotonic();
-//    float min = minDistance;
-//    for (IPlanningAction::CPtr &action : planningActions) {
-//        try {
-//            if (action->canExecute(stateReachedByPath)) {
-//                LOG(DEBUG) << "La accion \"" << *action << "\" puede ejecutar: " << *stateReachedByPath;
-//                IState::Ptr nextState = action->execute(stateReachedByPath);
-//                float distance = planningStateMeter->distance(nextState);
-//                // Adds a new path leave
-//                if (isMonotonic && min > distance) {
-//                    // When monotonic Meters are used, a decreasing in the distance to the goal
-//                    // found in a path increases the preference to explore that path.
-//                    minDistance = distance;
-//                    distance *= nextState->cost();
-//                    // Use a very low cost to give more chances for this path to be analyzed
-//                    distance = 4*distance - pathCost - 10; // Landmark: Put the distance betwen -10 and -6
-//                } else {
-//                    distance *= nextState->cost();
-//                }
-//                plan = Goap::newPath(action, path, pathCost + distance);
-//                // Add the path to be analyzed after all the paths of this priority level be processed
-//                unvisitedPaths_->pushLazy(plan);
-//            }
-//        } catch (exception e) {
-//            LOG(ERROR) << "[Planner] Error: " << e.what();
-//        }
-//    }
-//    if (!plan && path) {
-//        LOG(ERROR) << "[Planner] Discarded path: ";
-//        // The path has no children so it will not be used anymore
-//        path.reset();
-//    }
-//    return minDistance;
-//};
 
 std::list<IPlanningAction::CPtr> &Planner::makePlan(
         IState::CPtr initialState,
@@ -132,9 +95,9 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                 if (action->canExecute(stateReachedByPath)) {
                     IState::Ptr nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
-                    /*LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
-                               << "\n    desde el estado: " << *stateReachedByPath
-                               << "\n    hasta el estado: " << * nextState*/;
+                    //LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
+                    //           << "\n    desde el estado: " << *stateReachedByPath
+                    //           << "\n    hasta el estado: " << * nextState;
                     // Adds a new path leave
                     if (isMonotonic && min > distance) {
                         // When monotonic Meters are used, a decreasing in the distance to the goal
@@ -178,7 +141,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         path = unvisitedPaths_->pop();
         std::list<IPlanningAction::CPtr> actions;
         stateReachedByPath = path->executeFromRoot(initialState);
-//        LOG(DEBUG) << "Executing " << actions.size() << " actions \"" << green << path->getActions(actions) << reset << "\" from the initial state "
+//        LOG(DEBUG) << "Executing actions " << green << path->getActions(actions) << reset << ", Total:" << actions.size() << " from the initial state "
 //                   << "\n    to state " << *stateReachedByPath;
         // If this state was visited in other paths, do not compute it again
         auto itVisitedState = visitedStates.find(stateReachedByPath);
@@ -190,9 +153,10 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         // If this path takes us to the goal state, then return it
         bReachedGoal = planningStateMeter->enough(stateReachedByPath);
         if (bReachedGoal) {
-            path->getActions(actionsArray); // Get the planning actions from the intial state
+            LOG(DEBUG) << red << "Reached Goal!! " << "Path cost=" << yellow << path->cost() << reset << "\n     Inverse path: " << *path; // This path has the costs modified by the hints of the functionStateMeter supplied
+            path->getActions(actionsArray); // Get the planning actions from the intial state (reverse order)
             if (pStates) {
-                path->getStates(initialState, *pStates);
+                path->getStates(initialState, *pStates);// Get the planning states from the intial state (reverse order)
             }
             path.reset();
             break;
@@ -335,7 +299,8 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
             // Copy the necessary portion of actions array
             //i = 0;
             for (nState = nearOffset; nState < nStates; nState++ ) {
-                auto it1 = std::next(nearStatePlan->plan().begin(), nState); // TODO: plan() --> vector
+                auto statesPlan = nearStatePlan->plan();
+                auto it1 = std::next(statesPlan.begin(), nState); // TODO: plan() --> vector
                 retPlan.push_back(*it1);
             }
             // Test if the found plan is valid

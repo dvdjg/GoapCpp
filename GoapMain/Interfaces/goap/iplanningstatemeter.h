@@ -36,7 +36,7 @@ public:
      */
     virtual bool monotonic() const = 0;
 
-    virtual void setMonotonic(bool monotonic) = 0;
+    virtual void monotonic(bool monotonic) = 0;
 
     virtual IState::CPtr goalState() const = 0;
 

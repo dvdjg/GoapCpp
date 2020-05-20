@@ -38,6 +38,7 @@ public:
 
     //virtual bool isNumeric() const = 0;
     virtual intptr_t size() const = 0; ///< From 0 to 1000
+    virtual bool empty() const { return size() == 0; }
     virtual void resize(intptr_t len) = 0;
     virtual float at(float idx) const = 0;
     virtual float at(intptr_t idx) const = 0;
@@ -99,9 +100,17 @@ public:
         return at(0);
     }
 
-    //inline operator bool() const {
-    //    return at(0) != false;
-    //}
+    inline bool isInt() const {
+        bool ret = false;
+        if (size() == 1) {
+            float value = at(0);
+            float whole, fractional;
+            fractional = std::modf(value, &whole);
+            ret = fractional == 0.f;
+        }
+        return ret;
+    }
+
 };
 
 inline bool operator ==(const IStateValue& a, const IStateValue& b) {

@@ -8,6 +8,7 @@
 #include "goap/iscopetimer.h"
 
 #include "backing_a_pie.h"
+#include "hanoi_tower_solver.h"
 
 #include "newptr.h"
 
@@ -73,6 +74,19 @@ TEST_F(GoapTest, TestNumericComparer)
 
     bool bdistance3 = numericalComparer->enough(state3, targetState);
     EXPECT_EQ(true, bdistance3);
+}
+
+TEST_F(GoapTest, TestTowerSolver)
+{
+    hanoi_tower_solver tower_solver;
+    //backing.run();
+    //float REF_TEMP = backing_a_pie::REF_TEMP;
+    //backing.backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", 1}});
+    //IState::CPtr initialState = backing.initialState();
+    //std::list<IPlanningAction::CPtr> plan = backing.MakePlan();
+    tower_solver.run();
+
+
 }
 
 TEST_F(GoapTest, TestBackingAPie)

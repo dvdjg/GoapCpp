@@ -26,7 +26,7 @@ void FunctionStateMeter::goalState(IState::CPtr goalState_) {
     _numericStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON));
     addStateMeter("numeric", _numericStateMeter);
     _exactStateMeter = Goap::newComparerStateMeter(goalState_, NewPtr<IPlanningStateComparer>(EXACTSTATEMETER_SINGLETON));
-    _exactStateMeter->setMonotonic(true);
+    _exactStateMeter->monotonic(true);
     addStateMeter("exact", _exactStateMeter);
 }
 
@@ -38,7 +38,7 @@ bool FunctionStateMeter::monotonic() const {
     return _isMonotonic;
 }
 
-void FunctionStateMeter::setMonotonic(bool monotonic) {
+void FunctionStateMeter::monotonic(bool monotonic) {
     _isMonotonic = monotonic;
 }
 

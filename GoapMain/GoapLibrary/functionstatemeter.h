@@ -40,7 +40,7 @@ public:
 
     bool monotonic() const override;
 
-    void setMonotonic(bool monotonic) override;
+    void monotonic(bool monotonic) override;
 
     void clear();
 

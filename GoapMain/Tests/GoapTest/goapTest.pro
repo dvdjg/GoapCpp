@@ -16,6 +16,10 @@ SOURCES += \
     tst_goap_istate.cpp \
     tst_goap_istatevalue.cpp
 
+HEADERS += \
+    backing_a_pie.h \
+    hanoi_tower_solver.h
+
 INCLUDEPATH += \
     $$top_srcdir/3rdparty/gmock-gtest \
     $$top_srcdir/Factory \
@@ -41,6 +45,4 @@ LIBS += \
 
 DEFINES += HAS_BOOST_SMART_INTRUSIVE_PTR
 
-HEADERS += \
-    backing_a_pie.h
 

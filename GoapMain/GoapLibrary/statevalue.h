@@ -17,7 +17,8 @@ class StateValue : public IStateValue
     IMPLEMENT_REFCOUNTER()
 
 protected:
-    vector<float> _data;
+    typedef vector<float> container_type;
+    container_type _data;
 #ifdef GOAP_DEBUG
     string _strDebug;
 #endif

@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
+#include <functional>
 #include "termcolor/termcolor.hpp"
 #include "statevalue.h"
 #include "basicmath.h"
@@ -41,6 +42,7 @@ StateValue::StateValue(const char *other)
 
 StateValue::StateValue(std::initializer_list<float> list) : _data(list)
 {
+    afterAssign();
 }
 
 intptr_t StateValue::size() const
@@ -232,6 +234,7 @@ void StateValue::put(float idx, float value)
 
 std::size_t StateValue::hash() const
 {
+    //std::size_t h1 = std::hash<std::string>{}(std::string());
     return basicmath::hash(&_data[0], _data.size());
 }
 

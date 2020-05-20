@@ -49,10 +49,11 @@ public:
     virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CPtr &key) const = 0;
     virtual IStateValue & atRef(const string &str) const = 0;
-    const IStateValue* at(const IStateValue::CPtr &key) const { return &atRef(key); }
-    const IStateValue* at(const string &str) const { return &atRef(str); }
+    virtual const IStateValue* at(const IStateValue::CPtr &key) const { return &atRef(key); }
+    virtual const IStateValue* at(const string &str) const { return &atRef(str); }
     virtual pair_value at(intptr_t idx) const = 0;
     virtual intptr_t size() const = 0;
+    virtual bool empty() const { return size() == 0; }
     virtual IState* assign(const IState::CPtr &other) = 0;
     virtual IState* assign(const map_value2value_type &map_string_float) = 0;
     virtual bool equals(const IState::CPtr &other) const = 0;
