@@ -124,7 +124,8 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
                 float distance1 = numericalComparer->distance(state, _backingHelper) * 0.8 + 0.2;
                 //float distance2 = numericalComparer->distance(state, _restHelper) * 0.8 + 0.2;
                 distance = distance1; // min(distance1, distance2);
-            } else { //if (state->atRef("OwenTemperature") == REF_TEMP ) {
+            }
+            if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
                 distance = numericalComparer->distance(state, _orderHelper) * 0.8 + 0.2;
             }

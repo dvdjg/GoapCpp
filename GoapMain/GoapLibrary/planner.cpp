@@ -132,7 +132,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                 if (action->canExecute(stateReachedByPath)) {
                     IState::Ptr nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
-                    LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance/*
+                    /*LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
                                << "\n    desde el estado: " << *stateReachedByPath
                                << "\n    hasta el estado: " << * nextState*/;
                     // Adds a new path leave
@@ -169,7 +169,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     if (unvisitedPaths_->empty()) {
         LOG(WARN) << "[MakePlan] There are no paths from the initial state!!!";
     } else {
-        LOG(DEBUG) << "[MakePlan] There are " << unvisitedPaths_->size() << " paths\n " << *unvisitedPaths_ << " from the initial state:\n " << *stateReachedByPath;
+        LOG(DEBUG) << "[MakePlan] There are " << unvisitedPaths_->size() << " unvisited paths\n " << *unvisitedPaths_ << " from the initial state:\n " << *stateReachedByPath;
     }
     bool bReachedGoal = false;
     // Search all the path forks neccesary to reach the goalState
@@ -360,7 +360,7 @@ ostream & IPlanningAction::planToOstream(ostream &ss, const std::list<IPlanningA
         IState::CPtr reachedByPath = initialState;
         if (reachedByPath) {
             totalCost += reachedByPath->cost();
-            ss << "0." << green << "init" << reset << " totalCost=" << totalCost << " state=" << *reachedByPath << "\n";
+            ss << "0. " << green << "init" << reset << " totalCost=" << totalCost << " state=" << *reachedByPath << "\n";
         }
         int i = 0;
         for (auto &action : actionsArray) {

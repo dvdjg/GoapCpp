@@ -104,7 +104,13 @@ string PrioritizedQueue::toDebugString() const
 
 ostream &PrioritizedQueue::toOstream(ostream &ss) const
 {
-    return ss << "PrioritizedQueue: { min:" << _min << ", _queues_size:" << _queues.size() << ", lazyArray_size:" << _lazyArray.size() << "}";
+    ss << "PrioritizedQueue: { min:" << _min << ", _queues_size:" << _queues.size() << ", lazyArray_size:" << _lazyArray.size() << ",\n   queueSizes:{";
+    const char *sz = "";
+    for (auto it : _queues) {
+        ss << sz << it.first << ":" << it.second.size();
+        sz = ", ";
+    }
+    return ss << "}\n} ";
 }
 
 }
