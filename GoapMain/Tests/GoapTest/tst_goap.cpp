@@ -47,11 +47,9 @@ TEST_F(GoapTest, TestNumericComparer)
     IState::Ptr initialState = NewPtr<IState>()->assign(
             { {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} });
 
-    std::cout << magenta << "TestNumericComparer. 02" << reset << std::endl;
     IState::Ptr targetState = NewPtr<IState>()->assign(
             {{"PieIsReadyForEat", true}});
 
-    std::cout << magenta << "TestNumericComparer. 03" << reset << std::endl;
     IState::Ptr state1 = NewPtr<IState>()->assign(
             { {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10}, {"EggIsOnBowl", false} });
 
@@ -64,30 +62,22 @@ TEST_F(GoapTest, TestNumericComparer)
     IState::Ptr backingHelper = NewPtr<IState>()->assign(
             {{"EggIsOnBowl", true}, {"ButterIsOnBowl", true}, {"FlourIsOnBowl", true}, {"IngredientsAreMixed", true}, {"PieIsBaked", true}});
 
-    std::cout << magenta << "TestNumericComparer. 04" << reset << std::endl;
     IPlanningStateComparer::Ptr numericalComparer = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
 
-    std::cout << magenta << "TestNumericComparer. 05" << reset << std::endl;
     float distance  = numericalComparer->distance(initialState, backingHelper);
     float distance1 = numericalComparer->distance(state1, backingHelper);
     float distance2 = numericalComparer->distance(state2, backingHelper);
-    std::cout << magenta << "TestNumericComparer. 06" << reset << std::endl;
     bool bdistance2 = numericalComparer->enough(state2, targetState);
 
-    std::cout << magenta << "TestNumericComparer. 07" << reset << std::endl;
     EXPECT_GT(distance, distance2);
     EXPECT_GT(distance1, distance2);
     EXPECT_EQ(false, bdistance2);
 
-    std::cout << magenta << "TestNumericComparer. 08" << reset << std::endl;
     float distance3 = numericalComparer->distance(state3, targetState);
     EXPECT_EQ(0, distance3);
 
-    std::cout << magenta << "TestNumericComparer. 09" << reset << std::endl;
     bool bdistance3 = numericalComparer->enough(state3, targetState);
     EXPECT_EQ(true, bdistance3);
-    std::cout << magenta << "TestNumericComparer. 10" << reset << std::endl;
-
 }
 
 TEST_F(GoapTest, TestTowerSolver)

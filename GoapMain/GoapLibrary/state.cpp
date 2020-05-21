@@ -92,10 +92,6 @@ IState* State::remove(const IStateValue::CNew &key) {
     return this;
 }
 
-//IState* State::remove(const std::string &str) {
-//    return remove(NewPtr<IStateValue>({}, str));
-//}
-
 IState::pair_value State::at(intptr_t idx) const {
     static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     if (idx < 0 || idx >= intptr_t(_data.size())) {
@@ -107,10 +103,8 @@ IState::pair_value State::at(intptr_t idx) const {
 }
 
 IStateValue* State::at(const IStateValue::CNew &key) const {
-    //static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     auto it = _data.find(key);
     if (it == _data.end() || !it->second) {
-        //nullValue->clear();
         return nullptr;
     }
     IStateValue* value = it->second.get();
