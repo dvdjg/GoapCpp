@@ -19,6 +19,8 @@ class StateValue : public IStateValue
 protected:
     typedef vector<float> container_type;
     container_type _data;
+    mutable std::size_t _cachedHash = 0;
+
 #ifdef GOAP_DEBUG
     string _strDebug;
 #endif
@@ -73,7 +75,7 @@ public:
     void and_logic(bool other) override;
     void or_logic(bool other) override;
 private:
-    void afterAssign();
+    void touch();
 };
 
 }

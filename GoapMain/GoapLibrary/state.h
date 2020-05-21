@@ -18,6 +18,10 @@ public:
 protected:
     data_type _data;
     float _coste = 1;
+    mutable std::size_t _cachedHash = 0;
+
+private:
+    void touch();
 
 public:
     State();
@@ -27,44 +31,27 @@ public:
 
     void clear();
 
+    //data_type::const_iterator begin() const override;
+    //data_type::const_iterator end() const override;
+    list<IStateValue::CPtr> keys() const override;
     IState* remove(const IStateValue::CNew &key) override;
+    pair_value at(intptr_t idx) const override;
     IStateValue* at(const IStateValue::CNew &key) const override;
     IStateValue& atRef(const IStateValue::CNew &key) const override;
-    //IStateValue* at(const std::string &str) const override;
-    //IState* put(const IStateValue::CPtr &key, const IStateValue::New &value) override;
     IState* put(const IStateValue::CNew &key, const IStateValue::New &value) override;
-    //IState* put(const std::string &str, const IStateValue::Ptr &value) override;
-    //IState* put(const std::string &str, const std::string &value) override;
-    //IState* put(const std::string &str, std::initializer_list<float> list) override;
-    //IState* put(const std::string &str, float number) override;
     IState* add(const IStateValue::CNew &key, const IStateValue::New &value) override;
-    //IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
-    //IState* add(const std::string &str, const IStateValue::Ptr &value) override;
-    //IState* add(const std::string &str, const std::string &value) override;
-    //IState* add(const std::string &str, std::initializer_list<float> list) override;
-    //IState* add(const std::string &str, float number) override;
     IState* mul(const IStateValue::CNew &key, const IStateValue::New &value) override;
-    //IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
-    //IState* mul(const std::string &str, const IStateValue::Ptr &value) override;
-    //IState* mul(const std::string &str, const std::string &value) override;
-    //IState* mul(const std::string &str, std::initializer_list<float> list) override;
-    //IState* mul(const std::string &str, float number) override;
     IState* addCost(float c) override;
     IState* mulCost(float c) override;
     intptr_t size() const override;
-    //IState* remove(const std::string &str) override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const IState::CPtr &other) const override;
     float cost() const override;
     IState* cost(float c) override;
-    IState* assign(const IState::CPtr &other) override;
     IState* assign(const State &other);
+    IState* assign(const IState::CPtr &other) override;
     IState* assign(const map_value2value_type &map_string_float) override;
 
-    pair_value at(intptr_t idx) const override;
-
-    // IClonable interface
-public:
     IClonable::Ptr clone() const override;
 
     // IStringPrintable interface

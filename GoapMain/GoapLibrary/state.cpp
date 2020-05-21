@@ -13,6 +13,10 @@ namespace goap
 using namespace std;
 using namespace termcolor;
 
+void State::touch() {
+    _cachedHash = 0;
+}
+
 State::State() {
 }
 
@@ -29,11 +33,22 @@ State::State(std::initializer_list<data_type::value_type> list) : _data(list) {
 void State::clear() {
     _data.clear();
     _coste = 1;
+    _cachedHash = 0;
+}
+
+list<IStateValue::CPtr> State::keys() const
+{
+    list<IStateValue::CPtr> ret;
+    for (auto &it : _data) {
+        ret.push_back(it.first);
+    }
+    return ret;
 }
 
 IState* State::assign(const State &o) {
     _data = o._data;
     _coste = o._coste;
+    touch();
     return this;
 }
 
@@ -46,43 +61,10 @@ IState* State::assign(const IState::CPtr &other) {
     }
     return this;
 }
-/*
-void State::add(const std::string &key, const IStateValue::CPtr &other)
-{
-    IStateValue::Ptr val = State::at(key);
-    val->add
-    int len = std::min(val->size(), other->size());
-    for (int i = 0; i < len; ++i) {
 
-    }
-    _map[key] += value;
-    touch();
-    return this;
-}
-
-void State::mul(const std::string &key, const IStateValue::CPtr &other)
-{
-    _map[key] *= value;
-    touch();
-    return this;
-}
-
-bool State::and(const std::string &key, bool other)
-{
-    _map[key] = _map[key] && other;
-    touch();
-    return this;
-}
-
-bool State::or(const std::string &key, bool other)
-{
-    _map[key] = _map[key] || other;
-    touch();
-    return this;
-}
-*/
 IState* State::remove(const IStateValue::CNew &key) {
     _data.erase(key);
+    touch();
     return this;
 }
 
@@ -116,86 +98,23 @@ IStateValue &State::atRef(const IStateValue::CNew &key) const
     return *pVal;
 }
 
-//IStateValue* State::at(const std::string &str) const {
-//    return at(NewPtr<IStateValue>({}, str));
-//}
-
-//IState* State::put(const IStateValue::CPtr &key, const IStateValue::New &value) {
-//    _data[key] = value;
-//    return this;
-//}
 IState* State::put(const IStateValue::CNew &key, const IStateValue::New &value) {
     _data[key] = value;
+    touch();
     return this;
 }
-/*
-IState* State::put(const std::string &str, const IStateValue::Ptr &value) {
-    return put(NewPtr<IStateValue>({}, str), value);
-}
 
-IState* State::put(const std::string &str, const std::string &value) {
-    return put(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
-}
-
-IState* State::put(const std::string &str, std::initializer_list<float> list) {
-    return put(str, NewPtr<IStateValue>({}, list));
-}
-
-IState* State::put(const string &str, float number) {
-    return put(str, {number});
-}
-*/
 IState* State::add(const IStateValue::CNew &key, const IStateValue::New &value) {
     *_data[key] += *value;
+    touch();
     return this;
 }
-//IState* State::add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
-//    *_data[key] += *value;
-//    return this;
-//}
-
-//IState* State::add(const std::string &str, const IStateValue::Ptr &value) {
-//    return add(NewPtr<IStateValue>({}, str), value);
-//}
-
-//IState* State::add(const std::string &str, const std::string &value) {
-//    return add(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
-//}
-
-//IState* State::add(const std::string &str, std::initializer_list<float> list) {
-//    return add(str, NewPtr<IStateValue>({}, list));
-//}
-
-//IState* State::add(const string &str, float number) {
-//    return add(str, {number});
-//}
 
 IState* State::mul(const IStateValue::CNew &key, const IStateValue::New &value) {
     *_data[key] += *value;
+    touch();
     return this;
 }
-
-//IState* State::mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
-//    *_data[key] += *value;
-//    return this;
-//}
-
-//IState* State::mul(const std::string &str, const IStateValue::Ptr &value) {
-//    return mul(NewPtr<IStateValue>({}, str), value);
-//}
-
-//IState* State::mul(const std::string &str, const std::string &value) {
-//    return mul(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
-//}
-
-//IState* State::mul(const std::string &str, std::initializer_list<float> list) {
-//    return mul(str, NewPtr<IStateValue>({}, list));
-//}
-
-//IState* State::mul(const string &str, float number) {
-//    return mul(str, {number});
-//}
-
 
 intptr_t State::size() const
 {
@@ -238,16 +157,19 @@ float State::cost() const
 IState* State::cost(float c)
 {
     _coste = c;
+    touch();
     return this;
 }
 
 IState* State::addCost(float c) {
     _coste += c;
+    touch();
     return this;
 }
 
 IState* State::mulCost(float c) {
     _coste *= c;
+    touch();
     return this;
 }
 
@@ -289,13 +211,19 @@ ostream &State::toOstream(ostream &ss) const
 
 size_t State::hash() const
 {
-    std::size_t h = basicmath::hash(&_coste, 1);
-    for (auto &it : _data) {
-        std::size_t hkey = it.first->hash();
-        std::size_t hvalue = it.second->hash();
-        h = h ^ hkey ^ hvalue;
+    if (_cachedHash == 0) {
+        std::size_t h = basicmath::hash(&_coste, 1);
+        for (auto &it : _data) {
+            std::size_t hkey = it.first->hash();
+            std::size_t hvalue = it.second->hash();
+            h = h ^ hkey ^ hvalue;
+        }
+        if (h == 0) {
+            h = 1; // Do not return 0
+        }
+        _cachedHash = h;
     }
-    return h;
+    return _cachedHash;
 }
 
 

@@ -28,32 +28,17 @@ public:
     typedef intptr_t index_type;
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
-    //virtual IState* remove(const string &str) = 0;
+    //virtual data_type::const_iterator begin() const = 0;
+    //virtual data_type::const_iterator end() const = 0;
+    virtual list<IStateValue::CPtr> keys() const = 0;
     virtual IState* remove(const IStateValue::CNew &key) = 0;
-    //virtual IState* put(const string &str, const string &value) = 0;
-    //virtual IState* put(const string &str, const IStateValue::Ptr &value) = 0;
-    //virtual IState* put(const string &str, initializer_list<float> list) = 0;
-    //virtual IState* put(const string &str, float number) = 0;
-    //virtual IState* put(const IStateValue::CPtr &key, const IStateValue::New &value) = 0;
     virtual IState* put(const IStateValue::CNew &key, const IStateValue::New &value) = 0;
-    //virtual IState* add(const string &str, const string &value) = 0;
-    //virtual IState* add(const string &str, const IStateValue::Ptr &value) = 0;
-    //virtual IState* add(const string &str, initializer_list<float> list) = 0;
-    //virtual IState* add(const string &str, float number) = 0;
-    //virtual IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
     virtual IState* add(const IStateValue::CNew &key, const IStateValue::New &value) = 0;
-    //virtual IState* mul(const string &str, const string &value) = 0;
-    //virtual IState* mul(const string &str, const IStateValue::Ptr &value) = 0;
-    //virtual IState* mul(const string &str, initializer_list<float> list) = 0;
-    //virtual IState* mul(const string &str, float number) = 0;
-    //virtual IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
     virtual IState* mul(const IStateValue::CNew &key, const IStateValue::New &value) = 0;
     virtual IState* addCost(float c) = 0;
     virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CNew &key) const = 0;
-    //virtual IStateValue & atRef(const string &str) const { return *at(str); }
     virtual IStateValue* at(const IStateValue::CNew &key) const = 0;
-    //virtual IStateValue* at(const string &str) const = 0;
     virtual pair_value at(intptr_t idx) const = 0;
     virtual intptr_t size() const = 0;
     virtual bool empty() const { return size() == 0; }

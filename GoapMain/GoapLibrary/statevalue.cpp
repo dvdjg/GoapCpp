@@ -41,7 +41,7 @@ StateValue::StateValue(const char *other)
 
 StateValue::StateValue(std::initializer_list<float> list) : _data(list)
 {
-    afterAssign();
+    touch();
 }
 
 intptr_t StateValue::size() const
@@ -52,6 +52,7 @@ intptr_t StateValue::size() const
 void StateValue::resize(intptr_t len)
 {
     _data.resize(std::size_t(len));
+    touch();
 }
 
 float StateValue::at(float idx) const
@@ -83,7 +84,7 @@ IStringValue* StateValue::fromString(const std::string &str)
 IStringValue* StateValue::assign(const StateValue &other)
 {
     _data = other._data;
-    afterAssign();
+    touch();
     return this;
 }
 
@@ -98,7 +99,7 @@ IStringValue* StateValue::assign(const IStateValue::CNew &other)
             _data.at(std::size_t(i)) = other->at(i);
         }
     }
-    afterAssign();
+    touch();
     return this;
 }
 
@@ -109,7 +110,7 @@ IStringValue* StateValue::assign(const char* str)
     for (const char *it = str; *it; ++it) {
         _data.push_back(*it);
     }
-    afterAssign();
+    touch();
     return this;
 }
 
@@ -117,14 +118,14 @@ IStringValue* StateValue::assign(const std::string &str)
 {
     _data.resize(0);
     std::copy(str.begin(), str.end(), std::back_inserter(_data));
-    afterAssign();
+    touch();
     return this;
 }
 
 IStringValue* StateValue::assign(const std::initializer_list<float> &list)
 {
     _data.assign(list);
-    afterAssign();
+    touch();
     return this;
 }
 
@@ -138,6 +139,7 @@ void StateValue::interpolateFrom(const IStateValue::CNew &other)
     if (size() > 0 && &o->_data[0] != &_data[0]) {
         interp2array(&o->_data[0], int_type(o->size()), &_data[0], int_type(size()));
     }
+    touch();
 }
 
 float StateValue::cosineDistance(const IStateValue::CNew &other, float *pThisModule, float *pOthersModule) const
@@ -212,6 +214,7 @@ void StateValue::put(intptr_t idx, float value)
         throw std::runtime_error(__func__);
     }
     _data.at(std::size_t(idx)) = value;
+    touch();
 }
 
 void StateValue::putAll(float value)
@@ -234,7 +237,13 @@ void StateValue::put(float idx, float value)
 std::size_t StateValue::hash() const
 {
     //std::size_t h1 = std::hash<std::string>{}(std::string());
-    return basicmath::hash(&_data[0], _data.size());
+    if (_cachedHash == 0) {
+        _cachedHash = basicmath::hash(&_data[0], _data.size());
+        if (_cachedHash == 0) {
+            _cachedHash = 1; // Do not return 0
+        }
+    }
+    return _cachedHash;
 }
 
 void StateValue::clear()
@@ -242,6 +251,7 @@ void StateValue::clear()
 #ifdef GOAP_DEBUG
     _strDebug.clear();
 #endif
+    _cachedHash = 0;
     _data.resize(0);
 }
 
@@ -324,6 +334,7 @@ void StateValue::add(const IStateValue::CNew &other)
         float otherValue = other->at(i);
         put(i, thisValue + otherValue);
     }
+    touch();
 }
 
 void StateValue::mul(const IStateValue::CNew &other)
@@ -339,6 +350,7 @@ void StateValue::mul(const IStateValue::CNew &other)
             put(i, thisValue * otherValue);
         }
     }
+    touch();
 }
 
 void StateValue::and_logic(const IStateValue::CNew &other)
@@ -354,6 +366,7 @@ void StateValue::and_logic(const IStateValue::CNew &other)
             put(i, thisValue != 0 && otherValue != 0);
         }
     }
+    touch();
 }
 
 void StateValue::or_logic(const IStateValue::CNew &other)
@@ -369,6 +382,7 @@ void StateValue::or_logic(const IStateValue::CNew &other)
             put(i, thisValue != 0 || otherValue != 0);
         }
     }
+    touch();
 }
 
 void StateValue::add(float other)
@@ -378,6 +392,7 @@ void StateValue::add(float other)
         float thisValue = at(i);
         put(i, thisValue + other);
     }
+    touch();
 }
 
 void StateValue::mul(float other)
@@ -387,6 +402,7 @@ void StateValue::mul(float other)
         float thisValue = at(i);
         put(i, thisValue * other);
     }
+    touch();
 }
 
 void StateValue::and_logic(bool other)
@@ -396,6 +412,7 @@ void StateValue::and_logic(bool other)
         float thisValue = at(i);
         put(i, thisValue != 0 && other);
     }
+    touch();
 }
 
 void StateValue::or_logic(bool other)
@@ -405,15 +422,17 @@ void StateValue::or_logic(bool other)
         float thisValue = at(i);
         put(i, thisValue != 0 || other);
     }
+    touch();
 }
 
-void StateValue::afterAssign() {
+void StateValue::touch() {
 #ifdef GOAP_DEBUG
     _strDebug = toString();
     if (!_strDebug.back()) {
         _strDebug.pop_back();
     }
 #endif
+    _cachedHash = 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 IStateValue::New::New() : parent_type(NewPtr<IStateValue>()) {
