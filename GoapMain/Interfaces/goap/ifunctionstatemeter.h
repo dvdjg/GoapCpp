@@ -22,9 +22,9 @@ public:
     typedef std::function<float(IState::CPtr, IFunctionStateMeter::CPtr)> distance_function_type;
     typedef std::function<bool(IState::CPtr, IFunctionStateMeter::CPtr)> enough_function_type;
 
-    virtual void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter) = 0;
+    //virtual void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter) = 0;
 
-    virtual void addStateMeter(IStateValue::CPtr name, IPlanningStateMeter::Ptr stateMeter) = 0;
+    virtual void addStateMeter(const IStateValue::CNew& name, IPlanningStateMeter::Ptr stateMeter) = 0;
 
     virtual IPlanningStateMeter::CPtr getStateMeter(IStateValue::CPtr name) = 0;
 

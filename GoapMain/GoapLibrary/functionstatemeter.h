@@ -48,9 +48,9 @@ public:
 
     bool enough(IState::CPtr state) const override;
 
-    void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter) override;
+    //void addStateMeter(const std::string& name, IPlanningStateMeter::Ptr stateMeter) override;
 
-    void addStateMeter(IStateValue::CPtr name, IPlanningStateMeter::Ptr stateMeter) override;
+    void addStateMeter(const IStateValue::CNew& name, IPlanningStateMeter::Ptr stateMeter) override;
 
     IPlanningStateMeter::CPtr getStateMeter(IStateValue::CPtr name) override;
 

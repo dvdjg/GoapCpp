@@ -58,11 +58,11 @@ bool FunctionStateMeter::enough(IState::CPtr state) const {
     return _fnEnough(state, this);
 }
 
-void FunctionStateMeter::addStateMeter(const string &name, IPlanningStateMeter::Ptr stateMeter) {
-    addStateMeter(NewPtr<IStateValue>({}, name), stateMeter);
-}
+//void FunctionStateMeter::addStateMeter(const string &name, IPlanningStateMeter::Ptr stateMeter) {
+//    addStateMeter(NewPtr<IStateValue>({}, name), stateMeter);
+//}
 
-void FunctionStateMeter::addStateMeter(IStateValue::CPtr name, IPlanningStateMeter::Ptr stateMeter) {
+void FunctionStateMeter::addStateMeter(const IStateValue::CNew &name, IPlanningStateMeter::Ptr stateMeter) {
     _stateMeters[name] = stateMeter;
 }
 
