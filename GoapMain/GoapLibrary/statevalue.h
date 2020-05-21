@@ -29,7 +29,7 @@ public:
 
     StateValue();
     StateValue(const StateValue & other);
-    StateValue(const IStateValue::CPtr &other);
+    StateValue(const IStateValue::CNew &other);
     StateValue(const string &str);
     StateValue(const char* other);
     StateValue(initializer_list<float> list);
@@ -41,15 +41,15 @@ public:
     float at(intptr_t idx) const override;
     void put(intptr_t idx, float value) override;
     void putAll(float value) override;
-    void interpolateFrom(const IStateValue::CPtr &other) override;
-    float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;
+    void interpolateFrom(const IStateValue::CNew &other) override;
+    float cosineDistance(const IStateValue::CNew &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;
     IStringValue* fromString(const string &str) override;
+    IStringValue* assign(const IStateValue::CNew &other) override;
     IStringValue* assign(const StateValue &other);
-    IStringValue* assign(const IStateValue::CPtr &other) override;
     IStringValue* assign(const string &other) override;
     IStringValue* assign(const char* other) override;
     IStringValue* assign(const initializer_list<float> &list) override;
-    bool equals(const IStateValue::CPtr &other) const override;
+    bool equals(const IStateValue::CNew &other) const override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const string &other) const override;
     bool equals(const char *str) const override;
@@ -64,10 +64,10 @@ public:
 
     // IStateValue interface
 public:
-    void add(const IStateValue::CPtr &other) override;
-    void mul(const IStateValue::CPtr &other) override;
-    void and_logic(const IStateValue::CPtr &other) override;
-    void or_logic(const IStateValue::CPtr &other) override;
+    void add(const IStateValue::CNew &other) override;
+    void mul(const IStateValue::CNew &other) override;
+    void and_logic(const IStateValue::CNew &other) override;
+    void or_logic(const IStateValue::CNew &other) override;
     void add(float other) override;
     void mul(float other) override;
     void and_logic(bool other) override;

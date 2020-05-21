@@ -25,7 +25,7 @@ bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) 
         auto key = pair1.first;
         IStateValue::Ptr value1 = pair1.second;
         auto value2 = stateSrc->at(key);
-        if (*value1 != *value2) {
+        if (!value2 || *value1 != *value2) {
             return false;
         }
     }

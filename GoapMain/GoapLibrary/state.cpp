@@ -87,14 +87,14 @@ bool State::or(const std::string &key, bool other)
     return this;
 }
 */
-IState* State::remove(const IStateValue::CPtr &key) {
+IState* State::remove(const IStateValue::CNew &key) {
     _data.erase(key);
     return this;
 }
 
-IState* State::remove(const std::string &str) {
-    return remove(NewPtr<IStateValue>({}, str));
-}
+//IState* State::remove(const std::string &str) {
+//    return remove(NewPtr<IStateValue>({}, str));
+//}
 
 IState::pair_value State::at(intptr_t idx) const {
     static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
@@ -106,26 +106,37 @@ IState::pair_value State::at(intptr_t idx) const {
     return std::make_pair(it->first, it->second);
 }
 
-IStateValue& State::atRef(const IStateValue::CPtr &key) const {
-    static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
+IStateValue* State::at(const IStateValue::CNew &key) const {
+    //static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
     auto it = _data.find(key);
     if (it == _data.end() || !it->second) {
-        nullValue->clear();
-        return *nullValue;
+        //nullValue->clear();
+        return nullptr;
     }
-    IStateValue& value = *it->second;
+    IStateValue* value = it->second.get();
     return value;
 }
 
-IStateValue& State::atRef(const std::string &str) const {
-    return atRef(NewPtr<IStateValue>({}, str));
+IStateValue &State::atRef(const IStateValue::CNew &key) const
+{
+    IStateValue* pVal = at(key);
+    if (!pVal) {
+        static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
+        nullValue->clear();
+        pVal = nullValue.get();
+    }
+    return *pVal;
 }
+
+//IStateValue* State::at(const std::string &str) const {
+//    return at(NewPtr<IStateValue>({}, str));
+//}
 
 //IState* State::put(const IStateValue::CPtr &key, const IStateValue::New &value) {
 //    _data[key] = value;
 //    return this;
 //}
-IState* State::put(const IStateValue::New &key, const IStateValue::New &value) {
+IState* State::put(const IStateValue::CNew &key, const IStateValue::New &value) {
     _data[key] = value;
     return this;
 }
@@ -146,7 +157,7 @@ IState* State::put(const string &str, float number) {
     return put(str, {number});
 }
 */
-IState* State::add(const IStateValue::New &key, const IStateValue::New &value) {
+IState* State::add(const IStateValue::CNew &key, const IStateValue::New &value) {
     *_data[key] += *value;
     return this;
 }
@@ -171,7 +182,7 @@ IState* State::add(const IStateValue::New &key, const IStateValue::New &value) {
 //    return add(str, {number});
 //}
 
-IState* State::mul(const IStateValue::New &key, const IStateValue::New &value) {
+IState* State::mul(const IStateValue::CNew &key, const IStateValue::New &value) {
     *_data[key] += *value;
     return this;
 }
@@ -258,7 +269,7 @@ IClonable::Ptr State::clone() const
     ptr->cost(this->cost());
     for (intptr_t i = 0; i < this->size(); ++i) {
         auto pair = this->at(i);
-        IStateValue::Ptr key = dynamic_pointer_cast<IStateValue>(pair.first->clone());
+        IStateValue::CPtr key = pair.first;
         IStateValue::Ptr value = dynamic_pointer_cast<IStateValue>(pair.second->clone());
         ptr->put(key, value);
     }
@@ -297,6 +308,12 @@ size_t State::hash() const
         h = h ^ hkey ^ hvalue;
     }
     return h;
+}
+
+
+bool State::empty() const
+{
+    return _data.empty();
 }
 
 }

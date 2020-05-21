@@ -162,11 +162,11 @@ public:
         int onFromTop = 0;
         for (i = 1; i <= n; ++i) {
             val = state->at(concatStringInt(from, i));
-            if (!val->empty()) {
+            if (val && !val->empty()) {
                 break;
             }
         }
-        if (!val->isInt())
+        if (!val || !val->isInt())
             return false;
 
         onFromTop = *val;
@@ -176,10 +176,10 @@ public:
         val.reset();
         for (i = 1; i <= n; ++i) {
             val = state->at(concatStringInt(to, i));
-            if (!val->empty())
+            if (val && !val->empty())
                 break;
         }
-        if (val->isInt()) {
+        if (val && val->isInt()) {
             trigerTo = true;
             onToTop = *val;
         }
@@ -206,7 +206,7 @@ public:
         for (i = 1; i <= n; ++i) {
             string astr = concatStringInt(from, i);
             val = state->at(astr);
-            if (!val->empty()) {
+            if (val && !val->empty()) {
                 a = astr;
                 break;
             }
@@ -218,7 +218,7 @@ public:
         bool trigerTo = false;
         for (i = 1; i <= n; ++i) {
             val = state->at(concatStringInt(to, i));
-            if (!val->empty()) {
+            if (val && !val->empty()) {
                 if (i-- == 1) {
                     throw runtime_error("Can't put to '" + to + "'"); // Tower is full
                 } else {

@@ -24,7 +24,7 @@ StateValue::StateValue(const StateValue &other)
     assign(other);
 }
 
-StateValue::StateValue(const IStateValue::CPtr &other)
+StateValue::StateValue(const IStateValue::CNew &other)
 {
     assign(other);
 }
@@ -87,10 +87,10 @@ IStringValue* StateValue::assign(const StateValue &other)
     return this;
 }
 
-IStringValue* StateValue::assign(const IStateValue::CPtr &other)
+IStringValue* StateValue::assign(const IStateValue::CNew &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
-    if (!o) {
+    if (o) {
         _data = o->_data;
     } else {
         _data.resize(std::size_t(other->size()));
@@ -128,7 +128,7 @@ IStringValue* StateValue::assign(const std::initializer_list<float> &list)
     return this;
 }
 
-void StateValue::interpolateFrom(const IStateValue::CPtr &other)
+void StateValue::interpolateFrom(const IStateValue::CNew &other)
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o) {
@@ -140,7 +140,7 @@ void StateValue::interpolateFrom(const IStateValue::CPtr &other)
     }
 }
 
-float StateValue::cosineDistance(const IStateValue::CPtr &other, float *pThisModule, float *pOthersModule) const
+float StateValue::cosineDistance(const IStateValue::CNew &other, float *pThisModule, float *pOthersModule) const
 {
     auto o = dynamic_pointer_cast<const StateValue>(other);
     if (!o) {
@@ -251,7 +251,7 @@ IClonable::Ptr StateValue::clone() const
     return std::move(ptr);
 }
 
-bool StateValue::equals(const IStateValue::CPtr &other) const
+bool StateValue::equals(const IStateValue::CNew &other) const
 {
     bool ret(other);
     if (ret) {
@@ -266,8 +266,14 @@ bool StateValue::equals(const IStateValue::CPtr &other) const
 
 bool StateValue::equals(const IHashable::CPtr &other) const
 {
-    return equals(dynamic_pointer_cast<const IStateValue>(other));
+    IStateValue::CNew ptr = dynamic_pointer_cast<const IStateValue>(other);
+    return equals(ptr);
 }
+
+//bool StateValue::equals(const IStateValue::New &other) const
+//{
+//    return equals(dynamic_pointer_cast<const IStateValue>(other));
+//}
 
 bool StateValue::equals(const std::string &other) const
 {
@@ -306,7 +312,7 @@ bool StateValue::equals(const std::initializer_list<float> &other) const
     return ret;
 }
 
-void StateValue::add(const IStateValue::CPtr &other)
+void StateValue::add(const IStateValue::CNew &other)
 {
     auto thisSize = size();
     auto otherSize = other->size();
@@ -320,7 +326,7 @@ void StateValue::add(const IStateValue::CPtr &other)
     }
 }
 
-void StateValue::mul(const IStateValue::CPtr &other)
+void StateValue::mul(const IStateValue::CNew &other)
 {
     auto thisSize = size();
     auto otherSize = other->size();
@@ -335,7 +341,7 @@ void StateValue::mul(const IStateValue::CPtr &other)
     }
 }
 
-void StateValue::and_logic(const IStateValue::CPtr &other)
+void StateValue::and_logic(const IStateValue::CNew &other)
 {
     auto thisSize = size();
     auto otherSize = other->size();
@@ -350,7 +356,7 @@ void StateValue::and_logic(const IStateValue::CPtr &other)
     }
 }
 
-void StateValue::or_logic(const IStateValue::CPtr &other)
+void StateValue::or_logic(const IStateValue::CNew &other)
 {
     auto thisSize = size();
     auto otherSize = other->size();
@@ -409,15 +415,14 @@ void StateValue::afterAssign() {
     }
 #endif
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 IStateValue::New::New() : parent_type(NewPtr<IStateValue>()) {
 }
 
-IStateValue::New::New(IStateValue *pVal) : parent_type(pVal) {
+IStateValue::New::New(parent_type::element_type *pVal) : parent_type(pVal) {
 }
 
-IStateValue::New::New(const goap::IStateValue::New::parent_type &other) : parent_type(other) {
-    get()->assign(other);
+IStateValue::New::New(const parent_type &other) : parent_type(other) {
 }
 
 IStateValue::New::New(const string &str) : New() {
@@ -434,7 +439,37 @@ IStateValue::New::New(const initializer_list<float> &list) : New() {
 
 IStateValue::New::New(float val) : New(initializer_list<float>{val}) {
 }
+
 IStateValue::New::New(int val) : New(static_cast<float>(val)) {
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+IStateValue::CNew::CNew() : parent_type(NewPtr<IStateValue>()) {
+}
+
+IStateValue::CNew::CNew(parent_type::element_type *pVal) : parent_type(pVal) {
+}
+
+IStateValue::CNew::CNew(const parent_type &other) : parent_type(other) {
+}
+
+IStateValue::CNew::CNew(const class_type::Ptr &other) : parent_type(other) {
+    // TODO: Clone for an inmutable version?
+}
+
+IStateValue::CNew::CNew(const string &str) : CNew(New(str)) {
+}
+
+IStateValue::CNew::CNew(const char *sz) : CNew(New(sz)) {
+}
+
+IStateValue::CNew::CNew(const initializer_list<float> &list) : CNew(New(list)) {
+}
+
+IStateValue::CNew::CNew(float val) : CNew(initializer_list<float>{val}) {
+}
+
+IStateValue::CNew::CNew(int val) : CNew(static_cast<float>(val)) {
 }
 
 

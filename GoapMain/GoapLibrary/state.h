@@ -27,22 +27,23 @@ public:
 
     void clear();
 
-    IState* remove(const IStateValue::CPtr &key) override;
-    IStateValue& atRef(const IStateValue::CPtr &key) const override;
-    IStateValue& atRef(const std::string &str) const override;
+    IState* remove(const IStateValue::CNew &key) override;
+    IStateValue* at(const IStateValue::CNew &key) const override;
+    IStateValue& atRef(const IStateValue::CNew &key) const override;
+    //IStateValue* at(const std::string &str) const override;
     //IState* put(const IStateValue::CPtr &key, const IStateValue::New &value) override;
-    IState* put(const IStateValue::New &key, const IStateValue::New &value) override;
+    IState* put(const IStateValue::CNew &key, const IStateValue::New &value) override;
     //IState* put(const std::string &str, const IStateValue::Ptr &value) override;
     //IState* put(const std::string &str, const std::string &value) override;
     //IState* put(const std::string &str, std::initializer_list<float> list) override;
     //IState* put(const std::string &str, float number) override;
-    IState* add(const IStateValue::New &key, const IStateValue::New &value) override;
+    IState* add(const IStateValue::CNew &key, const IStateValue::New &value) override;
     //IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
     //IState* add(const std::string &str, const IStateValue::Ptr &value) override;
     //IState* add(const std::string &str, const std::string &value) override;
     //IState* add(const std::string &str, std::initializer_list<float> list) override;
     //IState* add(const std::string &str, float number) override;
-    IState* mul(const IStateValue::New &key, const IStateValue::New &value) override;
+    IState* mul(const IStateValue::CNew &key, const IStateValue::New &value) override;
     //IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) override;
     //IState* mul(const std::string &str, const IStateValue::Ptr &value) override;
     //IState* mul(const std::string &str, const std::string &value) override;
@@ -51,7 +52,7 @@ public:
     IState* addCost(float c) override;
     IState* mulCost(float c) override;
     intptr_t size() const override;
-    IState* remove(const std::string &str) override;
+    //IState* remove(const std::string &str) override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const IState::CPtr &other) const override;
     float cost() const override;
@@ -75,6 +76,10 @@ public:
     // IHashable interface
 public:
     std::size_t hash() const override;
+
+    // IState interface
+public:
+    bool empty() const override;
 };
 
 }

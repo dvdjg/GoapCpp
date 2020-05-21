@@ -28,13 +28,27 @@ public:
         typedef class_type::Ptr parent_type;
     public:
         New();
-        New(class_type* pVal);
+        New(parent_type::element_type* pVal);
         New(const parent_type &other);
         New(const string &str);
         New(const char *sz);
         New(const initializer_list<float>& list);
         New(float val);
         New(int val);
+    };
+
+    class CNew : public class_type::CPtr {
+        typedef class_type::CPtr parent_type;
+    public:
+        CNew();
+        CNew(const class_type::Ptr &other);
+        CNew(const parent_type::element_type* pVal);
+        CNew(const parent_type &other);
+        CNew(const string &str);
+        CNew(const char *sz);
+        CNew(const initializer_list<float>& list);
+        CNew(float val);
+        CNew(int val);
     };
 
     //virtual bool isNumeric() const = 0;
@@ -46,17 +60,17 @@ public:
     virtual void put(float idx, float value) = 0;
     virtual void put(intptr_t idx, float value) = 0;
     virtual void putAll(float value) = 0;
-    virtual IStringValue* assign(const IStateValue::CPtr &other) = 0;
+    virtual IStringValue* assign(const IStateValue::CNew &other) = 0;
     virtual IStringValue* assign(const std::initializer_list<float> &list) = 0;
-    virtual void interpolateFrom(const IStateValue::CPtr &other) = 0;
-    virtual float cosineDistance(const IStateValue::CPtr &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const = 0;
-    virtual bool equals(const IStateValue::CPtr &other) const = 0;
+    virtual void interpolateFrom(const IStateValue::CNew &other) = 0;
+    virtual float cosineDistance(const IStateValue::CNew &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const = 0;
+    virtual bool equals(const IStateValue::CNew &other) const = 0;
     virtual bool equals(const std::initializer_list<float> &list) const = 0;
 
-    virtual void add(const IStateValue::CPtr &other) = 0;
-    virtual void mul(const IStateValue::CPtr &other) = 0;
-    virtual void and_logic(const IStateValue::CPtr &other) = 0;
-    virtual void or_logic (const IStateValue::CPtr &other) = 0;
+    virtual void add(const IStateValue::CNew &other) = 0;
+    virtual void mul(const IStateValue::CNew &other) = 0;
+    virtual void and_logic(const IStateValue::CNew &other) = 0;
+    virtual void or_logic (const IStateValue::CNew &other) = 0;
     virtual void add(float other) = 0;
     virtual void mul(float other) = 0;
     virtual void and_logic(bool other) = 0;
@@ -172,12 +186,12 @@ inline bool operator !=(const IStateValue& a, bool b) {
 }
 
 inline IStateValue& operator +=(IStateValue& a, const IStateValue& b) {
-    a.add(IStateValue::CPtr(&b));
+    a.add(IStateValue::CNew(&b));
     return a;
 }
 
 inline IStateValue& operator *=(IStateValue& a, const IStateValue& b) {
-    a.mul(IStateValue::CPtr(&b));
+    a.mul(IStateValue::CNew(&b));
     return a;
 }
 

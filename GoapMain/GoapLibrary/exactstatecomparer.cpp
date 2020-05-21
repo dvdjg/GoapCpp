@@ -21,7 +21,7 @@ float ExactStateComparer::distancePure(IState::CPtr state1, IState::CPtr state2)
         auto key = pair2.first;
         auto value2 = pair2.second;
         auto value1 = state1->at(key);
-        if (*value1 != *value2) {
+        if (!value1 || *value1 != *value2) {
             percent += 1;
         }
         ++s2Count;
