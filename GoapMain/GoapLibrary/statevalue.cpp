@@ -1,7 +1,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
-#include <functional>
 #include "termcolor/termcolor.hpp"
 #include "statevalue.h"
 #include "basicmath.h"
@@ -411,13 +410,13 @@ void StateValue::afterAssign() {
 #endif
 }
 
-IStateValue::New::New() : parent(NewPtr<IStateValue>()) {
+IStateValue::New::New() : parent_type(NewPtr<IStateValue>()) {
 }
 
-IStateValue::New::New(IStateValue *pVal) : parent(pVal) {
+IStateValue::New::New(IStateValue *pVal) : parent_type(pVal) {
 }
 
-IStateValue::New::New(const IStateValue::New::parent &other) : parent(other) {
+IStateValue::New::New(const goap::IStateValue::New::parent_type &other) : parent_type(other) {
     get()->assign(other);
 }
 
@@ -433,8 +432,9 @@ IStateValue::New::New(const initializer_list<float> &list) : New() {
     get()->assign(list);
 }
 
-IStateValue::New::New(float val) : New() {
-    get()->assign(initializer_list<float>{val});
+IStateValue::New::New(float val) : New(initializer_list<float>{val}) {
+}
+IStateValue::New::New(int val) : New(static_cast<float>(val)) {
 }
 
 

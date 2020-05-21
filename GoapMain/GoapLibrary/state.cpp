@@ -121,11 +121,15 @@ IStateValue& State::atRef(const std::string &str) const {
     return atRef(NewPtr<IStateValue>({}, str));
 }
 
-IState* State::put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+//IState* State::put(const IStateValue::CPtr &key, const IStateValue::New &value) {
+//    _data[key] = value;
+//    return this;
+//}
+IState* State::put(const IStateValue::New &key, const IStateValue::New &value) {
     _data[key] = value;
     return this;
 }
-
+/*
 IState* State::put(const std::string &str, const IStateValue::Ptr &value) {
     return put(NewPtr<IStateValue>({}, str), value);
 }
@@ -141,49 +145,57 @@ IState* State::put(const std::string &str, std::initializer_list<float> list) {
 IState* State::put(const string &str, float number) {
     return put(str, {number});
 }
+*/
+IState* State::add(const IStateValue::New &key, const IStateValue::New &value) {
+    *_data[key] += *value;
+    return this;
+}
+//IState* State::add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+//    *_data[key] += *value;
+//    return this;
+//}
 
+//IState* State::add(const std::string &str, const IStateValue::Ptr &value) {
+//    return add(NewPtr<IStateValue>({}, str), value);
+//}
 
-IState* State::add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+//IState* State::add(const std::string &str, const std::string &value) {
+//    return add(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
+//}
+
+//IState* State::add(const std::string &str, std::initializer_list<float> list) {
+//    return add(str, NewPtr<IStateValue>({}, list));
+//}
+
+//IState* State::add(const string &str, float number) {
+//    return add(str, {number});
+//}
+
+IState* State::mul(const IStateValue::New &key, const IStateValue::New &value) {
     *_data[key] += *value;
     return this;
 }
 
-IState* State::add(const std::string &str, const IStateValue::Ptr &value) {
-    return add(NewPtr<IStateValue>({}, str), value);
-}
+//IState* State::mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
+//    *_data[key] += *value;
+//    return this;
+//}
 
-IState* State::add(const std::string &str, const std::string &value) {
-    return add(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
-}
+//IState* State::mul(const std::string &str, const IStateValue::Ptr &value) {
+//    return mul(NewPtr<IStateValue>({}, str), value);
+//}
 
-IState* State::add(const std::string &str, std::initializer_list<float> list) {
-    return add(str, NewPtr<IStateValue>({}, list));
-}
+//IState* State::mul(const std::string &str, const std::string &value) {
+//    return mul(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
+//}
 
-IState* State::add(const string &str, float number) {
-    return add(str, {number});
-}
+//IState* State::mul(const std::string &str, std::initializer_list<float> list) {
+//    return mul(str, NewPtr<IStateValue>({}, list));
+//}
 
-IState* State::mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) {
-    *_data[key] += *value;
-    return this;
-}
-
-IState* State::mul(const std::string &str, const IStateValue::Ptr &value) {
-    return mul(NewPtr<IStateValue>({}, str), value);
-}
-
-IState* State::mul(const std::string &str, const std::string &value) {
-    return mul(NewPtr<IStateValue>({}, str), NewPtr<IStateValue>({}, value));
-}
-
-IState* State::mul(const std::string &str, std::initializer_list<float> list) {
-    return mul(str, NewPtr<IStateValue>({}, list));
-}
-
-IState* State::mul(const string &str, float number) {
-    return mul(str, {number});
-}
+//IState* State::mul(const string &str, float number) {
+//    return mul(str, {number});
+//}
 
 
 intptr_t State::size() const

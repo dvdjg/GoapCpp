@@ -25,15 +25,16 @@ public:
     typedef explicit_ptr<const IStateValue> CPtr;
 
     class New : public class_type::Ptr {
-        typedef class_type::Ptr parent;
+        typedef class_type::Ptr parent_type;
     public:
         New();
         New(class_type* pVal);
-        New(const parent &other);
+        New(const parent_type &other);
         New(const string &str);
         New(const char *sz);
         New(const initializer_list<float>& list);
         New(float val);
+        New(int val);
     };
 
     //virtual bool isNumeric() const = 0;

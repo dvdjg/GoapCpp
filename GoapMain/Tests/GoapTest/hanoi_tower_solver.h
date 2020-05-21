@@ -30,23 +30,24 @@ using namespace std;
 class hanoi_tower_solver
 {
     IPlanner::Ptr _planner;
-    map<size_t, IPlanner::Ptr> _planners;
     IState::CPtr _initialState;
     IState::CPtr _goalState;
     size_t _n;
 
     IPlanningStateMeter::CPtr _planningStateMeter;
 
+public:
+    list<IPlanningAction::CPtr> makePlan(IState::map_value2value_type initial, IState::map_value2value_type goal, size_t n = 3) {
+        tower_plan(initial, goal, n);
+        return makePlan();
+    }
+
 private:
     void tower_plan(IState::map_value2value_type initial, IState::map_value2value_type goal, size_t n = 3) {
         _n = n;
         _initialState = NewPtr<IState>()->assign(initial);
         _goalState = NewPtr<IState>()->assign(goal);
-        _planner = _planners[n];
-        if (!_planner) {
-            _planner = planning_actions(n);
-            _planners[n] = _planner;
-        }
+        _planner = planning_actions(n);
     }
 
     IPlanner::Ptr planning_actions(size_t n = 3) {
@@ -74,7 +75,7 @@ private:
         return planner;
     }
 
-    list<IPlanningAction::CPtr> MakePlan() {
+    list<IPlanningAction::CPtr> makePlan() {
         IPlanningStateComparer::Ptr comparer = NewPtr<IPlanningStateComparer>(EXACTSTATEMETER_SINGLETON);
         if (!_planningStateMeter || *_planningStateMeter->goalState() != *_goalState) {
             auto functionStateMeter = Goap::newFunctionStateMeter(_goalState);
@@ -99,7 +100,7 @@ private:
             _planningStateMeter = functionStateMeter;
         }
 
-        auto scopeTimer = Goap::newScopeTime("MakePlan: ", [](const char *szMessage, double time, const char *szUnits) {
+        auto scopeTimer = Goap::newScopeTime("makePlan: ", [](const char *szMessage, double time, const char *szUnits) {
             LOG(DEBUG) << szMessage << ": " << " actions, " << time << " " << szUnits;
         });
         list<IPlanningAction::CPtr> actionsArray;
@@ -116,10 +117,10 @@ private:
 //    {
 //        var Plan:Vector.<IPlanningAction>;
 //        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, "C1":null, "C2":null, "C3":null }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
-//        plan = MakePlan();
+//        plan = makePlan();
 
 //        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7}, {"A8", 8} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7}, {"C8", 8} }, 8);
-//        plan = MakePlan();
+//        plan = makePlan();
 //    }
 
     // A1 1  B1 |  C1 |
@@ -131,26 +132,19 @@ public:
     void run()
     {
         list<IPlanningAction::CPtr> plan;
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
 
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
 
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5} }, 5);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5} }, 5);
 
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6} }, 6);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6} }, 6);
 
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
 
-        tower_plan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7}, {"A8", 8} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7}, {"C8", 8} }, 8);
-        plan = MakePlan();
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7}, {"A8", 8} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7}, {"C8", 8} }, 8);
 
-        tower_plan( { {"A3", 1}, {"A4", 2}, {"A5", 3}, {"A6", 4}, {"A7", 5}, {"B6", 6}, {"B7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
-        plan = MakePlan();
+        plan = makePlan( { {"A3", 1}, {"A4", 2}, {"A5", 3}, {"A6", 4}, {"A7", 5}, {"B6", 6}, {"B7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
     }
 
 
@@ -238,7 +232,7 @@ public:
             b = concatStringInt(to, n);
         }
         // Update the source state
-        state->put(b, state->atRef(a));
+        state->put(b, state->at(a));
         state->remove(a);
     }
 };

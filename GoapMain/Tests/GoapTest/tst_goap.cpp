@@ -1,6 +1,9 @@
 #include <gmock/gmock.h>
 #include <list>
 #include <unordered_map>
+#include <future>
+#include <thread>
+#include "termcolor/termcolor.hpp"
 #include "explicit_ptr.h"
 #include "goaplibrary.h"
 
@@ -14,6 +17,7 @@
 
 using namespace goap;
 using namespace std;
+using namespace termcolor;
 
 class GoapTest : public ::testing::Test
 {
@@ -68,7 +72,6 @@ TEST_F(GoapTest, TestNumericComparer)
     EXPECT_GT(distance1, distance2);
     EXPECT_EQ(false, bdistance2);
 
-
     float distance3 = numericalComparer->distance(state3, targetState);
     EXPECT_EQ(0, distance3);
 
@@ -78,15 +81,59 @@ TEST_F(GoapTest, TestNumericComparer)
 
 TEST_F(GoapTest, TestTowerSolver)
 {
-    hanoi_tower_solver tower_solver;
-    //backing.run();
-    //float REF_TEMP = backing_a_pie::REF_TEMP;
-    //backing.backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", 1}});
-    //IState::CPtr initialState = backing.initialState();
-    //std::list<IPlanningAction::CPtr> plan = backing.MakePlan();
-    tower_solver.run();
+    typedef list<IPlanningAction::CPtr> lstPlan;
 
-
+    std::future<lstPlan> f1 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
+        EXPECT_EQ(7, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f2 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
+        EXPECT_EQ(15, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f3 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5} }, 5);
+        EXPECT_EQ(31, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f4 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6} }, 6);
+        EXPECT_EQ(63, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f5 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
+        EXPECT_EQ(127, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f6 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7}, {"A8", 8} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7}, {"C8", 8} }, 8);
+        EXPECT_EQ(255, plan.size());
+        return plan;
+    });
+    std::future<lstPlan> f7 = std::async(std::launch::async, []{
+        hanoi_tower_solver tower_solver;
+        lstPlan plan = tower_solver.makePlan( { {"A3", 1}, {"A4", 2}, {"A5", 3}, {"A6", 4}, {"A7", 5}, {"B6", 6}, {"B7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
+        EXPECT_EQ(160, plan.size());
+        return plan;
+    });
+    std::cout << magenta << "Waiting..." << reset << std::flush;
+    f1.wait();
+    f2.wait();
+    f3.wait();
+    f4.wait();
+    f5.wait();
+    f6.wait();
+    f7.wait();
+    std::cout << magenta << "Computed." << reset << std::flush;
 }
 
 TEST_F(GoapTest, TestBackingAPie)

@@ -30,27 +30,30 @@ public:
 
     virtual IState* remove(const string &str) = 0;
     virtual IState* remove(const IStateValue::CPtr &key) = 0;
-    virtual IState* put(const string &str, const string &value) = 0;
-    virtual IState* put(const string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState* put(const string &str, initializer_list<float> list) = 0;
-    virtual IState* put(const string &str, float number) = 0;
-    virtual IState* put(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
-    virtual IState* add(const string &str, const string &value) = 0;
-    virtual IState* add(const string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState* add(const string &str, initializer_list<float> list) = 0;
-    virtual IState* add(const string &str, float number) = 0;
-    virtual IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
-    virtual IState* mul(const string &str, const string &value) = 0;
-    virtual IState* mul(const string &str, const IStateValue::Ptr &value) = 0;
-    virtual IState* mul(const string &str, initializer_list<float> list) = 0;
-    virtual IState* mul(const string &str, float number) = 0;
-    virtual IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    //virtual IState* put(const string &str, const string &value) = 0;
+    //virtual IState* put(const string &str, const IStateValue::Ptr &value) = 0;
+    //virtual IState* put(const string &str, initializer_list<float> list) = 0;
+    //virtual IState* put(const string &str, float number) = 0;
+    //virtual IState* put(const IStateValue::CPtr &key, const IStateValue::New &value) = 0;
+    virtual IState* put(const IStateValue::New &key, const IStateValue::New &value) = 0;
+    //virtual IState* add(const string &str, const string &value) = 0;
+    //virtual IState* add(const string &str, const IStateValue::Ptr &value) = 0;
+    //virtual IState* add(const string &str, initializer_list<float> list) = 0;
+    //virtual IState* add(const string &str, float number) = 0;
+    //virtual IState* add(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* add(const IStateValue::New &key, const IStateValue::New &value) = 0;
+    //virtual IState* mul(const string &str, const string &value) = 0;
+    //virtual IState* mul(const string &str, const IStateValue::Ptr &value) = 0;
+    //virtual IState* mul(const string &str, initializer_list<float> list) = 0;
+    //virtual IState* mul(const string &str, float number) = 0;
+    //virtual IState* mul(const IStateValue::CPtr &key, const IStateValue::Ptr &value) = 0;
+    virtual IState* mul(const IStateValue::New &key, const IStateValue::New &value) = 0;
     virtual IState* addCost(float c) = 0;
     virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CPtr &key) const = 0;
     virtual IStateValue & atRef(const string &str) const = 0;
-    virtual const IStateValue* at(const IStateValue::CPtr &key) const { return &atRef(key); }
-    virtual const IStateValue* at(const string &str) const { return &atRef(str); }
+    virtual IStateValue* at(const IStateValue::CPtr &key) const { return &atRef(key); }
+    virtual IStateValue* at(const string &str) const { return &atRef(str); }
     virtual pair_value at(intptr_t idx) const = 0;
     virtual intptr_t size() const = 0;
     virtual bool empty() const { return size() == 0; }
