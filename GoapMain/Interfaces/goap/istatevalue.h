@@ -20,7 +20,7 @@ public:
 
     typedef IStateValue class_type;
     typedef float value_type;
-    typedef intptr_t index_type;
+    typedef int64_t index_type;
     typedef explicit_ptr<IStateValue> Ptr;
     typedef explicit_ptr<const IStateValue> CPtr;
 
@@ -34,6 +34,7 @@ public:
         New(const char *sz);
         New(const initializer_list<float>& list);
         New(float val);
+        New(int64_t val);
         New(int val);
     };
 
@@ -48,17 +49,20 @@ public:
         CNew(const char *sz);
         CNew(const initializer_list<float>& list);
         CNew(float val);
+        CNew(int64_t val);
         CNew(int val);
     };
 
     //virtual bool isNumeric() const = 0;
-    virtual intptr_t size() const = 0; ///< From 0 to 1000
+    virtual int64_t size() const = 0; ///< From 0 to 1000
     virtual bool empty() const { return size() == 0; }
-    virtual void resize(intptr_t len) = 0;
+    virtual void resize(int64_t len) = 0;
     virtual float at(float idx) const = 0;
-    virtual float at(intptr_t idx) const = 0;
+    virtual float at(int64_t idx) const = 0;
+    virtual float at(int idx) const { return at(static_cast<int64_t>(idx));}
     virtual void put(float idx, float value) = 0;
-    virtual void put(intptr_t idx, float value) = 0;
+    virtual void put(int64_t idx, float value) = 0;
+    virtual void put(int idx, float value) { put(static_cast<int64_t>(idx), value);}
     virtual void putAll(float value) = 0;
     virtual IStringValue* assign(const IStateValue::CNew &other) = 0;
     virtual IStringValue* assign(const std::initializer_list<float> &list) = 0;
@@ -79,46 +83,34 @@ public:
     virtual void clear() = 0;
     //virtual std::size_t hash() const = 0;
 
-    inline float at(int idx) const {
-        return at(intptr_t(idx));
+    inline float at(uint64_t idx) const {
+        return at(int64_t(idx));
     }
 
-    inline void put(int idx, float value) {
-        put(intptr_t(idx), value);
-    }
-
-    inline float at(unsigned idx) const {
-        return at(intptr_t(idx));
-    }
-
-    inline void put(unsigned idx, float value) {
-        put(intptr_t(idx), value);
+    inline void put(uint64_t idx, float value) {
+        put(int64_t(idx), value);
     }
 
     inline float operator[](float idx) const {
         return at(idx);
     }
 
-    inline float operator[](intptr_t idx) const {
+    inline float operator[](int64_t idx) const {
         return at(idx);
     }
 
-    inline float operator[](int idx) const {
-        return at(idx);
-    }
-
-    inline float operator[](unsigned idx) const {
+    inline float operator[](uint64_t idx) const {
         return at(idx);
     }
 
     inline operator float() const {
-        return at(0);
+        return at(0LL);
     }
 
     inline bool isInt() const {
         bool ret = false;
         if (size() == 1) {
-            float value = at(0);
+            float value = at(0LL);
             float whole, fractional;
             fractional = std::modf(value, &whole);
             ret = fractional == 0.f;
@@ -153,7 +145,7 @@ inline bool operator ==(const IStateValue& a, bool other) {
     return other ? !isFalse : isFalse;
 }
 
-inline bool operator ==(const IStateValue& a, int other) {
+inline bool operator ==(const IStateValue& a, int64_t other) {
     return a.equals({float(other)});
 }
 
@@ -177,7 +169,7 @@ inline bool operator !=(const IStateValue& a, float b) {
     return !(a == b);
 }
 
-inline bool operator !=(const IStateValue& a, int b) {
+inline bool operator !=(const IStateValue& a, int64_t b) {
     return !(a == b);
 }
 

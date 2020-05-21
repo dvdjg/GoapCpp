@@ -40,8 +40,8 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
 {
     float percent = 0;
     float countDifferent = 0;
-    int s2Count = 0;
-    int sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
+    IState::index_type s2Count = 0;
+    IState::index_type sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
     for (IState::index_type i = 0; i < stateDst->size(); ++i) {
         auto pairDst = stateDst->at(i);
         auto key = pairDst.first;

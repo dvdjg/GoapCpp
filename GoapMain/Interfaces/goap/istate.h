@@ -25,7 +25,7 @@ public:
     typedef map<IStateValue::CNew, IStateValue::New> map_value2value_type;
 
     typedef float value_type;
-    typedef intptr_t index_type;
+    typedef int64_t index_type;
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
     //virtual data_type::const_iterator begin() const = 0;
@@ -39,8 +39,9 @@ public:
     virtual IState* mulCost(float c) = 0;
     virtual IStateValue & atRef(const IStateValue::CNew &key) const = 0;
     virtual IStateValue* at(const IStateValue::CNew &key) const = 0;
-    virtual pair_value at(intptr_t idx) const = 0;
-    virtual intptr_t size() const = 0;
+    virtual pair_value at(int64_t idx) const = 0;
+    virtual pair_value at(int idx) const { return at(static_cast<int64_t>(idx));}
+    virtual int64_t size() const = 0;
     virtual bool empty() const { return size() == 0; }
     virtual IState* assign(const IState::CPtr &other) = 0;
     virtual IState* assign(const map_value2value_type &map_string_float) = 0;

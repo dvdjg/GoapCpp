@@ -44,12 +44,12 @@ StateValue::StateValue(std::initializer_list<float> list) : _data(list)
     touch();
 }
 
-intptr_t StateValue::size() const
+int64_t StateValue::size() const
 {
-    return intptr_t(_data.size());
+    return int64_t(_data.size());
 }
 
-void StateValue::resize(intptr_t len)
+void StateValue::resize(int64_t len)
 {
     _data.resize(std::size_t(len));
     touch();
@@ -60,16 +60,16 @@ float StateValue::at(float idx) const
     if (_data.size() == 0) {
         return 0.f;
     }
-    float ret = interp2(idx, &_data[0], static_cast<int>(_data.size()));
+    float ret = interp2(idx, &_data[0], static_cast<int64_t>(_data.size()));
     return ret;
 }
 
-float StateValue::at(intptr_t idx) const
+float StateValue::at(int64_t idx) const
 {
-    if (_data.size() == 0) { // || idx >= intptr_t(data.size()) || idx < 0) {
+    if (_data.size() == 0) { // || idx >= int64_t(data.size()) || idx < 0) {
         return 0.f;
-    } else if (idx >= intptr_t(_data.size())) {
-        idx = intptr_t(_data.size()-1);
+    } else if (idx >= int64_t(_data.size())) {
+        idx = int64_t(_data.size()-1);
     } else if (idx < 0) {
         idx = 0;
     }
@@ -208,7 +208,7 @@ ostream &StateValue::toOstream(ostream &ss) const
     return ss;
 }
 
-void StateValue::put(intptr_t idx, float value)
+void StateValue::put(int64_t idx, float value)
 {
     if (idx < 0) {
         throw std::runtime_error(__func__);
@@ -231,7 +231,7 @@ void StateValue::put(float idx, float value)
     if (i < 0) {
         throw std::runtime_error(__func__);
     }
-    put(intptr_t(i), value);
+    put(int64_t(i), value);
 }
 
 std::size_t StateValue::hash() const
@@ -459,6 +459,9 @@ IStateValue::New::New(const initializer_list<float> &list) : New() {
 IStateValue::New::New(float val) : New(initializer_list<float>{val}) {
 }
 
+IStateValue::New::New(int64_t val) : New(static_cast<float>(val)) {
+}
+
 IStateValue::New::New(int val) : New(static_cast<float>(val)) {
 }
 
@@ -486,6 +489,9 @@ IStateValue::CNew::CNew(const initializer_list<float> &list) : CNew(New(list)) {
 }
 
 IStateValue::CNew::CNew(float val) : CNew(initializer_list<float>{val}) {
+}
+
+IStateValue::CNew::CNew(int64_t val) : CNew(static_cast<float>(val)) {
 }
 
 IStateValue::CNew::CNew(int val) : CNew(static_cast<float>(val)) {

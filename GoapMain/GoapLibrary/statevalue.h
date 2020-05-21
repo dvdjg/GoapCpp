@@ -36,12 +36,12 @@ public:
     StateValue(const char* other);
     StateValue(initializer_list<float> list);
 
-    intptr_t size() const override;
-    void resize(intptr_t len) override;
+    int64_t size() const override;
+    void resize(int64_t len) override;
     float at(float idx) const override;
     void put(float idx, float value) override;
-    float at(intptr_t idx) const override;
-    void put(intptr_t idx, float value) override;
+    float at(int64_t idx) const override;
+    void put(int64_t idx, float value) override;
     void putAll(float value) override;
     void interpolateFrom(const IStateValue::CNew &other) override;
     float cosineDistance(const IStateValue::CNew &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;

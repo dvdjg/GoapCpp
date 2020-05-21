@@ -43,8 +43,7 @@ static void insert(database &db, bool is_null)
 {
     int id = 1;
     boost::optional<int> val;
-    if (!is_null)
-    {
+    if (!is_null) {
         val = 5;
     }
 

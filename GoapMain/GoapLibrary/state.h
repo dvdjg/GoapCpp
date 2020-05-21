@@ -35,7 +35,7 @@ public:
     //data_type::const_iterator end() const override;
     list<IStateValue::CPtr> keys() const override;
     IState* remove(const IStateValue::CNew &key) override;
-    pair_value at(intptr_t idx) const override;
+    pair_value at(int64_t idx) const override;
     IStateValue* at(const IStateValue::CNew &key) const override;
     IStateValue& atRef(const IStateValue::CNew &key) const override;
     IState* put(const IStateValue::CNew &key, const IStateValue::New &value) override;
@@ -43,7 +43,7 @@ public:
     IState* mul(const IStateValue::CNew &key, const IStateValue::New &value) override;
     IState* addCost(float c) override;
     IState* mulCost(float c) override;
-    intptr_t size() const override;
+    int64_t size() const override;
     bool equals(const IHashable::CPtr &other) const override;
     bool equals(const IState::CPtr &other) const override;
     float cost() const override;

@@ -15,7 +15,7 @@ ExactStateComparer::Ptr ExactStateComparer::singleton()
 float ExactStateComparer::distancePure(IState::CPtr state1, IState::CPtr state2) const
 {
     float percent = 0;
-    int s2Count = 0;
+    IState::index_type s2Count = 0;
     for (IState::index_type i = 0; i < state2->size(); ++i) {
         auto pair2 = state2->at(i);
         auto key = pair2.first;
@@ -39,8 +39,8 @@ float ExactStateComparer::distance(IState::CPtr state1, IState::CPtr state2) con
 {
     float percent = 0;
     float countDifferent = 0;
-    int s2Count = 0;
-    int sameKeyCount = 0; // Counts the number of keys that state1 has like state2
+    IState::index_type s2Count = 0;
+    IState::index_type sameKeyCount = 0; // Counts the number of keys that state1 has like state2
     for (IState::index_type i = 0; i < state2->size(); ++i) {
         auto pair2 = state2->at(i);
         auto key = pair2.first;

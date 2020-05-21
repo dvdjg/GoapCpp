@@ -68,9 +68,9 @@ IState* State::remove(const IStateValue::CNew &key) {
     return this;
 }
 
-IState::pair_value State::at(intptr_t idx) const {
+IState::pair_value State::at(int64_t idx) const {
     static IStateValue::Ptr nullValue = NewPtr<IStateValue>();
-    if (idx < 0 || idx >= intptr_t(_data.size())) {
+    if (idx < 0 || idx >= int64_t(_data.size())) {
         nullValue->clear();
         return std::make_pair(nullValue, nullValue);
     }
@@ -116,9 +116,9 @@ IState* State::mul(const IStateValue::CNew &key, const IStateValue::New &value) 
     return this;
 }
 
-intptr_t State::size() const
+int64_t State::size() const
 {
-    return intptr_t(_data.size());
+    return int64_t(_data.size());
 }
 
 bool State::equals(const IHashable::CPtr &other) const
@@ -177,7 +177,7 @@ IClonable::Ptr State::clone() const
 {
     auto ptr = NewPtr<IState>();
     ptr->cost(this->cost());
-    for (intptr_t i = 0; i < this->size(); ++i) {
+    for (int64_t i = 0; i < this->size(); ++i) {
         auto pair = this->at(i);
         IStateValue::CPtr key = pair.first;
         IStateValue::Ptr value = dynamic_pointer_cast<IStateValue>(pair.second->clone());

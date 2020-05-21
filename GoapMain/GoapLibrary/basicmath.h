@@ -22,7 +22,7 @@
 
 namespace basicmath
 {
-typedef intptr_t int_type;
+typedef int64_t int_type;
 
 float floatSimilarity(float x, float y); // 0 < are similar < are different < 1
 bool floatEqual(float x, float y);

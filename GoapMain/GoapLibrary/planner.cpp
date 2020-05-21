@@ -77,8 +77,8 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         std::list<IState::CPtr> *pStates) {
     const bool isMonotonic = planningStateMeter->monotonic();
     float minDistance = 1;
-    int analyzedPaths = 0;
-    int rejectedPaths = 0;
+    int64_t analyzedPaths = 0;
+    int64_t rejectedPaths = 0;
     IPlanningAction::CPtr action;
     IState::CPtr stateReachedByPath;
     IPrioritized::Ptr unvisitedPaths_ = unvisitedPathes();
@@ -259,7 +259,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
     size_t nState;
     StatesPlan::Ptr nearStatePlan;
     float nearDistance = 1.0;
-    int nearOffset = -1;
+    int64_t nearOffset = -1;
 
     IPlanningStateComparer::Ptr planningStateComparer = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
     // Search a cached plan for this goal
@@ -327,7 +327,7 @@ ostream & IPlanningAction::planToOstream(ostream &ss, const std::list<IPlanningA
             totalCost += reachedByPath->cost();
             ss << "0. " << green << "init" << reset << " totalCost=" << totalCost << " state=" << *reachedByPath << "\n";
         }
-        int i = 0;
+        int64_t i = 0;
         for (auto &action : actionsArray) {
             if (!action) {
                 break;
@@ -367,7 +367,7 @@ string Planner::toDebugString() const
 ostream &Planner::toOstream(ostream &ss) const
 {
     ss << "Planner. planningMethod=" << _planningMethod << std::endl;
-    int i = 0;
+    int64_t i = 0;
     for (auto &action : _planningActions) {
         ss << " [" << i << "]. " << green << *action << reset << std::endl;
         ++i;
