@@ -39,7 +39,7 @@ bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) 
 float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDst) const
 {
     float percent = 0;
-    float countDifferent = 0;
+    IState::index_type countDifferent = 0;
     IState::index_type s2Count = 0;
     IState::index_type sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
     for (IState::index_type i = 0; i < stateDst->size(); ++i) {

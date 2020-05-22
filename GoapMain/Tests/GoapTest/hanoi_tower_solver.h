@@ -32,25 +32,25 @@ class hanoi_tower_solver
     IPlanner::Ptr _planner;
     IState::CPtr _initialState;
     IState::CPtr _goalState;
-    size_t _n;
+    int _n;
 
     IPlanningStateMeter::CPtr _planningStateMeter;
 
 public:
-    list<IPlanningAction::CPtr> makePlan(IState::map_value2value_type initial, IState::map_value2value_type goal, size_t n = 3) {
+    list<IPlanningAction::CPtr> makePlan(IState::map_value2value_type initial, IState::map_value2value_type goal, int n = 3) {
         tower_plan(initial, goal, n);
         return makePlan();
     }
 
 private:
-    void tower_plan(IState::map_value2value_type initial, IState::map_value2value_type goal, size_t n = 3) {
+    void tower_plan(IState::map_value2value_type initial, IState::map_value2value_type goal, int n = 3) {
         _n = n;
         _initialState = NewPtr<IState>()->assign(initial);
         _goalState = NewPtr<IState>()->assign(goal);
         _planner = planning_actions(n);
     }
 
-    IPlanner::Ptr planning_actions(size_t n = 3) {
+    IPlanner::Ptr planning_actions(int n = 3) {
         list<IPlanningAction::CPtr> planningActions {
             Goap::newPlanningAction("Move from A to B",
                                     [=](IState::CPtr state) -> bool { return validate(state, "A", "B", n); },
@@ -83,7 +83,7 @@ private:
             functionStateMeter->fnDistance([=](IState::CPtr state, IFunctionStateMeter::CPtr stateMeter) {
                 float distanceToGoal = 1;
                 distanceToGoal = stateMeter->exactStateMeter()->distance(state); // Distance to goal
-                size_t an = state->atRef(concatStringInt("A", _n));
+                int an = state->atRef(concatStringInt("A", _n));
                 if (an == _n) {
                     // A conditional suggestion: First remove all elements from the tower 'A'
                     float distance = comparer->distance(state, _initialState);
@@ -192,7 +192,7 @@ public:
      * This is a way of lowering pression from the GC.
      * The integger must be a low number.
      */
-    static string concatStringInt(string str, size_t n)
+    static string concatStringInt(string str, int n)
     {
         return str + to_string(n);
     }
