@@ -88,7 +88,7 @@ private:
                     // A conditional suggestion: First remove all elements from the tower 'A'
                     float distance = comparer->distance(state, _initialState);
                     //float distance2 = numericalComparer->distance(state, _restHelper) * 0.8 + 0.2;
-                    distance = 1.0 - distance / (2 * _n + 1.0);
+                    distance = 1.0f - distance / (2 * _n + 1.0f);
                     if (distanceToGoal > distance)
                         distanceToGoal = distance;
                 }
@@ -101,7 +101,7 @@ private:
         }
 
         auto scopeTimer = Goap::newScopeTime("makePlan: ", [](const char *szMessage, double time, const char *szUnits) {
-            LOG(DEBUG) << szMessage << ": " << " actions, " << time << " " << szUnits;
+            LOG(DEBUG) << szMessage << " " << " actions, " << time << " " << szUnits;
         });
         list<IPlanningAction::CPtr> actionsArray;
         _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);

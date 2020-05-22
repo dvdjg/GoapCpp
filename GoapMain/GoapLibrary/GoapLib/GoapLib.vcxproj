@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\actioninfo.h" />
+    <ClInclude Include="..\basicmath.h" />
+    <ClInclude Include="..\basicostream.h" />
+    <ClInclude Include="..\basicostreamsink.h" />
+    <ClInclude Include="..\basicsinkcollection.h" />
+    <ClInclude Include="..\comparerstatemeter.h" />
+    <ClInclude Include="..\cosinedistance.h" />
+    <ClInclude Include="..\exactstatecomparer.h" />
+    <ClInclude Include="..\functionstatemeter.h" />
+    <ClInclude Include="..\goaplibinscribe.h" />
+    <ClInclude Include="..\goaplibrary.h" />
+    <ClInclude Include="..\goapmemory.h" />
+    <ClInclude Include="..\imemoryvalue.h" />
+    <ClInclude Include="..\newptr.h" />
+    <ClInclude Include="..\numericstatecomparer.h" />
+    <ClInclude Include="..\path.h" />
+    <ClInclude Include="..\planner.h" />
+    <ClInclude Include="..\planningaction.h" />
+    <ClInclude Include="..\planningstatemeter.h" />
+    <ClInclude Include="..\prioritizedqueue.h" />
+    <ClInclude Include="..\prioritizedstack.h" />
+    <ClInclude Include="..\refcounter.h" />
+    <ClInclude Include="..\scopetime.h" />
+    <ClInclude Include="..\scopetimeostream.h" />
+    <ClInclude Include="..\state.h" />
+    <ClInclude Include="..\statesplan.h" />
+    <ClInclude Include="..\statevalue.h" />
+    <ClInclude Include="..\time_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\basicmath.cpp" />
+    <ClCompile Include="..\basicostream.cpp" />
+    <ClCompile Include="..\basicsinkcollection.cpp" />
+    <ClCompile Include="..\exactstatecomparer.cpp" />
+    <ClCompile Include="..\functionstatemeter.cpp" />
+    <ClCompile Include="..\goaplibinscribe.cpp" />
+    <ClCompile Include="..\goaplibrary.cpp" />
+    <ClCompile Include="..\memory.cpp" />
+    <ClCompile Include="..\numericstatecomparer.cpp" />
+    <ClCompile Include="..\path.cpp" />
+    <ClCompile Include="..\planner.cpp" />
+    <ClCompile Include="..\prioritizedqueue.cpp" />
+    <ClCompile Include="..\prioritizedstack.cpp" />
+    <ClCompile Include="..\state.cpp" />
+    <ClCompile Include="..\statevalue.cpp" />
+    <ClCompile Include="..\time_utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdparty\half\Half\Half.vcxproj">
+      <Project>{459ae9ca-7735-4904-b75c-877017b1f64b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e105413b-71d8-4f3f-930b-ba0117dca122}</ProjectGuid>
+    <RootNamespace>GoapLib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:/Programa/boost_1_71_0;$(SoluitonDir)/3rdparty/zlib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:/Programa/boost_1_71_0;$(SoluitonDir)/3rdparty/zlib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>F:/Programa/boost_1_71_0;$(SoluitonDir)/3rdparty/zlib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:/Programa/boost_1_71_0;$(SoluitonDir)/3rdparty/zlib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX;VC_EXTRALEAN;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_AFX_SECURE_NO_WARNINGS;_ATL_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;HAS_BOOST_SMART_INTRUSIVE_PTR QT_DEPRECATED_WARNINGS _GNU_SOURCE \;_MODERN_SQLITE_BOOST_OPTIONAL_SUPPORT SQLITE_ENABLE_FTS SQLITE_ENABLE_RTREE SQLITE_ENABLE_COLUMN_METADATA \;SQLITE_ENABLE_MEMORY_MANAGEMENT SQLITE_ALLOW_URI_AUTHORITY SQLITE_ENABLE_API_ARMOR SQLITE_ENABLE_COLUMN_METADATA SQLITE_ENABLE_DBSTAT_VTAB \;SQLITE_ENABLE_EXPLAIN_COMMENTS SQLITE_ENABLE_FTS5 SQLITE_ENABLE_JSON1 SQLITE_ENABLE_PREUPDATE_HOOK SQLITE_ENABLE_RBU \;SQLITE_ENABLE_SESSION SQLITE_ENABLE_STAT4 SQLITE_ENABLE_UPDATE_DELETE_LIMIT SQLITE_ENABLE_UNLOCK_NOTIFY \;SQLITE_SOUNDEX SQLITE_USE_FCNTL_TRAC SQLITE_THREADSAFE SQLITE_HAS_CODEC;HAVE_ZLIB;STATIC LZMA_API_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>F:\Programa\boost_1_71_0;$(SolutionDir)\Interfaces;$(SolutionDir)\Factory;$(SolutionDir)\3rdparty\termcolor\include;$(SolutionDir)\3rdparty\half;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>F:\Programa\boost_1_71_0\stage\lib</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX;VC_EXTRALEAN;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_AFX_SECURE_NO_WARNINGS;_ATL_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;HAS_BOOST_SMART_INTRUSIVE_PTR QT_DEPRECATED_WARNINGS _GNU_SOURCE \;_MODERN_SQLITE_BOOST_OPTIONAL_SUPPORT SQLITE_ENABLE_FTS SQLITE_ENABLE_RTREE SQLITE_ENABLE_COLUMN_METADATA \;SQLITE_ENABLE_MEMORY_MANAGEMENT SQLITE_ALLOW_URI_AUTHORITY SQLITE_ENABLE_API_ARMOR SQLITE_ENABLE_COLUMN_METADATA SQLITE_ENABLE_DBSTAT_VTAB \;SQLITE_ENABLE_EXPLAIN_COMMENTS SQLITE_ENABLE_FTS5 SQLITE_ENABLE_JSON1 SQLITE_ENABLE_PREUPDATE_HOOK SQLITE_ENABLE_RBU \;SQLITE_ENABLE_SESSION SQLITE_ENABLE_STAT4 SQLITE_ENABLE_UPDATE_DELETE_LIMIT SQLITE_ENABLE_UNLOCK_NOTIFY \;SQLITE_SOUNDEX SQLITE_USE_FCNTL_TRAC SQLITE_THREADSAFE SQLITE_HAS_CODEC;HAVE_ZLIB;STATIC LZMA_API_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>F:\Programa\boost_1_71_0;$(SolutionDir)\Interfaces;$(SolutionDir)\Factory;$(SolutionDir)\3rdparty\termcolor\include;$(SolutionDir)\3rdparty\half;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>F:\Programa\boost_1_71_0\stage\lib</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX;VC_EXTRALEAN;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_AFX_SECURE_NO_WARNINGS;_ATL_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;HAS_BOOST_SMART_INTRUSIVE_PTR;QT_DEPRECATED_WARNINGS _GNU_SOURCE;_MODERN_SQLITE_BOOST_OPTIONAL_SUPPORT;SQLITE_ENABLE_FTS;SQLITE_ENABLE_RTREE;SQLITE_ENABLE_COLUMN_METADATA;SQLITE_ENABLE_MEMORY_MANAGEMENT;SQLITE_ALLOW_URI_AUTHORITY;SQLITE_ENABLE_API_ARMOR;SQLITE_ENABLE_DBSTAT_VTAB;SQLITE_ENABLE_EXPLAIN_COMMENTS;SQLITE_ENABLE_FTS5;SQLITE_ENABLE_JSON1;SQLITE_ENABLE_PREUPDATE_HOOK;SQLITE_ENABLE_RBU;SQLITE_ENABLE_SESSION;SQLITE_ENABLE_STAT4;SQLITE_ENABLE_UPDATE_DELETE_LIMIT;SQLITE_ENABLE_UNLOCK_NOTIFY;SQLITE_SOUNDEX;SQLITE_USE_FCNTL_TRAC;SQLITE_THREADSAFE;SQLITE_HAS_CODEC;HAVE_ZLIB;STATIC;LZMA_API_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>F:\Programa\boost_1_71_0;$(SolutionDir)\Interfaces;$(SolutionDir)\Factory;$(SolutionDir)\3rdparty\termcolor\include;$(SolutionDir)\3rdparty\half;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>F:\Programa\boost_1_71_0\stage\lib</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX;VC_EXTRALEAN;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_AFX_SECURE_NO_WARNINGS;_ATL_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0501;HAS_BOOST_SMART_INTRUSIVE_PTR;QT_DEPRECATED_WARNINGS _GNU_SOURCE;_MODERN_SQLITE_BOOST_OPTIONAL_SUPPORT;SQLITE_ENABLE_FTS;SQLITE_ENABLE_RTREE;SQLITE_ENABLE_COLUMN_METADATA;SQLITE_ENABLE_MEMORY_MANAGEMENT;SQLITE_ALLOW_URI_AUTHORITY;SQLITE_ENABLE_API_ARMOR;SQLITE_ENABLE_DBSTAT_VTAB;SQLITE_ENABLE_EXPLAIN_COMMENTS;SQLITE_ENABLE_FTS5;SQLITE_ENABLE_JSON1;SQLITE_ENABLE_PREUPDATE_HOOK;SQLITE_ENABLE_RBU;SQLITE_ENABLE_SESSION;SQLITE_ENABLE_STAT4;SQLITE_ENABLE_UPDATE_DELETE_LIMIT;SQLITE_ENABLE_UNLOCK_NOTIFY;SQLITE_SOUNDEX;SQLITE_USE_FCNTL_TRAC;SQLITE_THREADSAFE;SQLITE_HAS_CODEC;HAVE_ZLIB;STATIC;LZMA_API_STATIC</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>F:\Programa\boost_1_71_0;$(SolutionDir)\Interfaces;$(SolutionDir)\Factory;$(SolutionDir)\3rdparty\termcolor\include;$(SolutionDir)\3rdparty\half;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>F:\Programa\boost_1_71_0\stage\lib</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

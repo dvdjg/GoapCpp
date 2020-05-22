@@ -78,10 +78,10 @@ IPlanner::Ptr backing_a_pie::backing_actions() {
                                 [](IState::Ptr  state) -> void { wait(state->put("BowlLocation", "Table")); }),
         Goap::newPlanningAction("AddEggToBowl",
                                 [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && state->atRef("EggIsOnBowl") != true; },
-                                [](IState::Ptr  state) -> void { wait(state->put("EggIsOnBowl", true)->mulCost(state->atRef("ButterIsOnBowl") != true ? 0.9 : 1.0)); }),
+                                [](IState::Ptr  state) -> void { wait(state->put("EggIsOnBowl", true)->mulCost(state->atRef("ButterIsOnBowl") != true ? 0.9f : 1.0f)); }),
         Goap::newPlanningAction("AddButterToBowl",
                                 [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && state->atRef("ButterIsOnBowl") != true; },
-                                [](IState::Ptr  state) -> void { wait(state->put("ButterIsOnBowl", true)->mulCost(state->atRef("FlourIsOnBowl") != true ? 0.9 : 1.0)); }),
+                                [](IState::Ptr  state) -> void { wait(state->put("ButterIsOnBowl", true)->mulCost(state->atRef("FlourIsOnBowl") != true ? 0.9f : 1.0f)); }),
         Goap::newPlanningAction("AddFlourToBowl",
                                 [](IState::CPtr state) -> bool { return state->atRef("BowlLocation") == "Table" && state->atRef("FlourIsOnBowl") != true; },
                                 [](IState::Ptr  state) -> void { wait(state->put("FlourIsOnBowl", true)); }),
@@ -121,13 +121,13 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
             float distance = distanceToGoal;
             if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
-                float distance1 = numericalComparer->distance(state, _backingHelper) * 0.8 + 0.2;
+                float distance1 = numericalComparer->distance(state, _backingHelper) * 0.8f + 0.2f;
                 //float distance2 = numericalComparer->distance(state, _restHelper) * 0.8 + 0.2;
                 distance = distance1; // min(distance1, distance2);
             }
             if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
-                distance = numericalComparer->distance(state, _orderHelper) * 0.8 + 0.2;
+                distance = numericalComparer->distance(state, _orderHelper) * 0.8f + 0.2f;
             }
             if (distanceToGoal > distance)
                 distanceToGoal = distance;

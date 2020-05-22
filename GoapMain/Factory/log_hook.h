@@ -27,6 +27,7 @@ inline const char* getLogLevelLabel(loglevel type) {
         case INFO:  label = "INFO "; break;
         case WARN:  label = "WARN "; break;
         case ERROR: label = "ERROR"; break;
+        default:    label = "INVALID";
     }
     return label;
 }

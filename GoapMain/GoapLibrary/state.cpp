@@ -132,7 +132,7 @@ bool State::equals(const IState::CPtr &other) const
     auto o = dynamic_cast<const State*>(other.get());
     bool ret = o && basicmath::floatEqual(cost(), o->cost()) && _data.size() == o->_data.size();
     if (ret) {
-        LOG(DEBUG) << *this << " != " << *other << endl;
+        //LOG(DEBUG) << *this << " != " << *other << endl;
         for (auto & it : _data) {
             data_type::const_iterator it2 = o->_data.find(it.first);
             if (it2 == o->_data.cend() || !it.second->equals(it2->second)) {

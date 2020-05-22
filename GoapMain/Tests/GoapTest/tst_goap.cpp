@@ -1,4 +1,4 @@
-#include <gmock/gmock.h>
+#include "gtest/gtest.h"
 #include <list>
 #include <unordered_map>
 #include <future>
@@ -90,8 +90,6 @@ TEST_F(GoapTest, TestTowerSolver)
         EXPECT_EQ(7, plan.size());
         return plan;
     });
-
-    f1.wait();
     std::future<lstPlan> f2 = std::async(launch, []{
         hanoi_tower_solver tower_solver;
         lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
@@ -128,7 +126,9 @@ TEST_F(GoapTest, TestTowerSolver)
         EXPECT_EQ(160, plan.size());
         return plan;
     });
+
     std::cout << magenta << "Waiting..." << reset << std::flush;
+    f1.wait();
     f2.wait();
     f3.wait();
     f4.wait();
