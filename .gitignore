@@ -23,3 +23,9 @@ GoapMain/*.user.*
 /GoapMain/3rdparty/termcolor/termcolor/termcolor.vcxproj.filters
 /GoapMain/3rdparty/half/Half/Half.vcxproj.filters
 /GoapMain/enc_temp_folder/6584e379ac9c4e994479b2ff311e65e
+/GoapMain/3rdparty/half/Half/x64/Release
+/GoapMain/GoapLibrary/GoapLib/x64/Release/GoapLib.tlog
+/GoapMain/GoapLibrary/GoapLib/x64/Release
+/GoapMain/Tests/Tests/x64/Release/Tests.tlog
+/GoapMain/Tests/Tests/x64/Release
+/GoapMain/x64/Release

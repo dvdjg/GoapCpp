@@ -163,7 +163,6 @@
   <ItemGroup>
     <ClCompile Include="..\eLut.cpp" />
     <ClCompile Include="..\half.cpp" />
-    <ClCompile Include="..\toFloat.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

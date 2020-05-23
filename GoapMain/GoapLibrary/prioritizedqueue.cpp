@@ -21,7 +21,7 @@ int64_t PrioritizedQueue::size() const {
     return _queues.size();
 }
 
-void PrioritizedQueue::push(IPath::Ptr path) {
+void PrioritizedQueue::push(const IPath::Ptr& path) {
     float pathCost = path->cost();
     std::int64_t icost = static_cast<std::int64_t>(100.0f * pathCost + 0.5f);
     if (_queues.find(icost) == _queues.end()) {
@@ -33,7 +33,7 @@ void PrioritizedQueue::push(IPath::Ptr path) {
     queue.push_back(path);
 }
 
-void PrioritizedQueue::pushLazy(IPath::Ptr path) {
+void PrioritizedQueue::pushLazy(const IPath::Ptr& path) {
     _lazyArray.push_back(path);
 }
 

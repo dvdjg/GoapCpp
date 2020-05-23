@@ -171,7 +171,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         ++analyzedPaths;
     }
     if (bReachedGoal) {
-        LOG(INFO) << "[MakePlan] OK. analyzedPaths:" << analyzedPaths << ", rejectedPaths:" << rejectedPaths
+        LOG(DEBUG) << "[MakePlan] OK. analyzedPaths:" << analyzedPaths << ", rejectedPaths:" << rejectedPaths
                   << ", unvisitedPathes:"<< unvisitedPaths_->size();
     } else {
         LOG(WARN) << "[MakePlan] FAIL. analyzedPaths:" << analyzedPaths << ", rejectedPaths:" << rejectedPaths

@@ -15,7 +15,7 @@ OutputType t_shift_coef(InputIterator begin, size_t n)
         sum -= *it;
         ++count;
     }
-    return sum / count;
+    return (count == 0) ? 0 : sum / count;
 }
 
 template<typename OutputType = float, typename InputIterator = float *>

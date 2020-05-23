@@ -32,11 +32,23 @@ class hanoi_tower_solver
     IPlanner::Ptr _planner;
     IState::CPtr _initialState;
     IState::CPtr _goalState;
-    int _n;
+    int _n = 0;
+    list<IPlanningAction::CPtr> _plan;
 
     IPlanningStateMeter::CPtr _planningStateMeter;
 
 public:
+    hanoi_tower_solver() {
+    }
+    hanoi_tower_solver(const hanoi_tower_solver& other) :
+        _planner(other._planner),
+        _initialState(other._initialState),
+        _goalState(other._goalState),
+        _n(other._n),
+        _plan(other._plan),
+        _planningStateMeter(other._planningStateMeter) {
+    }
+
     list<IPlanningAction::CPtr> makePlan(IState::map_value2value_type initial, IState::map_value2value_type goal, int n = 3) {
         tower_plan(initial, goal, n);
         return makePlan();
@@ -106,7 +118,7 @@ private:
         list<IPlanningAction::CPtr> actionsArray;
         _planner->makePlanCached(_initialState, _planningStateMeter, actionsArray);
         LOG(DEBUG) << "Goal length=" << _goalState->size() << " deep, " << pow(2, _goalState->size() - 1) << " optimus, " << actionsArray.size() << " actions:\n   " << actionsArray;
-
+        _plan = actionsArray;
         IPlanningAction::planToOstream(cerr, actionsArray, _initialState);
 
         return actionsArray;
@@ -147,7 +159,13 @@ public:
         plan = makePlan( { {"A3", 1}, {"A4", 2}, {"A5", 3}, {"A6", 4}, {"A7", 5}, {"B6", 6}, {"B7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
     }
 
+    list<IPlanningAction::CPtr> plan() const {
+        return _plan;
+    }
 
+    IState::CPtr initialState() const {
+        return _initialState;
+    }
 
     //private var _stringBuffer:StringBuffer = new StringBuffer;
     /**
@@ -169,7 +187,7 @@ public:
         if (!val || !val->isInt())
             return false;
 
-        onFromTop = *val;
+        onFromTop = static_cast<int>(*val);
 
         int onToTop = 0;
         bool trigerTo = false;
@@ -181,7 +199,7 @@ public:
         }
         if (val && val->isInt()) {
             trigerTo = true;
-            onToTop = *val;
+            onToTop = static_cast<int>(*val);
         }
         return !trigerTo || onToTop > onFromTop;
     }
