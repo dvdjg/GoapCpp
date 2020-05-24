@@ -2,8 +2,8 @@
 #define GOAP_IPLANNINGSTATECOMPARER_H
 
 #include "common/irefcounter.h"
-#include "explicit_ptr.h"
 #include "istate.h"
+#include "explicit_ptr.h"
 
 #define STR_GOAP_NUMERICSTATECOMPARER "NumericStateComparer"
 #define STR_GOAP_EXACTSTATEMETER "ExactStateMeter"

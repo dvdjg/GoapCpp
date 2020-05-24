@@ -23,6 +23,7 @@ protected:
     static void TearDownTestCase() {
     }
     virtual void SetUp() {
+        LOG_CONF::singleton().setLevel(DEBUG);
     }
     virtual void TearDown() {
     }
@@ -50,8 +51,9 @@ TEST_F(GoapIStateTest, TestSetAt)
     ASSERT_EQ(3, ptrState->size());
 
     int iTest = 0;
-    for (IState::index_type i = 0; i < ptrState->size(); ++i) {
-        auto pair = ptrState->at(i);
+    auto it = ptrState->iterator();
+    while (it->hasNext()) {
+        auto pair = it->next();
         std::cout << pair.first->toDebugString() << " : " << pair.second->toDebugString() << std::endl;
         auto &f = *pair.first;
         auto &s = *pair.second;

@@ -1,14 +1,14 @@
 #ifndef GOAP_IREADSTATE_H
 #define GOAP_IREADSTATE_H
 
-#include <memory>
+//#include <memory>
 #include <map>
 #include <list>
 #include <ostream>
 #include "common/irefcounter.h"
-#include "explicit_ptr.h"
 #include "ihashable.h"
 #include "istatevalue.h"
+#include "explicit_ptr.h"
 
 namespace goap
 {

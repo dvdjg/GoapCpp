@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "explicit_ptr.h"
+#include "log_hook.h"
 
 #include "goap/istatevalue.h"
 #include "goap/iscopetimer.h"
@@ -8,6 +9,7 @@
 
 
 using namespace goap;
+using namespace std;
 
 class GoapIStateValueTest : public ::testing::Test
 {
@@ -21,6 +23,7 @@ protected:
     static void TearDownTestCase() {
     }
     virtual void SetUp() {
+        LOG_CONF::singleton().setLevel(DEBUG);
     }
     virtual void TearDown() {
     }
@@ -65,7 +68,7 @@ TEST_F(GoapIStateValueTest, TestInterpolateF)
     ptrStateOther->assign({3.f, 6.f, 12.f, 24.f}); //  --> {3.f, x, 6.f, x, 12.f, x, 24.f}
     ptrState->resize(7);
     ptrState->interpolateFrom(ptrStateOther);
-    std::cout << ptrStateOther->toDebugString() << " converted to " << ptrState->toDebugString() << std::endl;
+    LOG(INFO) << ptrStateOther->toDebugString() << " converted to " << ptrState->toDebugString() << endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(4.5f, ptrState->at(1));
     EXPECT_FLOAT_EQ(6.f, ptrState->at(2));
@@ -82,7 +85,7 @@ TEST_F(GoapIStateValueTest, TestInterpolateF_2)
     NewPtr<IStateValue> ptrState;
     ptrState->resize(47);
     ptrState->interpolateFrom(ptrStateOther);
-    std::cout << ptrStateOther->toDebugString() << " converted to " << ptrState->toDebugString() << std::endl;
+    LOG(INFO) << ptrStateOther->toDebugString() << " converted to " << ptrState->toDebugString() << endl;
     EXPECT_FLOAT_EQ(3.f, ptrState->at(0));
     EXPECT_FLOAT_EQ(24.f, ptrState->at(46));
     ptrState->put(45, 0.f);
@@ -98,12 +101,24 @@ TEST_F(GoapIStateValueTest, TestCosineDistance)
 
     ptrStateOther->assign({0.f, 1.f, 0.f});
     float fDistance = ptrState->cosineDistance(ptrStateOther);
-    EXPECT_FLOAT_EQ(-0.5f, fDistance);
+    EXPECT_FLOAT_EQ(0, fDistance); // Offset distance = -0.5f
 
+    ptrStateOther->assign({10.f, 0.f, 0.f});
+    float fDistance2 = ptrState->cosineDistance(ptrStateOther);
+    EXPECT_FLOAT_EQ(1, fDistance2);
+
+    float fMod1 = 0, fMod2 = 0;
     ptrState->assign({1.f, 1.f, 0.f});
     ptrStateOther->assign({0.f, 1.f, 1.f});
-    float fDistance2 = ptrState->cosineDistance(ptrStateOther);
-    EXPECT_FLOAT_EQ(-0.5f, fDistance2);
+    float fDistance3 = ptrState->cosineDistance(ptrStateOther, &fMod1, &fMod2);
+    EXPECT_FLOAT_EQ(0.5f, fDistance3); // Offset distance = -0.5f
+    EXPECT_EQ(fMod1, fMod2);
+
+
+    float fDistance4 = NewPtr<IStateValue>({1.f, 1.f, 1.f})->cosineDistance({15.f, 15.f, 15.f}, &fMod1, &fMod2);
+    EXPECT_FLOAT_EQ(1, fDistance4);
+    EXPECT_FLOAT_EQ(sqrt(3.f), fMod1);
+    EXPECT_FLOAT_EQ(sqrt(15.f*15.f*3.f), fMod2);
 }
 
 TEST_F(GoapIStateValueTest, TestEquals)
@@ -120,7 +135,7 @@ TEST_F(GoapIStateValueTest, TestEquals)
 
 TEST_F(GoapIStateValueTest, TestHide)
 {
-    NewPtr<IStateValue> ptrState({}, static_cast<const std::string &>("Lo qué"));
+    NewPtr<IStateValue> ptrState({}, static_cast<const string &>("Lo qué"));
     NewPtr<IStateValue> ptrStateBis({}, "Lo qué");
     ASSERT_TRUE(ptrState);
     ASSERT_TRUE(ptrStateBis);
@@ -173,11 +188,11 @@ TEST_F(GoapIStateValueTest, Assign)
     EXPECT_TRUE(ptrStateSrc->equals(ptrStateDst1.getCPtr()));
     EXPECT_TRUE(ptrStateSrc->equals(ptrStateDst2.getCPtr()));
 
-    std::string strMessage = ptrStateSrc->toString();
+    string strMessage = ptrStateSrc->toString();
     EXPECT_TRUE(strMessage == szMessage);
     EXPECT_EQ(strMessage, szMessage);
 
-    std::cout << "Contains: " << strMessage << std::endl;
+    LOG(INFO) << "Contains: " << strMessage << endl;
 }
 
 TEST_F(GoapIStateValueTest, TestClone)

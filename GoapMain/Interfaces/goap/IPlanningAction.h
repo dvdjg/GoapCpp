@@ -1,8 +1,8 @@
 #ifndef GOAP_IPLANNINGACTION_H
 #define GOAP_IPLANNINGACTION_H
 
-#include <list>
 #include <functional>
+#include <list>
 #include <ostream>
 #include "goap/istringvalue.h"
 #include "istringvalue.h"
@@ -17,6 +17,7 @@ class IPlanningAction : public virtual IStringPrintable
 public:
     typedef function<float(IState::CPtr)> validator_function_type;
     typedef function<void(IState::Ptr)> executor_function_type;
+
 
     typedef explicit_ptr<IPlanningAction> Ptr;
     typedef explicit_ptr<const IPlanningAction> CPtr;

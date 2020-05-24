@@ -53,7 +53,6 @@ class LOG_CONF
     }
 
 public:
-
     void setFnLogHead(pFnLogHeadType pFnLogHead)
     {
         _pFnLogHead = pFnLogHead;
@@ -167,7 +166,6 @@ inline LOG::LOG(loglevel type, LOG_CONF &logConf) :_logConf(logConf), _debugLeve
     _logConf.getFnLogHead()(*this);
 }
 
-
 inline LOG_CONF &endl(LOG_CONF &l) {
     for(LOG_CONF::fnOstrType fnOstr : l._afnOstr) {
         if(fnOstr != nullptr) {
@@ -193,16 +191,12 @@ inline LOG &endl(LOG &l) {
     return l;
 }
 
-
-
 inline LOG &flush(LOG &l) {
     if(l.getDebugLevel() >= l.getLogConf().getLevel()) {
         l.getLogConf() << flush;
     }
     return l;
 }
-
-
 
 inline LOG::~LOG() {
     *this << endl;

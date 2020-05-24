@@ -6,6 +6,7 @@
 #include "termcolor/termcolor.hpp"
 #include "explicit_ptr.h"
 #include "goaplibrary.h"
+#include "log_hook.h"
 
 #include "goap/istate.h"
 #include "goap/iscopetimer.h"
@@ -45,7 +46,7 @@ const float GoapTest::REF_TEMP = 300;
 
 TEST_F(GoapTest, TestNumericComparer)
 {
-    cout << magenta << "TestNumericComparer. 01" << reset << endl;
+    LOG(INFO) <<  magenta << "TestNumericComparer. 01" << reset << endl;
     IState::Ptr initialState = NewPtr<IState>()->assign(
             { {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} });
 
@@ -161,7 +162,6 @@ TEST_F(GoapTest, TestTowerSolver255)
 TEST_F(GoapTest, TestBackingAPie)
 {
     backing_a_pie backing;
-    //backing.run();
     float REF_TEMP = backing_a_pie::REF_TEMP;
     backing.backing_plan({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP}, {"Credits", 10} }, {{"PieIsReadyForEat", 1}});
     IState::CPtr initialState = backing.initialState();

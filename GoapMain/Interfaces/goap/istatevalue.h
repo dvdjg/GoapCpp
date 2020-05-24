@@ -4,10 +4,10 @@
 #include <cmath>
 #include <string>
 #include "common/irefcounter.h"
-#include "explicit_ptr.h"
+#include "ihashable.h"
 #include "iclonable.h"
 #include "istringvalue.h"
-#include "goap/ihashable.h"
+#include "explicit_ptr.h"
 
 namespace goap
 {

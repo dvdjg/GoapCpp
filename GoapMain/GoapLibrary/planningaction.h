@@ -30,21 +30,20 @@ class PlanningAction : public virtual IPlanningAction
 {
     IMPLEMENT_REFCOUNTER()
 
+public:
 protected:
     IStringValue::CPtr _name;
     validator_function_type _validator; // State -> bool. Preconditions. The input State is not modified.
     executor_function_type _executor;   // State -> void. Effects. The input State is modified.
 
 public:
-    static PlanningAction::CPtr getNew(IStringValue::CPtr name_ = {}, validator_function_type validator_ = {}, executor_function_type executor_ = {})
-    {
+    static PlanningAction::CPtr getNew(IStringValue::CPtr name_ = {}, validator_function_type validator_ = {}, executor_function_type executor_ = {}) {
         PlanningAction::Ptr action = NewPtr<IPlanningAction>({}, name_, validator_, executor_);
         return action;
     }
 
     PlanningAction(IStringValue::CPtr name_ = {}, validator_function_type validator_ = {}, executor_function_type executor_ = {}) :
-        _name(name_), _validator(validator_), _executor(executor_)
-    {
+        _name(name_), _validator(validator_), _executor(executor_) {
     }
 
     void clear() {
@@ -53,49 +52,41 @@ public:
         _executor = {};
     }
 
-    executor_function_type executor() const
-    {
+    executor_function_type executor() const {
         return _executor;
     }
 
-    validator_function_type validator() const
-    {
+    validator_function_type validator() const {
         return _validator;
     }
 
-    IStringValue::CPtr name() const
-    {
+    IStringValue::CPtr name() const {
         return _name;
     }
 
-    void setExecutor(executor_function_type executor_)
-    {
+    void setExecutor(executor_function_type executor_) {
         _executor = executor_;
     }
 
-    void setValidator(validator_function_type validator_)
-    {
+    void setValidator(validator_function_type validator_) {
         _validator = validator_;
     }
 
-    void setName(IStringValue::CPtr name_)
-    {
+    void setName(IStringValue::CPtr name_) {
         _name = name_;
     }
 
     /**
      * Returns true if the action can be executed given this input state.
      */
-    bool canExecute(IState::CPtr state) const override
-    {
+    bool canExecute(IState::CPtr state) const override {
         return _validator(state);
     }
 
     /**
      * Returns a modified cloned state. The input state is not modified.
      */
-    IState::Ptr execute(IState::CPtr state) const override
-    {
+    IState::Ptr execute(IState::CPtr state) const override {
         // The executor evolves input state to a new state, so we need to pass a copy to preserve the original
         IState::Ptr newState = dynamic_pointer_cast<IState>(state->clone());
         newState->cost(1); // Default cost
@@ -106,12 +97,10 @@ public:
 
     // IStringPrintable interface
 public:
-    string toDebugString() const override
-    {
+    string toDebugString() const override {
         return _name->toDebugString();
     }
-    string toString() const override
-    {
+    string toString() const override {
         return _name->toString();
     }
 

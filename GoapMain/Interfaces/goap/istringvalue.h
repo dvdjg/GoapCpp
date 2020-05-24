@@ -33,12 +33,6 @@ public:
     virtual bool equals(const char *other) const = 0;
 };
 
-//template<class E, class Y, class T>
-//inline static typename enable_if <is_convertible<T*, const IStringPrintable*>::value, std::basic_ostream<E, Y>>::type&
-//operator<<(std::basic_ostream<E, Y>& os, const T& dt) {
-//    return os << dt.toOstream(os);
-//}
-
 template<class E, class Y>
 inline static std::basic_ostream<E, Y>& operator<<(std::basic_ostream<E, Y>& os, const IStringPrintable& dt) {
     return dt.toOstream(os);

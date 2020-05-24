@@ -15,11 +15,11 @@ OutputType t_shift_coef(InputIterator begin, size_t n)
         sum -= *it;
         ++count;
     }
-    return (count == 0) ? 0 : sum / count;
+    return (count == 0) ? OutputType(0) : OutputType(sum) / OutputType(count);
 }
 
 template<typename OutputType = float, typename InputIterator = float *>
-class CosineDistance
+class OffsetCosineDistance
 {
     OutputType _distance = 0;
     OutputType _aModule = 0;
@@ -28,13 +28,13 @@ class CosineDistance
     OutputType _bShift = 0;
 
 public:
-    CosineDistance(InputIterator aBegin,
+    OffsetCosineDistance(InputIterator aBegin,
                    InputIterator bBegin,
                    size_t n)
     {
         _aShift = t_shift_coef(aBegin, n);
         _bShift = t_shift_coef(bBegin, n);
-        offsetCosineDistance(aBegin, bBegin, n, _aShift, _bShift);
+        computeOffsetCosineDistance(aBegin, bBegin, n, _aShift, _bShift);
     }
 
     OutputType similarity() const
@@ -67,7 +67,7 @@ public:
     }
 
 protected:
-    void offsetCosineDistance(InputIterator aBegin,
+    void computeOffsetCosineDistance(InputIterator aBegin,
                               InputIterator bBegin,
                               size_t n,
                               OutputType aOffset,
@@ -89,11 +89,77 @@ protected:
         // 1 means are same direction, 0 means are different, -1 are opposite
         _distance = (fDen == 0) ? 0 : temp / fDen;
     }
-
 };
 
 template<typename OutputType = float, typename InputIterator = float *>
-CosineDistance<OutputType, InputIterator> fnCosineDistance(InputIterator aBegin,
+class CosineDistance
+{
+    OutputType _distance = 0;
+    OutputType _aModule = 0;
+    OutputType _bModule = 0;
+
+public:
+    CosineDistance(InputIterator aBegin,
+                   InputIterator bBegin,
+                   size_t n)
+    {
+        computeCosineDistance(aBegin, bBegin, n);
+    }
+
+    OutputType similarity() const
+    {
+        return 1 - _distance;    // 0 means equal
+    }
+    OutputType distance() const
+    {
+        return _distance;
+    }
+
+    /// Gives an idea of the magnitude of the vector
+    OutputType aModule() const
+    {
+        return _aModule;
+    }
+    OutputType bModule() const
+    {
+        return _bModule;
+    }
+
+protected:
+    void computeCosineDistance(InputIterator aBegin,
+                              InputIterator bBegin,
+                              size_t n)
+    {
+        OutputType temp = 0, fa = 0, fb = 0;
+
+        for (InputIterator aIt = aBegin, bIt = bBegin; n--; ++aIt, ++bIt)
+        {
+            OutputType va = *aIt;
+            OutputType vb = *bIt;
+            temp += va * vb;
+            fa +=  va * va;
+            fb += vb * vb;
+        }
+        _aModule = sqrt(fa);
+        _bModule = sqrt(fb);
+        OutputType fDen = _aModule * _bModule;
+        // 1 means are same direction, 0 means are different, -1 are opposite
+        _distance = (fDen == 0) ? 0 : temp / fDen;
+    }
+};
+
+template<typename OutputType = float, typename InputIterator = float *>
+OffsetCosineDistance<OutputType, InputIterator> fnOffsetCosineDistance(
+        InputIterator aBegin,
+        InputIterator bBegin,
+        size_t n)
+{
+    return OffsetCosineDistance<OutputType, InputIterator>(aBegin, bBegin, n);
+}
+
+template<typename OutputType = float, typename InputIterator = float *>
+CosineDistance<OutputType, InputIterator> fnCosineDistance(
+        InputIterator aBegin,
         InputIterator bBegin,
         size_t n)
 {
