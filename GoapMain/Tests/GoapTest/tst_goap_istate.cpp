@@ -106,8 +106,6 @@ TEST_F(GoapIStateTest, TestCreate)
     NewPtr<IState> ptrState(dt);
 
     std::cout << ptrState->toDebugString();
-    //NewPtr<IState> ptrState({{NewPtr<IStateValue>({}, "Uno"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})},
-    //          {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
 }
 
 TEST_F(GoapIStateTest, TestIterate)

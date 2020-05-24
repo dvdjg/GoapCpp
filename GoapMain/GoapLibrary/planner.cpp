@@ -11,7 +11,6 @@
 namespace goap
 {
 
-
 using namespace termcolor;
 
 Planner::Planner(){
@@ -265,16 +264,10 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
     // Search a cached plan for this goal
     std::list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
     if (!plannings.empty()) {
-        //StatesPlan::lst_states_type::iterator itStates;
         for (auto &statePlan: plannings) {
-            //auto itStatePlan = plannings.begin();
-            //for (; itStatePlan != plannings.end(); ++itStatePlan) {
-            //auto &statePlan = *itStatePlan;
             nStates = statePlan->states().size()-1;
             nState = 0;
             for (const IState::CPtr &storedState : statePlan->states()) {
-                //for (itStates = statePlan->states().begin(); itStates != statePlan->states().end(); ++itStates) {
-                //    const IState::CPtr &storedState = *itStates;
                 float distance = planningStateComparer->distance(storedState, intialState);
                 if (nearDistance > distance) {
                     nearDistance = distance;

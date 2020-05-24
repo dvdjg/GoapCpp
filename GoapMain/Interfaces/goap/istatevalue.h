@@ -53,7 +53,6 @@ public:
         CNew(int val);
     };
 
-    //virtual bool isNumeric() const = 0;
     virtual int64_t size() const = 0; ///< From 0 to 1000
     virtual bool empty() const { return size() == 0; }
     virtual void resize(int64_t len) = 0;

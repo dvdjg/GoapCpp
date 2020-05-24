@@ -9,6 +9,8 @@
 namespace goap
 {
 
+using namespace std;
+
 class IPlanner : public IStringPrintable
 {
 public:
@@ -27,26 +29,23 @@ public:
      * Returns the plan: A Vector of IPlanningAction.
      * If no plan is found a null is returned.
      */
-    virtual std::list<IPlanningAction::CPtr> &makePlan(
+    virtual list<IPlanningAction::CPtr> &makePlan(
             IState::CPtr initialState,
             IPlanningStateMeter::CPtr planningStateMeter,
-            std::list<IPlanningAction::CPtr> &actionsArray,
-            std::list<IState::CPtr>* pStates = nullptr) = 0;
+            list<IPlanningAction::CPtr> &actionsArray,
+            list<IState::CPtr>* pStates = nullptr) = 0;
 
     /**
      * A version of makePlan() with the help of cached plans.
      * @note The found cached plan is not warranted to use the supplied planningStateMeter.
      */
-    virtual std::list<IPlanningAction::CPtr> &makePlanCached(
+    virtual list<IPlanningAction::CPtr> &makePlanCached(
             IState::CPtr initialState,
             IPlanningStateMeter::CPtr planningStateMeter,
-            std::list<IPlanningAction::CPtr> &actionsArray,
-            std::list<IState::CPtr> *pStates = nullptr) = 0;
+            list<IPlanningAction::CPtr> &actionsArray,
+            list<IState::CPtr> *pStates = nullptr) = 0;
 };
 
-//inline static ostream& operator<<(ostream& os, const IPlanner::CPtr& dt) {
-//    return os << dt->toString();
-//}
 
 }
 

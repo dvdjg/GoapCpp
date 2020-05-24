@@ -108,6 +108,27 @@ TEST_F(GoapTest, TestTowerSolver)
         EXPECT_EQ(63, plan.size());
         return tower_solver;
     });
+
+    LOG(INFO) << magenta << "Waiting..." << reset << flush;
+    f1.wait();
+    f2.wait();
+    f3.wait();
+    f4.wait();
+
+    auto solver1 = f1.get();
+    LOG(INFO) << "Plan: " << planToOStream(solver1.plan(), solver1.initialState());
+    auto solver2 = f2.get();
+    LOG(INFO) << "Plan: " << planToOStream(solver2.plan(), solver2.initialState());
+    auto solver3 = f3.get();
+    LOG(INFO) << "Plan: " << planToOStream(solver3.plan(), solver3.initialState());
+    auto solver4 = f4.get();
+    LOG(INFO) << "Plan: " << planToOStream(solver4.plan(), solver4.initialState());
+
+    LOG(INFO) << magenta << "Computed." << reset << flush;
+}
+
+TEST_F(GoapTest, TestTowerSolver255)
+{
     future<hanoi_tower_solver> f5 = async(launch, []{
         hanoi_tower_solver tower_solver;
         lstPlan plan = tower_solver.makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
@@ -126,32 +147,15 @@ TEST_F(GoapTest, TestTowerSolver)
         EXPECT_EQ(160, plan.size());
         return tower_solver;
     });
-
-    LOG(INFO) << magenta << "Waiting..." << reset << flush;
-    f1.wait();
-    f2.wait();
-    f3.wait();
-    f4.wait();
     f5.wait();
     f6.wait();
     f7.wait();
-
-    auto solver1 = f1.get();
-    LOG(INFO) << "Plan: " << planToOStream(solver1.plan(), solver1.initialState());
-    auto solver2 = f2.get();
-    LOG(INFO) << "Plan: " << planToOStream(solver2.plan(), solver2.initialState());
-    auto solver3 = f3.get();
-    LOG(INFO) << "Plan: " << planToOStream(solver3.plan(), solver3.initialState());
-    auto solver4 = f4.get();
-    LOG(INFO) << "Plan: " << planToOStream(solver4.plan(), solver4.initialState());
     auto solver5 = f5.get();
     LOG(INFO) << "Plan: " << planToOStream(solver5.plan(), solver5.initialState());
     auto solver6 = f6.get();
     LOG(INFO) << "Plan: " << planToOStream(solver6.plan(), solver6.initialState());
     auto solver7 = f7.get();
     LOG(INFO) << "Plan: " << planToOStream(solver7.plan(), solver7.initialState());
-
-    LOG(INFO) << magenta << "Computed." << reset << flush;
 }
 
 TEST_F(GoapTest, TestBackingAPie)

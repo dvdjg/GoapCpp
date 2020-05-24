@@ -23,11 +23,6 @@ public:
 protected:
     type _planningMethod = type::BreadthFirst;
 
-    /*std::list<IPlanningAction::CPtr> makePlan(
-                IState::CPtr initialState,
-                IPlanningStateMeter::CPtr planningStateMeter,
-                std::list<IPlanningAction::CPtr> actionsArray = {},
-                std::list<IState::CPtr> states */
     /**
      * The set of actions that can be taken.
      * Every action has a precondition to be met in order to be executed.

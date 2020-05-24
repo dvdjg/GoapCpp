@@ -14,7 +14,7 @@ namespace goap
 {
 using namespace std;
 
-
+class IStateIterator;
 
 class IState : public virtual IStringPrintable, public virtual IClonable, public virtual IHashable
 {
@@ -28,10 +28,6 @@ public:
     typedef int64_t index_type;
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
-    //virtual data_type::const_iterator begin() const = 0;
-    //virtual data_type::const_iterator end() const = 0;
-    //virtual IStateIterator::Ptr cbegin() const = 0;
-    //virtual IStateIterator::Ptr cend() const = 0;
     virtual list<IStateValue::CPtr> keys() const = 0;
     virtual IState* remove(const IStateValue::CNew &key) = 0;
     virtual IState* put(const IStateValue::CNew &key, const IStateValue::New &value) = 0;
@@ -50,6 +46,7 @@ public:
     virtual bool equals(const IState::CPtr &other) const = 0;
     virtual float cost() const = 0;
     virtual IState* cost(float c) = 0;
+    virtual explicit_ptr<IStateIterator> iterator() const = 0;
 };
 
 

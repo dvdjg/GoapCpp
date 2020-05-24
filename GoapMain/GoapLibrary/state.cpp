@@ -163,6 +163,17 @@ IState* State::assign(const IState::map_value2value_type &map_string_float)
     return this;
 }
 
+explicit_ptr<IStateIterator> State::iterator() const
+{
+    NewPtr<IStateIterator> itState; // ({}, IState::CPtr(this));
+    *itState = this;
+    return std::move(itState);
+
+    //while (itState->hasNext()) {
+    //    auto pair = itState->next();
+    //}
+}
+
 float State::cost() const
 {
     return _coste;
@@ -191,8 +202,9 @@ IClonable::Ptr State::clone() const
 {
     auto ptr = NewPtr<IState>();
     ptr->cost(this->cost());
-    for (int64_t i = 0; i < this->size(); ++i) {
-        auto pair = this->at(i);
+    auto itState = iterator();
+    while (itState->hasNext()) {
+        auto pair = itState->next();
         IStateValue::CPtr key = pair.first;
         IStateValue::Ptr value = dynamic_pointer_cast<IStateValue>(pair.second->clone());
         ptr->put(key, value);

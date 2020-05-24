@@ -36,11 +36,6 @@ public:
     const data_type& data() const { return _data; }
     const data_type& data() { return _data; }
 
-    //data_type::const_iterator begin() const override;
-    //data_type::const_iterator end() const override;
-    //IStateIterator::Ptr cbegin() const override;
-    //IStateIterator::Ptr cend() const override;
-
     list<IStateValue::CPtr> keys() const override;
     IState* remove(const IStateValue::CNew &key) override;
     pair_value at(int64_t idx) const override;
@@ -59,7 +54,7 @@ public:
     IState* assign(const State &other);
     IState* assign(const IState::CPtr &other) override;
     IState* assign(const map_value2value_type &map_string_float) override;
-
+    explicit_ptr<IStateIterator> iterator() const override;
     IClonable::Ptr clone() const override;
 
     // IStringPrintable interface
