@@ -10,11 +10,11 @@ CONFIG -= qt app_bundle
 }
 
 SOURCES += \
-    backing_a_pie.cpp \
     main.cpp \
     tst_goap.cpp \
     tst_goap_istate.cpp \
-    tst_goap_istatevalue.cpp
+    tst_goap_istatevalue.cpp \
+    backing_a_pie.cpp
 
 HEADERS += \
     backing_a_pie.h \

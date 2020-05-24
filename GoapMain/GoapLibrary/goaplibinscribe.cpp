@@ -42,15 +42,21 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
     ++ret;
 
-    factory.inscribe<FactoryType::Default, IState::IStateIterator>([](){ return RecyclableWrapper<State::StateIterator>::createFromPoolRaw(); }, discr);
+    factory.inscribe<FactoryType::Default, IStateIterator>([](){ return RecyclableWrapper<StateIterator>::createFromPoolRaw(); }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IState::IStateIterator>([](const State::data_type::iterator &it){
-        auto ptr = RecyclableWrapper<State::StateIterator>::createFromPoolRaw();
-        ptr->assign(it);
+    factory.inscribe<FactoryType::Default, IStateIterator>([](const IState::CPtr &container){
+        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+        ptr->assign(container);
         return ptr;
     }, discr);
     ++ret;
-    
+    factory.inscribe<FactoryType::Default, IStateIterator>([](const IState::Ptr &container){
+        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+        ptr->assign(container);
+        return ptr;
+    }, discr);
+    ++ret;
+
     factory.inscribe<FactoryType::Default, IState>([](){ return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IState>([](const IState::CPtr &cptr){

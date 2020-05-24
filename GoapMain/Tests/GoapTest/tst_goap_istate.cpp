@@ -115,10 +115,13 @@ TEST_F(GoapIStateTest, TestIterate)
     map<string, float> mapState;
     NewPtr<IState> ptrState;
     ptrState->assign({ {"Uno", 1}, {"Dos", 2}, {"Tres", 3} });
+    NewPtr<IStateIterator> itState;
+    *itState = ptrState;
 
-    for (auto ptrIt = ptrState->cbegin(); ptrIt->equals(ptrState->cend()); ptrIt->increment()) {
-        mapState[*ptrIt->first()] = *ptrIt->second();
-        LOG(INFO) << "{" << *ptrIt->first() << ": " << *ptrIt->second() << "}";
+    while (itState->hasNext()) {
+        auto pair = itState->next();
+        mapState[*pair.first] = *pair.second;
+        LOG(INFO) << "{" << *pair.first << ": " << *pair.second << "}";
     }
     ASSERT_EQ(2, mapState["Dos"]);
     ASSERT_EQ(3, mapState["Tres"]);
