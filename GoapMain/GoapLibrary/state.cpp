@@ -37,6 +37,18 @@ void State::clear() {
     _cachedHash = 0;
 }
 
+IState::IStateIterator::Ptr State::cbegin() const
+{
+    auto ret = NewPtr<IStateIterator>({}, _data.begin());
+    return ret;
+}
+
+IState::IStateIterator::Ptr State::cend() const
+{
+    auto ret = NewPtr<IStateIterator>({}, _data.end());
+    return ret;
+}
+
 list<IStateValue::CPtr> State::keys() const
 {
     list<IStateValue::CPtr> ret;

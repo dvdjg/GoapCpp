@@ -15,6 +15,34 @@ class State : public IState
 public:
     typedef std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
 
+    class StateIterator : public IStateIterator {
+        data_type::iterator _it;
+    public:
+
+        StateIterator() {}
+        StateIterator(const StateIterator& other) : _it(other._it) {
+        }
+      
+        void assign(const data_type::iterator& it) {
+            _it = it;
+        }
+        const IStateValue::CPtr& first() const override {
+            return _it->first;
+        }
+        const IStateValue::Ptr& second() const override {
+            return _it->second;
+        }
+        IStateIterator& increment() override {
+            ++_it;
+            return *this;
+        }
+        bool equals(const IStateIterator::CPtr& other) override {
+            auto o = dynamic_pointer_cast<StateIterator>(other);
+            return _it == o->_it;
+        }
+       
+    };
+
 protected:
     data_type _data;
     float _coste = 1;
@@ -33,6 +61,9 @@ public:
 
     //data_type::const_iterator begin() const override;
     //data_type::const_iterator end() const override;
+    IStateIterator::Ptr cbegin() const override;
+    IStateIterator::Ptr cend() const override;
+
     list<IStateValue::CPtr> keys() const override;
     IState* remove(const IStateValue::CNew &key) override;
     pair_value at(int64_t idx) const override;

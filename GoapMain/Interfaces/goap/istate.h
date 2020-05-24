@@ -28,8 +28,22 @@ public:
     typedef int64_t index_type;
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
+    class IStateIterator : public IRefCounter {
+    public:
+        typedef explicit_ptr<IStateIterator> Ptr;
+        typedef explicit_ptr<const IStateIterator> CPtr;
+
+        virtual const IStateValue::CPtr& first() const = 0;
+        virtual const IStateValue::Ptr& second() const = 0;
+        virtual IStateIterator& increment() = 0;
+        virtual bool equals(const IStateIterator::CPtr& other) = 0;
+
+    };
+
     //virtual data_type::const_iterator begin() const = 0;
     //virtual data_type::const_iterator end() const = 0;
+    virtual IStateIterator::Ptr cbegin() const = 0;
+    virtual IStateIterator::Ptr cend() const = 0;
     virtual list<IStateValue::CPtr> keys() const = 0;
     virtual IState* remove(const IStateValue::CNew &key) = 0;
     virtual IState* put(const IStateValue::CNew &key, const IStateValue::New &value) = 0;

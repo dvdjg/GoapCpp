@@ -18,6 +18,7 @@ public:
     virtual std::string toDebugString() const = 0;
     virtual std::string toString() const = 0;
     virtual ostream& toOstream(ostream& os) const = 0;
+    virtual operator string() const { return toString();  }
 };
 
 class IStringValue : public virtual  IStringPrintable

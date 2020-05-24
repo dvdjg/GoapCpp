@@ -110,3 +110,17 @@ TEST_F(GoapIStateTest, TestCreate)
     //          {NewPtr<IStateValue>({}, "Dos"),NewPtr<IStateValue>({1.f, 0.5f, 0.f, 9.f, 98.f})}});
 }
 
+TEST_F(GoapIStateTest, TestIterate)
+{
+    map<string, float> mapState;
+    NewPtr<IState> ptrState;
+    ptrState->assign({ {"Uno", 1}, {"Dos", 2}, {"Tres", 3} });
+
+    for (auto ptrIt = ptrState->cbegin(); ptrIt->equals(ptrState->cend()); ptrIt->increment()) {
+        mapState[*ptrIt->first()] = *ptrIt->second();
+        LOG(INFO) << "{" << *ptrIt->first() << ": " << *ptrIt->second() << "}";
+    }
+    ASSERT_EQ(2, mapState["Dos"]);
+    ASSERT_EQ(3, mapState["Tres"]);
+}
+
