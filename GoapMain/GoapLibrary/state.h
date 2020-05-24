@@ -102,13 +102,12 @@ public:
         assign(ptr);
     }
     bool hasNext() const override {
-        auto it = _it;
-        ++it;
-        return it != _state->data().cend();
+        return _it != _state->data().cend();
     }
     virtual IState::pair_value next() override {
+        IState::pair_value ret = std::make_pair(_it->first, _it->second);
         ++_it;
-        return std::make_pair(_it->first, _it->second);
+        return ret;
     }
     virtual IStateIterator* operator=(const IState::CPtr &other) override {
         assign(other);
