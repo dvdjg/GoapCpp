@@ -4,25 +4,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <algorithm>
+
 #include "basicmath.h"
 
 namespace basicmath
 {
+using namespace std;
+
 float floatSimilarity(float x, float y)
 {
     // 0 < are similar < are different < 1
-    float diff = std::abs(x - y);
-    float ax = std::abs(x);
-    float ay = std::abs(y);
-    float ret = diff / std::max(ax, ay);
+    float diff = abs(x - y);
+    float ax = abs(x);
+    float ay = abs(y);
+    float ret = diff / max(ax, ay);
     return ret;
 }
 
 bool floatEqual(float x, float y)
 {
-    float diff = std::abs(x - y);
-    float ax = std::abs(x);
-    float ay = std::abs(y);
+    float diff = abs(x - y);
+    float ax = abs(x);
+    float ay = abs(y);
     bool ret = diff <= GOAP_FLT_EPSILON * (ax + ay) * 2 || diff < GOAP_FLT_MIN;
     return ret;
 }
@@ -160,22 +163,22 @@ void interp2arrayh( const half a[], int_type n, half b[], int_type m )
     }
 }
 
-std::size_t hash(const unsigned short * vec, std::size_t size)
+size_t hash(const unsigned short * vec, size_t size)
 {
-  std::size_t seed = size;
+  size_t seed = size;
   for(auto it = vec; it != vec+size; ++it) {
     seed ^= *it + 0x9e3779b9 + (seed << 6) + (seed >> 2);
   }
   return seed;
 }
 
-std::size_t hash(const half * vec, std::size_t size)
+size_t hash(const half * vec, size_t size)
 {
   const unsigned short * vecs = reinterpret_cast<const unsigned short *>(vec);
   return hash(vecs, size);
 }
 
-std::size_t hash(const float * vec, std::size_t size)
+size_t hash(const float * vec, size_t size)
 {
   const unsigned short * vecs = reinterpret_cast<const unsigned short *>(vec);
   return hash(vecs, size*2);

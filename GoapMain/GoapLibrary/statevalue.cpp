@@ -5,6 +5,7 @@
 #include "statevalue.h"
 #include "basicmath.h"
 #include "cosinedistance.h"
+#include "levensteindistance.h"
 
 #include "newptr.h"
 
@@ -158,6 +159,17 @@ float StateValue::cosineDistance(const IStateValue::CNew &other, float *pThisMod
         *pOthersModule = cosDist.bModule();
     }
     return cosDist.distance();
+}
+
+float StateValue::levensteinDistance(const IStateValue::CNew &other) const
+{
+    auto o = dynamic_pointer_cast<const StateValue>(other);
+    if (!o) {
+        throw std::runtime_error(__func__);
+    }
+    auto distance = GeneralizedLevensteinDistance(_data, o->_data, 1, 1, 1);
+    auto maxSize = max(_data.size(), o->_data.size());
+    return static_cast<float>(distance) / static_cast<float>(maxSize); // Nomalize to 0..1
 }
 
 std::string StateValue::toDebugString() const

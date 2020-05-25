@@ -18,6 +18,7 @@ INCLUDEPATH += ../Interfaces ../Factory ../3rdparty/half ../3rdparty/termcolor/i
 
 SOURCES += \
     goaplibrary.cpp \
+    levensteinstatecomparer.cpp \
     path.cpp \
     planner.cpp \
     prioritizedqueue.cpp \
@@ -36,6 +37,8 @@ SOURCES += \
 
 HEADERS += goaplibrary.h \
     cosinedistance.h \
+    levensteindistance.h \
+    levensteinstatecomparer.h \
     prioritizedstack.h \
     refcounter.h \
     statesplan.h \

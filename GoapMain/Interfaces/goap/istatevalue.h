@@ -67,6 +67,7 @@ public:
     virtual IStringValue* assign(const std::initializer_list<float> &list) = 0;
     virtual void interpolateFrom(const IStateValue::CNew &other) = 0;
     virtual float cosineDistance(const IStateValue::CNew &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const = 0;
+    virtual float levensteinDistance(const IStateValue::CNew &other) const = 0;
     virtual bool equals(const IStateValue::CNew &other) const = 0;
     virtual bool equals(const std::initializer_list<float> &list) const = 0;
 

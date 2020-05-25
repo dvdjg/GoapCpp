@@ -45,6 +45,7 @@ public:
     void putAll(float value) override;
     void interpolateFrom(const IStateValue::CNew &other) override;
     float cosineDistance(const IStateValue::CNew &other, float *pThisModule = nullptr, float *pOthersModule = nullptr) const override;
+    float levensteinDistance(const IStateValue::CNew &other) const override;
     IStringValue* fromString(const string &str) override;
     IStringValue* assign(const IStateValue::CNew &other) override;
     IStringValue* assign(const StateValue &other);

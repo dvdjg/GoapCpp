@@ -20,10 +20,11 @@ NumericStateComparer::NumericStateComparer() {
  */
 bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) const
 {
-    for (IState::index_type i = 0; i < stateDst->size(); ++i) {
-        auto pair1 = stateDst->at(i);
-        auto key = pair1.first;
-        IStateValue::Ptr value1 = pair1.second;
+    auto itState = stateDst->iterator();
+    while (itState->hasNext()) {
+        auto pair = itState->next();
+        auto key = pair.first;
+        IStateValue::Ptr value1 = pair.second;
         auto value2 = stateSrc->at(key);
         if (!value2 || *value1 != *value2) {
             return false;
@@ -42,10 +43,12 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
     IState::index_type countDifferent = 0;
     IState::index_type s2Count = 0;
     IState::index_type sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
-    for (IState::index_type i = 0; i < stateDst->size(); ++i) {
-        auto pairDst = stateDst->at(i);
-        auto key = pairDst.first;
-        auto valueDst = pairDst.second;
+
+    auto itState = stateDst->iterator();
+    while (itState->hasNext()) {
+        auto pair = itState->next();
+        auto key = pair.first;
+        auto valueDst = pair.second;
         auto valueSrc = stateSrc->at(key);
         if (valueSrc && valueSrc->size() > 0) {
             if (valueDst->size() == 1 && valueSrc->size() == 1) {

@@ -204,3 +204,24 @@ TEST_F(GoapIStateValueTest, TestClone)
     ASSERT_EQ(*ptrCloned, *ptrState);
     ASSERT_EQ(9.f, ptrCloned->at(3));
 }
+
+TEST_F(GoapIStateValueTest, TestLevensteinDistance)
+{
+    NewPtr<IStateValue> ptrState1({}, "Washington");
+    NewPtr<IStateValue> ptrState2({}, "");
+    NewPtr<IStateValue> ptrState3({}, "Wasington");
+    NewPtr<IStateValue> ptrState4({}, "Whasington");
+    NewPtr<IStateValue> ptrState5({}, "Washintgon");
+
+    float dist0 = ptrState2->levensteinDistance(ptrState1);
+    float dist1 = ptrState1->levensteinDistance(ptrState2);
+    float dist2 = ptrState1->levensteinDistance(ptrState3);
+    float dist3 = ptrState1->levensteinDistance(ptrState4);
+    float dist4 = ptrState1->levensteinDistance(ptrState5);
+
+    ASSERT_EQ(1, dist0);
+    ASSERT_EQ(1, dist1);
+    ASSERT_EQ(0.1f, dist2);
+    ASSERT_EQ(0.2f, dist3);
+    ASSERT_EQ(0.2f, dist4);
+}
