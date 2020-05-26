@@ -58,6 +58,8 @@ public:
 
     virtual bool hasNext() const = 0;
     virtual IState::pair_value next() = 0;
+    virtual IState::pair_value peekNext() = 0;
+    virtual int64_t size() const = 0;
     virtual IStateIterator* operator=(const IState::CPtr &container) = 0;
 };
 

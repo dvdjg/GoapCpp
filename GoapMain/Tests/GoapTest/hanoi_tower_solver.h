@@ -210,29 +210,34 @@ public:
      * This is a way of lowering pression from the GC.
      * The integger must be a low number.
      */
-    static string concatStringInt(string str, int n)
+    static const string& concatStringInt(const string &str, int n)
     {
-        return str + to_string(n);
+        static map<int, map<string, string>> mapStr;
+        auto &val = mapStr[n][str];
+        if (val.empty()) {
+            val = str + to_string(n);
+        }
+        return val;
     }
 
     // The 'executor' function
-    static void move(IState::Ptr state, string from, string to, int n = 3)
+    static void move(IState::Ptr state, const string &from, const string &to, int n = 3)
     {
         int i;
         IStateValue::CPtr val;
-        string a;
+        const string* a = nullptr;
         for (i = 1; i <= n; ++i) {
-            string astr = concatStringInt(from, i);
+            const string& astr = concatStringInt(from, i);
             val = state->at(astr);
             if (val && !val->empty()) {
-                a = astr;
+                a = &astr;
                 break;
             }
         }
-        if (a.empty()) {
+        if (!a) {
             throw runtime_error("Can't trig from '" + from + "' to '" + to + "'");
         }
-        string b;
+        const string* b = nullptr;
         bool trigerTo = false;
         for (i = 1; i <= n; ++i) {
             val = state->at(concatStringInt(to, i));
@@ -240,18 +245,18 @@ public:
                 if (i-- == 1) {
                     throw runtime_error("Can't put to '" + to + "'"); // Tower is full
                 } else {
-                    b = concatStringInt(to, i);
+                    b = &concatStringInt(to, i);
                 }
                 trigerTo = true;
                 break;
             }
         }
         if (!trigerTo) {
-            b = concatStringInt(to, n);
+            b = &concatStringInt(to, n);
         }
         // Update the source state
-        state->put(b, state->at(a));
-        state->remove(a);
+        state->put(*b, state->at(*a));
+        state->remove(*a);
     }
 };
 

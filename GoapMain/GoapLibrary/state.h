@@ -99,10 +99,17 @@ public:
     bool hasNext() const override {
         return _it != _state->data().cend();
     }
-    virtual IState::pair_value next() override {
+    IState::pair_value next() override {
         IState::pair_value ret = std::make_pair(_it->first, _it->second);
         ++_it;
         return ret;
+    }
+    IState::pair_value peekNext() override {
+        IState::pair_value ret = std::make_pair(_it->first, _it->second);
+        return ret;
+    }
+    int64_t size() const override {
+        return _state->size();
     }
     virtual IStateIterator* operator=(const IState::CPtr &other) override {
         assign(other);
