@@ -6,14 +6,13 @@
 #include "planner.h"
 #include "path.h"
 #include "scopetime.h"
-#include "goaplibrary.h"
 
 namespace goap
 {
 const std::string NUMERICSTATECOMPARER              = STR_GOAP_NUMERICSTATECOMPARER;
-const std::string EXACTSTATEMETER                   = STR_GOAP_EXACTSTATEMETER;
+const std::string EXACTSTATEMETER                   = STR_GOAP_EXACTSTATECOMPARER;
 const std::string NUMERICSTATECOMPARER_SINGLETON    = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
-const std::string EXACTSTATEMETER_SINGLETON         = STR_GOAP_EXACTSTATEMETER_SINGLETON;
+const std::string EXACTSTATEMETER_SINGLETON         = STR_GOAP_EXACTSTATECOMPARER_SINGLETON;
 
 Goap::Goap()
 {

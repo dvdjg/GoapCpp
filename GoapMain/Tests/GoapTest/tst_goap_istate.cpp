@@ -5,6 +5,8 @@
 
 #include "goap/istate.h"
 #include "goap/iscopetimer.h"
+#include "goap/iplanningstatecomparer.h"
+#include "goaplibrary.h"
 
 #include "newptr.h"
 
@@ -127,3 +129,46 @@ TEST_F(GoapIStateTest, TestIterate)
     ASSERT_EQ(3, mapState["Tres"]);
 }
 
+TEST_F(GoapIStateTest, TestDistance)
+{
+    NewPtr<IState> ptrState1, ptrState2, ptrState3, ptrState4, ptrState5;
+    ptrState1->assign({ {"Uno", {1,0,0}},  {"Dos", {0,1,0}},  {"Tres", {0,0,1}} });
+    ptrState2->assign({ {"Uno", {10,0,0}}, {"Dos", {0,10,0}}, {"Tres", {0,0,10}} });
+    ptrState3->assign({ {"Uno", {1,1,0}},  {"Dos", {0,1,1}},  {"Tres", {1,0,1}} });
+    ptrState4->assign({ {"Uno", {}},       {"Dos", {0,1,0}},  {"Tres", {0,0,1}} });
+    ptrState5->assign({ {"Uno", (IStateValue*)nullptr},       {"Dos", {0,1,0}},  {"Tres", {0,0,1}} });
+
+    IPlanningStateComparer::Ptr numericStateComparer       = NewPtr<IPlanningStateComparer>(string(STR_GOAP_NUMERICSTATECOMPARER_SINGLETON));
+    IPlanningStateComparer::Ptr exactStateComparer         = NewPtr<IPlanningStateComparer>(string(STR_GOAP_EXACTSTATECOMPARER_SINGLETON));
+    IPlanningStateComparer::Ptr levensteinStateComparer    = NewPtr<IPlanningStateComparer>(string(STR_GOAP_LEVENSTEINSTATECOMPARER_SINGLETON));
+
+    vector<float> lstFlt1;
+    for (auto comparer : {numericStateComparer, exactStateComparer, levensteinStateComparer}) {
+        float flt1 = comparer->distance(ptrState1, ptrState2);
+        float flt2 = comparer->distance(ptrState1, ptrState3);
+        float flt3 = comparer->distance(ptrState1, ptrState4);
+        float flt4 = comparer->distance(ptrState1, ptrState5);
+        lstFlt1.push_back(flt1);
+        lstFlt1.push_back(flt2);
+        lstFlt1.push_back(flt3);
+        lstFlt1.push_back(flt4);
+    }
+
+    IPlanningStateMeter::Ptr numericStateMeter      = Goap::newComparerStateMeter(ptrState1, numericStateComparer);
+    IPlanningStateMeter::Ptr exactStateMeter        = Goap::newComparerStateMeter(ptrState1, exactStateComparer);
+    IPlanningStateMeter::Ptr levensteinStateMeter   = Goap::newComparerStateMeter(ptrState1, levensteinStateComparer);
+
+    vector<float> lstFlt2;
+    for (auto comparer : {numericStateMeter, exactStateMeter, levensteinStateMeter}) {
+        float flt1 = comparer->distance(ptrState2);
+        float flt2 = comparer->distance(ptrState3);
+        float flt3 = comparer->distance(ptrState4);
+        float flt4 = comparer->distance(ptrState5);
+        lstFlt2.push_back(flt1);
+        lstFlt2.push_back(flt2);
+        lstFlt2.push_back(flt3);
+        lstFlt2.push_back(flt4);
+    }
+
+    ASSERT_EQ(lstFlt1, lstFlt2);
+}

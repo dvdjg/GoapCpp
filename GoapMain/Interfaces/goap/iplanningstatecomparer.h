@@ -5,10 +5,12 @@
 #include "istate.h"
 #include "explicit_ptr.h"
 
-#define STR_GOAP_NUMERICSTATECOMPARER "NumericStateComparer"
-#define STR_GOAP_EXACTSTATEMETER "ExactStateMeter"
-#define STR_GOAP_NUMERICSTATECOMPARER_SINGLETON ("NumericStateComparer" STR_GOAP_SINGLETON)
-#define STR_GOAP_EXACTSTATEMETER_SINGLETON ("ExactStateMeter" STR_GOAP_SINGLETON)
+#define STR_GOAP_NUMERICSTATECOMPARER               "NumericStateComparer"
+#define STR_GOAP_EXACTSTATECOMPARER                 "ExactStateComparer"
+#define STR_GOAP_LEVENSTEINSTATECOMPARER            "LevensteintStateComparer"
+#define STR_GOAP_NUMERICSTATECOMPARER_SINGLETON     ("NumericStateComparer" STR_GOAP_SINGLETON)
+#define STR_GOAP_EXACTSTATECOMPARER_SINGLETON       ("ExactStateComparer" STR_GOAP_SINGLETON)
+#define STR_GOAP_LEVENSTEINSTATECOMPARER_SINGLETON  ("LevensteinStateComparer" STR_GOAP_SINGLETON)
 
 namespace goap
 {

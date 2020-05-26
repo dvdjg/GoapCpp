@@ -81,7 +81,6 @@ public:
     virtual void or_logic (bool other) = 0;
 
     virtual void clear() = 0;
-    //virtual std::size_t hash() const = 0;
 
     inline float at(uint64_t idx) const {
         return at(int64_t(idx));

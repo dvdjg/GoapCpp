@@ -16,6 +16,7 @@
 #include "prioritizedqueue.h"
 #include "prioritizedstack.h"
 #include "numericstatecomparer.h"
+#include "levensteinstatecomparer.h"
 #include "exactstatecomparer.h"
 #include "comparerstatemeter.h"
 #include "functionstatemeter.h"
@@ -177,9 +178,13 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     ++ret;
     factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, NumericStateComparer>(discr+STR_GOAP_NUMERICSTATECOMPARER_SINGLETON);
     ++ret;
-    factory.inscribe<FactoryType::Default, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATEMETER);
+    factory.inscribe<FactoryType::Default, IPlanningStateComparer, LevensteinStateComparer>(discr+STR_GOAP_LEVENSTEINSTATECOMPARER);
     ++ret;
-    factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATEMETER_SINGLETON);
+    factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, LevensteinStateComparer>(discr+STR_GOAP_LEVENSTEINSTATECOMPARER_SINGLETON);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATECOMPARER);
+    ++ret;
+    factory.inscribe<FactoryType::Singleton, IPlanningStateComparer, ExactStateComparer>(discr+STR_GOAP_EXACTSTATECOMPARER_SINGLETON);
     ++ret;
     factory.inscribe<FactoryType::Default, IPrioritized, PrioritizedQueue>(discr+STR_GOAP_PRIORITIZED_QUEUE);
     ++ret;

@@ -25,9 +25,11 @@ bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) 
         auto pair = itState->next();
         auto key = pair.first;
         IStateValue::Ptr value1 = pair.second;
-        auto value2 = stateSrc->at(key);
-        if (!value2 || *value1 != *value2) {
-            return false;
+        if (value1) {
+            auto value2 = stateSrc->at(key);
+            if (!value2 || *value1 != *value2) {
+                return false;
+            }
         }
     }
     return true;
@@ -40,7 +42,6 @@ bool NumericStateComparer::enough(IState::CPtr stateSrc, IState::CPtr stateDst) 
 float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDst) const
 {
     float percent = 0;
-    IState::index_type countDifferent = 0;
     IState::index_type s2Count = 0;
     IState::index_type sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
 
@@ -49,29 +50,33 @@ float NumericStateComparer::distance(IState::CPtr stateSrc, IState::CPtr stateDs
         auto pair = itState->next();
         auto key = pair.first;
         auto valueDst = pair.second;
-        auto valueSrc = stateSrc->at(key);
-        if (valueSrc && valueSrc->size() > 0) {
-            if (valueDst->size() == 1 && valueSrc->size() == 1) {
+        if (valueDst) {
+            auto valueSrc = stateSrc->at(key);
+            if (valueSrc) {
                 sameKeyCount++;
-                // Si son números únicos, hacer una comparación sencilla
-                float s1k = valueSrc->at(0);
-                float s2k = valueDst->at(0);
-                // 0 < are similar < are different < 1
-                percent += basicmath::floatSimilarity(s1k, s2k);
-            } else if (valueDst->size() >= 1 && valueSrc->size() >= 1) {
-                sameKeyCount++;
-                float thisModule, othersModule;
-                float cosDist = valueSrc->cosineDistance(valueDst, &thisModule, &othersModule);
-                float similiarity = basicmath::floatSimilarity(thisModule, othersModule);
-                percent += std::max(0.f, cosDist * similiarity);
+                if (valueDst->size() == 1 && valueSrc->size() == 1) {
+                    // Si son números únicos, hacer una comparación sencilla
+                    float s1k = valueSrc->at(0);
+                    float s2k = valueDst->at(0);
+                    // 0 < are similar < are different < 1
+                    percent += basicmath::floatSimilarity(s1k, s2k);
+                } else if (valueDst->size() >= 1 && valueSrc->size() >= 1) {
+                    float thisModule, othersModule;
+                    float cosDist = valueSrc->cosineDistance(valueDst, &thisModule, &othersModule);
+                    float similiarity = 1.f - basicmath::floatSimilarity(thisModule, othersModule);
+                    float percInc = std::max(0.f, 1.f - cosDist * similiarity);
+                    percent += percInc;
+                } else {
+                    percent += 1.f;
+                }
+                //LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
             }
-            //LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
         }
         ++s2Count;
     }
-    countDifferent = s2Count - sameKeyCount;
+    IState::index_type countDifferent = s2Count - sameKeyCount;
     float dist = (percent + countDifferent) / s2Count;
-    //LOG(DEBUG) << "Distance=" << dist << "\n  from " << *stateSrc << "\n    to " << *stateDst;
+    //LOG(DEBUG) << "NumericDistance=" << dist << "\n  from " << *stateSrc << "\n    to " << *stateDst;
     return dist;
 }
 

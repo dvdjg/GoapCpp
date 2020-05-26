@@ -8,7 +8,7 @@ namespace goap
 
 ExactStateComparer::Ptr ExactStateComparer::singleton()
 {
-    static std::string discr(STR_GOAP_EXACTSTATEMETER_SINGLETON);
+    static std::string discr(STR_GOAP_EXACTSTATECOMPARER_SINGLETON);
     return NewPtr<ExactStateComparer>(discr);
 }
 
@@ -21,9 +21,11 @@ float ExactStateComparer::distancePure(IState::CPtr state1, IState::CPtr state2)
         auto pair = itState->next();
         auto key = pair.first;
         auto value2 = pair.second;
-        auto value1 = state1->at(key);
-        if (!value1 || *value1 != *value2) {
-            percent += 1;
+        if (value2) {
+            auto value1 = state1->at(key);
+            if (!value1 || *value1 != *value2) {
+                percent += 1;
+            }
         }
         ++s2Count;
     }
@@ -47,16 +49,17 @@ float ExactStateComparer::distance(IState::CPtr state1, IState::CPtr state2) con
         auto pair = itState->next();
         auto key = pair.first;
         auto value2 = pair.second;
-        auto value1 = state1->at(key);
-        if (value1 && value2->size() == value1->size()) {
-            sameKeyCount++;
-            if (*value1 != *value2) {
-                percent += 1;
+        if (value2) {
+            auto value1 = state1->at(key);
+            if (value1) {
+                sameKeyCount++;
+                if (*value1 != *value2) {
+                    percent += 1;
+                }
             }
         }
         ++s2Count;
     }
-    //auto len = std::max(state1->size(), state2->size());
 
     countDifferent = s2Count + state1->size() - sameKeyCount - sameKeyCount;
     auto ret = (percent + countDifferent) / (sameKeyCount + countDifferent);

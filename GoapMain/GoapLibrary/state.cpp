@@ -142,7 +142,7 @@ bool State::equals(const IHashable::CPtr &other) const
 bool State::equals(const IState::CPtr &other) const
 {
     auto o = dynamic_cast<const State*>(other.get());
-    bool ret = o && basicmath::floatEqual(cost(), o->cost()) && _data.size() == o->_data.size();
+    bool ret = o && _data.size() == o->_data.size(); /*basicmath::floatEqual(cost(), o->cost()) &&*/
     if (ret) {
         //LOG(DEBUG) << *this << " != " << *other << endl;
         for (auto & it : _data) {
@@ -165,13 +165,9 @@ IState* State::assign(const IState::map_value2value_type &map_string_float)
 
 explicit_ptr<IStateIterator> State::iterator() const
 {
-    NewPtr<IStateIterator> itState; // ({}, IState::CPtr(this));
+    NewPtr<IStateIterator> itState;
     *itState = this;
     return std::move(itState);
-
-    //while (itState->hasNext()) {
-    //    auto pair = itState->next();
-    //}
 }
 
 float State::cost() const
