@@ -24,9 +24,31 @@ public:
 
     typedef map<IStateValue::CNew, IStateValue::New> map_value2value_type;
 
-    typedef float value_type;
+    typedef IState class_type;
     typedef int64_t index_type;
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
+
+
+    class New : public class_type::Ptr {
+        typedef class_type::Ptr parent_type;
+    public:
+        New();
+        New(parent_type::element_type* pVal);
+        New(const parent_type &other);
+        New(const map_value2value_type &mapValueValue);
+        New(initializer_list<map_value2value_type::value_type> mapValueValue);
+    };
+
+    class CNew : public class_type::CPtr {
+        typedef class_type::CPtr parent_type;
+    public:
+        CNew();
+        CNew(const class_type::Ptr &other);
+        CNew(const parent_type::element_type* pVal);
+        CNew(const parent_type &other);
+        CNew(const map_value2value_type &mapValueValue);
+        CNew(initializer_list<map_value2value_type::value_type> mapValueValue);
+    };
 
     virtual list<IStateValue::CPtr> keys() const = 0;
     virtual IState* remove(const IStateValue::CNew &key) = 0;

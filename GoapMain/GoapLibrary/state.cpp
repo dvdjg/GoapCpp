@@ -248,10 +248,48 @@ size_t State::hash() const
     return _cachedHash;
 }
 
-
 bool State::empty() const
 {
     return _data.empty();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+IState::New::New() : parent_type(NewPtr<IState>()) {
+}
+
+IState::New::New(parent_type::element_type *pVal) : parent_type(pVal) {
+}
+
+IState::New::New(const parent_type &other) : parent_type(other) {
+}
+
+IState::New::New(const map_value2value_type &mapValueValue) : New() {
+    get()->assign(mapValueValue);
+}
+
+IState::New::New(initializer_list<map_value2value_type::value_type> mapValueValue) : New() {
+    get()->assign(mapValueValue);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+IState::CNew::CNew() : parent_type(NewPtr<IState>()) {
+}
+
+IState::CNew::CNew(parent_type::element_type *pVal) : parent_type(pVal) {
+}
+
+IState::CNew::CNew(const parent_type &other) : parent_type(other) {
+}
+
+IState::CNew::CNew(const class_type::Ptr &other) : parent_type(other) {
+    // TODO: Clone for an inmutable version?
+}
+
+IState::CNew::CNew(const map_value2value_type &mapValueValue) : CNew(New(mapValueValue)) {
+}
+
+IState::CNew::CNew(initializer_list<map_value2value_type::value_type> mapValueValue) : CNew(New(mapValueValue)) {
 }
 
 }

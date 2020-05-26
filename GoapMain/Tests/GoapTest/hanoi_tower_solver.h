@@ -49,13 +49,13 @@ public:
         _planningStateMeter(other._planningStateMeter) {
     }
 
-    list<IPlanningAction::CPtr> makePlan(IState::map_value2value_type initial, IState::map_value2value_type goal, int n = 3) {
+    list<IPlanningAction::CPtr> makePlan(const IState::New& initial, const IState::New& goal, int n = 3) {
         tower_plan(initial, goal, n);
         return makePlan();
     }
 
 private:
-    void tower_plan(IState::map_value2value_type initial, IState::map_value2value_type goal, int n = 3) {
+    void tower_plan(const IState::New& initial, const IState::New& goal, int n = 3) {
         _n = n;
         _initialState = NewPtr<IState>()->assign(initial);
         _goalState = NewPtr<IState>()->assign(goal);
@@ -144,6 +144,7 @@ public:
     void run()
     {
         list<IPlanningAction::CPtr> plan;
+
         plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
 
         plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
@@ -175,7 +176,7 @@ public:
      */
     static bool validate(IState::CPtr state, const string &from, const string &to, int n = 3)
     {
-        int i;
+        int i = 0;
         IStateValue::CPtr val;
         int onFromTop = 0;
         for (i = 1; i <= n; ++i) {
@@ -223,7 +224,7 @@ public:
     // The 'executor' function
     static void move(IState::Ptr state, const string &from, const string &to, int n = 3)
     {
-        int i;
+        int i = 0;
         IStateValue::CPtr val;
         const string* a = nullptr;
         for (i = 1; i <= n; ++i) {
