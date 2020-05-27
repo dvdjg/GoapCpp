@@ -70,6 +70,7 @@ public:
     std::list<IPlanningAction::CPtr> MakePlan();
 
     IState::CPtr initialState() const;
+    IPlanner::Ptr planner() const;
 };
 
 #endif // BACKING_A_PIE_H

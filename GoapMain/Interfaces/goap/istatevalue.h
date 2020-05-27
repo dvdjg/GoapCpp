@@ -70,6 +70,7 @@ public:
     virtual float levensteinDistance(const IStateValue::CNew &other) const = 0;
     virtual bool equals(const IStateValue::CNew &other) const = 0;
     virtual bool equals(const std::initializer_list<float> &list) const = 0;
+    virtual bool lessThan(const IStateValue::CNew &other) const = 0;
 
     virtual void add(const IStateValue::CNew &other) = 0;
     virtual void mul(const IStateValue::CNew &other) = 0;
@@ -104,6 +105,10 @@ public:
 
     inline operator float() const {
         return at(0LL);
+    }
+
+    inline bool operator < (const IStateValue::CPtr &other) const {
+        return lessThan(other);
     }
 
     inline bool isInt() const {
@@ -186,6 +191,13 @@ inline IStateValue& operator *=(IStateValue& a, const IStateValue& b) {
     return a;
 }
 
+inline bool operator <(const IStateValue::CPtr& a, const IStateValue::CPtr& b) {
+    return *a < *b;
+}
+inline bool operator <(const IStateValue::Ptr& a, const IStateValue::CPtr& b) {
+    return *a < *b;
+}
+
 }
 
 namespace std
@@ -213,6 +225,24 @@ struct equal_to<IStateValue::CPtr>
 {
     bool operator()(const IStateValue::CPtr &data1, const IStateValue::CPtr &data2) const {
         return data1->equals(data2);
+    }
+};
+
+template<>
+struct less<IStateValue::Ptr>
+{
+    template<typename T>
+    bool operator()(IStateValue::Ptr const& lhs, T const& rhs) {
+        return lhs->lessThan(rhs);
+    }
+};
+
+template<>
+struct less<IStateValue::CPtr>
+{
+    template<typename T>
+    bool operator()(IStateValue::CPtr const& lhs, T const& rhs) {
+        return lhs->lessThan(rhs);
     }
 };
 

@@ -30,6 +30,7 @@ protected:
      * These are the rules of the system.
      */
     std::list<IPlanningAction::CPtr> _planningActions;
+    action_state_function_type _actionStateFunction;
 
 public:
     Planner();
@@ -37,6 +38,7 @@ public:
     Planner(IPlanner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_);
     virtual void clear();
 
+    void actionStateFunction(const action_state_function_type& fn) override { _actionStateFunction = fn; }
     const std::list<IPlanningAction::CPtr>& planningActions() const;
     void planningActions(const std::list<IPlanningAction::CPtr> &planningActions_);
 

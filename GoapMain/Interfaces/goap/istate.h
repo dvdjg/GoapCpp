@@ -66,6 +66,7 @@ public:
     virtual IState* assign(const IState::CPtr &other) = 0;
     virtual IState* assign(const IState &other) { return assign(&other); }
     virtual IState* assign(const map_value2value_type &map_string_float) = 0;
+    virtual IState* merge(const IState::CNew& other) = 0;
     virtual bool equals(const IState::CPtr &other) const = 0;
     virtual float cost() const = 0;
     virtual IState* cost(float c) = 0;

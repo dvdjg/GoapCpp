@@ -2,6 +2,7 @@
 #define GOAP_IPLANNER_H
 
 #include <list>
+#include <functional>
 #include "goap/istringvalue.h"
 #include "goap/iplanningstatemeter.h"
 #include "iplanningaction.h"
@@ -14,6 +15,7 @@ using namespace std;
 class IPlanner : public IStringPrintable
 {
 public:
+    typedef function<void(const IPlanningAction::CPtr &action, const IState::CPtr &initialState, IState::CPtr nextState)> action_state_function_type;
     typedef explicit_ptr<IPlanner> Ptr;
     typedef explicit_ptr<const IPlanner> CPtr;
 
@@ -44,6 +46,8 @@ public:
             IPlanningStateMeter::CPtr planningStateMeter,
             list<IPlanningAction::CPtr> &actionsArray,
             list<IState::CPtr> *pStates = nullptr) = 0;
+
+    virtual void actionStateFunction(const action_state_function_type& fn) = 0;
 };
 
 

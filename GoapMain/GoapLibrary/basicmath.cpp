@@ -17,9 +17,23 @@ float floatSimilarity(float x, float y)
     if (isnan(x) || isnan(y)) {
         return 1;
     }
-    float diff = abs(x - y);
     float ax = abs(x);
     float ay = abs(y);
+    float diff = abs(x - y);
+    float mx = max(ax, ay);
+    float ret = (mx > 0.f) ? diff / mx : 0.f;
+    return ret;
+}
+
+float floatSimilarityAbs(float x, float y)
+{
+    // 0 < are similar < are different < 1
+    if (isnan(x) || isnan(y)) {
+        return 1;
+    }
+    float ax = abs(x);
+    float ay = abs(y);
+    float diff = abs(ax - ay);
     float mx = max(ax, ay);
     float ret = (mx > 0.f) ? diff / mx : 0.f;
     return ret;

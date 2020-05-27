@@ -34,6 +34,11 @@ IState::CPtr backing_a_pie::initialState() const {
     return _initialState;
 }
 
+IPlanner::Ptr backing_a_pie::planner() const
+{
+    return _planner;
+}
+
 IState::Ptr backing_a_pie::wait(IState::Ptr state) {
     //LOG(DEBUG) << "Before Waiting:\n " << *state;
     float OwenTemperature = state->atRef("OwenTemperature");
@@ -122,15 +127,15 @@ std::list<IPlanningAction::CPtr> backing_a_pie::MakePlan() {
             if (state->atRef("PieIsComing") == false) {
                 // A conditional suggestion
                 float distance1 = numericalComparer->distance(state, _backingHelper) * 0.8f + 0.2f;
-                //float distance2 = numericalComparer->distance(state, _restHelper) * 0.8 + 0.2;
                 distance = distance1; // min(distance1, distance2);
             }
             if (state->atRef("OwenTemperature") == REF_TEMP ) {
                 // A conditional suggestion
                 distance = numericalComparer->distance(state, _orderHelper) * 0.8f + 0.2f;
             }
-            if (distanceToGoal > distance)
+            if (distanceToGoal > distance) {
                 distanceToGoal = distance;
+            }
             return distanceToGoal;
         });
         _planningStateMeter = functionStateMeter;

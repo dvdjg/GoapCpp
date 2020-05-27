@@ -334,6 +334,15 @@ bool StateValue::equals(const std::initializer_list<float> &other) const
     return ret;
 }
 
+bool StateValue::lessThan(const IStateValue::CNew &other) const
+{
+    const StateValue::CPtr &o = dynamic_pointer_cast<const StateValue>(other);
+    if (!o) {
+        throw std::runtime_error(__func__);
+    }
+    return this->_data < o->_data;
+}
+
 void StateValue::add(const IStateValue::CNew &other)
 {
     auto thisSize = size();

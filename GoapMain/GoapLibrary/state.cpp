@@ -37,18 +37,6 @@ void State::clear() {
     _cachedHash = 0;
 }
 
-//IState::IStateIterator::Ptr State::cbegin() const
-//{
-//    auto ret = NewPtr<IStateIterator>({}, _data.begin());
-//    return ret;
-//}
-
-//IState::IStateIterator::Ptr State::cend() const
-//{
-//    auto ret = NewPtr<IStateIterator>({}, _data.end());
-//    return ret;
-//}
-
 list<IStateValue::CPtr> State::keys() const
 {
     list<IStateValue::CPtr> ret;
@@ -157,7 +145,18 @@ bool State::equals(const IState::CPtr &other) const
 
 IState* State::assign(const IState::map_value2value_type &map_string_float)
 {
+    _data.clear();
     for (auto pair : map_string_float) {
+        put(pair.first, pair.second);
+    }
+    return this;
+}
+
+IState *State::merge(const IState::CNew &other)
+{
+    auto it = other->iterator();
+    while(it->hasNext()) {
+        auto pair = it->next();
         put(pair.first, pair.second);
     }
     return this;
@@ -223,7 +222,7 @@ string State::toDebugString() const
 
 ostream &State::toOstream(ostream &ss) const
 {
-    ss << '{' << "coste:" << _coste;
+    ss << '{' << yellow << ".cost" << reset << ':' << magenta << _coste << reset;
     for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
         ss << ", " << green << it->first->toString() << reset << " : " << magenta << it->second->toString() << reset;
     }

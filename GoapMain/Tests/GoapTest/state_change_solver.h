@@ -16,6 +16,12 @@ namespace goap
 {
 using namespace std;
 
+static const char* STACK_NAME {".STACK.TOP"};
+static const char* ONE_NAME   {".ONE"};
+static const char* TWO_NAME   {".TWO"};
+static const char* THREE_NAME {".THREE"};
+static const char* TEN_NAME   {".TEN"};
+
 class state_change_solver
 {
     IPlanner::Ptr _planner;
@@ -29,18 +35,23 @@ class state_change_solver
     IPlanningStateMeter::CPtr _planningStateMeter;
 
 public:
+
     state_change_solver() {
     }
+
     state_change_solver(const state_change_solver& other) :
         _planner(other._planner),
         _initialState(other._initialState),
         _goalState(other._goalState),
         _plan(other._plan),
+        _inputSecuence(other._inputSecuence),
+        _outputSecuence(other._outputSecuence),
+        _stack(other._stack),
         _planningStateMeter(other._planningStateMeter) {
     }
 
-    list<IPlanningAction::CPtr> makePlan(IState::New initial, IState::New goal, int n = 3) {
-        tower_plan(initial, goal, n);
+    list<IPlanningAction::CPtr> makePlan(IState::New initial, IState::New goal) {
+        tower_plan(initial, goal);
         return makePlan();
     }
 
@@ -83,7 +94,7 @@ private:
         }
     }
 
-    bool stackCanStore(const IState::CPtr& state) {
+    bool stackCanStore() {
         bool ret = !_outputSecuence.empty() && !_stack.empty();
         return ret;
     }
@@ -111,78 +122,89 @@ private:
         _stack.push_back(value);
     }
 
+    void stackPeek(const IState::Ptr& state) {
+        if (!_stack.empty()) {
+            state->put(STACK_NAME, _stack.back());
+        }
+    }
+
     IStateValue::Ptr stackPop() {
         IStateValue::Ptr value = _stack.back();
         _stack.pop_back();
         return value;
     }
 
-    void tower_plan(IState::New initial, IState::New goal, int n = 3) {
+    void tower_plan(IState::New initial, IState::New goal) {
         _initialState = NewPtr<IState>()->assign(initial);
         _goalState = NewPtr<IState>()->assign(goal);
-        _planner = planning_actions(n);
+        _planner = planning_actions();
     }
 
-    IPlanner::Ptr planning_actions(int n = 3) {
+    IState::Ptr wait(IState::Ptr state) {
+        stackPeek(state);
+        return state;
+    }
+
+    IPlanner::Ptr planning_actions() {
         list<IPlanningAction::CPtr> planningActions {
-                    Goap::newPlanningAction("Load",
-                                            [=](IState::CPtr state) -> bool { return stackCanLoad(state);               },
-                                            [=](IState::Ptr  state) -> void { stackLoad(state);                         }),
-                    Goap::newPlanningAction("Store",
-                                            [=](IState::CPtr state) -> bool { return stackCanStore(state);              },
-                                            [=](IState::Ptr  state) -> void { stackStore(state);                        }),
-                    Goap::newPlanningAction("Nop",
-                                            [=](IState::CPtr state) -> bool { return true;                              },
-                                            [=](IState::Ptr  state) -> void {                                           }),
-                    Goap::newPlanningAction("Unset",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp1();                     },
-                                            [=](IState::Ptr  state) -> void { _stack.pop_back();                        }),
-                    Goap::newPlanningAction("Add",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() + *stackPop());     }),
-                    Goap::newPlanningAction("Sub",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() - *stackPop());     }),
-                    Goap::newPlanningAction("Mul",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() * *stackPop());     }),
-                    Goap::newPlanningAction("Eq",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() == *stackPop());     }),
-                    Goap::newPlanningAction("Neq",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() != *stackPop());    }),
-                    Goap::newPlanningAction("Lt",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() < *stackPop());     }),
-                    Goap::newPlanningAction("Gt",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() > *stackPop());     }),
-                    Goap::newPlanningAction("Lte",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() <= *stackPop());    }),
-                    Goap::newPlanningAction("Gte",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() >= *stackPop());    }),
-                    Goap::newPlanningAction("Neg",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp1();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(-*stackPop());                  }),
-                    Goap::newPlanningAction("Not",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp1();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(!*stackPop());                  }),
-                    Goap::newPlanningAction("And",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() && *stackPop());    }),
-                    Goap::newPlanningAction("Or",
-                                            [=](IState::CPtr state) -> bool { return stackCanOp2();                     },
-                                            [=](IState::Ptr  state) -> void { stackPush(*stackPop() || *stackPop());    })
+            Goap::newPlanningAction("Load",
+                                    [=](IState::CPtr state) -> bool { return stackCanLoad(state);                               },
+                                    [=](IState::Ptr  state) -> void { stackLoad(state); wait(state);                       }),
+            Goap::newPlanningAction("Store",
+                                    [=](IState::CPtr state) -> bool { return stackCanStore();                                   },
+                                    [=](IState::Ptr  state) -> void { stackStore(state); wait(state);                      }),
+            Goap::newPlanningAction("Nop",
+                                    [=](IState::CPtr state) -> bool { return true;                                              },
+                                    [=](IState::Ptr  state) -> void {                                                           }),
+            Goap::newPlanningAction("Unset",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp1();                                     },
+                                    [=](IState::Ptr  state) -> void { _stack.pop_back(); wait(state);                      }),
+            Goap::newPlanningAction("Add",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() + *stackPop()); wait(state);   }),
+            Goap::newPlanningAction("Sub",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() - *stackPop()); wait(state);   }),
+            Goap::newPlanningAction("Mul",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() * *stackPop()); wait(state);   }),
+            Goap::newPlanningAction("Eq",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() == *stackPop()); wait(state);  }),
+            Goap::newPlanningAction("Neq",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() != *stackPop()); wait(state);  }),
+            Goap::newPlanningAction("Lt",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() < *stackPop()); wait(state);   }),
+            Goap::newPlanningAction("Gt",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() > *stackPop()); wait(state);   }),
+            Goap::newPlanningAction("Lte",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() <= *stackPop()); wait(state);  }),
+            Goap::newPlanningAction("Gte",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() >= *stackPop()); wait(state);  }),
+            Goap::newPlanningAction("Neg",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp1();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(-*stackPop()); wait(state);                }),
+            Goap::newPlanningAction("Not",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp1();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(!*stackPop()); wait(state);                }),
+            Goap::newPlanningAction("And",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() && *stackPop()); wait(state);  }),
+            Goap::newPlanningAction("Or",
+                                    [=](IState::CPtr state) -> bool { return stackCanOp2();                                     },
+                                    [=](IState::Ptr  state) -> void { stackPush(*stackPop() || *stackPop()); wait(state);  })
 //                    Goap::newPlanningAction("Inc",
 //                                            [=](IState::CPtr state) -> bool { return stackCanOp1();                     },
 //                                            [=](IState::Ptr  state) -> void { stackPush(++*stackPop());                  }),
 //                    Goap::newPlanningAction("Dec",
 //                                            [=](IState::CPtr state) -> bool { return stackCanOp1();                     },
 //                                            [=](IState::Ptr  state) -> void { stackPush(--*stackPop());                  })
-                        };
+        };
         IPlanner::Ptr planner = Goap::newPlanner(IPlanner::BreadthFirst, planningActions);
         return planner;
     }
@@ -219,19 +241,7 @@ public:
     void run()
     {
         list<IPlanningAction::CPtr> plan;
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} }, 3);
-
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4} }, 4);
-
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5} }, 5);
-
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6} }, 6);
-
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
-
-        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3}, {"A4", 4}, {"A5", 5}, {"A6", 6}, {"A7", 7}, {"A8", 8} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7}, {"C8", 8} }, 8);
-
-        plan = makePlan( { {"A3", 1}, {"A4", 2}, {"A5", 3}, {"A6", 4}, {"A7", 5}, {"B6", 6}, {"B7", 7} }, { {"C1", 1}, {"C2", 2}, {"C3", 3}, {"C4", 4}, {"C5", 5}, {"C6", 6}, {"C7", 7} }, 7);
+        plan = makePlan( { {"A1", 1}, {"A2", 2}, {"A3", 3} }, { {"C1", 1}, {"C2", 2}, {"C3", 3} });
     }
 
     list<IPlanningAction::CPtr> plan() const {

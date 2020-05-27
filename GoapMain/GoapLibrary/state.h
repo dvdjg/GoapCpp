@@ -54,6 +54,7 @@ public:
     IState* assign(const State &other);
     IState* assign(const IState::CPtr &other) override;
     IState* assign(const map_value2value_type &map_string_float) override;
+    IState* merge(const IState::CNew& other) override;
     explicit_ptr<IStateIterator> iterator() const override;
     IClonable::Ptr clone() const override;
 

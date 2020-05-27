@@ -57,6 +57,7 @@ public:
     bool equals(const string &other) const override;
     bool equals(const char *str) const override;
     bool equals(const initializer_list<float> &other) const override;
+    bool lessThan(const IStateValue::CNew &other) const override;
     string toDebugString() const override;
     string toString() const override;
     ostream& toOstream(ostream& os) const override;

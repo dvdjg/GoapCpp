@@ -25,6 +25,8 @@ namespace basicmath
 typedef int64_t int_type;
 
 float floatSimilarity(float x, float y); // 0 < are similar < are different < 1
+float floatSimilarityAbs(float x, float y);
+
 bool floatEqual(float x, float y);
 
 // linear interpolate x in an array

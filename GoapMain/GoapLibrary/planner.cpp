@@ -69,6 +69,7 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
     return reachedByPath;
 }
 
+
 std::list<IPlanningAction::CPtr> &Planner::makePlan(
         IState::CPtr initialState,
         IPlanningStateMeter::CPtr planningStateMeter,
@@ -91,8 +92,9 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
         float min = minDistance;
         for (IPlanningAction::CPtr &action : _planningActions) {
             try {
+                IState::Ptr nextState;
                 if (action->canExecute(stateReachedByPath)) {
-                    IState::Ptr nextState = action->execute(stateReachedByPath);
+                    nextState = action->execute(stateReachedByPath);
                     float distance = planningStateMeter->distance(nextState);
                     //LOG(DEBUG) << "La accion \"" << green << *action << reset << "\" se puede ejecutar con una distancia=" << distance
                     //           << "\n    desde el estado: " << *stateReachedByPath
@@ -108,9 +110,12 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
                     } else {
                         distance *= nextState->cost();
                     }
-                    plan = Goap::newPath(action, path, pathCost + distance);
+                    plan = Goap::newPath(action, path, pathCost + distance); // path is the parent of the newly created plan
                     // Add the path to be analyzed after all the paths of this priority level be processed
                     unvisitedPaths_->pushLazy(plan);
+                }
+                if (_actionStateFunction) {
+                    _actionStateFunction(action, stateReachedByPath, nextState); // nextState==nullptr means the action can't execute from the initial
                 }
             } catch (exception e) {
                 LOG(ERROR) << "[Planner] Error: " << e.what();
