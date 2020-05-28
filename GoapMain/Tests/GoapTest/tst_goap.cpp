@@ -348,14 +348,15 @@ TEST_F(GoapTest, TestBackingAPie)
     IPlanner::Ptr planner = backing.planner();
     map<string, long long> mapActionAcepted;
     unordered_map<string, unordered_map<IState::CPtr, unordered_map<IState::CPtr, StateComparison> > > mapActionToSrcToDstState;
-    unordered_map<IStateValue::CNew, map<string, map<ValueEvolution, list<ValueCoefficients> > > > mapValueToAction;
-    unordered_map<IStateValue::CNew, IStateValue::New> mapDiscovered;
+    unordered_map<IStateValue::CNew, map<ValueEvolution, map<string, list<ValueCoefficients> > > > mapValueToAction;
+    unordered_map<string, map<IStateValue::CNew, map<ValueEvolution, list<ValueCoefficients> > > > mapActionToValue;
+    unordered_map<IStateValue::CNew, IStateValue::New> mapDiscoveredValues;
     planner->actionStateFunction([&](const IPlanningAction::CPtr &action, const IState::CPtr &initialState, IState::CPtr nextState) {
         if (nextState) {
             const string& actionName = *action->name();
             ++mapActionAcepted[actionName];
             StateComparison comp;
-            float dist1 = comp.compareStates(initialState, nextState , &mapDiscovered); //
+            float dist1 = comp.compareStates(initialState, nextState , &mapDiscoveredValues); //
             //auto &mapSim = comp.valuesSimilarity();
             mapActionToSrcToDstState[actionName][comp.sourceCleanState()][comp.destinationCleanState()] = comp;
 
@@ -365,7 +366,8 @@ TEST_F(GoapTest, TestBackingAPie)
                 auto pair = itValue->next();
                 auto &key = pair.first;
                 auto &valSim = comp.valuesSimilarity().at(key);
-                mapValueToAction[key][actionName][valSim.evolution].push_back(valSim);
+                mapValueToAction[key][valSim.evolution][actionName].push_back(valSim);
+                mapActionToValue[actionName][key][valSim.evolution].push_back(valSim);
             }
         }
     });
@@ -384,26 +386,37 @@ TEST_F(GoapTest, TestBackingAPie)
 
     for (auto& it1 : mapValueToAction) {
         for (auto& it2 : it1.second) {
+            auto szEvol = ValueEvolution2Name[(int)it2.first];
             for (auto& it3 : it2.second) {
                 auto& comp = it3.second;
-                auto szEvol = ValueEvolution2Name[(int)it3.first];
-                LOG(INFO) << "Value: " << *it1.first << ", Action: " << it2.first << ", ValueEvolution: " << szEvol << ", #" << comp.size();
+                LOG(INFO) << "Value: " << *it1.first <<", ValueEvolution: " << szEvol <<  ", Action: " << it3.first << ", #" << comp.size();
             }
         }
     }
-    for (auto& it1 : mapActionToSrcToDstState) {
+    for (auto& it1 : mapActionToValue) {
         for (auto& it2 : it1.second) {
             for (auto& it3 : it2.second) {
                 auto& comp = it3.second;
-                LOG(INFO) << "Action resume: \"" << it1.first << "\", {" << *it2.first << "}, {" << *it3.first << "}";
-                for (auto & it : it3.second.valuesSimilarity()) {
-                    if (it.second.totalDistance > GOAP_FLT_EPSILON)
-                    LOG(INFO) << "Value:" << *it.first << ",\n    cosineSimilarity:" << it.second.cosineSimilarity << ",    moduleSimilarity:" << it.second.moduleSimilarity << ",    totalDistance:" << it.second.totalDistance;
-                }
+                auto szEvol = ValueEvolution2Name[(int)it3.first];
+                LOG(INFO) << "Action: " << it1.first << ", Value: " << *it2.first << ", ValueEvolution: " << szEvol <<", #" << comp.size();
             }
-            int a = 0;
         }
     }
+
+
+    //for (auto& it1 : mapActionToSrcToDstState) {
+    //    for (auto& it2 : it1.second) {
+    //        for (auto& it3 : it2.second) {
+    //            auto& comp = it3.second;
+    //            LOG(INFO) << "Action resume: \"" << it1.first << "\", {" << *it2.first << "}, {" << *it3.first << "}";
+    //            for (auto & it : it3.second.valuesSimilarity()) {
+    //                if (it.second.totalDistance > GOAP_FLT_EPSILON)
+    //                LOG(INFO) << "Value:" << *it.first << ",\n    cosineSimilarity:" << it.second.cosineSimilarity << ",    moduleSimilarity:" << it.second.moduleSimilarity << ",    totalDistance:" << it.second.totalDistance;
+    //            }
+    //        }
+    //        int a = 0;
+    //    }
+    //}
 
 }
 
