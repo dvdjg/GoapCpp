@@ -185,6 +185,9 @@ enum class ValueEvolution {
     NONE,
     APPEARED,
     DISSAPEARED,
+    DISCOVERED,
+    DISCOVERED_INC,
+    DISCOVERED_DEC,
     INC,
     DEC,
     ACCEL_INC,
@@ -196,6 +199,9 @@ const char* ValueEvolution2Name[] = {
     "NONE",
     "APPEARED",
     "DISSAPEARED",
+    "DISCOVERED",
+    "DISCOVERED_INC",
+    "DISCOVERED_DEC",
     "INC",
     "DEC",
     "ACCEL_INC",
@@ -224,7 +230,7 @@ public:
     const IState::Ptr& destinationCleanState() const { return dstCleanState; }
     const unordered_map<IStateValue::CNew, ValueCoefficients>& valuesSimilarity() { return _valuesSimilarity; }
 
-    float compareStates(const IState::CNew& stateSrc, const IState::CNew& stateDst) {
+    float compareStates(const IState::CNew& stateSrc, const IState::CNew& stateDst, unordered_map<IStateValue::CNew, IStateValue::New> *pMapDiscovered = nullptr) {
         float percent = 0;
         IState::index_type s2Count = 0;
         IState::index_type sameKeyCount = 0; // Counts the number of keys that stateSrc has like stateDst
@@ -268,6 +274,25 @@ public:
                     } else {
                         coeff.evolution = ValueEvolution::MODIFIED;
                         percent += 1.f;
+                    }
+                    if (pMapDiscovered) {
+                        auto it = pMapDiscovered->find(key);
+                        if (it == pMapDiscovered->end()) {
+                            (*pMapDiscovered)[key] = valueDst;
+                            switch  (coeff.evolution) {
+                            case ValueEvolution::MODIFIED:
+                                coeff.evolution = ValueEvolution::DISCOVERED;
+                                break;
+                            case ValueEvolution::INC:
+                                coeff.evolution = ValueEvolution::DISCOVERED_INC;
+                                break;
+                            case ValueEvolution::DEC:
+                                coeff.evolution = ValueEvolution::DISCOVERED_DEC;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
                     }
                     //LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
                 } else {
@@ -324,12 +349,13 @@ TEST_F(GoapTest, TestBackingAPie)
     map<string, long long> mapActionAcepted;
     unordered_map<string, unordered_map<IState::CPtr, unordered_map<IState::CPtr, StateComparison> > > mapActionToSrcToDstState;
     unordered_map<IStateValue::CNew, map<string, map<ValueEvolution, list<ValueCoefficients> > > > mapValueToAction;
+    unordered_map<IStateValue::CNew, IStateValue::New> mapDiscovered;
     planner->actionStateFunction([&](const IPlanningAction::CPtr &action, const IState::CPtr &initialState, IState::CPtr nextState) {
         if (nextState) {
             const string& actionName = *action->name();
             ++mapActionAcepted[actionName];
             StateComparison comp;
-            float dist1 = comp.compareStates(initialState, nextState);
+            float dist1 = comp.compareStates(initialState, nextState , &mapDiscovered); //
             //auto &mapSim = comp.valuesSimilarity();
             mapActionToSrcToDstState[actionName][comp.sourceCleanState()][comp.destinationCleanState()] = comp;
 
