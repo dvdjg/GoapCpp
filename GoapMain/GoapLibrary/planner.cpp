@@ -11,12 +11,13 @@
 namespace goap
 {
 
+using namespace std;
 using namespace termcolor;
 
 Planner::Planner(){
 }
 
-Planner::Planner(Planner::type planningMethod_, const std::list<IPlanningAction::CPtr> &planningActions_) {
+Planner::Planner(Planner::type planningMethod_, const list<IPlanningAction::CPtr> &planningActions_) {
     _planningMethod = planningMethod_;
     _planningActions = planningActions_;
 }
@@ -27,11 +28,11 @@ void Planner::clear() {
 
 }
 
-const std::list<IPlanningAction::CPtr> &Planner::planningActions() const {
+const list<IPlanningAction::CPtr> &Planner::planningActions() const {
     return _planningActions;
 }
 
-void Planner::planningActions(const std::list<IPlanningAction::CPtr> &planningActions_) {
+void Planner::planningActions(const list<IPlanningAction::CPtr> &planningActions_) {
     _planningActions = planningActions_;
 }
 
@@ -43,7 +44,7 @@ void Planner::planningMethod(IPlanner::type method)  {
     _planningMethod = method;
 }
 
-IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &actions, IState::CPtr initialState) {
+IState::Ptr Planner::executeActions(const list<IPlanningAction::CPtr> &actions, IState::CPtr initialState) {
     IState::Ptr nextState;
     IState::Ptr initial = dynamic_pointer_cast<IState>(initialState->clone());
     IState::Ptr reachedByPath = initial;
@@ -62,7 +63,7 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
             accCost += reachedByPath->cost();
         }
         reachedByPath->cost(accCost);
-    } catch (std::exception e) {
+    } catch (exception e) {
         LOG(ERROR) << "[Planner] Error: Can't executeActions(). " << e.what();
     }
     LOG(DEBUG) << "Reached state: " << *reachedByPath;
@@ -70,11 +71,11 @@ IState::Ptr Planner::executeActions(const std::list<IPlanningAction::CPtr> &acti
 }
 
 
-std::list<IPlanningAction::CPtr> &Planner::makePlan(
+list<IPlanningAction::CPtr> &Planner::makePlan(
         IState::CPtr initialState,
         IPlanningStateMeter::CPtr planningStateMeter,
-        std::list<IPlanningAction::CPtr> &actionsArray,
-        std::list<IState::CPtr> *pStates) {
+        list<IPlanningAction::CPtr> &actionsArray,
+        list<IState::CPtr> *pStates) {
     const bool isMonotonic = planningStateMeter->monotonic();
     float minDistance = 1;
     int64_t analyzedPaths = 0;
@@ -83,7 +84,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     IState::CPtr stateReachedByPath;
     IPrioritized::Ptr unvisitedPaths_ = unvisitedPathes();
 
-    std::unordered_set<IState::CPtr> visitedStates; // Should this be a set? std::unordered_map<IState::CPtr, IState::Ptr>
+    unordered_set<IState::CPtr> visitedStates; // Should this be a set? unordered_map<IState::CPtr, IState::Ptr>
     visitedStates.insert(initialState);
     IPath::Ptr path; // In the first iteration, pathParent= null is the root
 
@@ -143,7 +144,7 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
     while (!unvisitedPaths_->empty()) {
         // Takes the path with the lower cost available
         path = unvisitedPaths_->pop();
-        std::list<IPlanningAction::CPtr> actions;
+        list<IPlanningAction::CPtr> actions;
         stateReachedByPath = path->executeFromRoot(initialState);
 //        LOG(DEBUG) << "Executing actions " << green << path->getActions(actions) << reset << ", Total:" << actions.size() << " from the initial state "
 //                   << "\n    to state " << *stateReachedByPath;
@@ -189,16 +190,16 @@ std::list<IPlanningAction::CPtr> &Planner::makePlan(
  * A version of makePlan() with the help of cached plans.
  * @note The found cached plan is not warranted to use the supplied planningStateMeter.
  */
-std::list<IPlanningAction::CPtr> &Planner::makePlanCached(
+list<IPlanningAction::CPtr> &Planner::makePlanCached(
         IState::CPtr initialState,
         IPlanningStateMeter::CPtr planningStateMeter,
-        std::list<IPlanningAction::CPtr> &actionsArray,
-        std::list<IState::CPtr> *pStates)
+        list<IPlanningAction::CPtr> &actionsArray,
+        list<IState::CPtr> *pStates)
 {
     IState::Ptr goalState = dynamic_pointer_cast<IState>(planningStateMeter->goalState()->clone());
     actionsArray = findPlan(initialState, goalState, actionsArray);
     if (actionsArray.empty()) {
-        std::list<IState::CPtr> states;
+        list<IState::CPtr> states;
         if (!pStates) {
             pStates = &states;
         }
@@ -219,8 +220,8 @@ std::list<IPlanningAction::CPtr> &Planner::makePlanCached(
 
 IPrioritized::Ptr Planner::unvisitedPathes() {
     IPrioritized::Ptr prioritized;
-    static const std::string strDiscrQueue = STR_GOAP_PRIORITIZED_QUEUE;
-    static const std::string strDiscrStack = STR_GOAP_PRIORITIZED_STACK;
+    static const string strDiscrQueue = STR_GOAP_PRIORITIZED_QUEUE;
+    static const string strDiscrStack = STR_GOAP_PRIORITIZED_STACK;
     switch (_planningMethod)
     {
     case type::BreadthFirst:
@@ -233,7 +234,7 @@ IPrioritized::Ptr Planner::unvisitedPathes() {
     return prioritized;
 }
 
-void Planner::cacheStates(const std::list<IState::CPtr> &states, const std::list<IPlanningAction::CPtr> &plan)
+void Planner::cacheStates(const list<IState::CPtr> &states, const list<IPlanningAction::CPtr> &plan)
 {
     /**
      * Caches the list of states and their planning.
@@ -243,22 +244,22 @@ void Planner::cacheStates(const std::list<IState::CPtr> &states, const std::list
      * should be used after findPlanning() returned a zero length vector.
      */
     IState::CPtr goalState = states.back();
-    std::list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
+    list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
     StatesPlan::Ptr statePlan = NewPtr<StatesPlan>();
     statePlan->states(states);
     statePlan->plan(plan);
     plannings.push_back(statePlan);
 }
 
-std::list<IPlanningAction::CPtr>& Planner::findPlan(
+list<IPlanningAction::CPtr>& Planner::findPlan(
         const IState::CPtr &intialState,
         const IState::CPtr &goalState,
-        std::list<IPlanningAction::CPtr> &plan) {
+        list<IPlanningAction::CPtr> &plan) {
     /**
      * Finds a plan in the cached data.
      * If the returning vector has a length of 0 elements, no plan has been found in cache.
      */
-    std::list<IPlanningAction::CPtr> &retPlan = plan;
+    list<IPlanningAction::CPtr> &retPlan = plan;
     size_t nStates;
     size_t nState;
     StatesPlan::Ptr nearStatePlan;
@@ -267,7 +268,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
 
     IPlanningStateComparer::Ptr planningStateComparer = NewPtr<IPlanningStateComparer>(NUMERICSTATECOMPARER_SINGLETON);
     // Search a cached plan for this goal
-    std::list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
+    list<StatesPlan::Ptr> &plannings = _statesCaches[goalState];
     if (!plannings.empty()) {
         for (auto &statePlan: plannings) {
             nStates = statePlan->states().size()-1;
@@ -298,12 +299,12 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
             //i = 0;
             for (nState = nearOffset; nState < nStates; nState++ ) {
                 auto statesPlan = nearStatePlan->plan();
-                auto it1 = std::next(statesPlan.begin(), nState); // TODO: plan() --> vector
+                auto it1 = next(statesPlan.begin(), nState); // TODO: plan() --> vector
                 retPlan.push_back(*it1);
             }
             // Test if the found plan is valid
             IState::Ptr reachedState = executeActions(retPlan, intialState);
-            static const std::string strDiscr = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
+            static const string strDiscr = STR_GOAP_NUMERICSTATECOMPARER_SINGLETON;
             bool bEnough = planningStateComparer->enough(reachedState, goalState);
             if (!bEnough) {
                 // This plan is not good enough
@@ -314,7 +315,7 @@ std::list<IPlanningAction::CPtr>& Planner::findPlan(
     return retPlan;
 }
 
-ostream & IPlanningAction::planToOstream(ostream &ss, const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState) {
+ostream & IPlanningAction::planToOstream(ostream &ss, const list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState) {
     float totalCost = 0;
     IPlanningAction::CPtr action;
     if (actionsArray.empty()) {
@@ -342,9 +343,9 @@ ostream & IPlanningAction::planToOstream(ostream &ss, const std::list<IPlanningA
     return ss;
 }
 
-string IPlanningAction::planToString(const std::list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
+string IPlanningAction::planToString(const list<IPlanningAction::CPtr> &actionsArray, IState::CPtr initialState)
 {
-    std::stringstream ss;
+    stringstream ss;
     planToOstream(ss, actionsArray, initialState);
     return ss.str();
 }
@@ -356,7 +357,7 @@ string Planner::toString() const
 
 string Planner::toDebugString() const
 {
-    std::stringstream ss;
+    stringstream ss;
     toOstream(ss);
     string str = ss.str();
     return str;

@@ -198,6 +198,13 @@ inline bool operator <(const IStateValue::Ptr& a, const IStateValue::CPtr& b) {
     return *a < *b;
 }
 
+inline bool operator <(const IStateValue::CNew& a, const IStateValue::CNew& b) {
+    return *a < *b;
+}
+inline bool operator <(const IStateValue::New& a, const IStateValue::New& b) {
+    return *a < *b;
+}
+
 }
 
 namespace std
@@ -220,6 +227,29 @@ struct hash<IStateValue::Ptr>
     }
 };
 
+template <>
+struct hash<IStateValue::CNew>
+{
+    std::size_t operator()(const IStateValue::CNew &k) const {
+        return k->hash();
+    }
+};
+
+template <>
+struct hash<IStateValue::New>
+{
+    std::size_t operator()(const IStateValue::New &k) const {
+        return k->hash();
+    }
+};
+
+template<>
+struct equal_to<IStateValue::Ptr>
+{
+    bool operator()(const IStateValue::Ptr &data1, const IStateValue::CPtr &data2) const {
+        return data1->equals(data2);
+    }
+};
 template<>
 struct equal_to<IStateValue::CPtr>
 {
@@ -229,23 +259,53 @@ struct equal_to<IStateValue::CPtr>
 };
 
 template<>
-struct less<IStateValue::Ptr>
+struct equal_to<IStateValue::CNew>
 {
-    template<typename T>
-    bool operator()(IStateValue::Ptr const& lhs, T const& rhs) {
-        return lhs->lessThan(rhs);
+    bool operator()(const IStateValue::CNew &data1, const IStateValue::CPtr &data2) const {
+        return data1->equals(data2);
     }
 };
 
 template<>
-struct less<IStateValue::CPtr>
+struct equal_to<IStateValue::New>
 {
-    template<typename T>
-    bool operator()(IStateValue::CPtr const& lhs, T const& rhs) {
-        return lhs->lessThan(rhs);
+    bool operator()(const IStateValue::New &data1, const IStateValue::CPtr &data2) const {
+        return data1->equals(data2);
     }
 };
 
+//template<>
+//struct less<IStateValue::Ptr>
+//{
+//    bool operator()(IStateValue::Ptr const& lhs, IStateValue::Ptr const& rhs) {
+//        return lhs->lessThan(rhs);
+//    }
+//};
+
+//template<>
+//struct less<IStateValue::CPtr>
+//{
+//    bool operator()(IStateValue::CPtr const& lhs, IStateValue::CPtr const& rhs) {
+//        return lhs->lessThan(rhs);
+//    }
+//};
+
+//template<>
+//struct less<IStateValue::New>
+//{
+//    bool operator()(IStateValue::New const& lhs, IStateValue::New const& rhs) {
+//        return lhs->lessThan(rhs);
+//    }
+//};
+
+//template<>
+//struct less<IStateValue::CNew>
+//{
+//    bool operator()(const IStateValue::CNew & lhs, const IStateValue::CNew & rhs) {
+//        const IStateValue* p = lhs.get();
+//        return p->lessThan(rhs);
+//    }
+//};
 }
 
 

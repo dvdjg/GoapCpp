@@ -181,18 +181,48 @@ TEST_F(GoapTest, TestTowerSolver255)
     LOG(INFO) << "Plan: " << planToOStream(solver7.plan(), solver7.initialState());
 }
 
+enum class ValueEvolution {
+    NONE,
+    APPEARED,
+    DISSAPEARED,
+    INC,
+    DEC,
+    ACCEL_INC,
+    ACCEL_DEC,
+    MODIFIED
+};
+
+const char* ValueEvolution2Name[] = {
+    "NONE",
+    "APPEARED",
+    "DISSAPEARED",
+    "INC",
+    "DEC",
+    "ACCEL_INC",
+    "ACCEL_DEC",
+    "MODIFIED",
+    nullptr
+};
+
+struct ValueCoefficients {
+    float cosineSimilarity = 0, moduleSimilarity = 0, totalDistance = 1;
+    IStateValue::CPtr srcValue, dstValue;
+    ValueEvolution evolution = ValueEvolution::NONE;
+};
+
 class StateComparison {
 public:
-    struct Coefficients {
-        float cosDistance = 0, moduleDistance = 0, percInc = 1;
-        IStateValue::CPtr srcValue, dstValue;
-    };
+
 protected:
-    map<IStateValue::CNew, Coefficients> _valueSimilarity;
+    unordered_map<IStateValue::CNew, ValueCoefficients> _valuesSimilarity;
 
 public:
+    StateComparison() {}
+    StateComparison(const StateComparison & o) : _valuesSimilarity(o._valuesSimilarity) {}
     IState::New srcCleanState, dstCleanState;
-    const map<IStateValue::CNew, Coefficients>& valueSimilarity() { return _valueSimilarity; }
+    const IState::Ptr& sourceCleanState() const { return srcCleanState; }
+    const IState::Ptr& destinationCleanState() const { return dstCleanState; }
+    const unordered_map<IStateValue::CNew, ValueCoefficients>& valuesSimilarity() { return _valuesSimilarity; }
 
     float compareStates(const IState::CNew& stateSrc, const IState::CNew& stateDst) {
         float percent = 0;
@@ -203,7 +233,8 @@ public:
         while (itState->hasNext()) {
             auto pair = itState->next();
             auto key = pair.first;
-            Coefficients& coeff = _valueSimilarity[key];
+            string strKey = *key;
+            ValueCoefficients& coeff = _valuesSimilarity[key];
             IStateValue::Ptr valueDst = pair.second;
             IStateValue::Ptr valueSrc;
             if (valueDst) {
@@ -217,26 +248,36 @@ public:
                         // 0 < are similar < are different < 1
                         float percInc = basicmath::floatSimilarity(s1k, s2k);
                         float mul = s1k * s2k;
-                        coeff.cosDistance = mul > 0 ? 1 : mul < 0 ? -1 : 0;
-                        coeff.moduleDistance = 1.f - basicmath::floatSimilarityAbs(s1k, s2k);
-                        coeff.percInc = percInc;
+                        coeff.cosineSimilarity = mul > 0 ? 1 : mul < 0 ? -1 : 0;
+                        coeff.moduleSimilarity = 1.f - basicmath::floatSimilarityAbs(s1k, s2k);
+                        coeff.totalDistance = percInc;
+                        if (percInc > GOAP_FLT_EPSILON) {
+                            coeff.evolution = (s2k > s1k) ? ValueEvolution::INC : ValueEvolution::DEC;
+                        }
                         percent += percInc;
                     } else if (valueDst->size() >= 1 && valueSrc->size() >= 1) {
                         float thisModule, othersModule;
                         float cosDist = valueSrc->cosineDistance(valueDst, &thisModule, &othersModule);
                         float moduleDistance = 1.f - basicmath::floatSimilarity(thisModule, othersModule);
                         float percInc = std::max(0.f, 1.f - cosDist * moduleDistance);
-                        coeff.cosDistance = cosDist;
-                        coeff.moduleDistance = moduleDistance;
-                        coeff.percInc = percInc;
+                        coeff.cosineSimilarity = cosDist;
+                        coeff.moduleSimilarity = moduleDistance;
+                        coeff.totalDistance = percInc;
+                        coeff.evolution = ValueEvolution::MODIFIED;
                         percent += percInc;
                     } else {
+                        coeff.evolution = ValueEvolution::MODIFIED;
                         percent += 1.f;
                     }
                     //LOG(DEBUG) << "Compared key=" << *key << ": ValueDst=" << *valueDst << "; ValueSrc=" << *valueSrc << ". AccPercent=" << percent;
+                } else {
+                    coeff.cosineSimilarity = 0;
+                    coeff.moduleSimilarity = 0;
+                    coeff.totalDistance = 1;
+                    coeff.evolution = ValueEvolution::APPEARED;
                 }
             }
-            if (coeff.percInc > 0) {
+            if (coeff.totalDistance > GOAP_FLT_EPSILON) {
                 // There are changes in this value
                 coeff.srcValue = valueSrc;
                 coeff.dstValue = valueDst;
@@ -260,9 +301,9 @@ TEST_F(GoapTest, TestStateComparison)
     IState::New state2 { {"OwenTemperature", REF_TEMP + 3}, {"BowlTemperature", REF_TEMP}, {"Credits", 2}, {"Uno", {5,10,0}}, {"Dos", {0,1,0}}, {"JustCreated", true}, {"EggIsOnBowl", false}, {"ButterIsOnBowl", false}, {"FlourIsOnBowl", false} };
     StateComparison comp;
     float dist1 = comp.compareStates(state1, state2);
-    auto &mapSim = comp.valueSimilarity();
+    auto &mapSim = comp.valuesSimilarity();
     for (auto & it : mapSim) {
-        LOG(INFO) << "State:" << *it.first << ",\n    cosDistance:" << it.second.cosDistance << ",    moduleDistance:" << it.second.moduleDistance << ",    percInc:" << it.second.percInc;
+        LOG(INFO) << "State:" << *it.first << ",\n    cosDistance:" << it.second.cosineSimilarity << ",    moduleDistance:" << it.second.moduleSimilarity << ",    percInc:" << it.second.totalDistance;
     }
     LOG(INFO) << "Clean Src State: " << *comp.srcCleanState;
     LOG(INFO) << "Clean Dst State: " << *comp.dstCleanState;
@@ -270,19 +311,36 @@ TEST_F(GoapTest, TestStateComparison)
     ASSERT_EQ(nullptr, comp.dstCleanState->at("EggIsOnBowl"));
 
     auto& uno = mapSim.at("Uno");
-    ASSERT_FLOAT_EQ(1, uno.cosDistance);
-    ASSERT_FLOAT_EQ(0.2f, uno.moduleDistance);
-    ASSERT_FLOAT_EQ(0.8f, uno.percInc);
+    ASSERT_FLOAT_EQ(1, uno.cosineSimilarity);
+    ASSERT_FLOAT_EQ(0.2f, uno.moduleSimilarity);
+    ASSERT_FLOAT_EQ(0.8f, uno.totalDistance);
 }
+
 
 TEST_F(GoapTest, TestBackingAPie)
 {
     backing_a_pie backing;
     IPlanner::Ptr planner = backing.planner();
     map<string, long long> mapActionAcepted;
+    unordered_map<string, unordered_map<IState::CPtr, unordered_map<IState::CPtr, StateComparison> > > mapActionToSrcToDstState;
+    unordered_map<IStateValue::CNew, map<string, map<ValueEvolution, list<ValueCoefficients> > > > mapValueToAction;
     planner->actionStateFunction([&](const IPlanningAction::CPtr &action, const IState::CPtr &initialState, IState::CPtr nextState) {
         if (nextState) {
-            ++mapActionAcepted[*action->name()];
+            const string& actionName = *action->name();
+            ++mapActionAcepted[actionName];
+            StateComparison comp;
+            float dist1 = comp.compareStates(initialState, nextState);
+            //auto &mapSim = comp.valuesSimilarity();
+            mapActionToSrcToDstState[actionName][comp.sourceCleanState()][comp.destinationCleanState()] = comp;
+
+            auto itValue = comp.destinationCleanState()->iterator();
+            const IState::Ptr& srcState = comp.sourceCleanState();
+            while (itValue->hasNext()) {
+                auto pair = itValue->next();
+                auto &key = pair.first;
+                auto &valSim = comp.valuesSimilarity().at(key);
+                mapValueToAction[key][actionName][valSim.evolution].push_back(valSim);
+            }
         }
     });
     float REF_TEMP = backing_a_pie::REF_TEMP;
@@ -296,5 +354,30 @@ TEST_F(GoapTest, TestBackingAPie)
     for (auto& it : mapActionAcepted) {
         LOG(INFO) << "Action: \"" << it.first << ", Count: " << it.second;
     }
+
+
+    for (auto& it1 : mapValueToAction) {
+        for (auto& it2 : it1.second) {
+            for (auto& it3 : it2.second) {
+                auto& comp = it3.second;
+                auto szEvol = ValueEvolution2Name[(int)it3.first];
+                LOG(INFO) << "Value: " << *it1.first << ", Action: " << it2.first << ", ValueEvolution: " << szEvol << ", #" << comp.size();
+            }
+        }
+    }
+    for (auto& it1 : mapActionToSrcToDstState) {
+        for (auto& it2 : it1.second) {
+            for (auto& it3 : it2.second) {
+                auto& comp = it3.second;
+                LOG(INFO) << "Action resume: \"" << it1.first << "\", {" << *it2.first << "}, {" << *it3.first << "}";
+                for (auto & it : it3.second.valuesSimilarity()) {
+                    if (it.second.totalDistance > GOAP_FLT_EPSILON)
+                    LOG(INFO) << "Value:" << *it.first << ",\n    cosineSimilarity:" << it.second.cosineSimilarity << ",    moduleSimilarity:" << it.second.moduleSimilarity << ",    totalDistance:" << it.second.totalDistance;
+                }
+            }
+            int a = 0;
+        }
+    }
+
 }
 

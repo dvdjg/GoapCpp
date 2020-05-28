@@ -135,6 +135,44 @@ struct equal_to<IState::CPtr>
         return data1->equals(data2);
     }
 };
+template<>
+struct equal_to<IState::Ptr>
+{
+    bool operator()(const IState::Ptr &data1, const IState::CPtr &data2) const {
+        return data1->equals(data2);
+    }
+};
+
+template <>
+struct hash<IState::CNew>
+{
+    size_t operator()(const IState::CNew &k) const {
+        return k->hash();
+    }
+};
+
+template <>
+struct hash<IState::New>
+{
+    size_t operator()(const IState::New &k) const {
+        return k->hash();
+    }
+};
+
+template<>
+struct equal_to<IState::CNew>
+{
+    bool operator()(const IState::CNew &data1, const IState::CPtr &data2) const {
+        return data1->equals(data2);
+    }
+};
+template<>
+struct equal_to<IState::New>
+{
+    bool operator()(const IState::New &data1, const IState::CPtr &data2) const {
+        return data1->equals(data2);
+    }
+};
 
 }
 
