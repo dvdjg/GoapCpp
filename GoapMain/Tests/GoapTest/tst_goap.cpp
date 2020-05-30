@@ -85,25 +85,25 @@ TEST_F(GoapTest, TestNumericComparer)
     EXPECT_EQ(true, bdistance3);
 }
 
-TEST_F(GoapTest, TestStateSolverOwenIsOn)
-{
-    state_change_solver solver;
-    solver.setInputSequence({"OwenIsOn"});
-    solver.setOutputSequence({"OwenIsOn"});
-    lst_plan_type plan = solver.makePlan( { {"OwenIsOn", false} }, { {"OwenIsOn", true} } );
-    EXPECT_NE(0, plan.size());
-    LOG(INFO) << "State Plan OwenIsOn: " << planToOStream(solver.plan(), solver.initialState());
-}
+//TEST_F(GoapTest, TestStateSolverOwenIsOn)
+//{
+//    state_change_solver solver;
+//    solver.setInputSequence({"OwenIsOn"});
+//    solver.setOutputSequence({"OwenIsOn"});
+//    lst_plan_type plan = solver.makePlan( { {"OwenIsOn", false} }, { {"OwenIsOn", true} } );
+//    EXPECT_NE(0, plan.size());
+//    LOG(INFO) << "State Plan OwenIsOn: " << planToOStream(solver.plan(), solver.initialState());
+//}
 
-TEST_F(GoapTest, TestStateSolverOwenTemperature)
-{
-    state_change_solver solver;
-    solver.setInputSequence({"OwenTemperature"});
-    solver.setOutputSequence({"OwenTemperature"});
-    lst_plan_type plan = solver.makePlan( { {"OwenTemperature", 300} }, { {"OwenIsOn", true} } );
-    EXPECT_NE(0, plan.size());
-    LOG(INFO) << "State Plan OwenIsOn: " << planToOStream(solver.plan(), solver.initialState());
-}
+//TEST_F(GoapTest, TestStateSolverOwenTemperature)
+//{
+//    state_change_solver solver;
+//    solver.setInputSequence({"OwenTemperature"});
+//    solver.setOutputSequence({"OwenTemperature"});
+//    lst_plan_type plan = solver.makePlan( { {"OwenTemperature", 300} }, { {"OwenIsOn", true} } );
+//    EXPECT_NE(0, plan.size());
+//    LOG(INFO) << "State Plan OwenIsOn: " << planToOStream(solver.plan(), solver.initialState());
+//}
 
 TEST_F(GoapTest, TestTowerSolver)
 {
@@ -226,6 +226,9 @@ public:
     IState::CNew _srcState, _dstState;
     IState::New _srcCleanState, _dstCleanState;
     StateComparison() {}
+    StateComparison(const IState::CNew& stateSrc, const IState::CNew& stateDst, unordered_map<IStateValue::CNew, IStateValue::New> *pMapDiscovered = nullptr) {
+        compareStates(stateSrc, stateDst, pMapDiscovered);
+    }
     StateComparison(const StateComparison & o) : _valuesSimilarity(o._valuesSimilarity) {}
     const IState::Ptr& sourceCleanState() const { return _srcCleanState; }
     const IState::Ptr& destinationCleanState() const { return _dstCleanState; }
@@ -233,6 +236,10 @@ public:
     const IState::CPtr& destinationState() const { return _dstState; }
     const unordered_map<IStateValue::CNew, ValueCoefficients>& valuesSimilarity() { return _valuesSimilarity; }
 
+    float compareStates(unordered_map<IStateValue::CNew, IStateValue::New> &mapDiscovered) {
+        _valuesSimilarity.clear();
+        return compareStates(_srcState, _dstState, &mapDiscovered);
+    }
     float compareStates(const IState::CNew& stateSrc, const IState::CNew& stateDst, unordered_map<IStateValue::CNew, IStateValue::New> *pMapDiscovered = nullptr) {
         float percent = 0;
         IState::index_type s2Count = 0;
@@ -383,6 +390,7 @@ protected:
     IPlanner::Ptr _planner; // = backing.planner();
     map<string, long long> _mapActionAcepted;
     map<string, list<IState::CPtr> > _mapActionToTriggerSrcState;
+    map<string, list<IState::CPtr> > _mapActionToTriggerDstState;
     unordered_map<IStateValue::CNew, map<ValueEvolution, map<string, list<ValueCoefficients> > > > _mapValueToAction;
     unordered_map<string, map<IStateValue::CNew, map<ValueEvolution, list<ValueCoefficients> > > > _mapActionToValue;
     unordered_map<IStateValue::CNew, IStateValue::New> _mapDiscoveredValues;
@@ -399,6 +407,7 @@ public:
                 //_mapActionToSrcToDstState[actionName][comp.sourceCleanState()][comp.destinationCleanState()] = comp;
                 if (nextState) {
                     _mapActionToTriggerSrcState[actionName].push_back(initialState);
+                    _mapActionToTriggerDstState[actionName].push_back(nextState);
                 }
                 auto itValue = comp.destinationCleanState()->iterator();
                 const IState::Ptr& srcState = comp.sourceCleanState();
@@ -456,6 +465,44 @@ public:
         for (auto& it : _mapActionAcepted) {
             LOG(INFO) << "Action: \"" << it.first << ", Count: " << it.second;
         }
+
+        typedef pair<IStateValue::CPtr, ValueStats> p_type;
+        vector<p_type> lstStats;
+        for (auto it : _mapActionToTriggerSrcState) {
+            const string & actionName = it.first;
+            unordered_map<IStateValue::CPtr, ValueStats> mapStats = getStateValueStats(it.second, 50);
+            lstStats.clear();
+            for (auto it : mapStats) {
+                lstStats.push_back(make_pair(it.first, it.second));
+            }
+            sort(lstStats.begin(), lstStats.end(), [](const p_type& a, const p_type& b) {
+                return a.second.count > b.second.count /*|| ((a.second.count == b.second.count) &&
+                                                           a.second.maxVal->cosineDistance(a.second.minVal) > b.second.maxVal->cosineDistance(b.second.minVal))*/;
+            });
+            long long count = lstStats.front().second.count;
+            for (auto it : lstStats) {
+                if (count == it.second.count && *it.second.maxVal == *it.second.minVal) {
+                    LOG(INFO) << "Src Stats for Action: " << actionName << ", Count: " << it.second.count << ", SrcValue: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
+                }
+            }
+        }
+        for (auto it : _mapActionToTriggerDstState) {
+            const string & actionName = it.first;
+            unordered_map<IStateValue::CPtr, ValueStats> mapStats = getStateValueStats(it.second, 50);
+            lstStats.clear();
+            for (auto it : mapStats) {
+                lstStats.push_back(make_pair(it.first, it.second));
+            }
+            sort(lstStats.begin(), lstStats.end(), [](const p_type& a, const p_type& b) {
+                return a.second.count > b.second.count;
+            });
+            long long count = lstStats.front().second.count;
+            for (auto it : lstStats) {
+                if (count == it.second.count && *it.second.maxVal == *it.second.minVal) {
+                    LOG(INFO) << "Dst Stats for Action: " << actionName << ", Count: " << it.second.count << ", DstValue: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
+                }
+            }
+        }
         for (auto& it1 : _mapValueToAction) {
             for (auto& it2 : it1.second) {
                 auto szEvol = ValueEvolution2Name[(int)it2.first];
@@ -477,23 +524,6 @@ public:
                     }
                     LOG(INFO) << "Value: " << *it1.first <<", ValueEvolution: " << szEvol <<  ", Action: " << it3.first << ", #" << comp.size();
                 }
-            }
-        }
-
-        typedef pair<IStateValue::CPtr, ValueStats> p_type;
-        vector<p_type> lstStats;
-        for (auto it : _mapActionToTriggerSrcState) {
-            const string & actionName = it.first;
-            unordered_map<IStateValue::CPtr, ValueStats> mapStats = getStateValueStats(it.second, 50);
-            lstStats.clear();
-            for (auto it : mapStats) {
-                lstStats.push_back(make_pair(it.first, it.second));
-            }
-            sort(lstStats.begin(), lstStats.end(), [](const p_type& a, const p_type& b) {
-                return a.second.count > b.second.count;
-            });
-            for (auto it : lstStats) {
-                LOG(INFO) << "Stats for Action: " << actionName << ", Count: " << it.second.count << ", Value: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
             }
         }
         for (auto it1 : _mapActionToValue) {

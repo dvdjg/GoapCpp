@@ -194,6 +194,7 @@ inline IStateValue& operator *=(IStateValue& a, const IStateValue& b) {
 inline bool operator <(const IStateValue::CPtr& a, const IStateValue::CPtr& b) {
     return *a < *b;
 }
+
 inline bool operator <(const IStateValue::Ptr& a, const IStateValue::CPtr& b) {
     return *a < *b;
 }
@@ -201,6 +202,7 @@ inline bool operator <(const IStateValue::Ptr& a, const IStateValue::CPtr& b) {
 inline bool operator <(const IStateValue::CNew& a, const IStateValue::CNew& b) {
     return *a < *b;
 }
+
 inline bool operator <(const IStateValue::New& a, const IStateValue::New& b) {
     return *a < *b;
 }
@@ -274,38 +276,38 @@ struct equal_to<IStateValue::New>
     }
 };
 
-//template<>
-//struct less<IStateValue::Ptr>
-//{
-//    bool operator()(IStateValue::Ptr const& lhs, IStateValue::Ptr const& rhs) {
-//        return lhs->lessThan(rhs);
-//    }
-//};
+template<>
+struct less<IStateValue::Ptr>
+{
+    bool operator()(IStateValue::Ptr const& lhs, IStateValue::Ptr const& rhs) {
+        return lhs->lessThan(rhs);
+    }
+};
 
-//template<>
-//struct less<IStateValue::CPtr>
-//{
-//    bool operator()(IStateValue::CPtr const& lhs, IStateValue::CPtr const& rhs) {
-//        return lhs->lessThan(rhs);
-//    }
-//};
+template<>
+struct less<IStateValue::CPtr>
+{
+    bool operator()(IStateValue::CPtr const& lhs, IStateValue::CPtr const& rhs) {
+        return lhs->lessThan(rhs);
+    }
+};
 
-//template<>
-//struct less<IStateValue::New>
-//{
-//    bool operator()(IStateValue::New const& lhs, IStateValue::New const& rhs) {
-//        return lhs->lessThan(rhs);
-//    }
-//};
+template<>
+struct less<IStateValue::New>
+{
+    bool operator()(IStateValue::New const& lhs, IStateValue::New const& rhs) {
+        return lhs->lessThan(rhs);
+    }
+};
 
-//template<>
-//struct less<IStateValue::CNew>
-//{
-//    bool operator()(const IStateValue::CNew & lhs, const IStateValue::CNew & rhs) {
-//        const IStateValue* p = lhs.get();
-//        return p->lessThan(rhs);
-//    }
-//};
+template<>
+struct less<IStateValue::CNew>
+{
+    bool operator()(const IStateValue::CNew & lhs, const IStateValue::CNew & rhs) {
+        const IStateValue* p = lhs.get();
+        return p->lessThan(rhs);
+    }
+};
 }
 
 
