@@ -29,7 +29,8 @@ public:
     public:
         New();
         New(parent_type::element_type* pVal);
-        New(const parent_type &other);
+        New(const class_type::Ptr &other);
+        New(const class_type::CPtr &other);
         New(const string &str);
         New(const char *sz);
         New(const initializer_list<float>& list);

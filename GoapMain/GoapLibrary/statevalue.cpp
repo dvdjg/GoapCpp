@@ -462,7 +462,10 @@ IStateValue::New::New() : parent_type(NewPtr<IStateValue>()) {
 IStateValue::New::New(parent_type::element_type *pVal) : parent_type(pVal) {
 }
 
-IStateValue::New::New(const parent_type &other) : parent_type(other) {
+IStateValue::New::New(const goap::IStateValue::Ptr &other) : parent_type(other) {
+}
+
+IStateValue::New::New(const goap::IStateValue::CPtr &other) : parent_type(dynamic_pointer_cast<IStateValue>(other->clone())) {
 }
 
 IStateValue::New::New(const string &str) : New() {

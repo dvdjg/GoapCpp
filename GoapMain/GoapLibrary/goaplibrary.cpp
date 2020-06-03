@@ -19,7 +19,7 @@ Goap::Goap()
 }
 
 IPlanningAction::Ptr Goap::newPlanningAction(
-        const char *name,
+        const std::string &name,
         IPlanningAction::validator_function_type validator_,
         IPlanningAction::executor_function_type executor_) {
     auto ret = RecyclableWrapper<PlanningAction>::createFromPoolRaw();

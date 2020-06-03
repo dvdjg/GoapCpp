@@ -17,6 +17,7 @@ SOURCES += \
     backing_a_pie.cpp
 
 HEADERS += \
+    backtracking_solver.h \
     state_change_solver.h \
     backing_a_pie.h \
     hanoi_tower_solver.h

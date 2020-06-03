@@ -25,8 +25,7 @@ public:
 
     static IScopeTime::Ptr newScopeTime(const char *szMessage = nullptr, IScopeTime::pfn_time pfnTime = nullptr, bool bOutOfScope = true);
 
-    static IPlanningAction::Ptr newPlanningAction(
-            const char* name,
+    static IPlanningAction::Ptr newPlanningAction(const string &name,
             IPlanningAction::validator_function_type validator_ = {},
             IPlanningAction::executor_function_type executor_ = {});
 

@@ -460,15 +460,76 @@ public:
             }
         }
     }
+/*
+        list<IPlanningAction::CPtr> planningActions {
+            Goap::newPlanningAction("Load",
+                                    [=](IState::CPtr state) -> bool { return stackCanLoad(state);                               },
+                                    [=](IState::Ptr  state) -> void { stackLoad(state); wait(state);                       }),
+*/
+    typedef pair<IStateValue::CPtr, ValueStats> p_type;
+    IPlanningAction::CPtr getPlanningAction (const string & actionName, const vector<p_type>& lstStats) {
+        IPlanningAction::CPtr planningAction = Goap::newPlanningAction(actionName, [=](IState::CPtr state) -> bool {
+            // unordered_map<string, map<IStateValue::CNew, map<ValueEvolution, list<ValueCoefficients> > > > _mapActionToValue;
+            auto it1 = _mapActionToValue.find(actionName);
+            if (it1 != _mapActionToValue.end()) {
+                for (auto& it2 : it1->second) {
+                    for (auto& it3 : it2.second) {
 
-    void log() {
-        for (auto& it : _mapActionAcepted) {
-            LOG(INFO) << "Action: \"" << it.first << ", Count: " << it.second;
-        }
+                        auto& lstValueComponents = it3.second;
+                        if (lstValueComponents.size() == 0) {
+                            continue;
+                        }
+                        if(it3.first == ValueEvolution::DEC) {
+                            auto nElems = it2.second[ValueEvolution::INC].size();
+                            if (nElems > 5 && lstValueComponents.size() > 5) {
+                                continue;
+                            }
+                        } else if(it3.first == ValueEvolution::INC) {
+                            auto nElems = it2.second[ValueEvolution::DEC].size();
+                            if (nElems > 5 && lstValueComponents.size() > 5) {
+                                continue;
+                            }
+                        }
 
-        typedef pair<IStateValue::CPtr, ValueStats> p_type;
+                        auto szEvol = ValueEvolution2Name[(int)it3.first];
+                        auto value = state->at(it2.first);
+                        if (!value) {
+                            return false;
+                        }
+                        for (auto &val : lstValueComponents) {
+                            if (*val.srcValue == *value) {
+                                return true;
+                            }
+                        }
+                        //if ()
+                        LOG(INFO) << "Action: " << it1->first << ", Value: " << *it2.first << ", ValueEvolution: " << szEvol <<", #" << lstValueComponents.size();
+                    }
+                }
+            }
+            return false;
+        }, [=](IState::Ptr  state) -> void {
+            const ValueStats& valueStatFront = lstStats.front().second;
+            long long countFirst = valueStatFront.count;
+            for (auto it : lstStats) {
+                const ValueStats& valueStat = it.second;
+                if (countFirst == valueStat.count) {
+                    if (*valueStat.maxVal == *valueStat.minVal) {
+                        const IStateValue::CPtr &key = it.first;
+                        state->put(key, valueStat.minVal);
+                        //if (!stateValue || *stateValue < *valueStat.minVal || *stateValue > *valueStat.maxVal) {
+                        //    return false;
+                        //}
+                    }
+                }
+            }
+        });
+        return planningAction;
+    }
+
+    list<IPlanningAction::CPtr> walkActionsValues(const map<string, list<IState::CPtr> >& mapActionToTriggerState, const list<IPlanningAction::CPtr>& planningActions, const char *szDebugStr = "") {
+        list<IPlanningAction::CPtr> ret;
         vector<p_type> lstStats;
-        for (auto it : _mapActionToTriggerSrcState) {
+        for (auto it : mapActionToTriggerState) {
             const string & actionName = it.first;
             unordered_map<IStateValue::CPtr, ValueStats> mapStats = getStateValueStats(it.second, 50);
             lstStats.clear();
@@ -479,53 +540,49 @@ public:
                 return a.second.count > b.second.count /*|| ((a.second.count == b.second.count) &&
                                                            a.second.maxVal->cosineDistance(a.second.minVal) > b.second.maxVal->cosineDistance(b.second.minVal))*/;
             });
-            long long count = lstStats.front().second.count;
+            ValueStats& valueStats = lstStats.front().second;
+            long long count = valueStats.count;
             for (auto it : lstStats) {
                 if (count == it.second.count && *it.second.maxVal == *it.second.minVal) {
-                    LOG(INFO) << "Src Stats for Action: " << actionName << ", Count: " << it.second.count << ", SrcValue: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
+                    LOG(INFO) << szDebugStr << " Stats for Action: " << actionName << ", Count: " << it.second.count << ", " << szDebugStr << "Value: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
                 }
             }
-        }
-        for (auto it : _mapActionToTriggerDstState) {
-            const string & actionName = it.first;
-            unordered_map<IStateValue::CPtr, ValueStats> mapStats = getStateValueStats(it.second, 50);
-            lstStats.clear();
-            for (auto it : mapStats) {
-                lstStats.push_back(make_pair(it.first, it.second));
-            }
-            sort(lstStats.begin(), lstStats.end(), [](const p_type& a, const p_type& b) {
-                return a.second.count > b.second.count;
-            });
-            long long count = lstStats.front().second.count;
-            for (auto it : lstStats) {
-                if (count == it.second.count && *it.second.maxVal == *it.second.minVal) {
-                    LOG(INFO) << "Dst Stats for Action: " << actionName << ", Count: " << it.second.count << ", DstValue: " << *it.first << ", Max: " << *it.second.maxVal << ", Min: " << *it.second.minVal;
-                }
+            if (strcmp("Src", szDebugStr) == 0) {
+                IPlanningAction::CPtr planningAction = getPlanningAction(actionName, lstStats);
+                ret.push_back(planningAction);
             }
         }
+        return ret;
+    }
+    void walkValueToAction()
+    {
         for (auto& it1 : _mapValueToAction) {
             for (auto& it2 : it1.second) {
                 auto szEvol = ValueEvolution2Name[(int)it2.first];
                 for (auto& it3 : it2.second) {
-                    auto& comp = it3.second;
+                    auto& lstValueComponents = it3.second;
+                    if (lstValueComponents.size() == 0) {
+                        continue;
+                    }
                     if(it2.first == ValueEvolution::DEC) {
                         auto nElems = it1.second[ValueEvolution::INC][it3.first].size();
-                        if (nElems > 5 && comp.size() > 5) {
+                        if (nElems > 5 && lstValueComponents.size() > 5) {
                             continue;
                         }
                     } else if(it2.first == ValueEvolution::INC) {
                         auto nElems = it1.second[ValueEvolution::DEC][it3.first].size();
-                        if (nElems > 5 && comp.size() > 5) {
+                        if (nElems > 5 && lstValueComponents.size() > 5) {
                             continue;
                         }
                     }
-                    if (comp.size() == 0) {
-                        continue;
-                    }
-                    LOG(INFO) << "Value: " << *it1.first <<", ValueEvolution: " << szEvol <<  ", Action: " << it3.first << ", #" << comp.size();
+                    LOG(INFO) << "Value: " << *it1.first <<", ValueEvolution: " << szEvol <<  ", Action: " << it3.first << ", #" << lstValueComponents.size();
                 }
             }
         }
+    }
+
+    void walkActionToValue()
+    {
         for (auto it1 : _mapActionToValue) {
             for (auto& it2 : it1.second) {
                 for (auto& it3 : it2.second) {
@@ -535,6 +592,18 @@ public:
                 }
             }
         }
+    }
+
+    void log() {
+        for (auto& it : _mapActionAcepted) {
+            LOG(INFO) << "Action: \"" << it.first << ", Count: " << it.second;
+        }
+
+        walkActionsValues(_mapActionToTriggerSrcState, "Src");
+        walkActionsValues(_mapActionToTriggerDstState, "Dst");
+
+        walkValueToAction();
+        walkActionToValue();
     }
 };
 
