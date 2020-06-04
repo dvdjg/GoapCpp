@@ -11,6 +11,7 @@
 
 #include "goap/istate.h"
 #include "goap/iscopetimer.h"
+#include "goap/isequencer.h"
 
 #include "backing_a_pie.h"
 #include "hanoi_tower_solver.h"
@@ -46,6 +47,28 @@ protected:
 const float GoapTest::REF_TEMP = 300;
 
 
+TEST_F(GoapTest, TestSequencer) {
+    ISequencer::Ptr seq = NewPtr<ISequencer>();
+    const string strNumber("3.1415");
+    string strReconstr;
+    seq->pushString(strNumber, 1.0f);
+    float acc = 0;
+    auto it = seq->iterator();
+    while (it->hasNext()) {
+        auto pairState = it->next();
+        acc += pairState.first;
+        auto itValue = pairState.second->iterator();
+        while (itValue->hasNext()) {
+            auto pairValue = itValue->next();
+            float val = pairValue.second->at(0);
+            if (val > 0.5) {
+                string key = *pairValue.first;
+                strReconstr.append(key);
+            }
+        }
+    }
+    EXPECT_EQ(strNumber, strReconstr);
+}
 TEST_F(GoapTest, TestNumericComparer)
 {
     LOG(INFO) <<  magenta << "TestNumericComparer. 01" << reset << endl;
@@ -598,9 +621,9 @@ public:
         for (auto& it : _mapActionAcepted) {
             LOG(INFO) << "Action: \"" << it.first << ", Count: " << it.second;
         }
-
-        walkActionsValues(_mapActionToTriggerSrcState, "Src");
-        walkActionsValues(_mapActionToTriggerDstState, "Dst");
+        list<IPlanningAction::CPtr> planningActions;
+        walkActionsValues(_mapActionToTriggerSrcState, planningActions, "Src");
+        walkActionsValues(_mapActionToTriggerDstState, planningActions, "Dst");
 
         walkValueToAction();
         walkActionToValue();

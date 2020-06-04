@@ -117,7 +117,7 @@ TEST_F(GoapIStateTest, TestIterate)
     map<string, float> mapState;
     NewPtr<IState> ptrState;
     ptrState->assign({ {"Uno", 1}, {"Dos", 2}, {"Tres", 3} });
-    NewPtr<IStateIterator> itState;
+    NewPtr<IStateValueIterator> itState;
     *itState = ptrState;
 
     while (itState->hasNext()) {

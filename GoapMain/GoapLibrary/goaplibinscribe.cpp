@@ -21,6 +21,7 @@
 #include "comparerstatemeter.h"
 #include "functionstatemeter.h"
 #include "statesplan.h"
+#include "sequencer.h"
 
 #include "goaplibinscribe.h"
 
@@ -43,19 +44,34 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
     ++ret;
 
-    factory.inscribe<FactoryType::Default, IStateIterator>([](){ return RecyclableWrapper<StateIterator>::createFromPoolRaw(); }, discr);
+    factory.inscribe<FactoryType::Default, IStateValueIterator>([](){ return RecyclableWrapper<StateValueIterator>::createFromPoolRaw(); }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateIterator>([](const IState::CPtr &container){
-        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+    factory.inscribe<FactoryType::Default, IStateValueIterator>([](const IState::CPtr &container){
+        auto ptr = RecyclableWrapper<StateValueIterator>::createFromPoolRaw();
         ptr->assign(container);
         return ptr;
     }, discr);
     ++ret;
-    factory.inscribe<FactoryType::Default, IStateIterator>([](const IState::Ptr &container){
-        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+    factory.inscribe<FactoryType::Default, IStateValueIterator>([](const IState::Ptr &container){
+        auto ptr = RecyclableWrapper<StateValueIterator>::createFromPoolRaw();
         ptr->assign(container);
         return ptr;
     }, discr);
+    ++ret;
+
+    factory.inscribe<FactoryType::Default, IStateIterator>([]() { return RecyclableWrapper<StateIterator>::createFromPoolRaw(); }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateIterator>([](const Sequencer::CPtr& container) {
+        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+        ptr->assign(container);
+        return ptr;
+        }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IStateIterator>([](const Sequencer::Ptr& container) {
+        auto ptr = RecyclableWrapper<StateIterator>::createFromPoolRaw();
+        ptr->assign(container);
+        return ptr;
+        }, discr);
     ++ret;
 
     factory.inscribe<FactoryType::Default, IState>([](){ return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);

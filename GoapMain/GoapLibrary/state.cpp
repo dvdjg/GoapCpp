@@ -162,9 +162,9 @@ IState *State::merge(const IState::CNew &other)
     return this;
 }
 
-explicit_ptr<IStateIterator> State::iterator() const
+explicit_ptr<IStateValueIterator> State::iterator() const
 {
-    NewPtr<IStateIterator> itState;
+    NewPtr<IStateValueIterator> itState;
     *itState = this;
     return std::move(itState);
 }

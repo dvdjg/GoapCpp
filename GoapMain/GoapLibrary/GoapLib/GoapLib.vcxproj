@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Interfaces\goap\isequencer.h" />
     <ClInclude Include="..\actioninfo.h" />
     <ClInclude Include="..\basicmath.h" />
     <ClInclude Include="..\basicostream.h" />
@@ -32,6 +33,8 @@
     <ClInclude Include="..\goaplibrary.h" />
     <ClInclude Include="..\goapmemory.h" />
     <ClInclude Include="..\imemoryvalue.h" />
+    <ClInclude Include="..\levensteindistance.h" />
+    <ClInclude Include="..\levensteinstatecomparer.h" />
     <ClInclude Include="..\newptr.h" />
     <ClInclude Include="..\numericstatecomparer.h" />
     <ClInclude Include="..\path.h" />
@@ -43,6 +46,7 @@
     <ClInclude Include="..\refcounter.h" />
     <ClInclude Include="..\scopetime.h" />
     <ClInclude Include="..\scopetimeostream.h" />
+    <ClInclude Include="..\sequencer.h" />
     <ClInclude Include="..\state.h" />
     <ClInclude Include="..\statesplan.h" />
     <ClInclude Include="..\statevalue.h" />
@@ -56,12 +60,14 @@
     <ClCompile Include="..\functionstatemeter.cpp" />
     <ClCompile Include="..\goaplibinscribe.cpp" />
     <ClCompile Include="..\goaplibrary.cpp" />
+    <ClCompile Include="..\levensteinstatecomparer.cpp" />
     <ClCompile Include="..\memory.cpp" />
     <ClCompile Include="..\numericstatecomparer.cpp" />
     <ClCompile Include="..\path.cpp" />
     <ClCompile Include="..\planner.cpp" />
     <ClCompile Include="..\prioritizedqueue.cpp" />
     <ClCompile Include="..\prioritizedstack.cpp" />
+    <ClCompile Include="..\sequencer.cpp" />
     <ClCompile Include="..\state.cpp" />
     <ClCompile Include="..\statevalue.cpp" />
     <ClCompile Include="..\time_utils.cpp" />

@@ -280,7 +280,7 @@ struct equal_to<IStateValue::New>
 template<>
 struct less<IStateValue::Ptr>
 {
-    bool operator()(IStateValue::Ptr const& lhs, IStateValue::Ptr const& rhs) {
+    bool operator()(IStateValue::Ptr const& lhs, IStateValue::Ptr const& rhs) const {
         return lhs->lessThan(rhs);
     }
 };
@@ -288,7 +288,7 @@ struct less<IStateValue::Ptr>
 template<>
 struct less<IStateValue::CPtr>
 {
-    bool operator()(IStateValue::CPtr const& lhs, IStateValue::CPtr const& rhs) {
+    bool operator()(IStateValue::CPtr const& lhs, IStateValue::CPtr const& rhs) const {
         return lhs->lessThan(rhs);
     }
 };
@@ -296,7 +296,7 @@ struct less<IStateValue::CPtr>
 template<>
 struct less<IStateValue::New>
 {
-    bool operator()(IStateValue::New const& lhs, IStateValue::New const& rhs) {
+    bool operator()(IStateValue::New const& lhs, IStateValue::New const& rhs) const {
         return lhs->lessThan(rhs);
     }
 };
@@ -304,7 +304,7 @@ struct less<IStateValue::New>
 template<>
 struct less<IStateValue::CNew>
 {
-    bool operator()(const IStateValue::CNew & lhs, const IStateValue::CNew & rhs) {
+    bool operator()(IStateValue::CNew const& lhs, IStateValue::CNew const& rhs) const {
         const IStateValue* p = lhs.get();
         return p->lessThan(rhs);
     }

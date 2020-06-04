@@ -14,7 +14,7 @@ namespace goap
 {
 using namespace std;
 
-class IStateIterator;
+class IStateValueIterator;
 
 class IState : public virtual IStringPrintable, public virtual IClonable, public virtual IHashable
 {
@@ -26,6 +26,7 @@ public:
 
     typedef IState class_type;
     typedef int64_t index_type;
+    typedef pair<float, IState::CPtr> pair_state; // Sequence Position / State
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
 
 
@@ -70,20 +71,20 @@ public:
     virtual bool equals(const IState::CPtr &other) const = 0;
     virtual float cost() const = 0;
     virtual IState* cost(float c) = 0;
-    virtual explicit_ptr<IStateIterator> iterator() const = 0;
+    virtual explicit_ptr<IStateValueIterator> iterator() const = 0;
 };
 
 
-class IStateIterator : public IRefCounter {
+class IStateValueIterator : public IRefCounter {
 public:
-    typedef explicit_ptr<IStateIterator> Ptr;
-    typedef explicit_ptr<const IStateIterator> CPtr;
+    typedef explicit_ptr<IStateValueIterator> Ptr;
+    typedef explicit_ptr<const IStateValueIterator> CPtr;
 
     virtual bool hasNext() const = 0;
     virtual IState::pair_value next() = 0;
     virtual IState::pair_value peekNext() = 0;
     virtual int64_t size() const = 0;
-    virtual IStateIterator* operator=(const IState::CPtr &container) = 0;
+    virtual IStateValueIterator* operator=(const IState::CPtr &container) = 0;
 };
 
 inline static ostream& operator<<(ostream& os, const list<IState::CPtr>& dt) {

@@ -55,7 +55,7 @@ public:
     IState* assign(const IState::CPtr &other) override;
     IState* assign(const map_value2value_type &map_string_float) override;
     IState* merge(const IState::CNew& other) override;
-    explicit_ptr<IStateIterator> iterator() const override;
+    explicit_ptr<IStateValueIterator> iterator() const override;
     IClonable::Ptr clone() const override;
 
     // IStringPrintable interface
@@ -74,20 +74,20 @@ public:
 };
 
 
-class StateIterator : public IStateIterator {
+class StateValueIterator : public IStateValueIterator {
     IMPLEMENT_REFCOUNTER()
 
     State::CPtr _state;
     State::data_type::const_iterator _it;
 public:
-    typedef explicit_ptr<StateIterator> Ptr;
-    typedef explicit_ptr<const StateIterator> CPtr;
+    typedef explicit_ptr<StateValueIterator> Ptr;
+    typedef explicit_ptr<const StateValueIterator> CPtr;
 
 public:
-    StateIterator() {}
-    StateIterator(const StateIterator& other) : _state(other._state), _it(other._it) {
+    StateValueIterator() {}
+    StateValueIterator(const StateValueIterator& other) : _state(other._state), _it(other._it) {
     }
-    StateIterator(const State::Ptr& other) : _state(other), _it(_state->data().cbegin()) {
+    StateValueIterator(const State::Ptr& other) : _state(other), _it(_state->data().cbegin()) {
     }
     void assign(const State::CPtr& other) {
         _state = other;
@@ -112,7 +112,7 @@ public:
     int64_t size() const override {
         return _state->size();
     }
-    virtual IStateIterator* operator=(const IState::CPtr &other) override {
+    virtual IStateValueIterator* operator=(const IState::CPtr &other) override {
         assign(other);
         return this;
     }
