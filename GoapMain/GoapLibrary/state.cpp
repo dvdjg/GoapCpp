@@ -4,6 +4,7 @@
 #include "basicmath.h"
 #include "state.h"
 #include "statevalue.h"
+#include "goap/istateiterator.h"
 #include "log_hook.h"
 
 #include "newptr.h"
@@ -154,6 +155,7 @@ IState* State::assign(const IState::map_value2value_type &map_string_float)
 
 IState *State::merge(const IState::CNew &other)
 {
+    // Cost is not changed
     auto it = other->iterator();
     while(it->hasNext()) {
         auto pair = it->next();
@@ -195,7 +197,7 @@ IState* State::mulCost(float c) {
 
 IClonable::Ptr State::clone() const
 {
-    auto ptr = NewPtr<IState>();
+    auto ptr = NewPtr<State>();
     ptr->cost(this->cost());
     auto itState = iterator();
     while (itState->hasNext()) {
@@ -203,6 +205,9 @@ IClonable::Ptr State::clone() const
         IStateValue::CPtr key = pair.first;
         IStateValue::Ptr value = dynamic_pointer_cast<IStateValue>(pair.second->clone());
         ptr->put(key, value);
+    }
+    for (auto it : this->_stateIterator) {
+        ptr->_stateIterator[it.first] = it.second->clone();
     }
     return std::move(ptr);
 }
@@ -239,6 +244,11 @@ size_t State::hash() const
             std::size_t hvalue = it.second->hash();
             h = h ^ hkey ^ hvalue;
         }
+        /*for (auto& it : _stateIterator) {
+            std::size_t hkey = std::hash<string>()(it.first);
+            //std::size_t hvalue = it.second->hash();
+            h = h ^ hkey;
+        }*/
         if (h == 0) {
             h = 1; // Do not return 0
         }
@@ -252,6 +262,26 @@ bool State::empty() const
     return _data.empty();
 }
 
+explicit_ptr<IStateIterator> State::getStateIterator(const string& name) const
+{
+    auto it = _stateIterator.find(name);
+    return (it == _stateIterator.end()) ? explicit_ptr<IStateIterator>() : it->second;
+}
+
+void State::putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator)
+{
+    _stateIterator[name] = satateIterator;
+}
+
+void State::flashSequences() {
+    for (auto it : _stateIterator) {
+        const explicit_ptr<IStateIterator>& sit = it.second;
+        if (sit->hasNext()) {
+            IState::CPtr state = sit->peekNext();
+            merge(state);
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 IState::New::New() : parent_type(NewPtr<IState>()) {

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Interfaces\goap\isequencer.h" />
+    <ClInclude Include="..\..\Interfaces\goap\istateiterator.h" />
     <ClInclude Include="..\actioninfo.h" />
     <ClInclude Include="..\basicmath.h" />
     <ClInclude Include="..\basicostream.h" />

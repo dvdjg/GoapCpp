@@ -3,6 +3,8 @@
 
 #include <list>
 #include "goap/isequencer.h"
+#include "goap/istateiterator.h"
+
 #include "refcounter.h"
 
 namespace goap
@@ -14,7 +16,7 @@ namespace goap
         IMPLEMENT_REFCOUNTER()
         friend StateIterator;
     public:
-        typedef list<IState::pair_state> sequencer_list_type;
+        typedef list<IState::CPtr> sequencer_list_type;
 
     private:
         float _time = 0;
@@ -27,8 +29,8 @@ namespace goap
         float getInputTime() override;
         void advanceInputTime(float ticks) override;
         void pushState(const IState::CNew& state) override;
-        IState::pair_state pullState() override;
-        IState::pair_state peekState() const override;
+        IState::CPtr pullState() override;
+        IState::CPtr peekState() const override;
         explicit_ptr<IStateIterator> iterator() override;
 
         // Heredado vía ISequencer
@@ -51,8 +53,8 @@ namespace goap
 
         void assign(const Sequencer::CPtr& seq);
         bool hasNext() const override;
-        IState::pair_state next() override;
-        IState::pair_state peekNext() override;
+        IState::CPtr next() override;
+        IState::CPtr peekNext() const override;
         int64_t size() const override;
         explicit_ptr<IStateIterator> clone() const override;
         //virtual IStateIterator* operator=(const IState::CPtr& container) = 0;

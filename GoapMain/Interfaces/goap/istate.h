@@ -1,7 +1,6 @@
 #ifndef GOAP_IREADSTATE_H
 #define GOAP_IREADSTATE_H
 
-//#include <memory>
 #include <map>
 #include <list>
 #include <ostream>
@@ -9,12 +8,14 @@
 #include "ihashable.h"
 #include "istatevalue.h"
 #include "explicit_ptr.h"
+//#include "goap/istateiterator.h"
 
 namespace goap
 {
 using namespace std;
 
 class IStateValueIterator;
+class IStateIterator;
 
 class IState : public virtual IStringPrintable, public virtual IClonable, public virtual IHashable
 {
@@ -23,12 +24,12 @@ public:
     typedef explicit_ptr<const IState> CPtr;
 
     typedef map<IStateValue::CNew, IStateValue::New> map_value2value_type;
+    typedef map<string, explicit_ptr<IStateIterator>> map_state_iterator_type;
 
     typedef IState class_type;
     typedef int64_t index_type;
-    typedef pair<float, IState::CPtr> pair_state; // Sequence Position / State
+    typedef IState::CPtr pair_state; // Sequence Position / State
     typedef pair<IStateValue::CPtr, IStateValue::Ptr> pair_value;
-
 
     class New : public class_type::Ptr {
         typedef class_type::Ptr parent_type;
@@ -72,6 +73,10 @@ public:
     virtual float cost() const = 0;
     virtual IState* cost(float c) = 0;
     virtual explicit_ptr<IStateValueIterator> iterator() const = 0;
+
+    virtual void putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator) = 0;
+    virtual explicit_ptr<IStateIterator> getStateIterator(const string& name) const = 0;
+    virtual void flashSequences() = 0;
 };
 
 

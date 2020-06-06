@@ -1,3 +1,4 @@
+#include <sstream>
 #include "sequencer.h"
 #include "newptr.h"
 
@@ -13,19 +14,20 @@ void Sequencer::advanceInputTime(float ticks) {
 }
 
 void Sequencer::pushState(const IState::CNew& state) {
-    //IState::CPtr s = state;
-    IState::pair_state p = make_pair(_time, state);
+    IState::Ptr s = dynamic_pointer_cast<IState>(state->clone());
+    s->cost(_time);
+    IState::CPtr p = s; //  make_pair(_time, state);
     _lstStates.push_back(p);
 }
 
-IState::pair_state Sequencer::pullState() {
-    IState::pair_state ret = _lstStates.front();
+IState::CPtr Sequencer::pullState() {
+    IState::CPtr ret = _lstStates.front();
     _lstStates.pop_front();
     return ret;
 }
 
-IState::pair_state Sequencer::peekState() const {
-    IState::pair_state ret = _lstStates.front();
+IState::CPtr Sequencer::peekState() const {
+    IState::CPtr ret = _lstStates.front();
     return ret;
 }
 
@@ -38,17 +40,24 @@ explicit_ptr<IStateIterator> Sequencer::iterator() {
 
 std::string Sequencer::toDebugString() const
 {
-    return std::string();
+    return toString();
 }
 
 std::string Sequencer::toString() const
 {
-    return std::string();
+    stringstream ss;
+    toOstream(ss);
+    return ss.str();
 }
 
 ostream& Sequencer::toOstream(ostream& os) const
 {
-    // TODO: Insertar una instrucción "return" aquí
+    os << "[ ";
+    for (auto it : this->_lstStates) {
+        os << "{ time:" << it->cost() << ", state:" << *it << "}";
+    }
+    os << "]";
+    return os;
 }
 
 void Sequencer::pushString(const string& strState, float inc)
@@ -75,13 +84,13 @@ bool StateIterator::hasNext() const {
     return _it != _sequencer->_lstStates.end();
 }
 
-IState::pair_state StateIterator::next() {
-    IState::pair_state ret = *_it++;
+IState::CPtr StateIterator::next() {
+    IState::CPtr ret = *_it++;
     return ret;
 
 }
 
-IState::pair_state StateIterator::peekNext() {
+IState::CPtr StateIterator::peekNext() const {
     return *_it;
 }
 

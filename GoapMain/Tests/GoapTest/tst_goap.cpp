@@ -13,6 +13,8 @@
 #include "goap/iscopetimer.h"
 #include "goap/isequencer.h"
 
+#include "goap/istateiterator.h"
+
 #include "backing_a_pie.h"
 #include "hanoi_tower_solver.h"
 #include "state_change_solver.h"
@@ -55,9 +57,9 @@ TEST_F(GoapTest, TestSequencer) {
     float acc = 0;
     auto it = seq->iterator();
     while (it->hasNext()) {
-        auto pairState = it->next();
-        acc += pairState.first;
-        auto itValue = pairState.second->iterator();
+        IState::CPtr pairState = it->next();
+        acc += pairState->cost();
+        auto itValue = pairState->iterator();
         while (itValue->hasNext()) {
             auto pairValue = itValue->next();
             float val = pairValue.second->at(0);
@@ -67,7 +69,35 @@ TEST_F(GoapTest, TestSequencer) {
             }
         }
     }
+
+    LOG(INFO) << magenta << "Sequence: " << *seq;
+
     EXPECT_EQ(strNumber, strReconstr);
+}
+
+TEST_F(GoapTest, TestStateSequencer) {
+    ISequencer::Ptr seq = NewPtr<ISequencer>();
+    const string strNumber("3.1415");
+    seq->pushString(strNumber, 1.0f);
+    auto it = seq->iterator();
+
+    IState::Ptr initialState = NewPtr<IState>()->assign({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} });
+    const string seq1 = "Sequencer_1";
+    initialState->putStateIterator(seq1, it);
+    initialState->flashSequences();
+    IStateValue* val1 = initialState->at("3");
+    IStateValue* val2 = initialState->at(".");
+    EXPECT_NE(nullptr, val1);
+    EXPECT_EQ(true, *val1);
+    EXPECT_EQ(nullptr, val2);
+
+    auto it2 = initialState->getStateIterator(seq1);
+    EXPECT_EQ(it, it2);
+    it2->next();
+    initialState->flashSequences();
+    val2 = initialState->at(".");
+    EXPECT_NE(nullptr, val2);
+    EXPECT_EQ(true, *val2);
 }
 TEST_F(GoapTest, TestNumericComparer)
 {

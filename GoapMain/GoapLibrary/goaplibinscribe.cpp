@@ -44,6 +44,8 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
     factory.inscribe<FactoryType::Default, IBasicSink, BasicOstreamSink>(discr);
     ++ret;
 
+    factory.inscribe<FactoryType::Default, ISequencer>([](){ return RecyclableWrapper<Sequencer>::createFromPoolRaw(); }, discr);
+    ++ret;
     factory.inscribe<FactoryType::Default, IStateValueIterator>([](){ return RecyclableWrapper<StateValueIterator>::createFromPoolRaw(); }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IStateValueIterator>([](const IState::CPtr &container){
@@ -74,7 +76,9 @@ int goapLibInscribeExplicit(Factory<IRoot> & factory = Factory<IRoot>::singleton
         }, discr);
     ++ret;
 
-    factory.inscribe<FactoryType::Default, IState>([](){ return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);
+    factory.inscribe<FactoryType::Default, State>([]() { return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);
+    ++ret;
+    factory.inscribe<FactoryType::Default, IState>([]() { return RecyclableWrapper<State>::createFromPoolRaw(); }, discr);
     ++ret;
     factory.inscribe<FactoryType::Default, IState>([](const IState::CPtr &cptr){
         auto ptr = RecyclableWrapper<State>::createFromPoolRaw();

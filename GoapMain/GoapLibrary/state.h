@@ -8,6 +8,8 @@
 namespace goap
 {
 
+using namespace std;
+
 class State : public IState
 {
     IMPLEMENT_REFCOUNTER()
@@ -15,12 +17,13 @@ class State : public IState
 public:
     typedef explicit_ptr<State> Ptr;
     typedef explicit_ptr<const State> CPtr;
-    typedef std::unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
+    typedef unordered_map<IStateValue::CPtr, IStateValue::Ptr> data_type;
 
 protected:
     data_type _data;
+    map_state_iterator_type _stateIterator;
     float _coste = 1;
-    mutable std::size_t _cachedHash = 0;
+    mutable size_t _cachedHash = 0;
 
 private:
     void touch();
@@ -29,7 +32,7 @@ public:
     State();
     State(const State &other);
     State(const IState::CPtr &other);    
-    State(std::initializer_list<data_type::value_type> list);
+    State(initializer_list<data_type::value_type> list);
 
     void clear();
 
@@ -71,6 +74,10 @@ public:
     // IState interface
 public:
     bool empty() const override;
+
+    void putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator) override;
+    explicit_ptr<IStateIterator> getStateIterator(const string& name) const override;
+    void flashSequences() override;
 };
 
 
