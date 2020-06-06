@@ -76,28 +76,65 @@ TEST_F(GoapTest, TestSequencer) {
 }
 
 TEST_F(GoapTest, TestStateSequencer) {
-    ISequencer::Ptr seq = NewPtr<ISequencer>();
+    ISequencer::Ptr seq1 = NewPtr<ISequencer>();
     const string strNumber("3.1415");
-    seq->pushString(strNumber, 1.0f);
-    auto it = seq->iterator();
+    seq1->pushString(strNumber, 1.0f);
+    auto it = seq1->iterator();
 
     IState::Ptr initialState = NewPtr<IState>()->assign({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} });
-    const string seq1 = "Sequencer_1";
-    initialState->putStateIterator(seq1, it);
+    const string sSeq1 = "Sequencer_1";
+    initialState->putStateIterator(sSeq1, it);
     initialState->flashSequences();
     IStateValue* val1 = initialState->at("3");
-    IStateValue* val2 = initialState->at(".");
     EXPECT_NE(nullptr, val1);
     EXPECT_EQ(true, *val1);
+    IStateValue* val2 = initialState->at(".");
     EXPECT_EQ(nullptr, val2);
 
-    auto it2 = initialState->getStateIterator(seq1);
+    auto it2 = initialState->getStateIterator(sSeq1);
     EXPECT_EQ(it, it2);
     it2->next();
-    initialState->flashSequences();
+    initialState->flashSequences(); val1 = initialState->at("3");
+    EXPECT_NE(nullptr, val1);
+    EXPECT_EQ(true, *val1);
+
     val2 = initialState->at(".");
     EXPECT_NE(nullptr, val2);
     EXPECT_EQ(true, *val2);
+
+
+    ISequencer::Ptr seq2 = NewPtr<ISequencer>();
+    seq2->pushState({ { "A", 2 }, { "B", 5 }, { "C", 8 } });
+    seq2->pushState({ { "A", 3 }, { "B.1", 6 }, { "C.1", 9 } });
+    seq2->pushState({ { "A", 4 }, { "B.1", 7 }, { "C.2", "Diez" } });
+    auto itSeq2 = seq2->iterator();
+    const string sSeq2 = "Sequencer_2";
+    initialState->putStateIterator(sSeq2, itSeq2);
+    LOG(INFO) << "initialState: " << *initialState;
+    
+    initialState->flashSequences();
+
+    LOG(INFO) << "initialState Flashed: " << *initialState;
+    EXPECT_NE(nullptr, val2);
+    EXPECT_EQ(2, initialState->atRef("A"));
+    EXPECT_EQ(5, initialState->atRef("B"));
+    EXPECT_EQ(8, initialState->atRef("C"));
+
+    itSeq2->next();
+    initialState->flashSequences();
+    EXPECT_EQ(3, initialState->atRef("A"));
+    EXPECT_EQ(5, initialState->atRef("B"));
+    EXPECT_EQ(8, initialState->atRef("C"));
+    EXPECT_EQ(6, initialState->atRef("B.1"));
+    EXPECT_EQ(9, initialState->atRef("C.1"));
+
+    initialState->flashSequence(sSeq2, true);
+    EXPECT_EQ(4, initialState->atRef("A"));
+    EXPECT_EQ(5, initialState->atRef("B"));
+    EXPECT_EQ(8, initialState->atRef("C"));
+    EXPECT_EQ(7, initialState->atRef("B.1"));
+    EXPECT_EQ(nullptr, initialState->at("C.1"));
+    EXPECT_EQ(initialState->atRef("C.2"), "Diez");
 }
 TEST_F(GoapTest, TestNumericComparer)
 {

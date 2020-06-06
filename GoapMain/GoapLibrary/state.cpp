@@ -231,6 +231,17 @@ ostream &State::toOstream(ostream &ss) const
     for (auto it = _data.cbegin(); it != _data.cend(); ++it) {
         ss << ", " << green << it->first->toString() << reset << " : " << magenta << it->second->toString() << reset;
     }
+    const char* sz = "";
+    ss << ", stateIterators: [";
+    for (auto it : _stateIterator) {
+        const explicit_ptr<IStateIterator>& sit = it.second;
+        if (sit->hasNext()) {
+            IState::CPtr state = sit->peekNext();
+            ss << sz << it.first << ": " << *state;
+            sz = ", ";
+        }
+    }
+    ss << "]";
     ss << '}';
     return ss;
 }
@@ -271,6 +282,10 @@ explicit_ptr<IStateIterator> State::getStateIterator(const string& name) const
 void State::putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator)
 {
     _stateIterator[name] = satateIterator;
+    if (satateIterator->hasNext()) {
+        IState::CPtr state = satateIterator->peekNext();
+        merge(state);
+    }
 }
 
 void State::flashSequences() {
@@ -281,6 +296,25 @@ void State::flashSequences() {
             merge(state);
         }
     }
+}
+
+bool State::flashSequence(const string& name, bool clearOldState) {
+    auto it = getStateIterator(name);
+    if (it && it->hasNext()) {
+        IState::CPtr currState = it->next();
+        if (clearOldState) {
+            auto itVal = currState->iterator();
+            while (itVal->hasNext()) {
+                auto itValue = itVal->next();
+                this->remove(itValue.first);
+            }
+        }
+        if (it->hasNext()) {
+            IState::CPtr state = it->peekNext();
+            merge(state);
+        }
+    }
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

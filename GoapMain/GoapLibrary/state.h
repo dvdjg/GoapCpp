@@ -78,6 +78,7 @@ public:
     void putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator) override;
     explicit_ptr<IStateIterator> getStateIterator(const string& name) const override;
     void flashSequences() override;
+    bool flashSequence(const string& name, bool clearOldState) override;
 };
 
 
@@ -95,6 +96,10 @@ public:
     StateValueIterator(const StateValueIterator& other) : _state(other._state), _it(other._it) {
     }
     StateValueIterator(const State::Ptr& other) : _state(other), _it(_state->data().cbegin()) {
+    }
+    void clear() {
+        _state.reset();
+        _it = {};
     }
     void assign(const State::CPtr& other) {
         _state = other;

@@ -77,6 +77,7 @@ public:
     virtual void putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator) = 0;
     virtual explicit_ptr<IStateIterator> getStateIterator(const string& name) const = 0;
     virtual void flashSequences() = 0;
+    virtual bool flashSequence(const string& name, bool clearOldState = true) = 0;
 };
 
 

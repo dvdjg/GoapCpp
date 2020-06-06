@@ -25,6 +25,7 @@ namespace goap
     public:
         typedef explicit_ptr<Sequencer> Ptr;
         typedef explicit_ptr<const Sequencer> CPtr;
+        void clear();
 
         float getInputTime() override;
         void advanceInputTime(float ticks) override;

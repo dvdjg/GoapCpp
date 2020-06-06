@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GoapTest\backing_a_pie.h" />
+    <ClInclude Include="..\GoapTest\grammar_solver.h" />
     <ClInclude Include="..\GoapTest\hanoi_tower_solver.h" />
     <ClInclude Include="..\GoapTest\state_change_solver.h" />
   </ItemGroup>

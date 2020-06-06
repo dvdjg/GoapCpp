@@ -5,6 +5,11 @@
 namespace goap {
 using namespace std;
 
+void Sequencer::clear() {
+    _time = 0;
+    _lstStates.clear();
+}
+
 float Sequencer::getInputTime() {
     return _time;
 }
