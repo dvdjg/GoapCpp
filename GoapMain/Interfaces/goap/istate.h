@@ -76,8 +76,8 @@ public:
 
     virtual void putStateIterator(const string& name, const explicit_ptr<IStateIterator>& satateIterator) = 0;
     virtual explicit_ptr<IStateIterator> getStateIterator(const string& name) const = 0;
-    virtual void flashSequences() = 0;
-    virtual bool flashSequence(const string& name, bool clearOldState = true) = 0;
+    virtual void mergeSequences() = 0;
+    virtual bool mergeSequence(const string& name, bool clearOldState = true) = 0;
 };
 
 
@@ -110,6 +110,24 @@ inline bool operator ==(const IState& a, const IState& b)
 inline bool operator !=(const IState& a, const IState& b)
 {
     return !(a == b);
+}
+
+inline IState::Ptr mul(const IState::CNew& a, const IState::CNew& b)
+{
+    IState::Ptr ret = IState::New();
+    auto itB = b->iterator();
+    while (itB->hasNext()) {
+        auto pairB = itB->next();
+        auto key = pairB.first;
+        auto valA = a->at(key);
+        if (valA) {
+            auto valB = pairB.second;
+            auto valACloned = dynamic_pointer_cast<IStateValue>(valA->clone());
+            valACloned->mul(valB);
+            ret->put(key, valACloned);
+        }
+    }
+    return ret;
 }
 
 }

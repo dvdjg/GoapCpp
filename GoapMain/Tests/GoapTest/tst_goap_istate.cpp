@@ -31,6 +31,17 @@ protected:
     }
 };
 
+TEST_F(GoapIStateTest, TestMul)
+{
+    IState::New state1({ {"A", 2}, {"B", 3}, {"C", 5} });
+    IState::New state2({ {"B", 1.5f} });
+    auto state3 = mul(state1, state2);
+
+    ASSERT_EQ(1, state3->size());
+    ASSERT_NE(nullptr, state3->at("B"));
+    ASSERT_EQ(nullptr, state3->at("A"));
+    ASSERT_EQ(4.5, *state3->at("B"));
+}
 TEST_F(GoapIStateTest, TestSetAt)
 {
     auto scopeTimer = NewPtr<IScopeTime>({}, "GoapIStateTest, TestSetAt: ", true);

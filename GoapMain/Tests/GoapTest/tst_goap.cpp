@@ -84,7 +84,7 @@ TEST_F(GoapTest, TestStateSequencer) {
     IState::Ptr initialState = NewPtr<IState>()->assign({ {"OwenTemperature", REF_TEMP}, {"BowlTemperature", REF_TEMP},  {"OwenIsOn", false}, {"Credits", 10} });
     const string sSeq1 = "Sequencer_1";
     initialState->putStateIterator(sSeq1, it);
-    initialState->flashSequences();
+    initialState->mergeSequences();
     IStateValue* val1 = initialState->at("3");
     EXPECT_NE(nullptr, val1);
     EXPECT_EQ(true, *val1);
@@ -94,7 +94,7 @@ TEST_F(GoapTest, TestStateSequencer) {
     auto it2 = initialState->getStateIterator(sSeq1);
     EXPECT_EQ(it, it2);
     it2->next();
-    initialState->flashSequences(); val1 = initialState->at("3");
+    initialState->mergeSequences(); val1 = initialState->at("3");
     EXPECT_NE(nullptr, val1);
     EXPECT_EQ(true, *val1);
 
@@ -112,7 +112,7 @@ TEST_F(GoapTest, TestStateSequencer) {
     initialState->putStateIterator(sSeq2, itSeq2);
     LOG(INFO) << "initialState: " << *initialState;
     
-    initialState->flashSequences();
+    initialState->mergeSequences();
 
     LOG(INFO) << "initialState Flashed: " << *initialState;
     EXPECT_NE(nullptr, val2);
@@ -121,14 +121,14 @@ TEST_F(GoapTest, TestStateSequencer) {
     EXPECT_EQ(8, initialState->atRef("C"));
 
     itSeq2->next();
-    initialState->flashSequences();
+    initialState->mergeSequences();
     EXPECT_EQ(3, initialState->atRef("A"));
     EXPECT_EQ(5, initialState->atRef("B"));
     EXPECT_EQ(8, initialState->atRef("C"));
     EXPECT_EQ(6, initialState->atRef("B.1"));
     EXPECT_EQ(9, initialState->atRef("C.1"));
 
-    initialState->flashSequence(sSeq2, true);
+    initialState->mergeSequence(sSeq2, true);
     EXPECT_EQ(4, initialState->atRef("A"));
     EXPECT_EQ(5, initialState->atRef("B"));
     EXPECT_EQ(8, initialState->atRef("C"));

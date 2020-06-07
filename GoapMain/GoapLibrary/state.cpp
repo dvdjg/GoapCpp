@@ -288,7 +288,7 @@ void State::putStateIterator(const string& name, const explicit_ptr<IStateIterat
     }
 }
 
-void State::flashSequences() {
+void State::mergeSequences() {
     for (auto it : _stateIterator) {
         const explicit_ptr<IStateIterator>& sit = it.second;
         if (sit->hasNext()) {
@@ -298,7 +298,7 @@ void State::flashSequences() {
     }
 }
 
-bool State::flashSequence(const string& name, bool clearOldState) {
+bool State::mergeSequence(const string& name, bool clearOldState) {
     auto it = getStateIterator(name);
     if (it && it->hasNext()) {
         IState::CPtr currState = it->next();

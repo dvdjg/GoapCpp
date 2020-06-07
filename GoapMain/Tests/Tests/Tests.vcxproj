@@ -52,6 +52,7 @@
     <ClCompile Include="..\GoapTest\tst_goap.cpp" />
     <ClCompile Include="..\GoapTest\tst_goap_istate.cpp" />
     <ClCompile Include="..\GoapTest\tst_goap_istatevalue.cpp" />
+    <ClCompile Include="..\GoapTest\tst_goap_sintax_solver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\GoapTest\backing_a_pie.h" />
